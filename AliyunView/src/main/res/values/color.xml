@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+
+    <color name="qupai_text_dialog_vcode">#b3000000</color>
+    <color name="qupai_text_dialog_nickname">#4d000000</color>
+    <color name="qupai_color_list_default">@color/aliyun_defalut_record_primary_color</color>
+
+    <color name="qupai_color_text_edit_single">#a6a6a6</color>
+
+    <color name="qupai_bg_color_list">#ffffff</color>
+    <color name="qupai_text_dialog_bg">#f7f7f7</color>
+    <color name="qupai_text_dialog_green_default">@color/aliyun_defalut_record_primary_color</color>
+    <color name="qupai_text_dialog_green_press">#ff1500</color>
+
+    <color name="qupai_recording_tip_bg_long">@android:color/transparent</color>
+    <color name="qupai_recording_tip_bg_short">#4c000000</color>
+
+    <color name="qupai_recording_tip_text_color_short">@android:color/white</color>
+    <color name="qupai_recording_tip_text_color_long">@android:color/black</color>
+
+    <color name="qupai_recorder_timeline_background">#e9e9e9</color>
+    <color name="qupai_editor_asset_item_background">#484848</color>
+
+    <color name="qupai_editor_diy_item_background_default">#FB006A</color>
+    <color name="qupai_editor_diy_item_background_press">#E40060</color>
+
+    <color name="qupai_import_toast_bg">#99000000</color>
+    <color name="qupai_timer_count_down_bg">#66FF0000</color>
+
+    <color name="qupai_album_divider_line">#434343</color>
+    <color name="qupai_dilog_divider_line">#d9d9d9</color>
+
+    <color name="qupai_balloon_tip_bg_cyan">#e626b8e9</color>
+
+    <color name="qupai_balloon_tip_bg_yellow">#ffc600</color>
+
+    <color name="qupai_effect_chooser_item_text_short">#ffffff</color>
+
+    <color name="qupai_gray_0x19">#191919</color>
+    <color name="qupai_gray_0x33">#333333</color>
+    <color name="qupai_gray_0x48">#484848</color>
+    <color name="qupai_gray_0x4d">#4d4d4d</color>
+    <color name="qupai_gray_0x80">#808080</color>
+    <color name="qupai_gray_0x8c">#8c8c8c</color>
+    <color name="qupai_gray_0x99">#999999</color>
+    <color name="qupai_gray_0xf2">#f2f2f2</color>
+    <color name="qupai_gray_0xf0">#f0f0f0</color>
+    <color name="qupai_gray_0x92">#929292</color>
+    <color name="qupai_gray_0xe5">#E5E5E5</color>
+    <color name="qupai_gray_0xd4">#D4D4D4</color>
+    <color name="qupai_gray_0xe2">#E2E2E2</color>
+    <color name="qupai_gray_0x44">#444444</color>
+    <color name="qupai_gray_0x88">#888888</color>
+
+    <color name="qupai_line_gray_effect">#535259</color>
+    <color name="qupai_line_gray_cc">#cccccc</color>
+    <color name="qupai_black_opacity_10pct">#1a000000</color>
+    <color name="qupai_black_opacity_20pct">#33000000</color>
+    <color name="qupai_black_opacity_30pct">#4d000000</color>
+    <color name="qupai_black_opacity_40pct">#66000000</color>
+    <color name="qupai_black_opacity_60pct">#99000000</color>
+    <color name="qupai_black_opacity_50pct">#80000000</color>
+    <color name="qupai_black_opacity_70pct">#b3000000</color>
+    <color name="qupai_background_trim">#7f333333</color>
+    <color name="qupai_edit_background_mask">#66999999</color>
+    <color name="qupai_line_gray_75">#757575</color>
+    <color name="qupai_trim_green_default">@color/aliyun_defalut_record_primary_color</color>
+
+    <color name="qupai_translucent_0x7f">#7f7f7f7f</color>
+    <color name="qupai_bg_theme_black">#FF303030</color>
+
+    <color name="compose_tip">#bcbcbc</color>
+    <color name="qupai_theme_default_background_color_transparent_20">@color/aliyun_defalut_primary_color_alpha30</color>
+    <color name="qupai_theme_default_background_color">@color/aliyun_defalut_record_primary_color</color>
+    <color name="qupai_theme_default_background_press_color">#ff1500</color>
+    <color name="qupai_theme_red_pressed_color">#d52e1f</color>
+    <color name="qupai_theme_gray_pressed_color">#6d6d6d</color>
+    <color name="qupai_theme_default_text_color">@color/aliyun_defalut_record_primary_color</color>
+    <color name="qupai_theme_default_text_press_color">#ff1500</color>
+    <color name="qupai_theme_default_message_backgroud_color">#4dff5454</color>
+    <color name="qupai_theme_default_main_background_color">#FFFFFF</color>
+    <color name="qupai_theme_default_main_background_color_gallery">#35333D</color>
+    <color name="qupai_theme_default_main_background_color_gallery_header">#9B9EA9</color>
+    <color name="qupai_theme_default_sub_background_color">#ff4b4b4b</color>
+    <color name="qupai_default_effect_background_color">#66FFFFFF</color>
+    <color name="qupai_theme_default_sub_background_color_opacity_50pct">#804b4b4b</color>
+    <color name="qupai_gallery_option_bg">#262529</color>
+    <color name="qupai_theme_clip_select">#9A4449</color>
+    <color name="qupai_timeline_bg">#2C2A33</color>
+    <color name="qupai_effect_overlay_progress_bg">#33333333</color>
+    <color name="qupai_effect_overlay_progress_bg_active">#66333333</color>
+
+    <color name="qupai_effect_chooser_list_item_null_img">#ffde00</color>
+    <color name="qupai_effect_chooser_list_item_null_color">#ff5454</color>
+
+    <color name="qupai_select_status_color_red">#FB4A3A</color>
+    <color name="qupai_select_status_color">#80ff5454</color>
+    <color name="qupai_import_album_default_color">#ff5454</color>
+    <color name="qupai_import_album_press_color">#ff1500</color>
+
+    <color name="aliyun_defalut_record_primary_color">#ff5454</color><!-- 4d02d4e1 --><!--02d4e1 -->
+    <color name="aliyun_defalut_primary_color_alpha30">#4dff5454</color>
+    <color name="aliyun_defalut_primary_color_alpha40">#66ff5454</color>
+    <color name="aliyun_defalut_primary_color_alpha50">#80ff5454</color>
+    <color name="aliyun_defalut_record_primary_color_pressed">#ff1500</color>
+    <color name="aliyun_editor_tab_effect_bg">#46434e</color>
+    <color name="aliyun_editor_tab_effect_bg_60">#9946434e</color>
+
+    <color name="aliyun_trim_seekbar_primary_color">#ffa59d</color><!-- 4d02d4e1 -->
+
+    <color name="aliyun_defalut_mask_bar_color">#ff5454</color>
+    <color name="aliyun_qupai_transparent">#00ffffff</color>
+    <color name="aliyun_powered_text_color">#adadad</color>
+
+    <color name="aliyun_quit_confirm_normal">#FF0000</color>
+    <color name="aliyun_quit_confirm_pressed">#E60000</color>
+    <color name="aliyun_quit_remake_confirm_normal">#FFFFFF</color>
+    <color name="aliyun_quit_remake_confirm_pressed">#E9E9E9</color>
+    <color name="aliyun_drafts_action_line">#0D000000</color>
+    <color name="aliyun_editor_overlay_line">#D8D8D8</color>
+    <color name="aliyun_editor_overlay_line_trim">#4b4b4b</color>
+    <color name="aliyun_record_slipt_color">#5f5f5f</color>
+    <color name="aliyun_editor_person_info_divider">#f5f5f5</color>
+
+    <color name="aliyun_tutorial_text_color">#784700</color>
+    <color name="aliyun_balloon_bg_color">#e5FCD68C </color>
+    <color name="aliyun_eeditor_header_text">#1F2123</color>
+
+    <color name="qupai_white_opacity_70pct">#b3FFFFFF</color>
+    <color name="qupai_white_opacity_50pct">#80FFFFFF</color>
+    <color name="qupai_white_opacity_40pct">#66FFFFFF</color>
+    <color name="qupai_white_opacity_30pct">#4DFFFFFF</color>
+    <color name="qupai_white_opacity_60pct">#99FFFFFF</color>
+
+    <color name="qupai_record_delete">#5D5B63</color>
+
+    <color name="aliyun_color_bg">#232A42</color>
+    <color name="aliyun_tab_indicator_color">#EF4B81</color>
+    <color name="aliyun_transparent">#00ffffff</color>
+    <color name="aliyun_halftransparent">#66000000</color>
+    <color name="aliyun_red">#ff5151</color>
+    <color name="aliyun_black">#000000</color>
+    <color name="aliyun_download_progress">#80ff5454</color>
+
+
+    <color name="aliyun_tint_color">#EF4B81</color>
+    <color name="aliyun_timeline_background_del_color">#ffcc0000</color>
+    <color name="aliyun_timeline_backgound_color">#D8D8D8</color>
+</resources>

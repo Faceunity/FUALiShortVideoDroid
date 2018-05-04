@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">AlivcVideoSDK 安装包</string>
+    <string name="action_settings">Settings</string>
+    <string name="record">拍摄</string>
+    <string name="magic_camera">魔法相机</string>
+    <string name="edit">导入编辑</string>
+    <string name="crop">导入裁剪</string>
+    <string name="live">直播</string>
+    <string name="ui">UI组件</string>
+    <string name="need_permission">请给予相应的权限</string>
+</resources>

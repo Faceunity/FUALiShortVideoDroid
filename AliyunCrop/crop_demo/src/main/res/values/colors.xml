@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="aliyun_colorPrimary">#232A42</color>
+    <color name="aliyun_colorPrimaryDark">#303F9F</color>
+    <color name="aliyun_colorAccent">#FF4081</color>
+    <color name="aliyun_record_fill_progress">#fff600</color>
+    <color name="aliyun_color_bg">#232A42</color>
+    <color name="aliyun_color_bg_50pct">#88232A42</color>
+    <color name="aliyun_seek_bar_theme">#F05487</color>
+    <color name="aliyun_radio_btn_bg">#333b55</color>
+    <color name="aliyun_total_duration_title">#6E768B</color>
+    <color name="aliyun_total_duration_value_normal">#6E768B</color>
+    <color name="aliyun_total_duration_value_over">#000021</color>
+</resources>

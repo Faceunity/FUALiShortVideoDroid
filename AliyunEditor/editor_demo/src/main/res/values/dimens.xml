@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="action_bar_height">22dp</dimen>
+    <dimen name="action_bar_size">7sp</dimen>
+
+    <dimen name="qupai_effect_paster_operation_size">44dp</dimen>
+
+    <dimen name="bottom_editor_tab_padding">8dp</dimen>
+    <dimen name="left_margin_profile_toolbar">9dp</dimen>
+    <dimen name="right_margin_profile_toolbar">15dp</dimen>
+    <dimen name="bottom_editor_tab_height">40dp</dimen>
+    <dimen name="action_bar_profile_title_drawablePadding">4dp</dimen>
+    <dimen name="font_size_20px">10.0sp</dimen>
+    <dimen name="font_size_28px">14.0sp</dimen>
+
+    <dimen name="effect_list_view_size">100dp</dimen>
+    <dimen name="effect_overlay_view_size">160dp</dimen>
+    <dimen name="effect_music_view_size">300dp</dimen>
+    <dimen name="list_item_space">10dp</dimen>
+    <dimen name="effect_image_size">50dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>

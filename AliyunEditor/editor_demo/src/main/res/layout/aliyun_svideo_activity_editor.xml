@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/activity_editor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/action_bar_bg">
+
+    <LinearLayout
+        android:id="@+id/bar_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/action_bar"
+            layout="@layout/aliyun_svideo_action_bar_profile"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+            />
+
+            <View
+                android:layout_width="13dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/white_transparent_40"
+            />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:background="#1FFF66"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/glsurface_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <SurfaceView
+            android:id="@+id/play_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <FrameLayout
+            android:id="@+id/pasterView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/play_button"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_above="@+id/edit_bottom_tab"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/aliyun_svideo_video_edit_play_selector"/>
+
+    <!--<Button
+        android:id="@+id/time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="确认时间"
+        android:layout_above="@+id/edit_bottom_tab"
+        android:layout_alignLeft="@+id/play_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="10dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/bar_linear"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="视频index"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="20dp"
+            android:id="@+id/fade_start"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="转场时长(ms)"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="20dp"
+            android:id="@+id/fade_end"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="完成"
+            android:id="@+id/fade_completed"/>
+    </LinearLayout>-->
+
+    <include
+        android:id="@+id/edit_bottom_tab"
+        layout="@layout/aliyun_svideo_activity_editor_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_editor_tab_height"
+        android:layout_alignParentBottom="true"/>
+    <TextView
+        android:id="@+id/tv_curr_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bar_linear"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:alpha="0.8"
+        android:background="@drawable/aliyun_svideo_shape_timeline_duration_bg"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:text="00:00"
+        android:textColor="@color/white"
+        android:textSize="8sp"
+    />
+    <FrameLayout
+        android:id="@+id/copy_res_tip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:clickable="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/res_copy"/>
+
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+    <ImageView android:id="@+id/test_image"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:scaleType="centerInside"
+    />
+</RelativeLayout>

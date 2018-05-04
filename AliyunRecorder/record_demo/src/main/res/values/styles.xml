@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="aliyun_video_bottom_dialog_animation">
+        <item name="android:windowEnterAnimation">@anim/aliyun_video_anim_trans_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/aliyun_video_anim_layout_bottom_out</item>
+    </style>
+
+    <style name="QUDemoDialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
+</resources>

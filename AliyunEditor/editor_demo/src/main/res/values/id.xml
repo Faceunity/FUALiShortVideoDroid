@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="timeline_overlay_tail" type="id"></item>
+    <item name="timeline_overlay_head" type="id"></item>
+    <item name="timeline_overlay_middle" type="id"></item>
+</resources>

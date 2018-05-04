@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="68dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:background="@color/bg_effect_manager">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/transparent"
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/iv_icon"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tv_name"
+        android:layout_below="@id/tv_name"
+        android:layout_marginTop="3dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:text="@string/delete_effect_manager"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:id="@+id/tv_right_button"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/aliyun_svideo_shape_effect_manager_delete_bg"
+        android:paddingTop="1.5dp"
+        android:paddingBottom="1.5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:visibility="gone"
+        />
+
+    <com.aliyun.quview.CircleProgressBar
+        android:id="@+id/download_progress"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        app:progressColor="@color/aliyun_download_progress" />
+</RelativeLayout>

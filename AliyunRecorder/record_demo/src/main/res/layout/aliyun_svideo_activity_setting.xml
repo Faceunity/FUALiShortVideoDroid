@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.aliyun.demo.recorder.CameraDemo">
+
+    <EditText
+        android:id="@+id/aliyun_width"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:inputType="number"
+        android:hint="宽"/>
+    <EditText
+        android:id="@+id/aliyun_height"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:inputType="number"
+        android:hint="高"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="美颜开"
+        android:onClick="openBeauty"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="人脸检测开"
+        android:onClick="openFaceDetect"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始"
+        android:onClick="start"/>
+</LinearLayout>

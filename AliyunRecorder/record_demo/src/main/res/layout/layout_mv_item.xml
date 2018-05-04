@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/resource_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+        <com.aliyun.quview.CircularImageView
+            android:id="@+id/resource_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="1dp"
+            android:background="@drawable/aliyun_video_shape_effect_selector"
+            android:scaleType="centerInside" />
+    </FrameLayout>
+    <!--<TextView
+        android:id="@+id/resource_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:textColor="@color/qupai_white_opacity_70pct"
+        />-->
+</LinearLayout>

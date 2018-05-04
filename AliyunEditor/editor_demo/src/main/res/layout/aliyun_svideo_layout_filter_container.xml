@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/aliyun_svideo_filter_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/effect_list_view_size">
+    </android.support.v4.view.ViewPager>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/action_bar_bg"
+        >
+        <com.aliyun.quview.PagerSlidingTabStrip
+            android:id="@+id/aliyun_svideo_filter_content_container_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:pstsShouldExpand="true"
+            app:pstsIndicatorColor="@color/tab_indicator_color"
+            app:pstsDividerColor="@color/aliyun_transparent"
+            app:pstsUnderlineColor="@color/aliyun_transparent"
+            app:pstsTabBackground="@color/aliyun_transparent"
+            >
+        </com.aliyun.quview.PagerSlidingTabStrip>
+        <ImageView
+            android:id="@+id/aliyun_svideo_btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/aliyun_svideo_undo"
+            android:padding="10dp"
+            android:scaleType="center"
+            />
+    </RelativeLayout>
+
+</LinearLayout>

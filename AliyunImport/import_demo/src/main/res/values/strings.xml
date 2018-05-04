@@ -1,0 +1,32 @@
+<resources>
+    <string name="import_edit">导入编辑</string>
+    <string name="kbps">码率(kbps)</string>
+    <string name="frame_rate">帧率</string>
+    <string name="gop">关键帧间隔</string>
+    <string name="kbps_hint">建议600-2000，默认0由视频质量参数计算</string>
+    <string name="frame_rate_hint">建议20-30，默认25</string>
+    <string name="gop_hint">建议1-300，默认125</string>
+    <string name="resolution">分辨率</string>
+    <string name="crop_mode">裁剪模式</string>
+    <string name="mode_fill">画面填充</string>
+    <string name="mode_crop">画面裁剪</string>
+    <string name="start_import">开始导入</string>
+    <string name="gallery_all_media">相机胶卷</string>
+    <string name="resolution_1_1">540*540</string>
+    <string name="resolution_3_4">540*720</string>
+    <string name="resolution_9_16">540*960</string>
+    <string name="video_quality">视频质量</string>
+    <string name="video_quality_low">低</string>
+    <string name="video_quality_meidan">中</string>
+    <string name="video_quality_high">高</string>
+    <string name="video_quality_super">极高</string>
+    <string name="wait">请稍候</string>
+    <string name="video_crop_erroe">视频格式不支持</string>
+    <string name="video_duration_5min_tip">请将视频长度控制在5分钟以内</string>
+    <string name="sdcard_not_ready">SDCARD 没有准备好</string>
+    <string name="video_duration">%1$02d:%2$02d:%3$02d</string>
+    <string name="next_camera_roll_import">下一步</string>
+    <string name="message_max_duration_import">视频总时长不超过5分钟，请裁剪后继续!</string>
+    <string name="total_duration_label_import">总时长</string>
+    <string name="please_select_video">请选择视频</string>
+</resources>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              >
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:background="@color/color_bg"
+            android:layout_height="?android:attr/actionBarSize"
+            android:id="@+id/gallery_actionBar">
+
+        <ImageButton
+                android:id="@+id/gallery_closeBtn"
+                style="?android:attr/actionButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:contentDescription="@null"
+                android:src="@drawable/aliyun_svideo_icon_back" />
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/topPanel"
+                android:orientation="horizontal">
+            <TextView
+                    android:id="@+id/gallery_title"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/gallery_drawer"
+                    android:src="@drawable/aliyun_svideo_gallery_drowdown_selector"/>
+        </LinearLayout>
+
+        <!--<ImageButton-->
+                <!--android:id="@+id/gallery_nextBtn"-->
+                <!--style="?android:attr/actionButtonStyle"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="11dp"-->
+                <!--android:layout_gravity="right|center_vertical"-->
+                <!--android:contentDescription="@null"-->
+                <!--android:src="?attr/qupaiNextStepTickButton" />-->
+
+
+    </FrameLayout>
+
+
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/color_bg"
+            android:id="@+id/gallery_container">
+        <!--底部空出tab的高度-->
+        <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/gallery_media"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/color_bg"
+        android:layout_gravity="bottom"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:textColor="@color/total_duration_title"
+            android:text="@string/total_duration_label_import"
+            android:id="@+id/tv_duration_title"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/aliyun_svideo_selector_video_duration"
+            android:id="@+id/tv_duration_value"
+            android:layout_toRightOf="@id/tv_duration_title"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="2dp"
+            />
+
+        <Button
+            android:id="@+id/btn_next_step"
+            android:text="@string/next_camera_roll_import"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:background="@drawable/aliyun_svideo_shape_next_button"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:onClick="onClick"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rv_selected_video"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/btn_next_step"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="8dp"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

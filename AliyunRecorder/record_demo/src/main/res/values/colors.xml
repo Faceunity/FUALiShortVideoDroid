@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="aliyun_video_color_action_bar_bg">#232A42</color>
+    <color name="aliyun_video_color_effect_item_bg">#1b2133</color>
+    <color name="aliyun_colorPrimary">#3F51B5</color>
+    <color name="aliyun_colorPrimaryDark">#303F9F</color>
+    <color name="aliyun_colorAccent">#FF4081</color>
+    <color name="aliyun_video_color_effect_bg_color">#EF4B81</color>
+    <color name="aliyun_record_fill_progress">#EF4B81</color>
+    <color name="aliyun_white_alpha_50">#7FFFFFFF</color>
+    <color name="aliyun_seek_bar_theme">#F05487</color>
+    <color name="aliyun_reocrd_bg">#232A42</color>
+    <color name="aliyun_tools_bar_color">#881B2133</color>
+    <color name="aliyun_color_red">#ff0000</color>
+    <color name="aliyun_music_select_actionbar_bg">#373d41</color>
+    <color name="aliyun_rate_item_select_bg">#00c2dd</color>
+    <color name="aliyun_color_record_duraton">#fd4646</color>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#232A42</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="record_fill_progress">#fff600</color>
+    <color name="color_bg">#232A42</color>
+    <color name="seek_bar_theme">#F05487</color>
+    <color name="radio_btn_bg">#333b55</color>
+    <color name="total_duration_title">#6E768B</color>
+    <color name="total_duration_value_normal">#6E768B</color>
+    <color name="total_duration_value_over">#000021</color>
+</resources>

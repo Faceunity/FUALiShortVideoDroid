@@ -1,0 +1,121 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/trim_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_bg">
+
+
+    <com.aliyun.quview.VideoTrimFrameLayout
+        android:id="@+id/video_surfaceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
+
+        <TextureView
+            android:id="@+id/video_textureview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleX="1.0001"
+            android:scaleY="1.0001" />
+
+
+    </com.aliyun.quview.VideoTrimFrameLayout>
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:includeFontPadding="false"-->
+    <!--android:paddingLeft="10dp"-->
+    <!--android:paddingRight="2dp">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/video_tailor_time_start"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="left|center_vertical"-->
+    <!--android:text="00:00"-->
+    <!--android:textColor="@android:color/darker_gray"-->
+    <!--android:textSize="16sp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/video_tailor_time_real"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="center"-->
+    <!--android:textColor="?attr/colorPrimary"-->
+    <!--android:textSize="20sp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/video_tailor_time_total"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="right|center_vertical"-->
+    <!--android:text="00:09"-->
+    <!--android:textColor="@android:color/darker_gray"-->
+    <!--android:textSize="16sp" />-->
+    <!--</FrameLayout>-->
+
+    <!--<View-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1" />-->
+    <TextView
+        android:id="@+id/duration_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:text="1111"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/list_layout"/>
+    <LinearLayout
+        android:id="@+id/list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <com.aliyun.quview.HorizontalListView
+                android:id="@+id/video_tailor_image_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.aliyun.quview.VideoSliceSeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/aliyun_svideo_icon_cancel"/>
+            <ImageView
+                android:id="@+id/transform"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/icon_transform"/>
+            <ImageView
+                android:id="@+id/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/aliyun_svideo_icon_confirm"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

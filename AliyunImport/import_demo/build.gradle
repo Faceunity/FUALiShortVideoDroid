@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion externalCompileSdkVersion
+    buildToolsVersion externalBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion externalMinSdkVersion
+        targetSdkVersion externalTargetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        warning 'InvalidPackage'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile externalGlide
+    compile externalEasyPermissions
+    compile externalOKHTTP
+    compile externalAndroidAppCompatV7
+    compile externalAndroidDesign
+    testCompile externalJunit
+    compile (project(':AliyunVideoSdk')) {
+        transitive = false
+    }
+    compile project(':AliyunView')
+    compile project(':AliyunCrop:crop_demo')
+    compile project(':AliyunFileDownLoader:downloadermanager')
+
+}

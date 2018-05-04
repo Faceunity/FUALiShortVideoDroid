@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="QuViewFanProgressBar">
+        <attr name="circleMaxProgress" format="float|reference"/>
+        <attr name="circleProgress" format="float|reference"/>
+        <attr name="internalRadius" format="dimension|reference"/>
+        <attr name="outRadius" format="dimension|reference|enum">
+            <enum name="match_parent" value="-1"/>
+        </attr>
+        <attr name="internalBackgroundColor" format="color|reference"/>
+        <attr name="outBackgroundColor" format="color|reference"/>
+        <attr name="startAngle" format="float|reference"/>
+        <attr name="internalAlpha" format="float|reference"/>
+        <attr name="outAlpha" format="float|reference"/>
+        <attr name="centerX" format="float|reference"/>
+        <attr name="centerY" format="float|reference"/>
+        <attr name="outDirection" format="enum">
+            <enum name="clockwise" value="1"/>
+            <enum name="counterclockwise" value="-1"/>
+        </attr>
+        <attr name="internalDirection" format="enum">
+            <enum name="clockwise" value="1"/>
+            <enum name="counterclockwise" value="-1"/>
+        </attr>
+        <attr name="initStyle" format="enum">
+            <enum name="fill" value="1"/>
+            <enum name="empty" value="0"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="QuViewCircularImageView">
+        <attr name="android:src" />
+    </declare-styleable>
+
+    <declare-styleable name="QuViewRoundAngleImageView">
+        <attr name="roundWidth" format="dimension" />
+        <attr name="roundHeight" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="QuViewCircleProgressBar">
+        <attr name="backgroundWidth" format="dimension"/>
+        <attr name="backgroundHeight" format="dimension"/>
+        <attr name="progressWidth" format="dimension"/>
+        <attr name="progressThickness" format="dimension"/>
+        <attr name="backgroundColor" format="color|reference"/>
+        <attr name="progressColor" format="color|reference"/>
+        <attr name="progressThicknessColor" format="color|reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="QuViewAlertDialog">
+        <attr name="progressLayout" format="reference"/>
+        <attr name="horizontalProgressLayout" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="QuViewPagerSlidingTabStrip">
+        <attr name="pstsIndicatorColor" format="color" />
+        <attr name="pstsUnderlineColor" format="color" />
+        <attr name="pstsDividerColor" format="color" />
+        <attr name="pstsIndicatorHeight" format="dimension" />
+        <attr name="pstsUnderlineHeight" format="dimension" />
+        <attr name="pstsDividerPadding" format="dimension" />
+        <attr name="pstsIndicatorPadding" format="dimension" />
+        <attr name="pstsTabPaddingLeftRight" format="dimension" />
+        <attr name="pstsScrollOffset" format="dimension" />
+        <attr name="pstsTabBackground" format="reference" />
+        <attr name="pstsShouldExpand" format="boolean" />
+        <attr name="pstsTextAllCaps" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="PageIndicatorView">
+        <attr name="pi_SelectedBackground" format="reference"></attr>
+        <attr name="pi_NormalBackground" format="reference"></attr>
+        <attr name="pi_Margin" format="dimension|reference"></attr>
+        <attr name="pi_DotSize" format="dimension|reference"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="QuSnap">
+        <attr name="qusnap_background_color" format="reference"/>
+        <attr name="qusnap_tint_color" format="reference"/>
+        <attr name="qusnap_timeline_backgound_color" format="reference"/>
+        <attr name="qusnap_timeline_del_backgound_color" format="reference"/>
+        <attr name="qusnap_back_icon" format="reference"/>
+        <attr name="qusnap_back_icon_disable" format="reference"/>
+        <attr name="qusnap_beauty_icon" format="reference"/>
+        <attr name="qusnap_beauty_icon_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_switch_camera_icon" format="reference"/>
+        <attr name="qusnap_switch_camera_icon_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_switch_light_icon" format="reference"/>
+        <attr name="qusnap_switch_light_icon_disable" format="reference"/>
+        <attr name="qusnap_switch_light_icon_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_gallery_icon" format="reference"/>
+        <attr name="qusnap_gallery_icon_disable" format="reference"/>
+        <attr name="qusnap_gallery_icon_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_record_icon" format="reference"/>
+        <attr name="qusnap_record_icon_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_delete_icon" format="reference"/>
+        <attr name="qusnap_delete_icon_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_complete_icon" format="reference"/>
+        <attr name="qusnap_complete_icon_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_time_txt_color" format="reference"/>
+        <attr name="qusnap_time_txt_size" format="dimension"/>
+        <attr name="qusnap_time_txt_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_time_line_pos_y" format="dimension"/>
+        <attr name="qusnap_crop_sweep_left" format="reference"/>
+        <attr name="qusnap_crop_sweep_right" format="reference"/>
+        <attr name="qusnap_crop_seek_frame" format="reference"/>
+        <attr name="qusnap_crop_seek_padding_color" format="reference"/>
+        <attr name="qusnap_crop_icon_transform" format="reference"/>
+        <attr name="qusnap_crop_icon_transform_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+        <attr name="qusnap_crop_time_txt_color" format="reference"/>
+        <attr name="qusnap_crop_time_txt_size" format="dimension"/>
+        <attr name="qusnap_crop_txt_visibility" format="integer">
+            <enum name="visible" value="0"/>
+            <enum name="invisible" value="1"/>
+            <enum name="gone" value="2"/>
+        </attr>
+    </declare-styleable>
+
+</resources>

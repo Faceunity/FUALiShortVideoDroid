@@ -1,0 +1,148 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/trim_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/qusnap_background_color">
+
+
+    <com.aliyun.quview.VideoTrimFrameLayout
+        android:id="@+id/aliyun_video_surfaceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
+
+        <TextureView
+            android:id="@+id/aliyun_video_textureview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleX="1.0001"
+            android:scaleY="1.0001" />
+
+
+    </com.aliyun.quview.VideoTrimFrameLayout>
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:includeFontPadding="false"-->
+    <!--android:paddingLeft="10dp"-->
+    <!--android:paddingRight="2dp">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/video_tailor_time_start"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="left|center_vertical"-->
+    <!--android:text="00:00"-->
+    <!--android:textColor="@android:color/darker_gray"-->
+    <!--android:textSize="16sp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/video_tailor_time_real"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="center"-->
+    <!--android:textColor="?attr/colorPrimary"-->
+    <!--android:textSize="20sp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/video_tailor_time_total"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="right|center_vertical"-->
+    <!--android:text="00:09"-->
+    <!--android:textColor="@android:color/darker_gray"-->
+    <!--android:textSize="16sp" />-->
+    <!--</FrameLayout>-->
+
+    <!--<View-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1" />-->
+    <TextView
+        android:id="@+id/aliyun_duration_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/aliyun_list_layout"
+        android:layout_centerHorizontal="true"
+        android:text="1111"
+        android:textColor="?attr/qusnap_crop_time_txt_color"
+        android:textSize="?attr/qusnap_crop_time_txt_size"
+        android:visibility="?attr/qusnap_crop_txt_visibility" />
+
+    <LinearLayout
+        android:id="@+id/aliyun_list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.aliyun.quview.HorizontalListView
+                android:id="@+id/aliyun_video_tailor_image_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.aliyun.quview.VideoSliceSeekBar
+                android:id="@+id/aliyun_seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <ImageView
+                android:id="@+id/aliyun_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/aliyun_svideo_icon_cancel" />
+
+            <ImageView
+                android:id="@+id/aliyun_transform"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="?attr/qusnap_crop_icon_transform"
+                android:visibility="?attr/qusnap_crop_icon_transform_visibility" />
+
+            <ImageView
+                android:id="@+id/aliyun_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/aliyun_svideo_icon_confirm" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/aliyun_crop_progress_bg"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="@drawable/aliyun_svideo_shape_oval_gray"
+        android:visibility="gone">
+        <com.aliyun.quview.FanProgressBar
+            android:id="@+id/aliyun_crop_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:circleMaxProgress="100"
+            app:initStyle="empty"
+            app:internalBackgroundColor="@android:color/transparent"
+            app:internalDirection="counterclockwise"
+            app:outBackgroundColor="?attr/qusnap_tint_color"
+            app:outDirection="counterclockwise" />
+    </FrameLayout>
+</RelativeLayout>

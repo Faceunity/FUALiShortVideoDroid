@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="oval">
+    <stroke android:width="6dp" android:color="@color/radio_btn_bg"/>
+    <size android:height="20dp" android:width="20dp"/>
+    <solid android:color="@color/seek_bar_theme"/>
+</shape>

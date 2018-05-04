@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/aliyun_iv_photo"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:scaleType="centerCrop"
+        />
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/aliyun_svideo_icon_import_delete"
+        android:id="@+id/aliyun_iv_delete"
+        android:layout_alignRight="@id/aliyun_iv_photo"
+        android:layout_alignTop="@id/aliyun_iv_photo"
+        android:layout_marginTop="-10dp"
+        android:layout_marginRight="-10dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/aliyun_tv_duration"
+        android:layout_alignRight="@id/aliyun_iv_photo"
+        android:layout_alignBottom="@id/aliyun_iv_photo"
+        android:textSize="10sp"
+        android:textColor="@android:color/white"
+        />
+</RelativeLayout>

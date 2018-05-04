@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <!--<com.duanqu.quview.CircularColorView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:id="@+id/color"/>-->
+
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/iv_color"
+        android:background="@color/aliyun_black"
+        />
+
+    <View
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_gravity="center"
+        android:id="@+id/selected"
+        android:visibility="visible"
+        android:background="@mipmap/aliyun_svideo_color_check"/>
+
+</FrameLayout>

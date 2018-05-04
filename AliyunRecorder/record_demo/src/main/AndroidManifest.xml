@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" package="com.aliyun.demo">
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application>
+        <activity
+            android:name="com.aliyun.demo.recorder.CameraDemo"
+            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.duanqu.qupai.action.camera"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.aliyun.demo.recorder.RecorderSettingTest"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.duanqu.qupai.action.recorder.setting"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.aliyun.demo.recorder.VideoPlayActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.aliyun.demo.recorder.MusicActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.aliyun.demo.recorder.AliyunVideoRecorder"
+            android:theme="@style/AliyunVideoUIStytle"
+            tools:replace="android:theme"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.duanqu.qupai.action.recorder"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <!--<activity-->
+            <!--android:name="com.duanqu.demo.recorder.SettingActivity"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
+            <!--android:screenOrientation="portrait">-->
+           <!---->
+        <!--</activity>-->
+    </application>
+
+</manifest>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/action_bar_bg">
+    <include
+        android:id="@+id/action_bar"
+        layout="@layout/aliyun_svideo_action_bar_profile"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/upload_progress"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:progress="0"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/aliyun_svideo_publish_progress_drawable" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextureView
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:id="@+id/texture"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:id="@+id/progress_text"
+                    android:text="@string/uploading"
+                    android:background="@drawable/aliyun_svideo_shape_border_rect"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"/>
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/action_bar_bg"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:id="@+id/video_desc"/>
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

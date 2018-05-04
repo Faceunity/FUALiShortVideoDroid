@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:background="@color/tab_bg_color"
+              android:paddingBottom="@dimen/bottom_editor_tab_padding"
+              android:paddingTop="@dimen/bottom_editor_tab_padding"
+              android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/tab_effect_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@mipmap/aliyun_svideo_filter"/>
+    <ImageView
+        android:id="@+id/tab_effect_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@mipmap/aliyun_svideo_overlay"/>
+    <ImageView
+        android:id="@+id/tab_effect_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@mipmap/aliyun_svideo_caption"/>
+    <ImageView
+        android:id="@+id/tab_effect_mv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@mipmap/aliyun_svideo_mv"/>
+    <ImageView
+        android:id="@+id/tab_effect_audio_mix"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@mipmap/aliyun_svideo_music"/>
+    <ImageView
+        android:id="@+id/tab_paint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@mipmap/aliyun_svideo_paint"/>
+</LinearLayout>

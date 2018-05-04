@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              >
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:background="@color/aliyun_color_bg"
+            android:layout_height="?android:attr/actionBarSize"
+            android:id="@+id/aliyun_gallery_actionBar">
+
+        <ImageButton
+                android:id="@+id/aliyun_gallery_closeBtn"
+                style="?android:attr/actionButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:contentDescription="@null"
+                android:src="@drawable/aliyun_svideo_icon_back" />
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/aliyun_topPanel"
+                android:orientation="horizontal">
+            <TextView
+                    android:id="@+id/aliyun_gallery_title"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/aliyun_gallery_drawer"
+                    android:src="@drawable/aliyun_svideo_gallery_drowdown_selector"/>
+        </LinearLayout>
+
+        <!--<ImageButton-->
+                <!--android:id="@+id/gallery_nextBtn"-->
+                <!--style="?android:attr/actionButtonStyle"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="11dp"-->
+                <!--android:layout_gravity="right|center_vertical"-->
+                <!--android:contentDescription="@null"-->
+                <!--android:src="?attr/qupaiNextStepTickButton" />-->
+
+
+    </FrameLayout>
+
+
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/aliyun_color_bg"
+            android:id="@+id/aliyun_gallery_container">
+        <!--底部空出tab的高度-->
+        <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/aliyun_gallery_media"/>
+
+    </FrameLayout>
+
+</LinearLayout>

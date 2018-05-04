@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.aliyun.quhelp">
+
+    <application>
+        <activity
+            android:name="com.aliyun.quhelp.AliyunHelperActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.duanqu.qupai.action.help"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.aliyun.quhelp.CopyRightActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+        </activity>
+    </application>
+</manifest>

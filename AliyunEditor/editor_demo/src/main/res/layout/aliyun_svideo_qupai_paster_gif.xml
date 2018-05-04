@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.aliyun.demo.widget.AliyunPasterWithImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+            android:id="@android:id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:contentDescription="@null"
+            android:duplicateParentState="true"
+            android:background="@drawable/aliyun_svideo_theme_default_edit_diy_overlay_content_frame_selector"/>
+
+    <ImageView
+            android:id="@id/qupai_btn_edit_overlay_cancel"
+            android:layout_width="@dimen/qupai_effect_paster_operation_size"
+            android:layout_height="@dimen/qupai_effect_paster_operation_size"
+            android:contentDescription="@null"
+            android:duplicateParentState="true"
+            android:layout_gravity="left|top"
+            android:padding="10dp"
+            android:src="@drawable/aliyun_svideo_theme_default_btn_edit_overlay_cancel_selector"/>
+
+    <ImageView
+            android:id="@id/qupai_btn_edit_overlay_transform"
+            android:layout_width="@dimen/qupai_effect_paster_operation_size"
+            android:layout_height="@dimen/qupai_effect_paster_operation_size"
+            android:contentDescription="@null"
+            android:duplicateParentState="true"
+            android:layout_gravity="right|bottom"
+            android:padding="10dp"
+            android:src="@drawable/aliyun_svideo_theme_default_btn_edit_overlay_transform_selector"/>
+
+    <ImageView
+            android:id="@id/qupai_btn_edit_overlay_mirror"
+            android:layout_width="@dimen/qupai_effect_paster_operation_size"
+            android:layout_height="@dimen/qupai_effect_paster_operation_size"
+            android:contentDescription="@null"
+            android:duplicateParentState="true"
+            android:layout_gravity="left|bottom"
+            android:padding="10dp"
+            android:src="@drawable/aliyun_svideo_theme_default_btn_edit_overlay_mirror_selector"/>
+
+</com.aliyun.demo.widget.AliyunPasterWithImageView>

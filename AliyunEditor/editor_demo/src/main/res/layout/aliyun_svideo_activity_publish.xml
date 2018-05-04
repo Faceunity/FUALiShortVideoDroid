@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_publish"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/action_bar_bg"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/action_bar"
+        layout="@layout/aliyun_svideo_action_bar_profile"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
+    <ProgressBar
+        android:id="@+id/publish_progress"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:progress="0"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:progressDrawable="@drawable/aliyun_svideo_publish_progress_drawable" />
+
+    <com.aliyun.quview.SquareFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/publish_cover_blur"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/aliyun_svideo_backgroud_gaosi"/>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/publish_cover_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/publish_cover_select"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/aliyun_svideo_shape_border_rect"
+                android:gravity="center"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/aliyun_svideo_aliyun_svideo_icon_cover"
+                    android:scaleType="center"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/select_cover"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/compose_progress_view">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/image_compose_indicator"
+                    android:src="@drawable/aliyun_svideo_compose_indiate_selector"
+                    android:layout_marginBottom="5dp"
+                    android:scaleType="center"
+                    android:visibility="gone"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/compose_progress_text"
+                    android:layout_marginBottom="5dp"
+                    android:text="0%"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/compose_status_text"
+                    android:text="@string/composing"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/compose_status_tip"
+                    android:text="@string/not_shutdown_app"
+                    android:textSize="12sp"
+                    android:textColor="@color/compose_tip"/>
+            </LinearLayout>
+            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/compose_completed"
+                android:textSize="8dp"
+                android:text="合成成功"
+                android:visibility="invisible"
+                android:textColor="@android:color/white"/>-->
+        </FrameLayout>
+    </com.aliyun.quview.SquareFrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/publish_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            style="@android:style/Widget.EditText"
+            android:hint="@string/input_video_desc"
+            android:textColorHint="@color/compose_edit_text"
+            android:textColor="@android:color/white"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/countoflimit"
+            android:textSize="12sp"
+            android:textColor="@color/tab_text_color"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>
