@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="filter_order">
+        <item>优雅</item>
+        <item>光圈</item>
+        <item>思念</item>
+        <item>朝阳</item>
+        <item>柔柔</item>
+        <item>模糊</item>
+        <item>波普</item>
+        <item>浓烈</item>
+        <item>海盐</item>
+        <item>海蓝</item>
+        <item>灰白</item>
+        <item>炽黄</item>
+        <item>焦黄</item>
+        <item>粉桃</item>
+        <item>素描</item>
+        <item>红润</item>
+        <item>经典</item>
+        <item>胶片</item>
+        <item>蓝调</item>
+        <item>迷糊</item>
+        <item>闪耀</item>
+        <item>阳光</item>
+        <item>雪梨</item>
+        <item>马赛克</item>
+        <item>鱼眼</item>
+        <item>鲜果</item>
+        <item>麦茶</item>
+        <item>黑白</item>
+    </array>
+</resources>

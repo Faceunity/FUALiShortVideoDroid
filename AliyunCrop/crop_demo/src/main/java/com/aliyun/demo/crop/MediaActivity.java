@@ -9,11 +9,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aliyun.demo.crop.media.GalleryDirChooser;
 import com.aliyun.demo.crop.media.GalleryMediaChooser;
@@ -22,12 +25,12 @@ import com.aliyun.demo.crop.media.MediaInfo;
 import com.aliyun.demo.crop.media.MediaStorage;
 import com.aliyun.demo.crop.media.ThumbnailGenerator;
 import com.aliyun.jasonparse.JSONSupportImpl;
-import com.aliyun.struct.common.CropKey;
-import com.aliyun.struct.common.ScaleMode;
-import com.aliyun.struct.common.VideoQuality;
-import com.aliyun.struct.recorder.CameraType;
-import com.aliyun.struct.recorder.FlashType;
-import com.aliyun.struct.snap.AliyunSnapVideoParam;
+import com.aliyun.svideo.sdk.external.struct.common.CropKey;
+import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
+import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
+import com.aliyun.svideo.sdk.external.struct.recorder.CameraType;
+import com.aliyun.svideo.sdk.external.struct.recorder.FlashType;
+import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
 
 
 public class MediaActivity extends Activity implements View.OnClickListener{
@@ -36,11 +39,12 @@ public class MediaActivity extends Activity implements View.OnClickListener{
     private ThumbnailGenerator thumbnailGenerator;
     private GalleryMediaChooser galleryMediaChooser;
     private RecyclerView galleryView;
+    private EditText mEtVideoPath;
     private ImageButton back;
     private TextView title;
     private int resolutionMode;
     private int ratioMode;
-    private ScaleMode cropMode = ScaleMode.LB;
+    private VideoDisplayMode cropMode = VideoDisplayMode.FILL;
     private int frameRate;
     private int gop;
     private int mBitrate;
@@ -81,7 +85,7 @@ public class MediaActivity extends Activity implements View.OnClickListener{
 
     private void getData(){
         resolutionMode = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_RESOLUTION, CropKey.RESOLUTION_540P);
-        cropMode = (ScaleMode) getIntent().getSerializableExtra(AliyunSnapVideoParam.CROP_MODE);
+        cropMode = (VideoDisplayMode) getIntent().getSerializableExtra(AliyunSnapVideoParam.CROP_MODE);
         frameRate = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE,25);
         gop = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_GOP,125);
         mBitrate = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_BITRATE, 0);
@@ -114,6 +118,7 @@ public class MediaActivity extends Activity implements View.OnClickListener{
         title = (TextView) findViewById(R.id.aliyun_gallery_title);
         title.setText(R.string.aliyun_gallery_all_media);
         back = (ImageButton) findViewById(R.id.aliyun_gallery_closeBtn);
+        mEtVideoPath = (EditText) findViewById(R.id.et_video_path);
         back.setOnClickListener(this);
         storage = new MediaStorage(this, new JSONSupportImpl());
         thumbnailGenerator = new ThumbnailGenerator(this);
@@ -167,9 +172,22 @@ public class MediaActivity extends Activity implements View.OnClickListener{
                     intent.putExtra("need_gallery",false);
                     startActivityForResult(intent,RECORD_CODE);
                 }else{
+                    String mediaPath = null;
+                    if(mEtVideoPath.getVisibility() == View.VISIBLE) {//for test
+                        mediaPath = mEtVideoPath.getText().toString();
+                        if(TextUtils.isEmpty(mediaPath)) {
+                            mediaPath = info.filePath;
+                        }
+                    }else {
+                        mediaPath = info.filePath;
+                    }
+                    if (info.filePath.endsWith("gif")||info.filePath.endsWith("gif")){
+                        Toast.makeText(MediaActivity.this, R.string.alivc_tip_crop_gif, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if(info.mimeType.startsWith("image")) {
-                        Intent intent = new Intent(MediaActivity.this, AliyunImageCrop.class);
-                        intent.putExtra(CropKey.VIDEO_PATH, info.filePath);
+                        Intent intent = new Intent(MediaActivity.this, AliyunImageCropActivity.class);
+                        intent.putExtra(CropKey.VIDEO_PATH, mediaPath);
                         intent.putExtra(AliyunSnapVideoParam.VIDEO_RESOLUTION, resolutionMode);
                         intent.putExtra(AliyunSnapVideoParam.CROP_MODE, cropMode);
                         intent.putExtra(AliyunSnapVideoParam.VIDEO_QUALITY, quality);
@@ -180,8 +198,8 @@ public class MediaActivity extends Activity implements View.OnClickListener{
                         intent.putExtra(AliyunSnapVideoParam.MIN_CROP_DURATION, minCropDuration);
                         startActivityForResult(intent, CROP_CODE);
                     }else {
-                        Intent intent = new Intent(MediaActivity.this, AliyunVideoCrop.class);
-                        intent.putExtra(CropKey.VIDEO_PATH, info.filePath);
+                        Intent intent = new Intent(MediaActivity.this, AliyunVideoCropActivity.class);
+                        intent.putExtra(CropKey.VIDEO_PATH, mediaPath);
                         intent.putExtra(AliyunSnapVideoParam.VIDEO_RESOLUTION, resolutionMode);
                         intent.putExtra(AliyunSnapVideoParam.CROP_MODE, cropMode);
                         intent.putExtra(AliyunSnapVideoParam.VIDEO_QUALITY, quality);

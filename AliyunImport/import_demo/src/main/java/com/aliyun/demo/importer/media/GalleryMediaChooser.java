@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.aliyun.svideo.base.MediaInfo;
+
 import java.util.List;
 
 /**
@@ -51,12 +53,14 @@ public class GalleryMediaChooser {
 
         adapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
             @Override
-            public boolean onItemClick(GalleryAdapter adapter, int adapter_position) {
-                MediaInfo info = adapter.getItem(adapter_position);
-                if (info == null) {
-//                    mStorage.onDraftItemClicked();
-                } else {
-                    mStorage.setCurrentDisplayMediaData(info);
+            public boolean onItemClick(GalleryAdapter adapter, int adapterPosition) {
+                if (adapter.getItemCount() > adapterPosition) {
+                    MediaInfo info = adapter.getItem(adapterPosition);
+                    if (info == null) {
+                        //                    mStorage.onDraftItemClicked();
+                    } else {
+                        mStorage.setCurrentDisplayMediaData(info);
+                    }
                 }
 
                 return true;

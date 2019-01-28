@@ -4,6 +4,7 @@
 
 package com.aliyun.demo.effectmanager;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,10 +12,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.aliyun.demo.constants.LocalResource;
 import com.aliyun.demo.editor.R;
 import com.aliyun.downloader.FileDownloaderModel;
 
@@ -44,7 +47,7 @@ public class EffectManagerFragment extends Fragment implements StateController.S
         View view = inflater.inflate(R.layout.aliyun_svideo_activity_effect_fragment, null);
         mRv = (RecyclerView) view.findViewById(R.id.rv_view);
         mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new RecycleViewAdapter(mList);
+        mAdapter = new RecycleViewAdapter(getContext(), mList);
         mAdapter.setStateChangeListener(this);
         mRv.setAdapter(mAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
@@ -83,13 +86,23 @@ public class EffectManagerFragment extends Fragment implements StateController.S
         return view;
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public void onStart() {
         super.onStart();
         mLoadTask = new AsyncTask<Integer, Void, List<FileDownloaderModel>>() {
             @Override
             protected List<FileDownloaderModel> doInBackground(Integer... params) {
-                return mPasterLoader.loadLocalEffect(params[0]);
+                List<FileDownloaderModel> fileDownloaderModels = mPasterLoader.loadLocalEffect(params[0]);
+                List<FileDownloaderModel> temp = new ArrayList<>();
+                for (FileDownloaderModel model : fileDownloaderModels) {
+                    int id = model.getId();
+                    if (id != LocalResource.LOCAL_MV_ID && id != LocalResource.LOCAL_CAPTION_ID && id != LocalResource.LOCAL_PASTER_ID) {
+                        temp.add(model);
+                    }
+                }
+
+                return temp;
             }
 
             @Override
@@ -97,6 +110,7 @@ public class EffectManagerFragment extends Fragment implements StateController.S
                 super.onPostExecute(fileDownloaderModels);
                 if(fileDownloaderModels != null) {
                     mList.clear();
+
                     mList.addAll(fileDownloaderModels);
                     mAdapter.notifyDataSetChanged();
                 }

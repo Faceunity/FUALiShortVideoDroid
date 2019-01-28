@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion externalCompileSdkVersion
+    buildToolsVersion externalBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion externalMinSdkVersion
+        targetSdkVersion externalTargetSdkVersion
+        consumerProguardFiles 'lib-proguard-rules.pro'
+
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    api externalAndroidAppCompatV7
+    api externalAndroidRecyclerView
+    api project(':AliyunVideoSdk')
+    api project(':AlivcCore')
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="alivc_record_line_style" parent="@android:style/Widget.EditText">
+
+        <item name="android:maxLines">2</item>
+        <item name="android:minHeight">20dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/darker_gray</item>
+        <item name="android:background">@drawable/alivc_record_round_bkg</item>
+        <item name="android:textSize">@dimen/font_size_28px</item>
+    </style>
+    <style name="alivc_record_btn_style" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/alivc_record_btn_bg</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:textSize">@dimen/font_size_28px</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_height">36dp</item>
+    </style>
+</resources>

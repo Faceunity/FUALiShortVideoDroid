@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion externalCompileSdkVersion
+    buildToolsVersion externalBuildToolsVersion
+    defaultConfig {
+        minSdkVersion externalMinSdkVersion
+        targetSdkVersion externalTargetSdkVersion
+    }
+
+}
+
+dependencies {
+    implementation project(':AliyunFileDownLoader:downloadermanager')
+    implementation project(':AliyunSVideoBase')
+}

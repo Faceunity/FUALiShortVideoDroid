@@ -14,8 +14,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.aliyun.demo.crop.R;
-import com.aliyun.quview.SquareFrameLayout;
-import com.aliyun.quview.VideoSliceSeekBar;
+import com.aliyun.svideo.base.widget.SquareFrameLayout;
+import com.aliyun.svideo.base.widget.VideoSliceSeekBar;
 
 import java.util.concurrent.TimeUnit;
 
@@ -134,10 +134,10 @@ public class VideoTrimAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
             holder.task.cancel(false);
             holder.thumbImage.setImageBitmap(null);
-            if (holder.mBitmap != null) {
-                holder.mBitmap.release();
-                holder.mBitmap = null;
-            }
+            //if (holder.mBitmap != null) {
+            //    holder.mBitmap.release();
+            //    holder.mBitmap = null;
+            //}
         }
 
 //        float perWidth = screenWidth / mDurationLimit;
@@ -162,13 +162,13 @@ public class VideoTrimAdapter extends BaseAdapter {
     class ViewHolder implements FrameExtractor10.Callback {
         public SquareFrameLayout thumblayout;
         public ImageView thumbImage;
-        public ShareableBitmap mBitmap;
+        //public ShareableBitmap mBitmap;
         public AsyncTask<?, ?, ?> task;
 
         @Override
         public void onFrameExtracted(ShareableBitmap bitmap, long timestamp_nano) {
             if (bitmap != null) {
-                mBitmap = bitmap;
+                //mBitmap = bitmap;
                 thumbImage.setImageBitmap(bitmap.getData());
             }
 

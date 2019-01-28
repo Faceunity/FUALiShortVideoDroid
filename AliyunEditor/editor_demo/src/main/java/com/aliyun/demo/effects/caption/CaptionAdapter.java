@@ -10,13 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.aliyun.common.logger.Logger;
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.effects.control.EffectInfo;
@@ -29,15 +23,19 @@ import com.aliyun.downloader.FileDownloaderModel;
 import com.aliyun.jasonparse.JSONSupportImpl;
 import com.aliyun.qupaiokhttp.HttpRequest;
 import com.aliyun.qupaiokhttp.StringHttpRequestCallback;
-import com.aliyun.quview.CircularImageView;
-import com.aliyun.struct.form.FontForm;
-import com.aliyun.struct.form.PasterForm;
-import com.aliyun.struct.form.ResourceForm;
+import com.aliyun.svideo.base.widget.CircularImageView;
+import com.aliyun.svideo.sdk.external.struct.form.FontForm;
+import com.aliyun.svideo.sdk.external.struct.form.PasterForm;
+import com.aliyun.svideo.sdk.external.struct.form.ResourceForm;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ViewTarget;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 
 public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
 
@@ -49,6 +47,8 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ArrayList<Integer> ids = new ArrayList<>();
     private CopyOnWriteArrayList<FontForm> fontData = new CopyOnWriteArrayList<>();
     private ResourceForm mResourceForm;
+    private boolean mIsShowFont;
+    public static final String SYSTEM_FONT = "system_font";
 
     public CaptionAdapter(Context context) {
         this.mContext = context;
@@ -58,17 +58,13 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (data == null || data.getPasterList() == null) {
             return;
         }
+        mIsShowFont = false;
         mResourceForm = data;
         this.data = (ArrayList<PasterForm>) data.getPasterList();
-        fontData.clear();
-        getFontFromLocal();
-        for (PasterForm form : this.data) {
-            getFont(form.getFontId());
-        }
         notifyDataSetChanged();
     }
 
-    public void clearData(){
+    public void clearData() {
         data.clear();
         fontData.clear();
         notifyDataSetChanged();
@@ -76,18 +72,18 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.aliyun_svideo_resources_item_view, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.aliyun_svideo_paster_item_view, parent, false);
         CaptionViewHolder filterViewHolder = new CaptionViewHolder(view);
-        filterViewHolder.frameLayout = (FrameLayout) view.findViewById(R.id.resource_image);
+        filterViewHolder.frameLayout = view.findViewById(R.id.resource_image);
         return filterViewHolder;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position < data.size()) {
-            return CAPTION_TYPE;
-        } else {
+        if (mIsShowFont) {
             return FONT_TYPE;
+        } else {
+            return CAPTION_TYPE;
         }
     }
 
@@ -98,34 +94,50 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (getItemViewType(position) == CAPTION_TYPE) {
             iconPath = data.get(position).getIcon();
         } else if (getItemViewType(position) == FONT_TYPE) {
-            iconPath = fontData.get(position - data.size()).getIcon();
+            iconPath = fontData.get(position).getIcon();
         }
-        Glide.with(mContext).load(iconPath).into(new ViewTarget<CircularImageView, GlideDrawable>(captionViewHolder.mImage) {
-            @Override
-            public void onResourceReady(GlideDrawable glideDrawable, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                captionViewHolder.mImage.setImageBitmap(((GlideBitmapDrawable) glideDrawable).getBitmap());
-            }
-        });
+
+        if (SYSTEM_FONT.equals(iconPath)) {
+            //系统字体
+            captionViewHolder.mImage.setImageResource(R.mipmap.aliyun_svideo_system_font_icon);
+        } else {
+
+            Glide.with(mContext).load(iconPath).into(
+                new ViewTarget<CircularImageView, GlideDrawable>(captionViewHolder.mImage) {
+                    @Override
+                    public void onResourceReady(GlideDrawable glideDrawable,
+                                                GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        captionViewHolder.mImage.setImageBitmap(((GlideBitmapDrawable) glideDrawable).getBitmap());
+                    }
+                });
+        }
         captionViewHolder.itemView.setTag(holder);
         captionViewHolder.itemView.setOnClickListener(this);
     }
 
     @Override
     public int getItemCount() {
-        return data.size() + fontData.size();
+        return mIsShowFont ? fontData.size() : data.size();
+    }
+
+    public void showFontData() {
+        mIsShowFont = true;
+        fontData.clear();
+        getFontFromLocal();
+        for (PasterForm form : this.data) {
+            getFont(form.getFontId());
+        }
+        notifyDataSetChanged();
     }
 
     private static class CaptionViewHolder extends RecyclerView.ViewHolder {
 
         FrameLayout frameLayout;
         CircularImageView mImage;
-        TextView mName;
 
         public CaptionViewHolder(View itemView) {
             super(itemView);
-            mImage = (CircularImageView) itemView.findViewById(R.id.resource_image_view);
-            mName = (TextView) itemView.findViewById(R.id.resource_name);
-            mName.setVisibility(View.GONE);
+            mImage = itemView.findViewById(R.id.resource_image_view);
         }
     }
 
@@ -170,9 +182,11 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         });
     }
-    private void getFontFromLocal(){
-        List<FileDownloaderModel> fileDownloaderModels = DownloaderManager.getInstance().getDbController().getResourceByType(FONT_TYPE);
-        for(FileDownloaderModel model : fileDownloaderModels){
+
+    private void getFontFromLocal() {
+        List<FileDownloaderModel> fileDownloaderModels = DownloaderManager.getInstance().getDbController()
+            .getResourceByType(FONT_TYPE);
+        for (FileDownloaderModel model : fileDownloaderModels) {
             FontForm fontForm = new FontForm();
             fontForm.setLevel(model.getLevel());
             fontForm.setIcon(model.getIcon());
@@ -186,84 +200,46 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             fontData.add(fontForm);
             ids.add(fontForm.getId());
         }
+        //添加系统字体
+        FontForm fontForm = new FontForm();
+        fontForm.setIcon(SYSTEM_FONT);
+        fontData.add(0, fontForm);
     }
+
     private void getFont(int fontId) {
         String api = Common.BASE_URL + "/api/res/get/1/" + fontId;
         String category = "?packageName=" + mContext.getApplicationInfo().packageName;
         Logger.getDefaultLogger().d("pasterUrl url = " + api + category);
-        HttpRequest.get(api + category,
-                new StringHttpRequestCallback() {
-                    @Override
-                    protected void onSuccess(String s) {
-                        super.onSuccess(s);
-                        JSONSupportImpl jsonSupport = new JSONSupportImpl();
-                        FontForm fontForm = null;
-                        try {
-                            fontForm = jsonSupport.readValue(s, FontForm.class);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+        HttpRequest.get(api + category, new StringHttpRequestCallback() {
+            @Override
+            protected void onSuccess(String s) {
+                super.onSuccess(s);
+                JSONSupportImpl jsonSupport = new JSONSupportImpl();
+                FontForm fontForm = null;
+                try {
+                    fontForm = jsonSupport.readValue(s, FontForm.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
 
-                        }
-                        if (fontForm != null) {
-                            if(!ids.contains(fontForm.getId())){
-                                fontData.add(fontForm);
-                                ids.add(fontForm.getId());
-                            }
-                            notifyDataSetChanged();
-                        }
+                }
+                if (fontForm != null) {
+                    if (!ids.contains(fontForm.getId())) {
+                        fontData.add(fontForm);
+                        ids.add(fontForm.getId());
                     }
+                    notifyDataSetChanged();
+                }
+            }
 
-                    @Override
-                    public void onFailure(int errorCode, String msg) {
-                        super.onFailure(errorCode, msg);
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
 
-                    }
-                });
+            }
+        });
     }
 
-//    private void getFont(int fontId, final String pasterPath, final int index) {
-//        String api = EditorActivity.RESOURCE_URL + "/api/res/get/1/" + fontId;
-//        String category = "?bundleId=" + mContext.getApplicationInfo().packageName;
-//        Logger.getDefaultLogger().d("pasterUrl url = " + api + category);
-//        HttpRequest.get(api + category,
-//                new StringHttpRequestCallback() {
-//                    @Override
-//                    protected void onSuccess(String s) {
-//                        super.onSuccess(s);
-//                        JSONSupportImpl jsonSupport = new JSONSupportImpl();
-//                        FontForm fontForm = null;
-//                        try {
-//                            fontForm = jsonSupport.readValue(s, FontForm.class);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//
-//                        }
-//                        if (fontForm != null) {
-//                            if (mItemClick != null) {
-//                                EffectInfo effectInfo = new EffectInfo();
-//                                effectInfo.type = UIEditorPage.CAPTION;
-//                                effectInfo.setPath(pasterPath);
-//                                effectInfo.fontPath = fontForm.getUrl();
-//                                mItemClick.onItemClick(effectInfo, index);
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(int errorCode, String msg) {
-//                        super.onFailure(errorCode, msg);
-//                        if (mItemClick != null) {
-//                            EffectInfo effectInfo = new EffectInfo();
-//                            effectInfo.type = UIEditorPage.CAPTION;
-//                            effectInfo.setPath(pasterPath);
-//                            effectInfo.fontPath = null;
-//                            mItemClick.onItemClick(effectInfo, index);
-//                        }
-//                    }
-//                });
-//    }
-
-    private void downloadFont(FontForm form,final int index){
+    private void downloadFont(FontForm form, final int index) {
         FileDownloaderModel model = new FileDownloaderModel();
         model.setEffectType(FONT_TYPE);
         model.setName(form.getName());
@@ -276,36 +252,38 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         model.setIcon(form.getIcon());
         model.setIsunzip(1);
         FileDownloaderModel fileMode = DownloaderManager.getInstance().addTask(model, model.getUrl());
-        DownloaderManager.getInstance().startTask(fileMode.getTaskId(),new FileDownloaderCallback(){
+        DownloaderManager.getInstance().startTask(fileMode.getTaskId(), new FileDownloaderCallback() {
             @Override
             public void onProgress(int downloadId, long soFarBytes, long totalBytes, long speed, final int progress) {
-                Logger.getDefaultLogger().d("downloadId..." + downloadId +"  progress..." + progress);
+                Logger.getDefaultLogger().d("downloadId..." + downloadId + "  progress..." + progress);
 
             }
 
             @Override
             public void onFinish(int downloadId, String path) {
-                Logger.getDefaultLogger().d("downloadId..." + downloadId +"  path..." + path);
-                if(mItemClick != null){
+                Logger.getDefaultLogger().d("downloadId..." + downloadId + "  path..." + path);
+                if (mItemClick != null) {
                     EffectInfo effectInfo = new EffectInfo();
                     effectInfo.type = UIEditorPage.FONT;
                     effectInfo.setPath(null);
                     effectInfo.fontPath = path;
-                    mItemClick.onItemClick(effectInfo,index);
+                    mItemClick.onItemClick(effectInfo, index);
                 }
             }
         });
     }
-    private FontForm getFontByPaster(PasterForm form){
+
+    private FontForm getFontByPaster(PasterForm form) {
         FontForm fontForm = null;
-        for(FontForm form1 : fontData){
-            if(form1.getId() ==  form.getFontId()){
+        for (FontForm form1 : fontData) {
+            if (form1.getId() == form.getFontId()) {
                 fontForm = form1;
                 break;
             }
         }
         return fontForm;
     }
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         mItemClick = listener;
     }
@@ -318,43 +296,50 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (type == CAPTION_TYPE) {
             PasterForm form = data.get(position);
             String path = DownloaderManager.getInstance().getDbController().getPathByUrl(form.getDownloadUrl());
-            if(path != null && !path.isEmpty()){
+            if (path != null && !path.isEmpty()) {
                 if (mItemClick != null) {
                     EffectInfo effectInfo = new EffectInfo();
                     effectInfo.type = UIEditorPage.CAPTION;
                     effectInfo.setPath(path);
                     FontForm fontForm = getFontByPaster(form);
-                    if(fontForm == null){
+                    if (fontForm == null) {
                         effectInfo.fontPath = null;
-                    }else{
+                    } else {
                         effectInfo.fontPath = fontForm.getUrl();
                     }
                     mItemClick.onItemClick(effectInfo, position);
                 }
-            }else{
+            } else {
                 downloadPaster(form, position);
             }
-        }else if(type == FONT_TYPE){
-            FontForm form = fontData.get(position - data.size());
-            String path = DownloaderManager.getInstance().getDbController().getPathByUrl(form.getUrl());
-            if(path != null && !path.isEmpty()){
+        } else if (type == FONT_TYPE) {
+
+            FontForm form = fontData.get(position);
+            if (SYSTEM_FONT.equals(form.getIcon())) {
+                //系统字体
                 if (mItemClick != null) {
                     EffectInfo effectInfo = new EffectInfo();
                     effectInfo.type = UIEditorPage.FONT;
                     effectInfo.setPath(null);
-                    effectInfo.fontPath = path;
+                    effectInfo.fontPath = SYSTEM_FONT;
                     mItemClick.onItemClick(effectInfo, position);
                 }
-            }else{
-                downloadFont(form,position);
+            } else {
+
+                String path = DownloaderManager.getInstance().getDbController().getPathByUrl(form.getUrl());
+                if (path != null && !path.isEmpty()) {
+                    if (mItemClick != null) {
+                        EffectInfo effectInfo = new EffectInfo();
+                        effectInfo.type = UIEditorPage.FONT;
+                        effectInfo.setPath(null);
+                        effectInfo.fontPath = path;
+                        mItemClick.onItemClick(effectInfo, position);
+                    }
+                } else {
+                    downloadFont(form, position);
+                }
             }
         }
 
-//        if(mItemClick != null) {
-//            CaptionViewHolder viewHolder = (CaptionViewHolder) view.getTag();
-//            EffectInfo effectInfo = new EffectInfo();
-//            effectInfo.isCategory = true;
-//            mItemClick.onItemClick(effectInfo, viewHolder.getAdapterPosition());
-//        }
     }
 }

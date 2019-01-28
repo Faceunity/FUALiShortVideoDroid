@@ -14,10 +14,11 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.aliyun.svideo.base.MediaInfo;
 import com.aliyun.common.utils.FileUtils;
 import com.aliyun.common.utils.ToastUtil;
+import com.aliyun.demo.importer.R;
 import com.aliyun.jasonparse.JSONSupport;
 
 import java.io.File;
@@ -27,8 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import com.aliyun.demo.importer.R;
 
 /**
  * Created by Administrator on 2016/5/18.
@@ -369,12 +368,13 @@ public class MediaStorage {
                             MediaStore.Video.Media.MIME_TYPE,
                             MediaStore.Video.Media.DURATION,
                             MediaStore.Video.Media.DATE_ADDED,
-                    }, String.format("%1$s IN (?, ?, ?) AND %2$s > %3$d",
+                    }, String.format("%1$s IN (?, ?, ? ,?) AND %2$s > %3$d",
                             MediaStore.Video.Media.MIME_TYPE,
                             MediaStore.Video.Media.DURATION,mMinDuration), new String[]{
                             "video/mp4",
                             "video/ext-mp4", /* MEIZU 5.0 */
                             "video/3gpp",
+                            "video/mov"
                     }, MediaStore.Video.Media.DATE_ADDED + " DESC");
                 }
                 Cursor imageCursor = null;
@@ -385,37 +385,39 @@ public class MediaStorage {
                             MediaStore.Images.Media.TITLE,
                             MediaStore.Images.Media.MIME_TYPE,
                             MediaStore.Images.Media.DATE_ADDED,
-                    }, String.format("%1$s != ?", MediaStore.Images.Media.MIME_TYPE), new String[]{
-                            "image/gif"
-                    }, MediaStore.Images.Media.DATE_ADDED + " DESC");
+                    }, null,
+                        null,
+                        MediaStore.Images.Media.DATE_ADDED + " DESC");
                 }
                 int totalCount = (videoCursor == null ? 0 : videoCursor.getCount()) + (imageCursor == null ? 0 : imageCursor.getCount());
-                int col_duration_video = 0;
-                int col_mine_type_video = 0;
-                int col_data_video = 0;
-                int col_title_video = 0;
-                int col_id_video = 0;
-                int col_date_added_video = 0;
-                int col_mine_type_image = 0;
-                int col_data_image = 0;
-                int col_title_image = 0;
-                int col_id_image = 0;
-                int col_date_added_image = 0;
+
+                int colDurationVideo = 0;
+                int colMineTypeVideo = 0;
+                int colDataVideo = 0;
+                int colTitleVideo = 0;
+                int colIdVideo = 0;
+                int colDateAddedVideo = 0;
+                int colMineTypeImage = 0;
+                int colDataImage = 0;
+                int colTitleImage = 0;
+                int colIdImage = 0;
+                int colDateAddedImage = 0;
                 if (videoCursor != null) {
-                    col_duration_video = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-                    col_mine_type_video = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE);
-                    col_data_video = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-                    col_title_video = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
-                    col_id_video = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-                    col_date_added_video = videoCursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED);
+                    colDurationVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+                    colMineTypeVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE);
+                    colDataVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                    colTitleVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
+                    colIdVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
+                    colDateAddedVideo = videoCursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED);
                 }
                 if (imageCursor != null) {
-                    col_mine_type_image = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
-                    col_data_image = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    col_title_image = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
-                    col_id_image = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                    col_date_added_image = imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
+                    colMineTypeImage = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
+                    colDataImage = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    colTitleImage = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
+                    colIdImage = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+                    colDateAddedImage = imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
                 }
+
                 boolean videoMoveToNext = true;
                 boolean imageMoveToNext = true;
                 MediaInfo videoInfo = null;
@@ -428,12 +430,12 @@ public class MediaStorage {
                     }
                     if (videoCursor != null) {
                         while (videoInfo == null && videoMoveToNext && videoCursor.moveToNext()) {
-                            videoInfo = generateVideoInfo(videoCursor, col_data_video, col_duration_video, col_mine_type_video, col_title_video, col_id_video, col_date_added_video, _Resolver);
+                            videoInfo = generateVideoInfo(videoCursor, colDataVideo, colDurationVideo, colMineTypeVideo, colTitleVideo, colIdVideo, colDateAddedVideo, _Resolver);
                         }
                     }
                     if (imageCursor != null) {
                         while (imageInfo == null && imageMoveToNext && imageCursor.moveToNext()) {
-                            imageInfo = generateImageInfo(imageCursor, col_mine_type_image, col_data_image, col_title_image, col_id_image, col_date_added_image, _Resolver);
+                            imageInfo = generateImageInfo(imageCursor, colMineTypeImage, colDataImage, colTitleImage, colIdImage, colDateAddedImage, _Resolver);
                         }
                     }
                     if (videoInfo == null && imageInfo != null) {
@@ -466,7 +468,7 @@ public class MediaStorage {
                         cachedList = new ArrayList<>();
                         notifySize += NOTIFY_SIZE_OFFSET;
                     }
-                    Log.d("sort_merge", "current index..." + i);
+//                    Log.d("sort_merge", "current index..." + i);
                 }
                 publishProgress(cachedList);
                 if (videoCursor != null) {
@@ -494,27 +496,27 @@ public class MediaStorage {
         return null;
     }
 
-    private MediaInfo generateVideoInfo(Cursor cursor, int col_data, int col_duration, int col_mine_type, int col_title, int col_id, int col_date_added, ContentResolver _Resolver) {
+    private MediaInfo generateVideoInfo(Cursor cursor, int colData, int colDuration, int colMineType, int colTitle, int colId, int colDateAdded, ContentResolver resolver) {
 
-        String filePath = cursor.getString(col_data);
+        String filePath = cursor.getString(colData);
         if (!new File(filePath).exists()) {
             return null;
         }
         MediaInfo videoInfo = new MediaInfo();
         videoInfo.type = TYPE_VIDEO;
 
-        int duration = cursor.getInt(col_duration);
-        String mimeType = cursor.getString(col_mine_type);
-        String title = cursor.getString(col_title);
+        int duration = cursor.getInt(colDuration);
+        String mimeType = cursor.getString(colMineType);
+        String title = cursor.getString(colTitle);
         videoInfo.filePath = filePath;
         videoInfo.mimeType = mimeType;
         videoInfo.duration = duration;
         videoInfo.title = title;
 
-        videoInfo.id = cursor.getInt(col_id);
+        videoInfo.id = cursor.getInt(colId);
 
-        videoInfo.addTime = cursor.getLong(col_date_added);
-        Cursor thumbCursor = _Resolver.query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
+        videoInfo.addTime = cursor.getLong(colDateAdded);
+        Cursor thumbCursor = resolver.query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
                 new String[]{
                         MediaStore.Video.Thumbnails.DATA,
                         MediaStore.Video.Thumbnails.VIDEO_ID
@@ -531,24 +533,24 @@ public class MediaStorage {
         return videoInfo;
     }
 
-    private MediaInfo generateImageInfo(Cursor cursor, int col_mine_type, int col_data, int col_title, int col_id, int col_date_added, ContentResolver _Resolver) {
+    private MediaInfo generateImageInfo(Cursor cursor, int colMineType, int colData, int colTitle, int colId, int colDateAdded, ContentResolver resolver) {
 
-        String mimeType = cursor.getString(col_mine_type);
-        String filePath = cursor.getString(col_data);
+        String mimeType = cursor.getString(colMineType);
+        String filePath = cursor.getString(colData);
         if (!new File(filePath).exists()) {
             return null;
         }
         MediaInfo mediaInfo = new MediaInfo();
         mediaInfo.type = TYPE_PHOTO;
-        String title = cursor.getString(col_title);
+        String title = cursor.getString(colTitle);
         mediaInfo.filePath = filePath;
         mediaInfo.mimeType = mimeType;
         mediaInfo.title = title;
 
-        mediaInfo.id = cursor.getInt(col_id);
+        mediaInfo.id = cursor.getInt(colId);
 
-        mediaInfo.addTime = cursor.getLong(col_date_added);
-        Cursor thumbCursor = _Resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+        mediaInfo.addTime = cursor.getLong(colDateAdded);
+        Cursor thumbCursor = resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
                 new String[]{
                         MediaStore.Images.Thumbnails.DATA,
                         MediaStore.Images.Thumbnails.IMAGE_ID
@@ -557,7 +559,7 @@ public class MediaStorage {
                 new String[]{String.valueOf(mediaInfo.id)}, null);
         if (thumbCursor.getCount() == 0) {
             thumbCursor.close();
-            thumbCursor = createThumbnailAndRequery(mediaInfo, _Resolver);
+            thumbCursor = createThumbnailAndRequery(mediaInfo, resolver);
         }
         if (thumbCursor.moveToFirst()) {
             String thumbPath = thumbCursor.getString(
@@ -586,13 +588,13 @@ public class MediaStorage {
         }
     }
 
-    private Cursor createThumbnailAndRequery(MediaInfo info, ContentResolver _Resolver) {
+    private Cursor createThumbnailAndRequery(MediaInfo info, ContentResolver resolver) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inDither = false;
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        MediaStore.Images.Thumbnails.getThumbnail(_Resolver,
+        MediaStore.Images.Thumbnails.getThumbnail(resolver,
                 info.id, MediaStore.Images.Thumbnails.MICRO_KIND, options);
-        Cursor thumbCursor = _Resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+        Cursor thumbCursor = resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
                 new String[]{
                         MediaStore.Images.Thumbnails.DATA,
                         MediaStore.Images.Thumbnails.IMAGE_ID

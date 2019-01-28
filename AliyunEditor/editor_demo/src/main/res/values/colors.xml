@@ -2,38 +2,53 @@
 <resources>
 
     <array name="qupai_text_edit_colors">
-        <item>#E72E45</item>
-        <item>#0048D2</item>
-        <item>#000000</item>
-        <item>#53153E</item>
-        <item>#9A816B</item>
-        <item>#FFFF90</item>
-        <item>#E5CDFF</item>
-        <item>#FF6D00</item>
-        <item>#7A1FBA</item>
-        <item>#FA6593</item>
-        <item>#01ADD9</item>
-        <item>#ffffff</item>
-        <item>#C1FF44</item>
-        <item>#EF4B81</item>
-        <item>#019E25</item>
-        <item>#412D14</item>
-        <item>#FFEF02</item>
-        <item>#BC34BA</item>
-        <item>#F9C5C7</item>
-        <item>#38E5BF</item>
-        <item>#C5D2F9</item>
+        <item>#FFF8AA99</item>
+        <item>#FFFFC580</item>
+        <item>#FFFFEA8A</item>
+        <item>#FFBBE5B3</item>
+        <item>#FFB6ECEB</item>
+        <item>#FFB4E0FA</item>
+        <item>#FFB3BCF5</item>
+        <item>#FFE3D0FF</item>
+        <item>#FFF9FAFB</item>
+        <item>#FFF4775C</item>
+        <item>#FFFFA133</item>
+        <item>#FFEDC200</item>
+        <item>#FF50B83C</item>
+        <item>#FF47C1BF</item>
+        <item>#FF007ACE</item>
+        <item>#FF5C6AC4</item>
+        <item>#FF9C6ADE</item>
+        <item>#FF637381</item>
+        <item>#FFF15533</item>
+        <item>#FFFF8A00</item>
+        <item>#FF9C6F19</item>
+        <item>#FF108043</item>
+        <item>#FF00848E</item>
+        <item>#FF084E8A</item>
+        <item>#FF202E78</item>
+        <item>#FF50248F</item>
+        <item>#FF212B36</item>
+        <item>#FFE55130</item>
+        <item>#FFF28300</item>
+        <item>#FF573B00</item>
+        <item>#FF173630</item>
+        <item>#FF003136</item>
+        <item>#FF00152A</item>
+        <item>#FF000639</item>
+        <item>#FF230051</item>
     </array>
 
     <array name="paint_colors">
-        <item>#FFFFFF</item>
-        <item>#000000</item>
-        <item>#01ADD9</item>
-        <item>#53DA3E</item>
-        <item>#FFEF02</item>
-        <item>#FF6D00</item>
-        <item>#E72E45</item>
-        <item>#BC34BA</item>
+        <item>#F9FAFB</item>
+        <item>#F4775C</item>
+        <item>#FFA133</item>
+        <item>#EDC200</item>
+        <item>#50B83C</item>
+        <item>#47C1BF</item>
+        <item>#007ACE</item>
+        <item>#5C6AC4</item>
+        <item>#9C6ADE</item>
     </array>
 
     <color name="action_bar_bg">#232A42</color>
@@ -54,8 +69,9 @@
     <color name="white_transparent_40">#66FFFFFF</color>
     <color name="timeline_bar_active_overlay">#66EF4B81</color>
     <color name="timeline_bar_fix_overlay">#66EF4B81</color>
-    <color name="effect_bg_color">#EF4B81</color>
+    <color name="effect_bg_color">#00C1DE</color>
     <color name="qupai_black_opacity_80pct">#cc000000</color>
+    <color name="effect_font_bottom_tab_indicator">#00C1DE</color>
 
     <color name="white_alpha_0">#ffffff</color>
     <color name="white_alpha_10">#1affffff</color>
@@ -66,12 +82,15 @@
     <color name="white_alpha_60">#99ffffff</color>
     <color name="white_alpha_70">#b3ffffff</color>
     <color name="white_alpha_80">#ccffffff</color>
-
+    <color name="black_alpha_50">#7f000000</color>
     <color name="music_back_color">#1B2033</color>
 
-    <color name="aliyun_animation_filter_color1">#FBDE38</color>
-    <color name="aliyun_animation_filter_color2">#62B6FE</color>
-    <color name="aliyun_animation_filter_color3">#FEA933</color>
-    <color name="aliyun_animation_filter_color4">#F35C4B</color>
-    <color name="aliyun_animation_filter_color5">#798ECD</color>
+    <color name="aliyun_animation_filter_color1">#E6FBDE38</color>
+    <color name="aliyun_animation_filter_color2">#E662B6FE</color>
+    <color name="aliyun_animation_filter_color3">#E6FEA933</color>
+    <color name="aliyun_animation_filter_color4">#E6F35C4B</color>
+    <color name="aliyun_animation_filter_color5">#E6798ECD</color>
+
+    <color name="alivc_chooser_pager_bg">#B3000000</color>
+    <color name="alivc_svideo_text_gray_light">#C3C5C6</color>
 </resources>

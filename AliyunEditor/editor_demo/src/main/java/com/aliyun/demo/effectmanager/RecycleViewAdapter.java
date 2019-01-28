@@ -4,33 +4,38 @@
 
 package com.aliyun.demo.effectmanager;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.aliyun.demo.editor.R;
 import com.aliyun.downloader.DownloaderManager;
 import com.aliyun.downloader.FileDownloaderModel;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 public class RecycleViewAdapter extends StateController.StateAdapter<RecycleViewAdapter.PasterViewHolder> {
 
     private List<FileDownloaderModel> list;
-
-    public RecycleViewAdapter(List<FileDownloaderModel> list) {
+    private Context mContext;
+    public RecycleViewAdapter(Context context, List<FileDownloaderModel> list) {
         this.list = list;
+        this.mContext = context;
     }
 
     class PasterViewHolder extends RecyclerView.ViewHolder {
-        private TextView mTvName, mTvDesc, mTvRightButton;
+        private ProgressBar progressView;
+        private TextView mTvName, mTvDesc;
         private ImageView mIvIcon;
         private FileDownloaderModel mData;
         private int mPosition;
+        private TextView tvDelete;
 
         public void updateData(int position, FileDownloaderModel data) {
             this.mData = data;
@@ -44,18 +49,22 @@ public class RecycleViewAdapter extends StateController.StateAdapter<RecycleView
             super(itemView);
             mTvName = (TextView) itemView.findViewById(R.id.tv_name);
             mTvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
-            mTvRightButton = (TextView) itemView.findViewById(R.id.tv_right_button);
+            progressView = itemView.findViewById(R.id.download_progress);
+            tvDelete = itemView.findViewById(R.id.tv_right_button);
             mIvIcon = (ImageView) itemView.findViewById(R.id.iv_icon);
-            mTvRightButton.setOnClickListener(new View.OnClickListener() {
+            tvDelete.setText(mContext.getResources().getString(R.string.delete_effect_manager));
+            tvDelete.setBackgroundResource(R.drawable.aliyun_svideo_shape_effect_manager_delete_bg);
+            tvDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     FileDownloaderModel model = list.remove(mPosition);
                     notifyDataSetChanged();
-                    //TODO：删除资源
+                    //删除资源
                     DownloaderManager.getInstance().deleteTask(model.getId());
                 }
             });
-            mTvRightButton.setVisibility(View.VISIBLE);
+            progressView.setVisibility(View.GONE);
+            tvDelete.setVisibility(View.VISIBLE);
         }
     }
 

@@ -18,8 +18,8 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.aliyun.demo.R;
-import com.aliyun.quview.CircularImageView;
-import com.aliyun.struct.form.PreviewPasterForm;
+import com.aliyun.svideo.base.widget.CircularImageView;
+import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
 
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class PasterAdapter extends RecyclerView.Adapter<PasterAdapter.AssetInfoV
     private int itemWidth;
     private OnItemClickListener listener;
     public interface OnItemClickListener{
-        void onItemClick(View view,int position);
+        void onItemClick(View view, int position);
     }
     public PasterAdapter(Context context, List<PreviewPasterForm> data, int itemWidth){
         this.context = context;
@@ -39,7 +39,7 @@ public class PasterAdapter extends RecyclerView.Adapter<PasterAdapter.AssetInfoV
         this.itemWidth = itemWidth;
     }
 
-    public void setOnitemClickListener(OnItemClickListener l){
+    public void setOnItemClickListener(OnItemClickListener l){
         this.listener = l;
     }
     @Override

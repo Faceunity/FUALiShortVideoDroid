@@ -4,15 +4,15 @@
 
 package com.aliyun.demo.effects.imv;
 
-import android.os.Bundle;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.effects.control.BaseChooser;
@@ -24,38 +24,37 @@ import com.aliyun.demo.effects.control.UIEditorPage;
 import com.aliyun.demo.http.EffectService;
 import com.aliyun.downloader.DownloaderManager;
 import com.aliyun.downloader.FileDownloaderModel;
-import com.aliyun.struct.form.AspectForm;
-import com.aliyun.struct.form.IMVForm;
+import com.aliyun.svideo.sdk.external.struct.form.AspectForm;
+import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * MV选择 dialog view
+ */
 public class ImvChooserMediator extends BaseChooser implements OnItemClickListener{
     private RecyclerView mListView;
     private ImvAdapter mImvAdapter;
-    private RelativeLayout mDismissRelative;
+    private TextView mTvEffectTitle;
+    List<IMVForm> mImvList ;
+    private int currentId;
 
-    List<IMVForm> mImvList = new ArrayList<>();
-
-    public static ImvChooserMediator newInstance(){
-        ImvChooserMediator dialog = new ImvChooserMediator();
-        Bundle args = new Bundle();
-//        dialog.setArguments(args);
-        return dialog;
+    public ImvChooserMediator(@NonNull Context context) {
+        this(context,null);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        IMVForm imvForm = new IMVForm();
-        mImvList.add(imvForm);
+    public ImvChooserMediator(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs,0);
     }
 
+    public ImvChooserMediator(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         if(mEditorService == null) {
             mEditorService = new EditorService();
         }
@@ -63,22 +62,12 @@ public class ImvChooserMediator extends BaseChooser implements OnItemClickListen
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View mView = LayoutInflater.from(getActivity()).inflate(R.layout.aliyun_svideo_filter_view, container);
-        mListView = (RecyclerView) mView.findViewById(R.id.effect_list_filter);
-        mDismiss = (ImageView) mView.findViewById(R.id.dismiss);
-        mDismiss.setOnClickListener(onClickListener);
-        mDismissRelative = (RelativeLayout) mView.findViewById(R.id.effect_list_dismiss);
-        if(mEditorService != null && mEditorService.isFullScreen()) {
-            mListView.setBackgroundColor(getResources().getColor(R.color.action_bar_bg_50pct));
-            mDismissRelative.setBackgroundColor(getResources().getColor(R.color.tab_bg_color_50pct));
-        }
+    protected void init() {
+        mImvList = new ArrayList<>();
+        IMVForm imvForm = new IMVForm();
+        mImvList.add(imvForm);
+        LayoutInflater.from(getContext()).inflate(R.layout.aliyun_svideo_filter_view, this);
+        mListView =findViewById(R.id.effect_list_filter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mListView.setLayoutManager(layoutManager);
         mImvAdapter = new ImvAdapter(getContext());
@@ -86,8 +75,13 @@ public class ImvChooserMediator extends BaseChooser implements OnItemClickListen
         mImvAdapter.setData(mImvList);
         mListView.setAdapter(mImvAdapter);
         mListView.addItemDecoration(new SpaceItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.list_item_space)));
-        return mView;
+        mTvEffectTitle = findViewById(R.id.effect_title_tv);
+        mTvEffectTitle.setText(R.string.mv_effect_manager);
+        Drawable top = getContext().getResources().getDrawable(R.mipmap.alivc_svideo_icon_tab_mv);
+        top.setBounds(0, 0, top.getMinimumWidth(), top.getMinimumHeight());
+        mTvEffectTitle.setCompoundDrawables(top, null, null,null );
     }
+
 
     @Override
     public boolean onItemClick(EffectInfo effectInfo, int id) {
@@ -95,11 +89,49 @@ public class ImvChooserMediator extends BaseChooser implements OnItemClickListen
             mEditorService.addTabEffect(UIEditorPage.MV, id);
             mEditorService.addTabEffect(UIEditorPage.AUDIO_MIX, 0);
             mOnEffectChangeListener.onEffectChange(effectInfo);
+            mImvAdapter.notifyDataSetChanged();
         }
         return true;
     }
+    private List<IMVForm> fetchTestMv(){
+        ArrayList<IMVForm> resourceForms = new ArrayList<>();
+        File f = new File("/mnt/sdcard/testmv");
+        if(!f.exists() || !f.isDirectory()){
+            return resourceForms;
+        }
+        File[] mvs = f.listFiles();
+        if(mvs == null || mvs.length == 0){
+            return resourceForms;
+        }
+        int id = 12345;
+        for(File mv : mvs){
+            String name = mv.getName();
+            String path = mv.getPath();
+            IMVForm form = new IMVForm();
+            form.setId(id++);
+            form.setIcon(path + "/icon.png");
+            form.setName(name);
 
+            AspectForm aspectForm = new AspectForm();
+            aspectForm.setAspect(3);
+            aspectForm.setPath(path);
+            ArrayList<AspectForm> pasterForms = new ArrayList<>();
+            pasterForms.add(aspectForm);
+            form.setAspectList(pasterForms);
+
+            resourceForms.add(form);
+        }
+        return resourceForms;
+    }
+
+    public void setCurrResourceID(int id) {
+        if (id != -1) {
+            this.mCurrID = id;
+        }
+        initResourceLocalWithSelectId(mCurrID);
+    }
     public void initResourceLocalWithSelectId(int id) {
+
         mImvList.clear();
         IMVForm imvForm = new IMVForm();
         mImvList.add(imvForm);
@@ -153,7 +185,7 @@ public class ImvChooserMediator extends BaseChooser implements OnItemClickListen
         for(IMVForm resourceForm : mImvList){
             index ++;
             if(resourceForm.getId() == id){
-                mImvAdapter.setEffecteffective(index);
+                mImvAdapter.setEffecteffectiveAndNotify(index);
                 break;
             }
         }
@@ -176,5 +208,14 @@ public class ImvChooserMediator extends BaseChooser implements OnItemClickListen
             }
         }
         return index;
+    }
+
+    @Override
+    public boolean isPlayerNeedZoom() {
+        return false;
+    }
+    @Override
+    public boolean isShowSelectedView() {
+        return false;
     }
 }

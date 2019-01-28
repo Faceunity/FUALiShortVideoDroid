@@ -9,32 +9,29 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-public class AliyunPasterWithImageView extends AliyunPasterView {
+public class AliyunPasterWithImageView extends BaseAliyunPasterView {
 
 	public AliyunPasterWithImageView(Context context) {
 		this(context, null);
-		// TODO Auto-generated constructor stub
 	}
 
 	public AliyunPasterWithImageView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
-		// TODO Auto-generated constructor stub
 	}
 
 	public AliyunPasterWithImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 	}
 
-	private int content_width;
-	private int content_height;
+	private int contentWidth;
+	private int contentHeight;
 
-	public void setContentWidth(int content_width) {
-		this.content_width = content_width;
+	public void setContentWidth(int contentWidth) {
+		this.contentWidth = contentWidth;
 	}
 
-	public void setContentHeight(int content_height) {
-		this.content_height = content_height;
+	public void setContentHeight(int contentHeight) {
+		this.contentHeight = contentHeight;
 	}
 
 	@Override
@@ -43,8 +40,8 @@ public class AliyunPasterWithImageView extends AliyunPasterView {
 		int width, height;
 		mMatrixUtil.decomposeTSR(mTransform);
 
-		width = (int) (mMatrixUtil.scaleX * content_width);
-		height = (int) (mMatrixUtil.scaleY * content_height);
+		width = (int) (mMatrixUtil.scaleX * contentWidth);
+		height = (int) (mMatrixUtil.scaleY * contentHeight);
 		Log.d("EDIT", "Measure width : " + width + "scaleX : "
 				+ " screen width : " + getWidth() + " 1/8 width : " + getWidth() / 8);
 		int w = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
@@ -53,31 +50,31 @@ public class AliyunPasterWithImageView extends AliyunPasterView {
 		measureChildren(w, h);
 	}
 
-	private View _ContentView;
+	private View mContentView;
 
 	@Override
 	protected void onFinishInflate() {
 		super.onFinishInflate();
 
-		_ContentView = findViewById(android.R.id.content);
+		mContentView = findViewById(android.R.id.content);
 	}
 
 	@Override
 	public int getContentWidth() {
-		// TODO Auto-generated method stub
-		return content_width;
+		//Auto-generated method stub
+		return contentWidth;
 	}
 
 	@Override
 	public int getContentHeight() {
-		// TODO Auto-generated method stub
-		return content_height;
+		//Auto-generated method stub
+		return contentHeight;
 	}
 
 	@Override
 	public View getContentView() {
-		// TODO Auto-generated method stub
-		return _ContentView;
+		//Auto-generated method stub
+		return mContentView;
 	}
 
 }

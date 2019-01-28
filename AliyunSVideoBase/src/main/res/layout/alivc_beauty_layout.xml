@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/blank_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="bottom"
+        android:background="#00000000">
+
+        <com.aliyun.svideo.base.widget.beauty.BeautyDefaultSettingView
+            android:id="@+id/default_setting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom" />
+    </FrameLayout>
+
+
+        <RadioGroup
+            android:id="@+id/rg_beauty_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="6dp"
+            >
+
+            <RadioButton
+                android:id="@+id/rb_level_advanced"
+                android:text="@string/alivc_beauty_level_advanced"
+                android:layout_marginEnd="30dp"
+                style="@style/BeautyChangeTabStyle"
+                android:layout_marginRight="30dp" />
+
+            <RadioButton
+                android:id="@+id/rb_level_normal"
+                android:text="@string/alivc_beauty_level_normal"
+                android:layout_marginStart="30dp"
+                style="@style/BeautyChangeTabStyle"
+                android:layout_marginLeft="30dp" />
+        </RadioGroup>
+</LinearLayout>

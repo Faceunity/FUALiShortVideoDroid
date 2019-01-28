@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/aliyun_svideo_square_thumbnail_size"
                 android:orientation="horizontal"
     >
 
@@ -17,7 +17,6 @@
         android:id="@+id/middle_view"
         android:layout_width="1px"
         android:layout_height="match_parent"
-        android:layout_toRightOf="@id/tail_view"
         />
     <ImageView
         android:id="@+id/head_view"
@@ -25,7 +24,6 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@mipmap/aliyun_svideo_icon_sweep_right"
-        android:layout_toRightOf="@id/middle_view"
         />
 
 </LinearLayout>

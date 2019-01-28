@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.util.MusicQuery;
-import com.aliyun.quview.MusicHorizontalScrollView;
-import com.aliyun.quview.MusicWaveView;
+import com.aliyun.svideo.base.widget.MusicHorizontalScrollView;
+import com.aliyun.svideo.base.widget.MusicWaveView;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ public class MusicAdapter extends RecyclerView.Adapter implements View.OnClickLi
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MusicViewHolder holder = new MusicViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.aliyun_svideo_layout_music_item, parent, false));
+        MusicViewHolder holder = new MusicViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.alivc_svideo_layout_music_item, parent, false));
         return holder;
     }
 
@@ -41,6 +41,9 @@ public class MusicAdapter extends RecyclerView.Adapter implements View.OnClickLi
         this.data.add(0,mediaEntity);
         mScrollX = new int[this.data.size()];
         mSelectIndex = selectIndex;
+        if (selectIndex ==-1 ||  selectIndex > data.size()){
+            return;
+        }
         mSelectMusicPath = this.data.get(selectIndex).path;
         if(onMusicSeek != null){
             onMusicSeek.onSelectMusic(mSelectMusicPath);
@@ -145,6 +148,9 @@ public class MusicAdapter extends RecyclerView.Adapter implements View.OnClickLi
         if(position == mSelectIndex){
             return;
         }
+        if (position ==-1 ||  position > data.size()){
+            return;
+        }
         mSelectMusicPath = data.get(position).path;
         mSelectIndex = position;
         notifyDataSetChanged();
@@ -177,7 +183,7 @@ public class MusicAdapter extends RecyclerView.Adapter implements View.OnClickLi
             scrollBar = (MusicHorizontalScrollView) itemView.findViewById(R.id.aliyun_scroll_bar);
             musicStartTxt = (TextView) itemView.findViewById(R.id.aliyun_music_start_txt);
             musicEndTxt = (TextView) itemView.findViewById(R.id.aliyun_music_end_txt);
-            musicSelect = (ImageView) itemView.findViewById(R.id.aliyun_music_select);
+            musicSelect = itemView.findViewById(R.id.aliyun_music_select);
             setDurationTxt(this,0,0);
         }
 

@@ -7,12 +7,12 @@
     android:gravity="center"
     android:background="@color/qupai_black_opacity_70pct">
 
-    <com.aliyun.quview.SquareFrameLayout
+    <com.aliyun.svideo.base.widget.SquareFrameLayout
         android:id="@+id/imv_video_view"
         android:layout_width="match_parent"
         android:layout_height="0dp" >
 
-    </com.aliyun.quview.SquareFrameLayout>
+    </com.aliyun.svideo.base.widget.SquareFrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

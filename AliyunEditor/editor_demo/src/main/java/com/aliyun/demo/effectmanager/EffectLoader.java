@@ -11,8 +11,8 @@ import com.aliyun.demo.http.EffectService;
 import com.aliyun.demo.http.HttpCallback;
 import com.aliyun.downloader.DownloaderManager;
 import com.aliyun.downloader.FileDownloaderModel;
-import com.aliyun.struct.form.IMVForm;
-import com.aliyun.struct.form.ResourceForm;
+import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
+import com.aliyun.svideo.sdk.external.struct.form.ResourceForm;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,7 +61,12 @@ public class EffectLoader {
         while (cursor.moveToNext()) {
             FileDownloaderModel paster = new FileDownloaderModel();
             paster.setIcon(cursor.getString(cursor.getColumnIndex(FileDownloaderModel.ICON)));
-            paster.setDescription(cursor.getString(cursor.getColumnIndex(FileDownloaderModel.DESCRIPTION)));
+            String description = cursor.getString(cursor.getColumnIndex(FileDownloaderModel.DESCRIPTION));
+            if ("assets".equals(description)){
+                continue;
+            }else {
+                paster.setDescription(description);
+            }
             paster.setId(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.ID)));
             paster.setIsnew(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.ISNEW)));
             paster.setLevel(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.LEVEL)));
@@ -139,7 +144,12 @@ public class EffectLoader {
         while (cursor.moveToNext()) {
             ResourceForm paster = new ResourceForm();
             paster.setIcon(cursor.getString(cursor.getColumnIndex(FileDownloaderModel.ICON)));
-            paster.setDescription(cursor.getString(cursor.getColumnIndex(FileDownloaderModel.DESCRIPTION)));
+            String description = cursor.getString(cursor.getColumnIndex(FileDownloaderModel.DESCRIPTION));
+            if ("assets".equals(description)){
+                continue;
+            }else {
+                paster.setDescription(description);
+            }
             paster.setId(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.ID)));
             paster.setIsNew(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.ISNEW)));
             paster.setLevel(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.LEVEL)));

@@ -11,12 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aliyun.svideo.base.MediaInfo;
+import com.aliyun.demo.importer.MediaImageLoader;
+import com.aliyun.demo.importer.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.aliyun.demo.importer.MediaImageLoader;
-import com.aliyun.demo.importer.R;
 
 public class SelectedMediaAdapter extends RecyclerView.Adapter<SelectedMediaViewHolder> {
     private List<MediaInfo> mDataList = new ArrayList<>();

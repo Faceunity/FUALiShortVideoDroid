@@ -11,12 +11,17 @@
         android:id="@+id/resource_image"
         android:layout_width="50dp"
         android:layout_height="50dp">
-        <com.aliyun.quview.CircularImageView
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:src="@drawable/alivc_svideo_shape_effect_foreground_selector"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_select_state"/>
+        <com.aliyun.svideo.base.widget.CircularImageView
             android:id="@+id/resource_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="1dp"
-            android:background="@drawable/aliyun_svideo_shape_effect_selector"
             android:scaleType="centerInside" />
     </FrameLayout>
     <TextView

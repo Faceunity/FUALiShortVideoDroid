@@ -2,11 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/alivc_chooser_pager_bg"
     android:orientation="vertical">
+    <TextView
+        android:id="@+id/effect_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/alivc_svideo_effect_title_height"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:drawablePadding="7dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/alivc_line_gray_light"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/effect_list_filter"
         android:layout_width="match_parent"
-        android:background="@color/action_bar_bg"
         android:overScrollMode="never"
         android:layout_height="@dimen/effect_list_view_size"/>
     <RelativeLayout
@@ -19,11 +31,5 @@
         android:gravity="center_vertical"
         android:visibility="gone"
         >
-        <ImageView
-            android:id="@+id/dismiss"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerInParent="true"
-            android:src="@mipmap/aliyun_svideo_dismiss"/>
     </RelativeLayout>
 </LinearLayout>

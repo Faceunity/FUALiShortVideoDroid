@@ -11,9 +11,10 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class FileDownloaderModel implements Serializable {
-    public final static String TASK_ID = "task_id";
-    public final static String ID = "id";
-    public final static String NAME = "name";
+
+    public final static String TASK_ID = "task_id";//主键
+    public final static String ID = "id";//组id
+    public final static String NAME = "name";//资源名称
     public final static String URL = "url";
     public final static String PATH = "path";
     public final static String ISUNZIP = "isunzip";
@@ -57,10 +58,10 @@ public class FileDownloaderModel implements Serializable {
     public final static String PREVIEW = "preview";
 
     //素材信息
-    public final static String SUBID = "subid";
-    public final static String FONTID = "fontid";
-    public final static String SUBICON = "subicon";
-    public final static String SUBNAME = "subname";
+    public final static String SUBID = "subid"; //素材id
+    public final static String FONTID = "fontid";//字体id
+    public final static String SUBICON = "subicon";//素材icon path（手机）
+    public final static String SUBNAME = "subname";//素材name
     public final static String PRIORITY = "priority";
     public final static String SUBPREVIEW = "subpreview";
     public final static String SUBSORT = "subsort";
@@ -186,15 +187,6 @@ public class FileDownloaderModel implements Serializable {
         this.effectType = effectType;
     }
 
-//    public int getSubqueffectype() {
-//        return subqueffectype;
-//    }
-//
-//    public void setSubqueffectype(int subqueffectype) {
-//        this.subqueffectype = subqueffectype;
-//    }
-
-
     public String getKey() {
         return key;
     }
@@ -250,14 +242,6 @@ public class FileDownloaderModel implements Serializable {
     public void setDuration(long duration) {
         this.duration = duration;
     }
-
-//    public int getType() {
-//        return type;
-//    }
-//
-//    public void setType(int type) {
-//        this.type = type;
-//    }
 
     public int getSort() {
         return sort;
@@ -420,7 +404,6 @@ public class FileDownloaderModel implements Serializable {
         cv.put(PATH, path);
         cv.put(ISUNZIP, isunzip);
         cv.put(EFFECTTYPE, effectType);
-//        cv.put(SUBEFFECTYPT, subqueffectype);
         cv.put(KEY, key);
         cv.put(LEVEL, level);
         cv.put(TAG, tag);
@@ -428,7 +411,6 @@ public class FileDownloaderModel implements Serializable {
         cv.put(PREVIEWPIC, previewpic);
         cv.put(PREVIEWMP4, previewmp4);
         cv.put(DURATION, duration);
-//        cv.put(TYPE, type);
         cv.put(SORT, sort);
         cv.put(ASPECT, aspect);
         cv.put(DOWNLOAD, download);
@@ -500,9 +482,7 @@ public class FileDownloaderModel implements Serializable {
     public boolean equals(Object o) {
         if (o instanceof FileDownloaderModel) {
             FileDownloaderModel model = (FileDownloaderModel) o;
-            if (model != null && model.getTaskId() == getTaskId()) {
-                return true;
-            }
+            return model.getTaskId() == getTaskId();
         }
         return false;
     }

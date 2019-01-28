@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_selected="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <size android:width="40dp" android:height="40dp"/>
+                    <solid android:color="@color/effect_bg_color"/>
+                </shape>
+            </item>
+            <item android:top="12dp" android:bottom="12dp" android:right="12dp" android:left="12dp"
+                android:drawable="@mipmap/alivc_svideo_effect_none"/>
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item android:top="12dp" android:bottom="12dp" android:right="12dp" android:left="12dp"
+                android:drawable="@mipmap/alivc_svideo_black_circle"/>
+        </layer-list>
+    </item>
+</selector>

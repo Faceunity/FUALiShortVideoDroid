@@ -4,20 +4,16 @@
 
     <application>
         <activity
-            android:name="com.aliyun.demo.importer.ImportEditSettingTest"
+            android:name="com.aliyun.demo.importer.ImportEditSettingActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.duanqu.qupai.action.import.setting"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+
         </activity>
         <activity
             android:name="com.aliyun.demo.importer.MediaActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.duanqu.qupai.action.import"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
         </activity>
 
     </application>

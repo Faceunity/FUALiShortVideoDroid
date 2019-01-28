@@ -7,12 +7,45 @@ package com.aliyun.demo.effects.control;
  * NOTE: item order must match
  */
 public enum UIEditorPage {
-    FILTER_EFFECT,
-    OVERLAY,
-    CAPTION,
-    MV,
+    /**
+     * 滤镜
+     */
+    FILTER,
+    /**
+     * 音乐
+     */
     AUDIO_MIX,
+    /**
+     * 动图
+     */
+    OVERLAY,
+    /**
+     * 字幕
+     */
+    CAPTION,
+    /**
+     * MV
+     */
+    MV,
+    /**
+     * 特效
+     */
+    FILTER_EFFECT,
+    /**
+     * 时间特效
+     */
+    TIME,
+    /**
+     * 转场
+     */
+    TRANSITION,
+    /**
+     * 涂鸦
+     */
     PAINT,
+    /**
+     * 字体
+     */
     FONT
     ;
 

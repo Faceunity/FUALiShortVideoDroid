@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.aliyun.demo.actionbar.ActionBarActivity;
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.http.EffectService;
 
@@ -20,7 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class EffectManagerActivity extends ActionBarActivity implements View.OnClickListener{
+public class EffectManagerActivity extends AbstractActionBarActivity implements View.OnClickListener{
     public static final String KEY_TAB = "key_tab";
     public static final int PASTER = 0;
     public static final int CAPTION = 1;

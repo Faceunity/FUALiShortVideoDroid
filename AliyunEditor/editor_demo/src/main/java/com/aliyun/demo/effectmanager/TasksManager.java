@@ -6,6 +6,7 @@ package com.aliyun.demo.effectmanager;
 
 import java.util.LinkedList;
 
+import android.util.Log;
 import android.util.SparseArray;
 import com.aliyun.downloader.DownloaderManager;
 import com.aliyun.downloader.FileDownloaderCallback;
@@ -13,7 +14,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 
 
 public class TasksManager {
-    private LinkedList<BaseDownloadTask> list = new LinkedList<BaseDownloadTask>();
+    private LinkedList<BaseDownloadTask> list = new LinkedList<>();
 
     private int mProgress = 0;
     private int mFinishProgress = 0;
@@ -43,6 +44,7 @@ public class TasksManager {
 
             @Override
             public void onFinish(int downloadId, String path) {
+                //Log.w("TAG", "xxxx onFinish: downloadId = " +downloadId);
                 mFinishProgress = mProgress;
                 super.onFinish(downloadId, path);
                 if(!startTask()) {

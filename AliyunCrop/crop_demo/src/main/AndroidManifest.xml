@@ -3,29 +3,21 @@
     package="com.aliyun.demo.crop">
 
     <application>
-        <activity android:name="com.aliyun.demo.crop.CropSettingTest"
+        <activity android:name="com.aliyun.demo.crop.CropSettingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="com.duanqu.qupai.action.crop.setting"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
         </activity>
         <activity android:name="com.aliyun.demo.crop.MediaActivity"
             android:theme="@style/AliyunVideoUIStytle"
             tools:replace="android:theme"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.duanqu.qupai.action.crop"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
         </activity>
-        <activity android:name="com.aliyun.demo.crop.AliyunVideoCrop"
+        <activity android:name="com.aliyun.demo.crop.AliyunVideoCropActivity"
             android:theme="@style/AliyunVideoUIStytle"
             tools:replace="android:theme"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name="com.aliyun.demo.crop.AliyunImageCrop"
+        <activity android:name="com.aliyun.demo.crop.AliyunImageCropActivity"
                   android:theme="@style/AliyunVideoUIStytle"
                   tools:replace="android:theme"
                   android:screenOrientation="portrait">

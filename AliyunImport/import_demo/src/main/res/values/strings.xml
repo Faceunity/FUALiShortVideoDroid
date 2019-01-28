@@ -26,7 +26,9 @@
     <string name="sdcard_not_ready">SDCARD 没有准备好</string>
     <string name="video_duration">%1$02d:%2$02d:%3$02d</string>
     <string name="next_camera_roll_import">下一步</string>
-    <string name="message_max_duration_import">视频总时长不超过5分钟，请裁剪后继续!</string>
+    <string name="message_max_duration_import">视频总时长不能超过5分钟，请裁剪后继续!</string>
     <string name="total_duration_label_import">总时长</string>
     <string name="please_select_video">请选择视频</string>
+    <string name="film_tail">片尾</string>
+    <string name="alivc_tip_crop_gif">暂时不支持gif文件裁剪</string>
 </resources>

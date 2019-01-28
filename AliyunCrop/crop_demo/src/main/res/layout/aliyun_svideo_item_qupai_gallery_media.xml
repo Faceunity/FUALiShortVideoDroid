@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.aliyun.quview.SquareFrameLayout
+<com.aliyun.svideo.base.widget.SquareFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:padding="2dp"
         >
 
-        <com.aliyun.quview.RoundSquareView
+        <com.aliyun.svideo.base.widget.RoundSquareView
             android:id="@+id/aliyun_draft_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -54,4 +54,4 @@
             <!--android:background="@drawable/drafts_chooser_qupai_list_item_bg"/>-->
     </FrameLayout>
 
-</com.aliyun.quview.SquareFrameLayout>
+</com.aliyun.svideo.base.widget.SquareFrameLayout>

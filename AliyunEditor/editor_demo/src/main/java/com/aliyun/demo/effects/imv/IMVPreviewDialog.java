@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
-import com.aliyun.quview.SquareFrameLayout;
+import com.aliyun.svideo.base.widget.SquareFrameLayout;
 import com.aliyun.demo.editor.R;
 
 public class IMVPreviewDialog extends DialogFragment {

@@ -11,18 +11,19 @@
 
 
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:id="@+id/iv_color"
         android:background="@color/aliyun_black"
         />
 
     <View
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
         android:layout_gravity="center"
         android:id="@+id/selected"
         android:visibility="visible"
-        android:background="@mipmap/aliyun_svideo_color_check"/>
+        />
+        <!--android:background="@mipmap/aliyun_svideo_color_check"-->
 
 </FrameLayout>

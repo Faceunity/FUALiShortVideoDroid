@@ -14,7 +14,7 @@
         android:layout_marginLeft="25dp"
         android:scaleType="centerInside"
         android:src="@drawable/aliyun_svideo_music_selector"/>
-    <com.aliyun.quview.MarqueeText
+    <com.aliyun.svideo.base.widget.MarqueeText
         android:id="@+id/music_name"
         android:layout_toRightOf="@+id/selected_flag"
         android:layout_marginLeft="20dp"
@@ -46,7 +46,7 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@mipmap/aliyun_svideo_icon_music_download"/>
-    <com.aliyun.quview.CircleProgressBar
+    <com.aliyun.svideo.base.widget.CircleProgressBar
         android:id="@+id/download_progress"
         android:layout_width="25dp"
         android:layout_height="25dp"

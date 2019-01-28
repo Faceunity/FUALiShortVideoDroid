@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_blank"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_gravity="bottom"
+    android:gravity="bottom"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/alivc_chooser_indicator_bg"
+        android:layout_height="40dp">
+
+        <View
+            android:id="@+id/alivc_record_line"
+            android:layout_width="1dp"
+            android:visibility="gone"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="match_parent"
+
+            android:background="@color/alivc_line_gray"/>
+
+        <com.aliyun.svideo.base.widget.PagerSlidingTabStrip
+            android:id="@+id/alivc_dialog_indicator"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:pstsShouldExpand="true"
+            android:layout_weight="20"
+            app:pstsIndicatorColor="@color/alivc_svideo_tab_indicator_color"
+            app:pstsDividerColor="@color/aliyun_transparent"
+            app:pstsUnderlineColor="@color/aliyun_transparent"
+            app:pstsTabBackground="@color/aliyun_transparent"
+            app:pstsIndicatorHeight="2dp"
+            >
+        </com.aliyun.svideo.base.widget.PagerSlidingTabStrip>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/alivc_line_gray_light"/>
+    <com.aliyun.demo.recorder.view.WrapContentHeightViewPager
+        android:id="@+id/alivc_dialog_container"
+        android:layout_width="match_parent"
+        android:background="@color/alivc_chooser_pager_bg"
+        android:layout_height="wrap_content">
+    </com.aliyun.demo.recorder.view.WrapContentHeightViewPager>
+
+</LinearLayout>

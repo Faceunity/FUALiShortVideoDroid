@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 美颜相关  start -->
+    <string name="alivc_beauty">美颜</string>
+    <string name="alivc_fine_tune">微调</string>
+
+    <string name="beauty_buffing">磨皮</string>
+    <string name="beauty_whitening">美白</string>
+    <string name="beauty_blush">红润</string>
+    <string name="beauty_bigeye">大眼</string>
+    <string name="beauty_thinface">瘦脸</string>
+
+    <string name="alivc_beauty_level_advanced">高级</string>
+    <string name="alivc_beauty_level_normal">普通</string>
+    <!-- 美颜相关  end   -->
+</resources>

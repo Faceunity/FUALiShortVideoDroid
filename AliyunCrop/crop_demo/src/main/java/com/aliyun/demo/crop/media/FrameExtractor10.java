@@ -14,6 +14,7 @@ import android.util.SparseArray;
 import com.aliyun.common.buffer.SynchronizedPool;
 import com.aliyun.common.logger.Logger;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -41,10 +42,10 @@ public class FrameExtractor10 {
 
         private final long _TimestampNano;
 
-        private Callback _Callback;
+        private WeakReference<Callback>  mCallback;
 
         public Task(Callback callback, long timestamp_nano) {
-            _Callback = callback;
+            mCallback = new WeakReference<>(callback);
             _TimestampNano = timestamp_nano;
         }
 
@@ -97,7 +98,10 @@ public class FrameExtractor10 {
 
         @Override
         protected void onPostExecute(ShareableBitmap bitmap) {
-            _Callback.onFrameExtracted(bitmap, _TimestampNano);
+            Callback callback = mCallback.get();
+            if (callback != null){
+                callback.onFrameExtracted(bitmap, _TimestampNano);
+            }
         }
 
     }

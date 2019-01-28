@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+   <ImageView
+       android:id="@+id/iv_effect_icon"
+       android:layout_marginTop="10dp"
+       android:layout_width="48dp"
+       android:layout_height="48dp"
+       android:padding="14dp"
+       android:background="@drawable/aliyun_svideo_shape_effect_selector_24dp"
+       android:scaleType="centerInside"/>
+   <TextView
+       android:id="@+id/tv_effect_name"
+       android:layout_marginTop="3dp"
+       android:layout_marginBottom="3dp"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:textSize="12sp"
+       android:textColor="#C3C5C6"/>
+</LinearLayout>

@@ -4,7 +4,7 @@
     android:layout_height="50dp"
     android:background="@drawable/aliyun_svideo_paster_bg">
 
-    <com.aliyun.quview.CircularImageView
+    <com.aliyun.svideo.base.widget.CircularImageView
         android:id="@+id/aliyun_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

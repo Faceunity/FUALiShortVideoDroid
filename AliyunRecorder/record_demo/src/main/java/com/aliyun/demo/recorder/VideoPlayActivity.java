@@ -27,7 +27,9 @@ import com.aliyun.demo.R;
 
 import java.io.IOException;
 
-
+/**
+ * 录制完成后的预览界面
+ */
 public class VideoPlayActivity extends Activity implements SurfaceHolder.Callback,View.OnClickListener{
     public static final String VIDEO_PATH = "video_path";
     public static final String VIDEO_ROTATION = "video_rotation";
@@ -146,7 +148,7 @@ public class VideoPlayActivity extends Activity implements SurfaceHolder.Callbac
         }
     }
     private void scanFile(){
-        msc.scanFile(getApplicationContext(),
+        MediaScannerConnection.scanFile(getApplicationContext(),
                 new String[]{videoPath},new String[]{"video/mp4"},null);
     }
 

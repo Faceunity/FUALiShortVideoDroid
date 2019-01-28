@@ -4,9 +4,6 @@
 
 package com.aliyun.demo.effects.paint;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -14,18 +11,21 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.aliyun.demo.editor.R;
-import com.aliyun.demo.effects.paint.PaintMenuView.PaintSelect;
 
-public class ColorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+import com.aliyun.demo.editor.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class ColorAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private Context mContext;
     private List<Integer> mColorList = new ArrayList<>();
-    private PaintSelect mPaintSelect;
-    private int mSelectedPos = 0;
+    private PaintChooserView.PaintSelect mPaintSelect;
+    private int mSelectedPos = 1;
     private ColorViewHolder mSelectHolder;
     public ColorAdapter(Context context) {
         mContext = context;
@@ -41,21 +41,35 @@ public class ColorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final ColorViewHolder viewHolder = (ColorViewHolder) holder;
-        viewHolder.colorImage.setColorFilter(mColorList.get(position));
-        viewHolder.colorImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mPaintSelect != null) {
-                    mPaintSelect.onColorSelect(mColorList.get(position));
-                    viewHolder.colorImage.setSelected(true);
-                    if(mSelectHolder != null) {
-                        mSelectHolder.colorImage.setSelected(false);
+        if (position==0){
+            viewHolder.colorImage.setImageResource(R.mipmap.alivc_svideo_icon_effect_revoke);
+            viewHolder.colorImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mPaintSelect != null) {
+                        mPaintSelect.onUndo();
                     }
-                    mSelectedPos = position;
-                    mSelectHolder = viewHolder;
                 }
-            }
-        });
+            });
+        }else {
+            viewHolder.colorImage.setColorFilter(mColorList.get(position));
+            viewHolder.colorImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mPaintSelect != null) {
+                        mPaintSelect.onColorSelect(mColorList.get(position));
+                        viewHolder.colorImage.setSelected(true);
+                        if(mSelectHolder != null) {
+                            mSelectHolder.colorImage.setSelected(false);
+                        }
+                        mSelectedPos = position;
+                        mSelectHolder = viewHolder;
+                    }
+                }
+            });
+        }
+
+
         if(mSelectedPos == position) {
             viewHolder.colorImage.setSelected(true);
             mSelectHolder = viewHolder;
@@ -70,7 +84,7 @@ public class ColorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return mColorList.size();
     }
 
-    private static class ColorViewHolder extends  RecyclerView.ViewHolder {
+    private static class ColorViewHolder extends  ViewHolder {
 
         private ImageView colorImage;
         public ColorViewHolder(View itemView) {
@@ -88,11 +102,12 @@ public class ColorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             int color = colors.getColor(i, Color.WHITE);
             list.add(color);
         }
+        list.add(0,0);
         colors.recycle();
         return list;
     }
 
-    public void setPaintSelect(PaintSelect paintSelect) {
+    public void setPaintSelect(PaintChooserView.PaintSelect paintSelect) {
         this.mPaintSelect = paintSelect;
     }
 

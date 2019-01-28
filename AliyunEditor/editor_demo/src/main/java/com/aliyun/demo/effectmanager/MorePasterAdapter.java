@@ -5,28 +5,34 @@
 package com.aliyun.demo.effectmanager;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.aliyun.common.utils.DensityUtil;
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.effects.overlay.PasterPreviewDialog;
-import com.aliyun.quview.CircleProgressBar;
-import com.aliyun.struct.form.ResourceForm;
+import com.aliyun.svideo.sdk.external.struct.form.ResourceForm;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * 更多动图页面adapter
+ */
 public class MorePasterAdapter extends RecyclerView.Adapter<MorePasterAdapter.PasterViewHolder> {
     private static final String TAG = MorePasterAdapter.class.getName();
 
+
+	public static final String DOWNLOAD_START = "download_start";
+	public static final String DOWNLOAD_FINISH = "download_finish";
 	private static final int VIEW_TYPE_NO = 0;
     private static final int VIEW_TYPE_LOCAL = 1;
     private static final int VIEW_TYPE_REMOTE = 2;
@@ -42,70 +48,17 @@ public class MorePasterAdapter extends RecyclerView.Adapter<MorePasterAdapter.Pa
         this.mContext = context;
     }
 
-    public class PasterViewHolder extends RecyclerView.ViewHolder {
-        private TextView mTvName, mTvDesc, mTvRightButton;
-        private ImageView mIvIcon;
-        private EffectBody<ResourceForm> mData;
-        private int mPosition;
-        private CircleProgressBar downloadProgress;
-
-        public void updateData(int position, EffectBody<ResourceForm> data) {
-            this.mData = data;
-            this.mPosition = position;
-            ResourceForm paster = data.getData();
-            mTvName.setText(paster.getName());
-            mTvDesc.setText(paster.getDescription());
-            Glide.with(mIvIcon.getContext()).load(paster.getIcon()).into(mIvIcon);
-        }
-
-        public PasterViewHolder(final View itemView) {
-            super(itemView);
-            mTvName = (TextView) itemView.findViewById(R.id.tv_name);
-            mTvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
-            mTvRightButton = (TextView) itemView.findViewById(R.id.tv_right_button);
-            mIvIcon = (ImageView) itemView.findViewById(R.id.iv_icon);
-            downloadProgress = (CircleProgressBar) itemView.findViewById(R.id.download_progress);
-            int width = DensityUtil.dip2px(itemView.getContext(), 25);
-            downloadProgress.setBackgroundWidth(width, width);
-            downloadProgress.setProgressWidth(width);
-            downloadProgress.isFilled(true);
-            mTvRightButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mRightBtnClickListener != null) {
-                        if (mData.isLocal()) {
-                            mRightBtnClickListener.onLocalItemClick(mPosition, mData);
-                        } else {
-                            mRightBtnClickListener.onRemoteItemClick(mPosition, mData);
-                        }
-                    }
-                }
-            });
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mData.getData().getPreviewUrl() != null && !"".equals(mData.getData().getPreviewUrl())) {
-                        PasterPreviewDialog dialog = PasterPreviewDialog.newInstance(mData.getData().getPreviewUrl(),
-                                mData.getData().getName(), mData.getData().getId());
-                        dialog.show(((MorePasterActivity) mContext).getSupportFragmentManager(), "aliyun_svideo_overlay");
-                    }
-                }
-            });
-        }
-    }
-
     @Override
     public int getItemViewType(int position) {
         int type = VIEW_TYPE_NO;
         if(position >= 0 && position < mDataList.size()) {
             EffectBody<ResourceForm> data = mDataList.get(position);
             if(data.isLocal()) {
-                return VIEW_TYPE_LOCAL;
+                type = VIEW_TYPE_LOCAL;
             }else if(data.isLoading()) {
-                return VIEW_TYPE_DOWNLOADING;
+                type = VIEW_TYPE_DOWNLOADING;
             }else {
-                return VIEW_TYPE_REMOTE;
+                type = VIEW_TYPE_REMOTE;
             }
         }
         return type;
@@ -114,33 +67,68 @@ public class MorePasterAdapter extends RecyclerView.Adapter<MorePasterAdapter.Pa
     @Override
     public PasterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.aliyun_svideo_layout_effect_manager_list_item, parent, false);
-        PasterViewHolder holder = new PasterViewHolder(view);
-        return holder;
+
+        return new PasterViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(PasterViewHolder holder, int position, List<Object> payloads) {
+        synchronized (MorePasterAdapter.class){
+            if (payloads == null || payloads.size() == 0) {
+                super.onBindViewHolder(holder, position, payloads);
+                return;
+            }
+
+            //当修改指定的条目时，调用此方法
+            for (Object payload : payloads) {
+                if (DOWNLOAD_START.equals(payload)) {
+                    //开始下载
+                    holder.mTvRightButton.setBackgroundResource(R.color.alivc_transparent);
+                    holder.progressView.setVisibility(View.VISIBLE);
+                    holder.progressView.setProgress(0);
+                }else if(DOWNLOAD_FINISH.equals(payload)){
+                    //完成下载
+                    holder.mTvRightButton.setVisibility(View.INVISIBLE);
+                    holder.downloadFinish.setVisibility(View.VISIBLE);
+                    holder.progressView.setVisibility(View.INVISIBLE);
+                    holder.progressView.setProgress(0);
+                }
+            }
+        }
     }
 
     @Override
     public void onBindViewHolder(PasterViewHolder holder, int position) {
         int viewType = getItemViewType(position);
-        holder.mTvRightButton.setVisibility(View.VISIBLE);
-        holder.downloadProgress.setVisibility(View.GONE);
+        EffectBody<ResourceForm> effectBody = mDataList.get(position);
         switch (viewType) {
-            case VIEW_TYPE_LOCAL:
-                holder.mTvRightButton.setText(R.string.use_effect_edit);
-                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_more_paster_use_bg);
-                holder.updateData(position, mDataList.get(position));
+            case VIEW_TYPE_LOCAL://本地->完成
+                holder.mTvRightButton.setVisibility(View.INVISIBLE);
+                holder.downloadFinish.setVisibility(View.VISIBLE);
+                holder.progressView.setVisibility(View.INVISIBLE);
                 break;
-            case VIEW_TYPE_REMOTE:
+            case VIEW_TYPE_REMOTE://服务器->下载
                 holder.mTvRightButton.setText(R.string.download_effect_edit);
-                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_more_paster_download_bg);
-                holder.updateData(position, mDataList.get(position));
+                holder.mTvRightButton.setVisibility(View.VISIBLE);
+                holder.progressView.setVisibility(View.INVISIBLE);
+                holder.downloadFinish.setVisibility(View.INVISIBLE);
+                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_caption_manager_bg);
+
                 break;
-            case VIEW_TYPE_DOWNLOADING:
-                holder.mTvRightButton.setVisibility(View.GONE);
-                holder.downloadProgress.setVisibility(View.VISIBLE);
-                holder.updateData(position, mDataList.get(position));
+            case VIEW_TYPE_DOWNLOADING://下载中
+                holder.mTvRightButton.setText(R.string.downloading_effect_edit);
+                holder.mTvRightButton.setVisibility(View.VISIBLE);
+                holder.mTvRightButton.setBackgroundResource(R.color.alivc_transparent);
+                holder.progressView.setVisibility(View.VISIBLE);
+                holder.downloadFinish.setVisibility(View.INVISIBLE);
                 break;
             default:
                 break;
+        }
+        holder.progressView.setProgress(0);
+        if (position != holder.mPosition){
+            //更新条目左边视图，以及mPosition和data
+            holder.updateData(position, effectBody);
         }
     }
 
@@ -151,9 +139,20 @@ public class MorePasterAdapter extends RecyclerView.Adapter<MorePasterAdapter.Pa
 
     public void updateProcess(PasterViewHolder viewHolder, int process, int position) {
         if(viewHolder != null && viewHolder.mPosition == position) {
-            viewHolder.mTvRightButton.setVisibility(View.GONE);
-            viewHolder.downloadProgress.setVisibility(View.VISIBLE);
-            viewHolder.downloadProgress.setProgress(process);
+
+            int progress = viewHolder.progressView.getProgress();
+            if (progress > process){
+                //Log.e(TAG, "updateProcess: xxxx : error  position " + progress + " -> " +process);
+                return;
+            }
+            if (viewHolder.mData.isLocal()){
+                //下载完成之后，progress继续乱跳的事件不响应
+                return;
+            }
+            viewHolder.mTvRightButton.setText(R.string.downloading_effect_edit);
+            viewHolder.mTvRightButton.setBackgroundColor(Color.TRANSPARENT);
+            viewHolder.progressView.setVisibility(View.VISIBLE);
+            viewHolder.progressView.setProgress(process);
         }
     }
 
@@ -165,16 +164,20 @@ public class MorePasterAdapter extends RecyclerView.Adapter<MorePasterAdapter.Pa
     }
 
     public synchronized void notifyDownloadingComplete(EffectBody<ResourceForm> pasterBody, int position) {
-        pasterBody.setLocal(true);
-        pasterBody.setLoading(false);
-        //Collections.sort(mDataList, mPasterCompator);
-        mLoadingPaster.remove(pasterBody.getData());
-        //notifyDataSetChanged();
-        notifyItemChanged(position);
+            pasterBody.setLocal(true);
+            pasterBody.setLoading(false);
+            mLoadingPaster.remove(pasterBody.getData());
+            notifyItemChanged(position,DOWNLOAD_FINISH);
     }
 
     public synchronized void syncData(List<EffectBody<ResourceForm>> syncDataList) {
-        if(syncDataList == null) { return ;}
+        if (mLoadingPaster.size() != 0 ){
+            //在没有下载任务的时候才进行同步，避免出现任务进度更新时的position错乱
+            return;
+        }
+        if(syncDataList == null) {
+            return ;
+        }
         ArrayList<EffectBody<ResourceForm>> delList = new ArrayList<>();
         for(EffectBody<ResourceForm> item:mDataList) {
             if(!syncDataList.contains(item)) {
@@ -187,6 +190,7 @@ public class MorePasterAdapter extends RecyclerView.Adapter<MorePasterAdapter.Pa
                 mDataList.add(item);
             }
         }
+
         Collections.sort(mDataList, mPasterCompator);
         notifyDataSetChanged();
     }
@@ -235,6 +239,82 @@ public class MorePasterAdapter extends RecyclerView.Adapter<MorePasterAdapter.Pa
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 动图recyclerView holder
+     */
+    public class PasterViewHolder extends RecyclerView.ViewHolder {
+        private TextView mTvName, mTvDesc;
+        private TextView mTvRightButton;
+        private ImageView mIvIcon;
+        private ImageView downloadFinish;
+        private EffectBody<ResourceForm> mData;
+        private int mPosition = -1;
+        private ProgressBar progressView;
+
+        /**
+         * 设置数据
+         * @param position 角标
+         * @param data 数据
+         */
+        public void updateData(int position, EffectBody<ResourceForm> data) {
+            this.mData = data;
+            this.mPosition = position;
+            ResourceForm paster = data.getData();
+            mTvName.setText(paster.getName());
+            mTvDesc.setText(paster.getDescription());
+            Glide.with(mIvIcon.getContext()).load(paster.getIcon()).into(mIvIcon);
+        }
+
+        public PasterViewHolder(final View itemView) {
+            super(itemView);
+            mTvName = (TextView) itemView.findViewById(R.id.tv_name);
+            mTvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
+            mIvIcon = (ImageView) itemView.findViewById(R.id.iv_icon);
+            progressView = itemView.findViewById(R.id.download_progress);
+            downloadFinish = (ImageView)itemView.findViewById(R.id.iv_download_finish);
+            mTvRightButton = (TextView)itemView.findViewById(R.id.tv_right_button);
+            mTvRightButton.setText(mContext.getResources().getString(R.string.download_effect_edit));
+            //点击下载按钮
+            mTvRightButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    if (mData.isLocal()) {
+                        if (mRightBtnClickListener != null) {
+                            mRightBtnClickListener.onLocalItemClick(mPosition, mData);
+                        }
+                    } else {
+                        if (mRightBtnClickListener != null) {
+                            mRightBtnClickListener.onRemoteItemClick(mPosition, mData);
+                        }
+
+                    }
+                }
+            });
+            //点击下载完成按钮
+            downloadFinish.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mRightBtnClickListener != null) {
+                        mRightBtnClickListener.onLocalItemClick(mPosition, mData);
+                    }
+                }
+            });
+            //显示预览
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mData.getData().getPreviewUrl() != null && !"".equals(mData.getData().getPreviewUrl())) {
+                        PasterPreviewDialog dialog = PasterPreviewDialog.newInstance(mData.getData().getPreviewUrl(),
+                            mData.getData().getName(), mData.getData().getId());
+                        if (dialog != null){
+                            dialog.show(((MorePasterActivity) mContext).getSupportFragmentManager(), "aliyun_svideo_overlay");
+                        }
+                    }
+                }
+            });
         }
     }
 

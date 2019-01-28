@@ -5,24 +5,20 @@
 package com.aliyun.demo.effects.filter;
 
 import android.content.Context;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.effects.control.EffectInfo;
 import com.aliyun.demo.effects.control.OnItemClickListener;
-import com.aliyun.demo.effects.control.OnItemLongClickListener;
-import com.aliyun.demo.effects.control.OnItemTouchListener;
 import com.aliyun.demo.effects.control.UIEditorPage;
-import com.aliyun.quview.CircularImageView;
-import com.aliyun.struct.effect.EffectFilter;
+import com.aliyun.svideo.base.widget.CircularImageView;
+import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -33,12 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
+        implements View.OnClickListener{
 
     private Context mContext;
     private OnItemClickListener mItemClick;
-    private OnItemLongClickListener mItemLongClick;
-    private OnItemTouchListener mItemTouchListener;
     private int mSelectedPos = 0;
     private FilterViewHolder mSelectedHolder;
     private List<String> mFilterList = new ArrayList<>();
@@ -61,12 +55,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         String name = mContext.getString(R.string.none_effect);
         String path = mFilterList.get(position);
         if (path == null || "".equals(path)) {
-            Glide.with(mContext).load(R.mipmap.aliyun_svideo_none).into(new ViewTarget<CircularImageView, GlideDrawable>(filterViewHolder.mImage) {
-                @Override
-                public void onResourceReady(GlideDrawable glideDrawable, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                    filterViewHolder.mImage.setImageBitmap(((GlideBitmapDrawable) glideDrawable).getBitmap());
-                }
-            });
+            filterViewHolder.mImage.setImageResource(R.drawable.alivc_svideo_effect_none);
         } else {
             EffectFilter effectFilter = new EffectFilter(path);
             if (effectFilter != null) {
@@ -87,16 +76,16 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         if (mSelectedPos == position) {
-            filterViewHolder.mImage.setSelected(true);
+            filterViewHolder.mImage.setVisibility(View.GONE);
+            filterViewHolder.mIvSelectState.setVisibility(View.VISIBLE);
             mSelectedHolder = filterViewHolder;
         } else {
-            filterViewHolder.mImage.setSelected(false);
+            filterViewHolder.mImage.setVisibility(View.VISIBLE);
+            filterViewHolder.mIvSelectState.setVisibility(View.GONE);
         }
         filterViewHolder.mName.setText(name);
         filterViewHolder.itemView.setTag(holder);
         filterViewHolder.itemView.setOnClickListener(this);
-        filterViewHolder.itemView.setOnLongClickListener(this);
-        filterViewHolder.itemView.setOnTouchListener(this);
     }
 
     @Override
@@ -104,49 +93,11 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return mFilterList.size();
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        if (mItemLongClick != null) {
-            FilterViewHolder viewHolder = (FilterViewHolder) v.getTag();
-            int position = viewHolder.getAdapterPosition();
-            mSelectedHolder.mImage.setSelected(false);
-            viewHolder.mImage.setSelected(true);
-            mSelectedPos = position;
-            mSelectedHolder = viewHolder;
-
-            EffectInfo effectInfo = new EffectInfo();
-            effectInfo.type = UIEditorPage.FILTER_EFFECT;
-            effectInfo.setPath(mFilterList.get(position));
-            effectInfo.id = position;
-            mItemLongClick.onItemLongClick(effectInfo, position);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        int actionMasked = MotionEventCompat.getActionMasked(event);
-        switch (actionMasked) {
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                if (mItemTouchListener != null) {
-                    FilterViewHolder viewHolder = (FilterViewHolder) v.getTag();
-                    int position = viewHolder.getAdapterPosition();
-                    EffectInfo effectInfo = new EffectInfo();
-                    effectInfo.type = UIEditorPage.FILTER_EFFECT;
-                    effectInfo.setPath(mFilterList.get(position));
-                    effectInfo.id = position;
-                    mItemTouchListener.onTouchEvent(OnItemTouchListener.EVENT_UP,
-                            position, effectInfo);
-                }
-        }
-        return false;
-    }
 
     private static class FilterViewHolder extends RecyclerView.ViewHolder {
 
         FrameLayout frameLayout;
-
+        ImageView mIvSelectState;
         CircularImageView mImage;
         TextView mName;
 
@@ -154,6 +105,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             super(itemView);
             mImage = (CircularImageView) itemView.findViewById(R.id.resource_image_view);
             mName = (TextView) itemView.findViewById(R.id.resource_name);
+            mIvSelectState = itemView.findViewById(R.id.iv_select_state);
         }
 
     }
@@ -162,22 +114,19 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mItemClick = listener;
     }
 
-    public void setOnItemLongClickListener(OnItemLongClickListener li) {
-        mItemLongClick = li;
-    }
-
-    public void setOnItemTouchListener(OnItemTouchListener li) {
-        mItemTouchListener = li;
-    }
 
     @Override
     public void onClick(View view) {
         if (mItemClick != null) {
             FilterViewHolder viewHolder = (FilterViewHolder) view.getTag();
             int position = viewHolder.getAdapterPosition();
-            if (mSelectedPos != position && mSelectedHolder != null) {
-                mSelectedHolder.mImage.setSelected(false);
-                viewHolder.mImage.setSelected(true);
+            if (mSelectedPos != position) {
+                if(mSelectedHolder != null && mSelectedHolder.mImage != null){
+                    mSelectedHolder.mImage.setVisibility(View.VISIBLE);
+                    mSelectedHolder.mIvSelectState.setVisibility(View.GONE);
+                }
+                viewHolder.mImage.setVisibility(View.GONE);
+                viewHolder.mIvSelectState.setVisibility(View.VISIBLE);
                 mSelectedPos = position;
                 mSelectedHolder = viewHolder;
 
@@ -194,9 +143,5 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mFilterList.clear();
         mFilterList.add(null);
         mFilterList.addAll(list);
-    }
-
-    public void setSelectedPos(int position) {
-        mSelectedPos = position;
     }
 }

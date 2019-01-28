@@ -21,7 +21,7 @@
         android:layout_above="@+id/aliyun_record_timeline"
         android:gravity="center"/>
 
-    <com.aliyun.quview.RecordTimelineView
+    <com.aliyun.svideo.base.widget.RecordTimelineView
         android:id="@+id/aliyun_record_timeline"
         android:layout_width="match_parent"
         android:layout_height="10dp"
@@ -76,12 +76,6 @@
             android:visibility="gone"
             android:src="@drawable/aliyun_svideo_switch_ratio" />
     </FrameLayout>
-
-    <com.faceunity.beautycontrolview.BeautyControlView
-        android:id="@+id/faceunity_control"
-        android:layout_width="match_parent"
-        android:layout_above="@+id/aliyun_record_layout"
-        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:id="@+id/aliyun_record_layout"

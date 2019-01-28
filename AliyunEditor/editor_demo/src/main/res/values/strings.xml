@@ -11,7 +11,8 @@
     <string name="music_origin">原音</string>
     <string name="my_music">我的音乐</string>
     <string name="local_music">本地音乐</string>
-    <string name="delete_effect_manager">删除</string>
+    <string name="delete_effect_manager">delete</string>
+    <string name="downloading_effect_edit">downloading</string>
     <string name="use_effect_edit">使用</string>
     <string name="download_effect_edit">下载</string>
     <string name="cancel_more_mv_edit">取消</string>
@@ -24,6 +25,7 @@
     <string name="timeline_curr_time">%1$02d:%2$02d</string>
     <string name="material_downloading_failure">素材下载失败！</string>
     <string name="res_copy">资源拷贝中</string>
+    <string name="transcode">转码中</string>
     <string name="empty_music">无音乐</string>
     <string name="mv_message">请先移除MV效果再添加音乐</string>
     <string name="cancel">取消</string>
@@ -33,6 +35,15 @@
     <string name="not_supported_audio">不支持的音频格式</string>
     <string name="not_supported_video">不支持的视频格式</string>
     <string name="not_supported_pixel_format">不支持的文件</string>
+
+
+    <string name="caption_effect_font_category_name">纯文字</string>
+    <string name="caption_effect_bottom_keyboard">键盘</string>
+    <string name="caption_effect_bottom_color">颜色</string>
+    <string name="caption_effect_bottom_font">字体</string>
+    <string name="caption_effect_bottom_animation">特效</string>
+
+    <string name="caption_effect_not_support_invert">倒播时不支持添加字幕动画效果</string>
 
     <string name="publish">发布</string>
     <string name="video_composeing_cancel_or_go">正在进行视频合成，确定要放弃合成吗？</string>
@@ -53,5 +64,40 @@
     <string name="my_video">我的视频</string>
     <string name="aliyun_svideo_filter">滤镜</string>
     <string name="aliyun_svideo_effect">特效</string>
+    <string name="aliyun_svideo_time_effect_moment">某刻</string>
+    <string name="aliyun_svideo_time_effect_all">全程</string>
+    <string name="aliyun_svideo_time_effect_not_support">时间特效不支持多段视频</string>
+
+    <string name="aliyun_svideo_transition_effect_none">无</string>
+    <string name="aliyun_svideo_transition_effect_translate_up">向上移动</string>
+    <string name="aliyun_svideo_transition_effect_translate_left">向左移动</string>
+    <string name="aliyun_svideo_transition_effect_translate_down">向下移动</string>
+    <string name="aliyun_svideo_transition_effect_translate_right">向右移动</string>
+    <string name="aliyun_svideo_transition_effect_shutter">百叶窗</string>
+    <string name="aliyun_svideo_transition_effect_fade">淡入淡出</string>
+    <string name="aliyun_svideo_transition_effect_scale">缩放</string>
+    <string name="aliyun_svideo_transition_effect_five_star">五角星</string>
+    <string name="aliyun_svideo_transition_effect_circle">圆形</string>
+    <string name="aliyun_svideo_transition_effect_linearwipe">线性擦除</string>
+
+    <string name="aliyun_svideo_editor_init_failed">编辑器初始化失败</string>
+    <string name="alivc_svideo_music_is_null">音乐不存在</string>
+    <string name="alivc_svideo_filter_effect">滤镜特效</string>
+    <string name="alivc_svide_revoke">撤销</string>
+    <string name="alivc_svideo_effect_tip">长按可添加效果</string>
+    <string name="alivc_svideo_time_tip">点击添加效果</string>
+    <string name="alivc_svideo_paint">涂鸦</string>
+    <string name="alivc_svideo_no_effect">无效果</string>
+    <string name="alivc_svideo_slow">慢速</string>
+    <string name="alivc_svideo_fast">加速</string>
+    <string name="alivc_svideo_invert">倒放</string>
+    <string name="alivc_svideo_repeat">反复</string>
+    <string name="alivc_svideo_time">变速</string>
+    <string name="alivc_svideo_time_effect">时间特效</string>
+    <string name="alivc_svideo_transition">转场</string>
+
+    <string name="alivc_svideo_play_film">play</string>
+    <string name="alivc_svideo_pause_film">pause</string>
+    <string name="alivc_svideo_tip_transcode_no_operate">正在转码，请勿操作</string>
 </resources>
 

@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/bottom_editor_effect_category_tab_width"
+    android:layout_height="@dimen/bottom_editor_effect_category_tab_height"
+    android:background="@drawable/aliyun_svideo_selector_effect_category_bg"
     android:gravity="center"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
-    <FrameLayout
-        android:id="@+id/category_image"
-        android:layout_width="25dp"
-        android:layout_height="25dp">
-        <com.aliyun.quview.CircularImageView
+    <TextView
+        android:id="@+id/tv_category_name_source"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        />
+        <com.aliyun.svideo.base.widget.CircularImageView
             android:id="@+id/category_image_source"
+            android:padding="7dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerInside"
-            android:background="@drawable/aliyun_svideo_selector_effect_category_bg"
             />
-    </FrameLayout>
 
-</LinearLayout>
+</FrameLayout>

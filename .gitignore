@@ -1,8 +1,8 @@
 /.gradle
-/.gradle-build
+/gradle-build
 *.iml
 .gradle
-/.idea/
+/.idea
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -10,4 +10,5 @@
 /build
 /captures
 .externalNativeBuild
-
+*.apk
+*.jks

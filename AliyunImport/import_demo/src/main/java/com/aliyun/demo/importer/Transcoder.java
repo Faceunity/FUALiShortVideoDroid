@@ -11,25 +11,24 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
-import com.aliyun.common.media.AliyunMediaExtractor;
+import com.aliyun.common.global.AliyunTag;
 import com.aliyun.crop.AliyunCropCreator;
 import com.aliyun.crop.struct.CropParam;
-import com.aliyun.crop.supply.CropCallback;
 import com.aliyun.crop.supply.AliyunICrop;
-import com.aliyun.struct.common.ScaleMode;
-import com.aliyun.struct.common.VideoQuality;
+import com.aliyun.crop.supply.CropCallback;
+import com.aliyun.svideo.base.MediaInfo;
+import com.aliyun.svideo.sdk.external.struct.MediaType;
+import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
+import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
+import com.duanqu.transcode.NativeParser;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.aliyun.demo.importer.media.MediaInfo;
-import com.aliyun.svideo.sdk.external.struct.MediaType;
-import com.duanqu.qupai.adaptive.NativeAdaptiveUtil;
-
 /**
- * 对于大于540P的视频要先走转码
+ * 对于大于720P的视频要先走转码
  */
 
 public class Transcoder {
@@ -37,21 +36,18 @@ public class Transcoder {
     private static final String TAG = "Transcoder";
     private List<MediaInfo> mOriginalVideos = new ArrayList<>();
     private List<CropParam> mTranscodeVideos = new ArrayList<>();
-    private static final String TRANSCODE_SUFFIX = "_transcode";
-    private AliyunICrop mQuCrop;
+    private AliyunICrop mAliyunCrop;
     private TransCallback mTransCallback;
     private int mTranscodeIndex = 0;
     private int mTranscodeTotal = 0;
     private boolean isTranscode;
     private AsyncTask<Void, Long, List<MediaInfo>> mTranscodeTask;
-    private int width = 1920, height = 1920;
-    private AliyunMediaExtractor mExtractor = new AliyunMediaExtractor();
-
+    private int width = 720, height = 1280;
     public void addMedia(MediaInfo mediaInfo) {
         mOriginalVideos.add(mediaInfo);
     }
 
-    public boolean isTranscode(){
+    public boolean isTranscode() {
         return isTranscode;
     }
 
@@ -60,8 +56,19 @@ public class Transcoder {
     }
 
     public int removeMedia(MediaInfo mediaInfo) {
-        int index = mOriginalVideos.indexOf(mediaInfo);
-        mOriginalVideos.remove(mediaInfo);
+        int index = -1;
+        //由于mediaInfo的equals方法被重写，导致添加多次同一份资源的时候，通过indexOf会获取错误的位置
+        //所以用该方式获取index
+        for (int i = 0; i < mOriginalVideos.size(); i++) {
+            if (mOriginalVideos.get(i)==mediaInfo){
+                index = i;
+            }
+        }
+        //如果上面方式获取不到，则用indexOf的方式
+        if (index==-1){
+            index = mOriginalVideos.indexOf(mediaInfo);
+        }
+        mOriginalVideos.remove(index);
         return index;
     }
 
@@ -85,19 +92,19 @@ public class Transcoder {
     }
 
     public void init(Context context) {
-        mQuCrop = AliyunCropCreator.getCropInstance(context);
+        mAliyunCrop = AliyunCropCreator.createCropInstance(context);
     }
 
     public void setTransCallback(TransCallback callback) {
         this.mTransCallback = callback;
     }
 
-    public void transcode(final int[] resolution, final VideoQuality videoQuality,
-                          final ScaleMode scaleMode) {
+    public void transcode(final VideoQuality videoQuality,
+                          final VideoDisplayMode scaleMode) {
         mTranscodeTotal = 0;
         mTranscodeIndex = 0;
         mTranscodeVideos.clear();
-        if (mQuCrop == null) {
+        if (mAliyunCrop == null) {
             return;
         }
         mTranscodeTask = new AsyncTask<Void, Long, List<MediaInfo>>() {
@@ -106,10 +113,13 @@ public class Transcoder {
             protected List<MediaInfo> doInBackground(Void... params) {
                 CropParam cropParam = null;
                 for (MediaInfo info : mOriginalVideos) {
+
+                    if (info.filePath.endsWith("gif")||info.filePath.endsWith("GIF")){
+                        Log.d(TAG, "addTransCode excluded: --.gif");
+                        continue;
+                    }
                     if (info.mimeType.startsWith("video")) {
-                        if(!NativeAdaptiveUtil.isDeviceDecoderEnable()){
-                            cropParam = loadVideoCropInfo(info, scaleMode, videoQuality);
-                        }
+                        cropParam = loadVideoCropInfo(info, scaleMode, videoQuality);
                     } else if (info.mimeType.startsWith("image")) {
                         cropParam = loadImageCropInfo(info, scaleMode, videoQuality);
                     }
@@ -138,7 +148,7 @@ public class Transcoder {
 
     public void cancel() {
         mTranscodeTask.cancel(true);
-        mQuCrop.cancel();
+        mAliyunCrop.cancel();
         if (mTransCallback != null) {
             mTransCallback.onCancelComplete();
         }
@@ -147,9 +157,9 @@ public class Transcoder {
     private void transcodeVideo(int index) {
         mTranscodeIndex++;
         CropParam cropParam = mTranscodeVideos.get(index);
-        mQuCrop.setCropParam(cropParam);
-        mQuCrop.setCropCallback(mTranscodeCallback);
-        mQuCrop.startCrop();
+        mAliyunCrop.setCropParam(cropParam);
+        mAliyunCrop.setCropCallback(mTranscodeCallback);
+        mAliyunCrop.startCrop();
         Log.d(TAG, "startCrop...path..." + cropParam.getInputPath());
     }
 
@@ -200,19 +210,26 @@ public class Transcoder {
         }
     };
 
-    private CropParam loadVideoCropInfo(MediaInfo info, ScaleMode scaleMode, VideoQuality videoQuality) {
+    private CropParam loadVideoCropInfo(MediaInfo info, VideoDisplayMode scaleMode, VideoQuality videoQuality) {
         int frameWidth = 0;
         int frameHeight = 0;
         long duration = 0;
         int frameRate = 0;
         int rotation = 0;
         try {
-            mExtractor.setDataSource(info.filePath);
-            frameWidth = mExtractor.getVideoWidth();
-            frameHeight = mExtractor.getVideoHeight();
-            frameRate = mExtractor.getFrameRate();
-            rotation = mExtractor.getRotation();
-            duration = mQuCrop.getVideoDuration(info.filePath);
+            NativeParser nativeParser = new NativeParser();
+            nativeParser.init(info.filePath);
+            try{
+                rotation = Integer.parseInt(nativeParser.getValue(NativeParser.VIDEO_ROTATION));
+                frameWidth = Integer.parseInt(nativeParser.getValue(NativeParser.VIDEO_WIDTH));
+                frameHeight = Integer.parseInt(nativeParser.getValue(NativeParser.VIDEO_HEIGHT));
+                frameRate = Integer.parseInt(nativeParser.getValue(NativeParser.VIDEO_FPS));
+            }catch (Exception e) {
+                Log.e(AliyunTag.TAG,"parse rotation failed");
+            }
+            nativeParser.release();
+            nativeParser.dispose();
+            duration = mAliyunCrop.getVideoDuration(info.filePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,6 +251,14 @@ public class Transcoder {
                 } else {
                     outputHeight = Math.min(width, height);
                     outputWidth = (int) ((float) frameWidth / frameHeight * outputHeight);
+                }
+
+                //保证宽高为偶数
+                if (outputWidth%2 == 1) {
+                    outputWidth += 1;
+                }
+                if (outputHeight%2 == 1){
+                    outputHeight += 1;
                 }
             }
             if (frameRate > 30) {
@@ -257,6 +282,7 @@ public class Transcoder {
             cropParam.setScaleMode(scaleMode);
             cropParam.setQuality(videoQuality);
             cropParam.setFrameRate(30);
+            cropParam.setVideoBitrate(16000);
             cropParam.setStartTime(0);
             cropParam.setEndTime(duration);
             cropParam.setMediaType(MediaType.ANY_VIDEO_TYPE);
@@ -264,8 +290,7 @@ public class Transcoder {
         }
         return null;
     }
-
-    private CropParam loadImageCropInfo(MediaInfo info, ScaleMode scaleMode, VideoQuality quality) {
+    private CropParam loadImageCropInfo(MediaInfo info, VideoDisplayMode scaleMode, VideoQuality quality) {
         int frameWidth = 0;
         int frameHeight = 0;
 
@@ -277,11 +302,16 @@ public class Transcoder {
 
         CropParam cropParam = new CropParam();
         cropParam.setInputPath(info.filePath);
+        if (options.outMimeType == null) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DCIM).getAbsolutePath())
                 .append(File.separator).append(System.currentTimeMillis())
+                //两次System.currentTimeMillis()获取的时间可能相同，追加一个index防止图片名字相同
+                .append(mTranscodeTotal)
                 .append(options.outMimeType.replace("image/", "."));
-        cropParam.setOutputPath(sb.toString());//info.filePath + TRANSCODE_SUFFIX);
+        cropParam.setOutputPath(sb.toString());
 
         int outputWidth = 0;
         int outputHeight = 0;
@@ -318,6 +348,15 @@ public class Transcoder {
     }
 
     public void release() {
-        AliyunCropCreator.destroyCropInstance();
+        if(mAliyunCrop != null) {
+            mAliyunCrop.dispose();
+            mAliyunCrop = null;
+        }
+        if (mTranscodeCallback != null){
+            mTranscodeCallback =null;
+        }
+        if (mTransCallback != null){
+            mTransCallback = null;
+        }
     }
 }

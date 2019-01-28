@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@android:color/transparent"
-              android:orientation="vertical"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    android:orientation="vertical"
     >
 
     <FrameLayout
@@ -44,81 +45,62 @@
             android:textColor="@android:color/white"
             android:textSize="18sp"/>
 
-        <!--<EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/comment_edit"
-                android:textColor="@android:color/transparent"
-                android:background="@null"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:inputType="aliyun_svideo_none"
-                android:textAllCaps="false"
-                android:lines="2"/>-->
-
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="#232A42"
+        android:layout_height="@dimen/bottom_editor_tab_height"
+        android:background="@color/alivc_chooser_pager_bg"
         android:baselineAligned="false"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/tab_group_chooser"
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/bottom_editor_tab_height"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:src="@mipmap/aliyun_svideo_icon_back"
+            />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:src="#979797"
+            />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tl_tab"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@color/alivc_chooser_pager_bg"/>
 
-            <ImageView
-                android:id="@+id/tab_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@mipmap/aliyun_svideo_icon_keyboard"
-                />
 
-            <ImageView
-                android:id="@+id/tab_font"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@mipmap/aliyun_svideo_icon_font"/>
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:src="#979797"
+            />
 
-            <ImageView
-                android:id="@+id/tab_color"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@mipmap/aliyun_svideo_icon_color"/>
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="84dp"
-            android:layout_height="fill_parent"
-            android:background="#EF4B81">
-
-            <TextView
-                android:id="@+id/send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/qupai_text_edit_completed"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"/>
-        </FrameLayout>
+        <ImageView
+            android:id="@+id/iv_confirm"
+            android:layout_width="@dimen/bottom_editor_tab_height"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:src="@mipmap/aliyun_svideo_icon_effect_confirm"
+            />
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="295dp"
-        android:background="@android:color/black"
+        android:layout_height="250dp"
+        android:background="@color/alivc_chooser_pager_bg"
         android:visibility="gone">
 
         <LinearLayout
@@ -128,50 +110,11 @@
             android:orientation="vertical"
             >
 
-            <!--<FrameLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:paddingLeft="10dp"-->
-                <!--android:paddingRight="10dp"-->
-                <!--android:paddingTop="5dp">-->
-
-                <!--<GridView-->
-                    <!--android:id="@+id/color_stroke_list"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:cacheColorHint="@android:color/transparent"-->
-                    <!--android:choiceMode="singleChoice"-->
-                    <!--android:gravity="center"-->
-                    <!--android:horizontalSpacing="15dp"-->
-                    <!--android:listSelector="@android:color/transparent"-->
-                    <!--android:numColumns="6"-->
-                    <!--android:scrollbars="aliyun_svideo_none"-->
-                    <!--android:stretchMode="columnWidth"-->
-                    <!--android:verticalSpacing="20dp"/>-->
-
-                <!--<GridView-->
-                    <!--android:id="@+id/color_list"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:cacheColorHint="@android:color/transparent"-->
-                    <!--android:choiceMode="singleChoice"-->
-                    <!--android:gravity="center"-->
-                    <!--android:horizontalSpacing="15dp"-->
-                    <!--android:listSelector="@android:color/transparent"-->
-                    <!--android:numColumns="6"-->
-                    <!--android:scrollbars="aliyun_svideo_none"-->
-                    <!--android:stretchMode="columnWidth"-->
-                    <!--android:verticalSpacing="20dp"/>-->
-            <!--</FrameLayout>-->
-
             <android.support.v4.view.ViewPager
+                android:id="@+id/color_viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:id="@+id/color_viewpager"
                 android:foregroundGravity="center"
                 />
 
@@ -180,47 +123,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="#606E7C"
                 app:tabIndicatorColor="#EF4B81"
                 app:tabIndicatorHeight="1dp"
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextColor="#606E7C"
                 />
 
 
-            <!--<LinearLayout-->
-            <!--android:id="@+id/color_list_tab"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="horizontal">-->
+        </LinearLayout>
 
-            <!--<TextView-->
-            <!--android:id="@+id/tab_text_effect_stroke"-->
-            <!--android:layout_width="80dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginRight="3dp"-->
-            <!--android:paddingBottom="5dp"-->
-            <!--android:paddingLeft="12dp"-->
-            <!--android:paddingRight="12dp"-->
-            <!--android:text="@string/qupai_effect_text_color"-->
-            <!--android:textColor="@color/aliyun_svideo_selector_font_color_tab"-->
-            <!--android:textSize="15sp" />-->
+        <LinearLayout
+            android:id="@+id/font_layout_new"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
 
-            <!--<TextView-->
-            <!--android:id="@+id/tab_text_effect_color"-->
-            <!--android:layout_width="80dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginLeft="3dp"-->
-            <!--android:paddingBottom="5dp"-->
-            <!--android:paddingLeft="12dp"-->
-            <!--android:paddingRight="12dp"-->
-            <!--android:text="@string/qupai_effect_text_stroke"-->
-            <!--android:textSize="15sp"-->
-            <!--android:textColor="@color/aliyun_svideo_selector_font_color_tab"-->
-            <!--/>-->
-
-            <!--</LinearLayout>-->
+            <com.aliyun.demo.widget.WheelView
+                android:id="@+id/font_custom_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
         </LinearLayout>
 
         <FrameLayout
@@ -228,7 +152,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:background="#1B2133"
             >
 
             <GridView
@@ -247,6 +170,20 @@
                 android:verticalSpacing="3dp"/>
         </FrameLayout>
 
+        <FrameLayout
+            android:id="@+id/font_animation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/font_animation_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                />
+
+        </FrameLayout>
     </FrameLayout>
 
 </LinearLayout>

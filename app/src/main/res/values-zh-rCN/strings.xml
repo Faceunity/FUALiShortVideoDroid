@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">阿里视频云</string>
+    <string name="solution_apsarav">ApsaraV</string>
+    <string name="solution_push">直播推流</string>
+    <string name="solution_live_room">互动直播</string>
+    <string name="solution_player">视频播放</string>
+    <string name="solution_svideo">短视频</string>
+    <string name="solution_upload">视频上传</string>
+    <string name="solution_recorder">视频拍摄</string>
+    <string name="solution_camera">魔法相机</string>
+    <string name="solution_crop">视频裁剪</string>
+    <string name="solution_edit">视频编辑</string>
+    <string name="solution_community">趣视频</string>
+    <string name="solution_videocall">视频通话</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="record">拍摄</string>
+    <string name="magic_camera">魔法相机</string>
+    <string name="edit">导入编辑</string>
+    <string name="crop">导入裁剪</string>
+    <string name="live">直播</string>
+    <string name="ui">UI组件</string>
+    <string name="need_permission">请给予相应的权限</string>
+    <string name="help">其他</string>
+
+    <string name="solution_wait_remind">产品功能正在开发中...</string>
+    <string name="solution_unable_merge_remind">上传和短视频存在冲突,协调解决中..</string>
+    <string name="resetstr">切换成功，正在重新加载数据...</string>
+
+    <string name="alivc_apsara_video_regist">© 2009&#8211;2018 Copyright by Alibaba Cloud All rights reserved</string>
+    <string name="alivc_apsara_video_title">阿里视频云</string>
+</resources>

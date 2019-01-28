@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/resource_image"
+        android:layout_width="72dp"
+        android:layout_gravity="center"
+        android:layout_height="72dp">
+        <com.aliyun.svideo.base.widget.CircularImageView
+            android:id="@+id/resource_image_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:padding="1dp"
+            android:background="@drawable/aliyun_svideo_shape_effect_selector"
+            android:scaleType="centerInside" />
+        <ImageView
+            android:id="@+id/iv_download_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="2dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:src="@mipmap/alivc_svideo_icon_download" />
+        <com.aliyun.svideo.base.widget.CircleProgressBar
+            android:id="@+id/download_progress"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            app:progressColor="@color/alivc_bg_download"
+            app:backgroundColor="@color/alivc_transparent"
+            app:backgroundWidth="48dp"
+            app:backgroundHeight="48dp"
+            app:progressWidth="48dp"/>
+    </RelativeLayout>
+
+
+</FrameLayout>

@@ -13,12 +13,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aliyun.common.media.ShareableBitmap;
 import com.aliyun.demo.editor.R;
-import com.aliyun.qupai.editor.AliyunIThumbnailFetcher;
-import com.aliyun.qupai.editor.AliyunThumbnailFetcherFactory;
-import com.aliyun.qupai.editor.impl.AliyunThumbnailFetcher;
-import com.aliyun.struct.common.ScaleMode;
+import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
+import com.aliyun.svideo.sdk.external.thumbnail.AliyunIThumbnailFetcher;
+import com.aliyun.svideo.sdk.external.thumbnail.AliyunThumbnailFetcherFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,7 +25,7 @@ import java.io.IOException;
  * Created by macpro on 2017/11/7.
  */
 
-public class CoverEditActivity extends Activity implements View.OnClickListener{
+public class CoverEditActivity extends Activity implements View.OnClickListener {
 
     public static final String KEY_PARAM_VIDEO = "vidseo_path";
     public static final String KEY_PARAM_RESULT = "thumbnail";
@@ -49,8 +47,8 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
         mVideoPath = getIntent().getStringExtra(KEY_PARAM_VIDEO);
         mThumbnailFetcher = AliyunThumbnailFetcherFactory.createThumbnailFetcher();
         mCoverFetcher = AliyunThumbnailFetcherFactory.createThumbnailFetcher();
-        mThumbnailFetcher.addVideoSource(mVideoPath, 0, Integer.MAX_VALUE);
-        mCoverFetcher.addVideoSource(mVideoPath, 0, Integer.MAX_VALUE);
+        mThumbnailFetcher.addVideoSource(mVideoPath, 0, Integer.MAX_VALUE,0);
+        mCoverFetcher.addVideoSource(mVideoPath, 0, Integer.MAX_VALUE,0);
         mThumbnailList.post(mInitThumbnails);
         mCoverImage.post(new Runnable() {
             @Override
@@ -68,7 +66,7 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
         mCoverFetcher.release();
     }
 
-    private void initView(){
+    private void initView() {
         mIvLeft = (ImageView) findViewById(R.id.iv_left);
         mIvRight = (ImageView) findViewById(R.id.iv_right);
         mTitle = (TextView) findViewById(R.id.tv_center);
@@ -92,16 +90,16 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        if(v == mIvLeft){
+        if (v == mIvLeft) {
             onBackPressed();
-        }else if(v == mIvRight){
-            ShareableBitmap sbmp = (ShareableBitmap) mCoverImage.getTag();
-            if(sbmp != null || sbmp.getData() != null){
+        } else if (v == mIvRight) {
+            Bitmap sbmp = (Bitmap) mCoverImage.getTag();
+            if (sbmp != null ) {
                 String path = getExternalFilesDir(null) + "thumbnail.jpeg";
-                try{
-                    sbmp.getData().compress(Bitmap.CompressFormat.JPEG, 100,
-                            new FileOutputStream(path));
-                }catch (IOException e){
+                try {
+                    sbmp.compress(Bitmap.CompressFormat.JPEG, 100,
+                        new FileOutputStream(path));
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
@@ -119,16 +117,16 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
             int offset = mSlider.getLeft() - mSlider.getPaddingLeft();
             int vw = mSlider.getWidth() - mSlider.getPaddingRight() - mSlider.getPaddingLeft();
             int endOffset = mSlider.getLeft() + mThumbnailList.getWidth() - vw - mSlider.getPaddingLeft();
-            if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 float x = motionEvent.getX();
                 float px = x + mSlider.getLeft() - mSlider.getPaddingLeft();
-                if(px >= endOffset){
+                if (px >= endOffset) {
                     px = endOffset;
                 }
-                if(px <= offset){
+                if (px <= offset) {
                     px = offset;
                 }
-                long time = (long)(mCoverFetcher.getTotalDuration() * px / mThumbnailList.getWidth());
+                long time = (long) (mCoverFetcher.getTotalDuration() * px / mThumbnailList.getWidth());
                 fetcheThumbnail(time);
 
                 mSlider.setX(px);
@@ -141,6 +139,7 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
 
         private float lastX;
         private float dx;
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             int action = event.getAction();
@@ -148,31 +147,33 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
             int vw = v.getWidth() - v.getPaddingRight() - v.getPaddingLeft();
             int endOffset = v.getLeft() + mThumbnailList.getWidth() - vw - v.getPaddingLeft();
             long time = 0;
-            switch (action){
+            switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     lastX = event.getRawX();
-                    dx =  lastX - v.getX();
+                    dx = lastX - v.getX();
                     break;
                 case MotionEvent.ACTION_MOVE:
-//                    float distance = event.getX() - lastX;
+                    //                    float distance = event.getX() - lastX;
                     lastX = event.getRawX();
                     float nx = lastX - dx;
-                    if(nx >= endOffset){
+                    if (nx >= endOffset) {
                         nx = endOffset;
                     }
-                    if(nx <= offset){
+                    if (nx <= offset) {
                         nx = offset;
                     }
 
                     v.setX(nx);
-                    time = (long)(mCoverFetcher.getTotalDuration() * (nx - offset) / mThumbnailList.getWidth());
+                    time = (long) (mCoverFetcher.getTotalDuration() * (nx - offset) / mThumbnailList.getWidth());
                     fetcheThumbnail(time);
                     break;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
                     float x = v.getX() - offset;
-                    time = (long)(mCoverFetcher.getTotalDuration() * x / mThumbnailList.getWidth());
+                    time = (long) (mCoverFetcher.getTotalDuration() * x / mThumbnailList.getWidth());
                     fetcheThumbnail(time);
+                    break;
+                default:
                     break;
             }
             return true;
@@ -180,13 +181,14 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
     };
 
     private int mFetchingThumbnailCount;
-    private void fetcheThumbnail(long time){
+
+    private void fetcheThumbnail(long time) {
         Log.d("FETCHER", "fetcher time : " + time + "  count : " + mFetchingThumbnailCount
-        + " duration ：" + mCoverFetcher.getTotalDuration());
-        if(time >= mCoverFetcher.getTotalDuration()){
+            + " duration ：" + mCoverFetcher.getTotalDuration());
+        if (time >= mCoverFetcher.getTotalDuration()) {
             time = mCoverFetcher.getTotalDuration() - 500;
         }
-        if(mFetchingThumbnailCount > 2){
+        if (mFetchingThumbnailCount > 2) {
             return;
         }
         mFetchingThumbnailCount++;
@@ -201,62 +203,62 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
         }
     };
 
-    private void initThumbnails(){
+    private void initThumbnails() {
         int width = mThumbnailList.getWidth();
-        int itemWidth= width / 8;
+        int itemWidth = width / 8;
         mThumbnailFetcher.setParameters(itemWidth, itemWidth,
-                AliyunIThumbnailFetcher.CropMode.Mediate, ScaleMode.LB, 8);
+            AliyunIThumbnailFetcher.CropMode.Mediate, VideoDisplayMode.FILL, 8);
         long duration = mThumbnailFetcher.getTotalDuration();
         long itemTime = duration / 8;
-//        long[] times = new long[8];
-        for(int i = 0; i < 8; i++){
-//            times[i] = itemTime * i;
+        //        long[] times = new long[8];
+        for (int i = 0; i < 8; i++) {
+            //            times[i] = itemTime * i;
             long time = itemTime * i;
             mThumbnailFetcher.requestThumbnailImage(new long[]{time},
-                    new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
-                        @Override
-                        public void onThumbnailReady(ShareableBitmap frameBitmap, long time) {
-                            initThumbnails(frameBitmap.getData());
-                        }
+                new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
+                    @Override
+                    public void onThumbnailReady(Bitmap frameBitmap, long time) {
+                        initThumbnails(frameBitmap);
+                    }
 
-                        @Override
-                        public void onError(int errorCode) {
+                    @Override
+                    public void onError(int errorCode) {
 
-                        }
-                    });
+                    }
+                });
         }
 
-//        mThumbnailFetcher.requestThumbnailImage(times,
-//                new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
-//                    private int count;
-//                    List<Bitmap> thumbnails = new ArrayList<>();
-//                    @Override
-//                    public void onThumbnailReady(ShareableBitmap frameBitmap, long time) {
-//                        count++;
-//                        thumbnails.add(frameBitmap.getData());
-//                        if(count == 8){
-//                            initThumbnails(thumbnails);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(int errorCode) {
-//                        count++;
-//                        if(count == 8){
-//                            initThumbnails(thumbnails);
-//                        }
-//                    }
-//                });
+        //        mThumbnailFetcher.requestThumbnailImage(times,
+        //                new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
+        //                    private int count;
+        //                    List<Bitmap> thumbnails = new ArrayList<>();
+        //                    @Override
+        //                    public void onThumbnailReady(ShareableBitmap frameBitmap, long time) {
+        //                        count++;
+        //                        thumbnails.add(frameBitmap.getData());
+        //                        if(count == 8){
+        //                            initThumbnails(thumbnails);
+        //                        }
+        //                    }
+        //
+        //                    @Override
+        //                    public void onError(int errorCode) {
+        //                        count++;
+        //                        if(count == 8){
+        //                            initThumbnails(thumbnails);
+        //                        }
+        //                    }
+        //                });
     }
 
-    private void initThumbnails(Bitmap thumbnail){
+    private void initThumbnails(Bitmap thumbnail) {
         ImageView image = new ImageView(this);
         image.setScaleType(ImageView.ScaleType.FIT_XY);
         image.setImageBitmap(thumbnail);
         mThumbnailList.addView(image);
     }
 
-    private void initCoverParameters(){
+    private void initCoverParameters() {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         mmr.setDataSource(mVideoPath);
         String sw = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
@@ -265,38 +267,43 @@ public class CoverEditActivity extends Activity implements View.OnClickListener{
         int h = Integer.parseInt(sh);
         int maxWidth = getResources().getDisplayMetrics().widthPixels;
         float scale = (float) h / w;
-        h = (int)(maxWidth * scale);
+        h = (int) (maxWidth * scale);
         int maxHeight = mCoverImage.getHeight();
-        if(h > maxHeight){
+        if (h > maxHeight) {
             h = maxHeight;
-            w = (int)(maxHeight / scale);
-        }else{
+            w = (int) (maxHeight / scale);
+        } else {
             w = maxWidth;
         }
 
-        mCoverFetcher.setParameters(w, h, AliyunIThumbnailFetcher.CropMode.Mediate, ScaleMode.LB, 2);
+        mCoverFetcher.setParameters(w, h, AliyunIThumbnailFetcher.CropMode.Mediate, VideoDisplayMode.FILL, 2);
     }
 
-    private final AliyunThumbnailFetcher.OnThumbnailCompletion mThumbnailCallback = new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
+    private final AliyunIThumbnailFetcher.OnThumbnailCompletion mThumbnailCallback = new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
         @Override
-        public void onThumbnailReady(ShareableBitmap frameBitmap, long time) {
+        public void onThumbnailReady(Bitmap frameBitmap, long time) {
             mFetchingThumbnailCount--;
-            if(mFetchingThumbnailCount < 0){
+            if (mFetchingThumbnailCount < 0) {
                 mFetchingThumbnailCount = 0;
             }
-            Log.d("FETCHER", "fetcher onThumbnailReady time : " + time + "  count : " + mFetchingThumbnailCount);
-            ShareableBitmap sbmp = (ShareableBitmap) mCoverImage.getTag();
-            if(sbmp != null /*&& sbmp != frameBitmap*/){
-                sbmp.release();
+            if (!frameBitmap.isRecycled()){
+                Log.e("frameBitmap", "isRecycled");
+
+                mCoverImage.setImageBitmap(frameBitmap);
+                Bitmap sbmp = (Bitmap) mCoverImage.getTag();
+                if (sbmp != null && sbmp != frameBitmap) {
+                    sbmp.recycle();
+                }
+                mCoverImage.setTag(frameBitmap);
             }
-            mCoverImage.setImageBitmap(frameBitmap.getData());
-            mCoverImage.setTag(frameBitmap);
+
+
         }
 
         @Override
         public void onError(int errorCode) {
             mFetchingThumbnailCount--;
-            if(mFetchingThumbnailCount < 0){
+            if (mFetchingThumbnailCount < 0) {
                 mFetchingThumbnailCount = 0;
             }
             Log.d("FETCHER", "fetcher onError  count : " + mFetchingThumbnailCount);

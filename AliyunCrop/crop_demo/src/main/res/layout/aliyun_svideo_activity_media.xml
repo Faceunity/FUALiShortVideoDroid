@@ -52,7 +52,12 @@
                 <!--android:contentDescription="@null"-->
                 <!--android:src="?attr/qupaiNextStepTickButton" />-->
 
-
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_video_path"
+        android:visibility="gone"
+        />
     </FrameLayout>
 
 

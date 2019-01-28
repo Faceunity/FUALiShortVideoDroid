@@ -23,10 +23,10 @@ import java.util.Map;
 public class FileDownloaderDBController {
     protected static final String TABLE_NAME = "FileDownloader";
 
-    private FileDowloaderDBOpenHelper mDBHelper;
+    private FileDownloaderDBOpenHelper mDBHelper;
 
     public FileDownloaderDBController(Context context, int dbVersion, Map<String, String> dbExtFieldMap, DbUpgradeListener dbUpgradeListener) {
-        mDBHelper = new FileDowloaderDBOpenHelper(context, dbVersion, dbExtFieldMap, dbUpgradeListener);
+        mDBHelper = new FileDownloaderDBOpenHelper(context, dbVersion, dbExtFieldMap, dbUpgradeListener);
     }
 
     /**
@@ -95,6 +95,7 @@ public class FileDownloaderDBController {
     public synchronized boolean insertDb(FileDownloaderModel model, HashMap<String, String> hashMap) {
         SQLiteDatabase sqliteDatabase = mDBHelper.getWritableDatabase();
         boolean succeed = false;
+        //查询是否已经存在
         List<FileDownloaderModel> list = getResourceByFiled(hashMap);
         if (sqliteDatabase.isOpen()) {
             try {
@@ -219,6 +220,11 @@ public class FileDownloaderDBController {
         return path;
     }
 
+    /**
+     * 查询
+     * @param hashMap key - value
+     * @return List<FileDownloaderModel>
+     */
     public synchronized List<FileDownloaderModel> getResourceByFiled(HashMap<String, String> hashMap) {
         String select = "SELECT * FROM ";
                 StringBuffer sqlselection = new StringBuffer();
@@ -298,8 +304,13 @@ public class FileDownloaderDBController {
         return c;
     }
 
+    /**
+     * 通过type来获取数据库资源
+     * @param type { EffectService }
+     * @return List<FileDownloaderModel>
+     */
     public synchronized List<FileDownloaderModel> getResourceByType(int type) {
-        List<FileDownloaderModel> list = new ArrayList<FileDownloaderModel>();
+        List<FileDownloaderModel> list = new ArrayList<>();
         Cursor c;
         String selection = " where effecttype = ? order by id";
         String[] selectionArgs = new String[]{String.valueOf(type)};

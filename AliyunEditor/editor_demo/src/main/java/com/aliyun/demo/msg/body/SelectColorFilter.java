@@ -1,7 +1,6 @@
 package com.aliyun.demo.msg.body;
 
 import com.aliyun.demo.effects.control.EffectInfo;
-import com.aliyun.struct.effect.EffectFilter;
 
 public class SelectColorFilter {
     private EffectInfo mEffectInfo;

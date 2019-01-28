@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.aliyun.demo.R;
+import com.aliyun.demo.recorder.activity.AlivcRecorderActivity;
 
 public class SettingActivity extends Activity {
     private EditText width,height;
@@ -34,7 +35,7 @@ public class SettingActivity extends Activity {
     public void start(View view){
         int w = Integer.parseInt(width.getText().toString());
         int h = Integer.parseInt(height.getText().toString());
-        Intent intent = new Intent(this,CameraDemo.class);
+        Intent intent = new Intent(this, AlivcRecorderActivity.class);
         intent.putExtra("width",w);
         intent.putExtra("height",h);
         intent.putExtra("beauty",isBeautyOpen);

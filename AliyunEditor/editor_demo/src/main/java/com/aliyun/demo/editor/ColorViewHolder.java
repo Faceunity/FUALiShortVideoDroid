@@ -68,7 +68,6 @@ public class ColorViewHolder extends ColorViewPagerAdapter.ViewHolder {
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return list.size();
         }
 
@@ -79,7 +78,6 @@ public class ColorViewHolder extends ColorViewPagerAdapter.ViewHolder {
 
         @Override
         public long getItemId(int position) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
@@ -95,7 +93,7 @@ public class ColorViewHolder extends ColorViewPagerAdapter.ViewHolder {
             }
             final ColorItem item = getItem(position);
 
-            localViewHolder.setData(item);
+            localViewHolder.setData(item,position == 0);
             if (mGridView.getCheckedItemPosition() == position) {
                 localViewHolder.setSelected(true);
             } else {
@@ -123,7 +121,7 @@ public class ColorViewHolder extends ColorViewPagerAdapter.ViewHolder {
 
     private class ColorItemViewMediator {
         private View root;
-        private ColorItem _Data;
+        private ColorItem mData;
         private ImageView mIvColor;
         private View select;
 
@@ -140,7 +138,7 @@ public class ColorViewHolder extends ColorViewPagerAdapter.ViewHolder {
         }
 
         public ColorItem getData() {
-            return _Data;
+            return mData;
         }
 
         public void setListener(View.OnClickListener listener) {
@@ -151,8 +149,12 @@ public class ColorViewHolder extends ColorViewPagerAdapter.ViewHolder {
             select.setVisibility(selected ? View.VISIBLE : View.GONE);
         }
 
-        public void setData(ColorItem item) {
-            _Data = item;
+        public void setData(ColorItem item, boolean isNone) {
+            mData = item;
+            if (isNone){
+                mIvColor.setImageResource(R.mipmap.aliyun_svideo_font_color_none);
+                return;
+            }
             if (item.isStroke) {
                 GradientDrawable drawable = mGradientDrawCache.get(item.strokeColor);
                 if (drawable == null) {
@@ -178,7 +180,7 @@ public class ColorViewHolder extends ColorViewPagerAdapter.ViewHolder {
         List<ColorItem> list = new ArrayList<>();
         TypedArray colors = mContext.getResources().obtainTypedArray(R.array.qupai_text_edit_colors);
 
-        for (int i = 0; i < 21; i++) {
+        for (int i = 0; i < 35; i++) {
             int color = colors.getColor(i, Color.WHITE);
             ColorItem ci = new ColorItem();
             ci.color = color;
@@ -190,6 +192,14 @@ public class ColorViewHolder extends ColorViewPagerAdapter.ViewHolder {
 
         }
         colors.recycle();
+        //添加无颜色
+        ColorItem colorItem = new ColorItem();
+        colorItem.color = Color.WHITE;
+        colorItem.isStroke = stroke;
+        if (stroke) {
+            colorItem.strokeColor = Color.WHITE;
+        }
+        list.add(0,colorItem);
         return list;
     }
 

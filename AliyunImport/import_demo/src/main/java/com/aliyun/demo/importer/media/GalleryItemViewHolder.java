@@ -12,11 +12,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aliyun.svideo.base.MediaInfo;
+import com.aliyun.demo.importer.R;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
-
-import com.aliyun.demo.importer.R;
 
 /**
  * Created by Administrator on 2016/5/18.

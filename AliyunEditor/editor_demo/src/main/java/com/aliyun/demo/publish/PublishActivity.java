@@ -27,19 +27,30 @@ import android.widget.TextView;
 
 import com.aliyun.common.global.AliyunTag;
 import com.aliyun.demo.editor.R;
+import com.aliyun.querrorcode.AliyunErrorCode;
 import com.aliyun.qupai.editor.AliyunICompose;
+import com.aliyun.qupai.editor.AliyunIComposeCallBack;
+import com.aliyun.svideo.base.ActionInfo;
+import com.aliyun.svideo.base.AliyunSvideoActionConfig;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
 /**
  * Created by macpro on 2017/11/6.
+ * 视频合成页面
+ *
  */
 
 public class PublishActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = PublishActivity.class.getName();
+    public long startTime ;
+    public long endTime ;
 
     public static final String KEY_PARAM_CONFIG = "project_json_path";
     public static final String KEY_PARAM_THUMBNAIL = "svideo_thumbnail";
+    public static final String KEY_PARAM_ENTRANCE = "entrance";
+    public static final String KEY_PARAM_VIDEO_RATIO = "key_param_video_ratio";
 
     private View mActionBar;
     private ImageView mIvLeft;
@@ -56,9 +67,17 @@ public class PublishActivity extends Activity implements View.OnClickListener {
 
     private String mConfig;
     private String mOutputPath = Environment.getExternalStorageDirectory() + File.separator + "output_compose_video.mp4";
+    private String mOutputPathTemp = Environment.getExternalStorageDirectory() + File.separator + "output_compose_video_temp.mp4";;
     private String mThumbnailPath;
     private AliyunICompose mCompose;
     private boolean mComposeCompleted;
+
+    /**
+     *  判断是编辑模块进入还是通过社区模块的编辑功能进入
+     *  svideo: 短视频
+     *  community: 社区
+     */
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,8 +87,15 @@ public class PublishActivity extends Activity implements View.OnClickListener {
         mConfig = getIntent().getStringExtra(KEY_PARAM_CONFIG);
         mThumbnailPath = getIntent().getStringExtra(KEY_PARAM_THUMBNAIL);
         mCompose = ComposeFactory.INSTANCE.getInstance();
-        mCompose.init(this);
-        mCompose.compose(mConfig, mOutputPath, mCallback);
+        mCompose.init(this.getApplicationContext());
+
+        //这里合成开始
+        startTime = System.currentTimeMillis();
+        int ret = mCompose.compose(mConfig, mOutputPathTemp, mCallback);
+        if(ret != AliyunErrorCode.OK)
+        {
+            return;
+        }
         View root = (View) mActionBar.getParent();
         root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,16 +307,21 @@ public class PublishActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         if (v == mPublish) {
             mPublish.setEnabled(false);
-            Intent intent = new Intent(this, UploadActivity.class);
-            intent.putExtra(UploadActivity.KEY_UPLOAD_VIDEO, mOutputPath);
+            String tagClassName = AliyunSvideoActionConfig.getInstance().getAction().getTagClassName(ActionInfo.SVideoAction.EDITOR_TARGET_CLASSNAME);
+            Intent intent = new Intent();
+            intent.setClassName(this,tagClassName);
+            intent.putExtra(UploadActivity.KEY_UPLOAD_VIDEO, mOutputPathTemp);
+
             intent.putExtra(UploadActivity.KEY_UPLOAD_THUMBNAIL, mThumbnailPath);
+            intent.putExtra(UploadActivity.KEY_PARAM_VIDEO_RATIO,getIntent().getFloatExtra(KEY_PARAM_VIDEO_RATIO,0f));
             if (!TextUtils.isEmpty(mVideoDesc.getText())) {
                 intent.putExtra(UploadActivity.KEY_UPLOAD_DESC, mVideoDesc.getText().toString());
             }
+            intent.putExtra(UploadActivity.KEY_PARAM_ENTRANCE, getIntent().getStringExtra(UploadActivity.KEY_PARAM_ENTRANCE));
             startActivity(intent);
         } else if (v == mCoverSelect) {
             Intent intent = new Intent(this, CoverEditActivity.class);
-            intent.putExtra(CoverEditActivity.KEY_PARAM_VIDEO, mOutputPath);
+            intent.putExtra(CoverEditActivity.KEY_PARAM_VIDEO, mOutputPathTemp);
             startActivityForResult(intent, 0);
         } else if (v == mIvLeft) {
             onBackPressed();
@@ -329,7 +360,7 @@ public class PublishActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private final AliyunICompose.AliyunIComposeCallBack mCallback = new AliyunICompose.AliyunIComposeCallBack() {
+    private final AliyunIComposeCallBack mCallback = new AliyunIComposeCallBack() {
         @Override
 
         public void onComposeError(int errorCode) {
@@ -337,7 +368,6 @@ public class PublishActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void run() {
                     mComposeProgress.setVisibility(View.GONE);
-
                     mComposeIndiate.setVisibility(View.VISIBLE);
                     mComposeIndiate.setActivated(false);
                     mComposeStatusTip.setText(R.string.backtoeditorandtryagain);
@@ -359,10 +389,19 @@ public class PublishActivity extends Activity implements View.OnClickListener {
 
         @Override
         public void onComposeCompleted() {
+
+            //这里合成结束
+            endTime = System.currentTimeMillis();
+            Log.d("AliYunVideoSDKCompose", "ComposeLength+" + (endTime - startTime) + "+" + new File(mOutputPathTemp).length() + "+" + mOutputPathTemp);
+
             mComposeCompleted = true;
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(mOutputPath);
+            mmr.setDataSource(mOutputPathTemp);
             Bitmap bmp = mmr.getFrameAtTime(0);
+            if(bmp == null) {
+                Log.e(TAG, "Compose error");
+                return ;
+            }
             float w = bmp.getWidth();
             float h = bmp.getHeight();
             int maxWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -404,5 +443,26 @@ public class PublishActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         mCompose.release();
+        renameFile(mOutputPathTemp,mOutputPath );
+    }
+
+    /**
+     * oldPath 和 newPath必须是新旧文件的绝对路径
+     *
+     * */
+    private void renameFile(String oldPath, String newPath) {
+        if(TextUtils.isEmpty(oldPath)) {
+            return;
+        }
+
+        if(TextUtils.isEmpty(newPath)) {
+            return;
+        }
+        File oldFile = new File(oldPath);
+        File newFile = new File(newPath);
+        if (newFile.exists()){
+            newFile.delete();
+        }
+        oldFile.renameTo(new File(newPath));
     }
 }

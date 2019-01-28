@@ -10,16 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.aliyun.svideo.base.MediaInfo;
+import com.aliyun.demo.importer.R;
 
 import java.util.List;
-
-import com.aliyun.demo.importer.R;
 
 public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             implements View.OnClickListener{
 
     public interface OnItemClickListener {
-        boolean onItemClick(GalleryAdapter adapter, int adapter_position);
+        boolean onItemClick(GalleryAdapter adapter, int adapterPosition);
     }
 
     private static final int TYPE_ITEM_DRAFT = 0;
@@ -100,20 +100,20 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public int setActiveDataItem(int id){
-        int data_pos = findDataPosition(id);
-        setActiveAdapterItem(data_pos);
-        return data_pos;
+        int dataPos = findDataPosition(id);
+        setActiveAdapterItem(dataPos);
+        return dataPos;
     }
 
     private int activeAdapterPosition = 0;
-    private void setActiveAdapterItem(int adapter_pos) {
-        int old_adapter_pos = activeAdapterPosition;
-        if (old_adapter_pos == adapter_pos) {
+    private void setActiveAdapterItem(int adapterPos) {
+        int oldAdapterPos = activeAdapterPosition;
+        if (oldAdapterPos == adapterPos) {
             return;
         }
 
-        activeAdapterPosition = adapter_pos;
-        notifyItemChanged(adapter_pos);
+        activeAdapterPosition = adapterPos;
+        notifyItemChanged(adapterPos);
 //        notifyItemChanged(old_adapter_pos);
     }
 
@@ -139,15 +139,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onClick(View v) {
         RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) v.getTag();
-        int adapter_pos = holder.getAdapterPosition();
+        int adapterPos = holder.getAdapterPosition();
 
         if (onItemClickListener != null) {
             Log.d("active", "onItemClick");
-            if (!onItemClickListener.onItemClick(this, adapter_pos)) {
+            if (!onItemClickListener.onItemClick(this, adapterPos)) {
                 Log.d("active","onItemClick1");
                 return;
             }
         }
-        setActiveAdapterItem(adapter_pos);
+        setActiveAdapterItem(adapterPos);
     }
 }

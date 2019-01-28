@@ -6,37 +6,47 @@ package com.aliyun.demo.crop.media;
 
 import android.graphics.Bitmap;
 
-import com.aliyun.common.buffer.AtomicShareable;
+import com.aliyun.common.buffer.AbstractAtomicShareable;
 import com.aliyun.common.buffer.Recycler;
 
-public class ShareableBitmap extends AtomicShareable<ShareableBitmap> {
+public class ShareableBitmap extends AbstractAtomicShareable<ShareableBitmap> {
 
-    private final Bitmap _Data;
+    private final Bitmap mData;
+    private boolean isDataUsed;
 
-    public
-    ShareableBitmap(Recycler<ShareableBitmap> recycler, int w, int h) {
+    public ShareableBitmap(Recycler<ShareableBitmap> recycler, int w, int h) {
         super(recycler);
-        _Data = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        mData = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
     }
 
-    public
-    ShareableBitmap(Bitmap bitmap) {
+    public ShareableBitmap(Bitmap bitmap) {
         super(null);
 
-        _Data = bitmap;
+        mData = bitmap;
+    }
+
+    public boolean isDataUsed() {
+        return isDataUsed;
+    }
+
+    public void setDataUsed(boolean dataUsed) {
+        isDataUsed = dataUsed;
     }
 
     @Override
     protected void onLastRef() {
-        if (_Recycler != null) {
-            _Recycler.recycle(this);
+        if (mRecycler != null) {
+            mRecycler.recycle(this);
         } else {
-            _Data.recycle();
+            if(!mData.isRecycled()) {
+                mData.recycle();
+            }
         }
     }
 
     public Bitmap getData() {
-        return _Data;
+        isDataUsed = true;
+        return mData;
     }
 
 }

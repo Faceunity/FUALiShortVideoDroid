@@ -1,19 +1,15 @@
 package com.aliyun.demo.recorder;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.aliyun.demo.R;
-import com.aliyun.quview.CircularImageView;
-import com.aliyun.struct.effect.EffectBean;
-import com.aliyun.struct.form.IMVForm;
+import com.aliyun.svideo.base.widget.CircularImageView;
+import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;

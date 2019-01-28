@@ -13,8 +13,8 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.aliyun.quview.SquareFrameLayout;
-import com.aliyun.quview.VideoSliceSeekBar;
+import com.aliyun.svideo.base.widget.SquareFrameLayout;
+import com.aliyun.svideo.base.widget.VideoSliceSeekBar;
 
 import java.util.concurrent.TimeUnit;
 

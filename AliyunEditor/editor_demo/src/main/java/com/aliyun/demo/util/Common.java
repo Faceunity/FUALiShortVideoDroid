@@ -10,14 +10,15 @@ import android.view.View;
 
 import com.aliyun.common.logger.Logger;
 import com.aliyun.common.utils.StorageUtils;
+import com.aliyun.demo.editor.R;
 import com.aliyun.demo.http.EffectService;
 import com.aliyun.downloader.DownloaderManager;
 import com.aliyun.downloader.FileDownloaderModel;
 import com.aliyun.jasonparse.JSONSupport;
 import com.aliyun.jasonparse.JSONSupportImpl;
-import com.aliyun.struct.form.AspectForm;
-import com.aliyun.struct.form.PasterForm;
-import com.aliyun.struct.form.ResourceForm;
+import com.aliyun.svideo.sdk.external.struct.form.AspectForm;
+import com.aliyun.svideo.sdk.external.struct.form.PasterForm;
+import com.aliyun.svideo.sdk.external.struct.form.ResourceForm;
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
 
 import java.io.File;
@@ -27,6 +28,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -49,10 +51,10 @@ public class Common {
     public final static String QU_NAME = "AliyunEditorDemo";
     public static String QU_DIR;
     private static Object object = new Object();
-    private static View mView;
+    private static WeakReference<View> mView;
 
-    public final static String QU_COLOR_FILTER = "filter";
-    public final static String QU_ANIMATION_FILTER = "animation_filter";
+    public final static String QU_COLOR_FILTER = "aliyun_svideo_filter";
+    public final static String QU_ANIMATION_FILTER = "aliyun_svideo_animation_filter";
     public final static String QU_MV = "aliyun_svideo_mv";
     public final static String QU_CAPTION = "aliyun_svideo_caption";
     public final static String QU_OVERLAY = "aliyun_svideo_overlay";
@@ -207,11 +209,15 @@ public class Common {
     public static void copyAll(Context cxt, View view) {
         SD_DIR = StorageUtils.getCacheDirectory(cxt).getAbsolutePath() + File.separator;
         QU_DIR = SD_DIR + QU_NAME + File.separator;
-        mView = view;
+        mView = new WeakReference<>(view);
         File dir = new File(Common.QU_DIR);
         copySelf(cxt,QU_NAME);
         dir.mkdirs();
         unZip();
+    }
+
+    private static boolean isViewDestroy(){
+        return mView.get() == null || !(mView.get().getVisibility() == View.VISIBLE);
     }
 
     private static void insertDB(String name) {
@@ -223,16 +229,13 @@ public class Common {
             insertOverlay();
         }
     }
-
-    public static List<String> getColorFilterList() {
+    public static List<String> getColorFilterList(Context context) {
+        String[] colorFilterList = context.getResources().getStringArray(R.array.filter_order);
         List<String> list = new ArrayList<>();
-        File file = new File(QU_DIR, QU_COLOR_FILTER);
-        if(file.exists() && file.isDirectory()) {
-            File[] files = file.listFiles();
-            for(File fileTemp : files) {
-                if(fileTemp.exists()) {
-                    list.add(fileTemp.getAbsolutePath());
-                }
+        for (String filter : colorFilterList) {
+            File file = new File(QU_DIR+File.separator+QU_COLOR_FILTER,filter);
+            if (file.exists()&&file.isDirectory()){
+                list.add(file.getAbsolutePath());
             }
         }
         return list;
@@ -312,6 +315,7 @@ public class Common {
                 FileDownloaderModel model = new FileDownloaderModel();
                 model.setEffectType(EffectService.EFFECT_CAPTION);
                 model.setId(166);
+                model.setDescription("assets");//用于区分打包还是下载
                 model.setIcon(fs.getAbsolutePath() + File.separator + "icon.png");
                 model.setSubicon(fs.getAbsolutePath() + File.separator + "icon.png");
                 model.setIsunzip(1);
@@ -352,12 +356,9 @@ public class Common {
                         FileDownloaderModel model = new FileDownloaderModel();
                         model.setId(paster.getId());
                         model.setPath(QU_DIR + QU_OVERLAY + File.separator + pasterForm.getName());
-
-                        //        if(icon == null || "".equals(icon)) {
-                            icon = model.getPath() + "/icon.png";
-                //        }
+                        icon = model.getPath() + "/icon.png";
                         model.setIcon(icon);
-                        model.setDescription(paster.getDescription());
+                        model.setDescription("assets");
                         model.setIsnew(paster.getIsNew());
                         model.setName(paster.getName());
                         model.setLevel(paster.getLevel());
@@ -393,8 +394,8 @@ public class Common {
             }
         });
         length = files.length;
-        if(length == 0) {
-            mView.setVisibility(View.GONE);
+        if(length == 0 && !isViewDestroy()) {
+            mView.get().setVisibility(View.GONE);
             return;
         }
         for(final File file : files) {
@@ -422,7 +423,9 @@ public class Common {
                 protected void onPostExecute(Object o) {
                     synchronized (object) {
                         if (length == 0) {
-                            mView.setVisibility(View.GONE);
+                            if (!isViewDestroy()){
+                                mView.get().setVisibility(View.GONE);
+                            }
                         }
                     }
                 }

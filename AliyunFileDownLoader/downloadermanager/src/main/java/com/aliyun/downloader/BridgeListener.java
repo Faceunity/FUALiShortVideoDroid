@@ -122,8 +122,13 @@ class BridgeListener extends FileDownloadListener {
                             File outFile = null;
                             if(model.isunzip() == 1) {
                                 model.setIsunzip(0);
-                                File sourceFile = new File(task.getPath());
+                                if (new File(task.getPath()).isDirectory()){
+                                    outFile = new File(task.getPath());//添加到数据库
+                                    DownloaderManager.getInstance().getDbController().addTask(model);
+                                    return outFile;
+                                }
 
+                                File sourceFile = new File(task.getPath());
                                 File descFile = new File(task.getPath() + "tmp");
                                 boolean isRename = sourceFile.renameTo(descFile);
                                 //File descFile = new File(task.getPath() + "tmp");
@@ -148,7 +153,6 @@ class BridgeListener extends FileDownloadListener {
                                     if(outFile != null) {
                                         DownloaderManager.getInstance().getDbController().addTask(model);
                                     }
-                                    Log.e("process","process file is "+descFile.getAbsolutePath());
                                 }else{
                                     Log.e("process","not process file is "+descFile.getAbsolutePath()+" success is " +success + " isRename is " + isRename);
                                 }

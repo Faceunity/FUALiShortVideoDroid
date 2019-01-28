@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="com.aliyun.demo.recorder.CameraDemo">
+    tools:context="com.aliyun.demo.recorder.activity.AlivcRecorderActivity">
 
     <EditText
         android:id="@+id/aliyun_width"

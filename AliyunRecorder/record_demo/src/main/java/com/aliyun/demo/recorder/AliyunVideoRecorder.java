@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,28 +33,29 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aliyun.common.global.AliyunTag;
 import com.aliyun.common.global.Version;
 import com.aliyun.common.utils.CommonUtil;
 import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.util.OrientationDetector;
-import com.aliyun.quview.RecordTimelineView;
+import com.aliyun.qupai.import_core.AliyunIImport;
+import com.aliyun.qupai.import_core.AliyunImportCreator;
+import com.aliyun.svideo.base.widget.RecordTimelineView;
 import com.aliyun.recorder.AliyunRecorderCreator;
 import com.aliyun.recorder.supply.AliyunIClipManager;
 import com.aliyun.recorder.supply.AliyunIRecorder;
 import com.aliyun.recorder.supply.RecordCallback;
-import com.aliyun.struct.common.AliyunVideoParam;
-import com.aliyun.struct.common.ScaleMode;
-import com.aliyun.struct.common.VideoQuality;
-import com.aliyun.struct.effect.EffectFilter;
-import com.aliyun.struct.encoder.VideoCodecs;
-import com.aliyun.struct.recorder.CameraParam;
-import com.aliyun.struct.recorder.CameraType;
-import com.aliyun.struct.recorder.FlashType;
-import com.aliyun.struct.recorder.MediaInfo;
-import com.aliyun.struct.snap.AliyunSnapVideoParam;
-import com.faceunity.beautycontrolview.BeautyControlView;
-import com.faceunity.beautycontrolview.FURenderer;
-import com.faceunity.wrapper.faceunity;
+import com.aliyun.svideo.sdk.external.struct.common.AliyunDisplayMode;
+import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoParam;
+import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
+import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
+import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
+import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
+import com.aliyun.svideo.sdk.external.struct.recorder.CameraParam;
+import com.aliyun.svideo.sdk.external.struct.recorder.CameraType;
+import com.aliyun.svideo.sdk.external.struct.recorder.FlashType;
+import com.aliyun.svideo.sdk.external.struct.recorder.MediaInfo;
+import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
 import com.qu.preview.callback.OnFrameCallBack;
 import com.qu.preview.callback.OnTextureIdCallBack;
 
@@ -62,7 +64,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * 视频拍摄界面
+ * 该界面进行视频录制, 选择相册资源等
+ */
 public class AliyunVideoRecorder extends Activity implements View.OnClickListener, View.OnTouchListener, ScaleGestureDetector.OnScaleGestureListener, GestureDetector.OnGestureListener {
 
     private static final int EFFECT_BEAUTY_LEVEL = 80;
@@ -129,18 +134,15 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
     private MediaScannerConnection msc;
 
     private int mFrame = 25;
-    private ScaleMode mCropMode = ScaleMode.PS;
+    private VideoDisplayMode mCropMode = VideoDisplayMode.SCALE;
     private int mMinCropDuration = 2000;
     private int mMaxVideoDuration = 10000;
     private int mMinVideoDuration = 2000;
 
     private int mGalleryVisibility;
 
-    private FURenderer mFURenderer;
+    private boolean mIsToEditor;
 
-    private BeautyControlView mFaceunityControlView;
-
-    private boolean isDestory = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,12 +155,6 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
         initOrientationDetector();
         getData();
         initView();
-
-        mFURenderer = new FURenderer.Builder(this).inputTextureType(faceunity.FU_ADM_FLAG_EXTERNAL_OES_TEXTURE).build();
-
-        mFaceunityControlView = (BeautyControlView) findViewById(R.id.faceunity_control);
-        mFaceunityControlView.setOnFaceUnityControlListener(mFURenderer);
-
         initSDK();
         reSizePreview();
         msc = new MediaScannerConnection(this,null);
@@ -220,7 +216,6 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
         intent.putExtra(AliyunSnapVideoParam.MAX_VIDEO_DURATION,param.getMaxVideoDuration());
         intent.putExtra(AliyunSnapVideoParam.SORT_MODE, param.getSortMode());
 
-//        intent.putExtra(AliyunConfig.KEY_FROM, "com.duanqu.qupai.action.recorder.setting");
         context.startActivity(intent);
     }
 
@@ -295,6 +290,8 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
                 mRecorderBar.setBackgroundColor(getResources().getColor(R.color.aliyun_tools_bar_color));
                 mRecordTimelineView.setColor(mTintColor, mTimelineDelBgColor, R.color.qupai_black_opacity_70pct, R.color.aliyun_qupai_transparent);
                 break;
+            default:
+                break;
         }
         if (previewParams != null) {
             mGlSurfaceView.setLayoutParams(previewParams);
@@ -329,13 +326,6 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
         return vh;
     }
 
-//    private void toSourceType(){
-//        if(BuildConfig.source_type.equals(SAAS_CLOSE_SOURCE)){
-//            toEditor();
-//        }else if(BuildConfig.source_type.equals(CUSTOM_OPEN_SOURCE)){
-//            toEditor();
-//        }
-//    }
 
     private void reOpenCamera(int width, int height) {
         mRecorder.stopPreview();
@@ -389,7 +379,6 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
             @Override
             public void onFrameBack(byte[] bytes, int width, int height, Camera.CameraInfo info) {
                 isOpenFailed = false;
-                mFURenderer.onPreviewFrame(bytes, width, height, info);
             }
 
             @Override
@@ -405,15 +394,11 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
         mRecorder.setOnTextureIdCallback(new OnTextureIdCallBack() {
             @Override
             public int onTextureIdBack(int textureId, int textureWidth, int textureHeight, float[] matrix) {
-                return mFURenderer.onDrawFrame(textureId, textureWidth, textureHeight, matrix);
+                return textureId;
             }
 
             @Override
             public int onScaledIdBack(int scaledId, int textureWidth, int textureHeight, float[] matrix) {
-                if (isDestory) {
-                    mFURenderer.destroyItems();
-                    isDestory = false;
-                }
                 return scaledId;
             }
         });
@@ -427,7 +412,7 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
         info.setVideoWidth(resolution[0]);
         info.setVideoHeight(resolution[1]);
         info.setVideoCodec(mVideoCodec);
-        info.setCrf(mBitrate);
+        info.setCrf(25);
 //        EncoderDebugger debugger = EncoderDebugger.debug(this, 528, 704);
         mRecorder.setMediaInfo(info);
         mCameraType = mRecorder.getCameraCount() == 1 ? CameraType.BACK : mCameraType;
@@ -453,13 +438,63 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
 
             @Override
             public void onFinish(String outputPath) {
-                scanFile(outputPath);
-                mClipManager.deleteAllPart();
-                Intent intent = new Intent();
-                intent.putExtra(OUTPUT_PATH,outputPath);
-                intent.putExtra(RESULT_TYPE,RESULT_TYPE_RECORD);
-                setResult(Activity.RESULT_OK,intent);
-                finish();
+                if(mIsToEditor)
+                {
+                    scanFile(outputPath);
+                    AliyunIImport aliyunIImport = AliyunImportCreator.getImportInstance(AliyunVideoRecorder.this);
+                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                    int duration = 0;
+                    int width = 0;
+                    int height = 0;
+                    try {
+                        mmr.setDataSource(outputPath);
+                        aliyunIImport.setVideoParam(mVideoParam);
+                        width = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                        height = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+                        duration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                    }catch (Exception e){
+                        Log.e(AliyunTag.TAG,"video invalid, return");
+                        return ;
+                    }
+                    mmr.release();
+                    mVideoParam.setScaleMode(VideoDisplayMode.SCALE);
+                    mVideoParam.setOutputWidth(width);
+                    mVideoParam.setOutputHeight(height);
+                    //aliyunIImport.addVideo(outputPath,0, duration,0, AliyunDisplayMode.DEFAULT);
+                    aliyunIImport.addVideo(outputPath,0,duration,null,AliyunDisplayMode.DEFAULT);
+                    Uri projectUri = Uri.fromFile(new File(aliyunIImport.generateProjectConfigure()));
+                    AliyunIClipManager mClipManager = mRecorder.getClipManager();
+                    List<String> tempFileList = mClipManager.getVideoPathList();
+                    Class editor = null;
+                    try {
+                        editor = Class.forName("com.aliyun.demo.editor.EditorActivity");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    if(editor == null){
+                        toStitch();
+                        return;
+                    }
+                    Intent intent = new Intent(AliyunVideoRecorder.this,editor);
+                    intent.putExtra("video_param", mVideoParam);
+                    intent.putExtra("project_json_path", projectUri.getPath());
+                    intent.putStringArrayListExtra("temp_file_list", (ArrayList<String>) tempFileList);
+//        intent.putExtra(AliyunConfig.KEY_FROM, getIntent().getStringExtra(AliyunConfig.KEY_FROM));
+                    try{
+                        startActivity(intent);
+                    }catch (ActivityNotFoundException e){
+                        toStitch();
+                    }
+                }else{
+                    scanFile(outputPath);
+                    mClipManager.deleteAllPart();
+                    Intent intent = new Intent();
+                    intent.putExtra(OUTPUT_PATH,outputPath);
+                    intent.putExtra(RESULT_TYPE,RESULT_TYPE_RECORD);
+                    setResult(Activity.RESULT_OK,intent);
+                    finish();
+                }
+
             }
 
             @Override
@@ -493,11 +528,6 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
 
             @Override
             public void onInitReady() {
-                if (isDestory) {
-                    mFURenderer.destroyItems();
-                    isDestory = false;
-                }
-                mFURenderer.loadItems();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -563,9 +593,7 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
     @Override
     protected void onPause() {
         super.onPause();
-        isDestory = true;
-
-        if (isRecording) {
+        if(isRecording){
             mRecorder.cancelRecording();
             isRecording = false;
         }
@@ -615,9 +643,9 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
          * 裁剪参数
          */
         mFrame = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE,25);
-        mCropMode = (ScaleMode) getIntent().getSerializableExtra(AliyunSnapVideoParam.CROP_MODE);
+        mCropMode = (VideoDisplayMode) getIntent().getSerializableExtra(AliyunSnapVideoParam.CROP_MODE);
         if(mCropMode == null){
-            mCropMode = ScaleMode.PS;
+            mCropMode = VideoDisplayMode.SCALE;
         }
         mMinCropDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MIN_CROP_DURATION,2000);
         mMinVideoDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MIN_VIDEO_DURATION,2000);
@@ -689,6 +717,8 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
                 mSwitchLightBtn.setSelected(true);
                 mSwitchLightBtn.setActivated(true);
                 break;
+            default:
+                break;
         }
         mRecorder.setLight(mFlashType);
     }
@@ -710,6 +740,8 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
             case AliyunSnapVideoParam.RESOLUTION_720P:
                 width = 720;
                 break;
+            default:
+                break;
         }
         switch (mRatioMode) {
             case AliyunSnapVideoParam.RATIO_MODE_1_1:
@@ -720,6 +752,9 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
                 break;
             case AliyunSnapVideoParam.RATIO_MODE_9_16:
                 height = width * 16 / 9;
+                break;
+            default:
+                height = width;
                 break;
         }
         resolution[0] = width;
@@ -746,7 +781,6 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
         if (mOrientationDetector != null) {
             mOrientationDetector.setOrientationChangedListener(null);
         }
-        AliyunRecorderCreator.destroyRecorderInstance();
     }
 
     @Override
@@ -761,9 +795,7 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
             }
             mRecorder.setBeautyStatus(isBeautyOn);
         } else if (v == mSwitchCameraBtn) {
-            mFURenderer.clearCameraData();
             int type = mRecorder.switchCamera();
-            mFURenderer.enableCameraData();
             if (type == CameraType.BACK.getType()) {
                 mCameraType = CameraType.BACK;
                 mSwitchLightBtn.setEnabled(true);
@@ -776,7 +808,6 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
                 mSwitchLightBtn.setImageResource(mLightDisableRes);
                 mSwitchCameraBtn.setActivated(true);
             }
-//            mFURenderer.onCameraChange(mCameraType == CameraType.FRONT ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK, 0);
         } else if (v == mSwitchLightBtn) {
             if (mFlashType == FlashType.OFF) {
                 mFlashType = FlashType.AUTO;
@@ -798,6 +829,8 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
                     v.setSelected(true);
                     v.setActivated(true);
                     break;
+                default:
+                    break;
             }
             mRecorder.setLight(mFlashType);
         } else if (v == mSwitchRatioBtn) {
@@ -815,9 +848,8 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
 //            mClipManager.deleteAllPart();
             if (mClipManager.getDuration() >= mClipManager.getMinDuration()) {
                 toEditor();
-//                toEditor();
-//                toSourceType();
             }
+            Log.e("Test", "complete.......recorder");
         } else if (v == mDeleteBtn) {
             if (!isSelected) {
                 mRecordTimelineView.selectLast();
@@ -842,6 +874,7 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
             Class crop = null;
             try {
                 crop = Class.forName("com.aliyun.demo.crop.MediaActivity");
+//                crop = Class.forName("com.aliyun.demo.importer.MediaActivity");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -898,36 +931,39 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
     }
 
     private void toEditor() {
-        Uri projectUri = mRecorder.finishRecordingForEdit();
-        AliyunIClipManager mClipManager = mRecorder.getClipManager();
-        List<String> tempFileList = mClipManager.getVideoPathList();
-        Class editor = null;
-        try {
-            editor = Class.forName("com.aliyun.demo.editor.EditorActivity");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        if(editor == null){
-            toStitch();
-            return;
-        }
-        Intent intent = new Intent(this,editor);
-        int[] resolutions = getResolution();
-        mVideoParam.setScaleMode(ScaleMode.LB);
-        mVideoParam.setOutputWidth(resolutions[0]);
-        mVideoParam.setOutputHeight(resolutions[1]);
-        intent.putExtra("video_param", mVideoParam);
-        intent.putExtra("project_json_path", projectUri.getPath());
-        intent.putStringArrayListExtra("temp_file_list", (ArrayList<String>) tempFileList);
-//        intent.putExtra(AliyunConfig.KEY_FROM, getIntent().getStringExtra(AliyunConfig.KEY_FROM));
-        try{
-            startActivity(intent);
-        }catch (ActivityNotFoundException e){
-            toStitch();
-        }
+        mIsToEditor = true;
+        mRecorder.finishRecording();
+//        Uri projectUri = mRecorder.finishRecordingForEdit();
+//        AliyunIClipManager mClipManager = mRecorder.getClipManager();
+//        List<String> tempFileList = mClipManager.getVideoPathList();
+//        Class editor = null;
+//        try {
+//            editor = Class.forName("com.aliyun.demo.editor.EditorActivity");
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        if(editor == null){
+//            toStitch();
+//            return;
+//        }
+//        Intent intent = new Intent(this,editor);
+//        int[] resolutions = getResolution();
+//        mVideoParam.setScaleMode(ScaleMode.LB);
+//        mVideoParam.setOutputWidth(resolutions[0]);
+//        mVideoParam.setOutputHeight(resolutions[1]);
+//        intent.putExtra("video_param", mVideoParam);
+//        intent.putExtra("project_json_path", projectUri.getPath());
+//        intent.putStringArrayListExtra("temp_file_list", (ArrayList<String>) tempFileList);
+////        intent.putExtra(AliyunConfig.KEY_FROM, getIntent().getStringExtra(AliyunConfig.KEY_FROM));
+//        try{
+//            startActivity(intent);
+//        }catch (ActivityNotFoundException e){
+//            toStitch();
+//        }
     }
 
     private void toStitch(){
+        mIsToEditor = false;
         mRecorder.finishRecording();
         AliyunIClipManager mClipManager = mRecorder.getClipManager();
         mClipManager.deleteAllPart();//删除所有的临时文件

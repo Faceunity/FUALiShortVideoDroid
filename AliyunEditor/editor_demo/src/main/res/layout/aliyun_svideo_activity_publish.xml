@@ -20,7 +20,7 @@
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:progressDrawable="@drawable/aliyun_svideo_publish_progress_drawable" />
 
-    <com.aliyun.quview.SquareFrameLayout
+    <com.aliyun.svideo.base.widget.SquareFrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -124,7 +124,7 @@
                 android:visibility="invisible"
                 android:textColor="@android:color/white"/>-->
         </FrameLayout>
-    </com.aliyun.quview.SquareFrameLayout>
+    </com.aliyun.svideo.base.widget.SquareFrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

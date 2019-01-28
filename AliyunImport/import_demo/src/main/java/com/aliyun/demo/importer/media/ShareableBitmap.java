@@ -6,10 +6,10 @@ package com.aliyun.demo.importer.media;
 
 import android.graphics.Bitmap;
 
-import com.aliyun.common.buffer.AtomicShareable;
+import com.aliyun.common.buffer.AbstractAtomicShareable;
 import com.aliyun.common.buffer.Recycler;
 
-public class ShareableBitmap extends AtomicShareable<ShareableBitmap> {
+public class ShareableBitmap extends AbstractAtomicShareable<ShareableBitmap> {
 
     private final Bitmap _Data;
 
@@ -28,8 +28,8 @@ public class ShareableBitmap extends AtomicShareable<ShareableBitmap> {
 
     @Override
     protected void onLastRef() {
-        if (_Recycler != null) {
-            _Recycler.recycle(this);
+        if (mRecycler != null) {
+            mRecycler.recycle(this);
         } else {
             _Data.recycle();
         }

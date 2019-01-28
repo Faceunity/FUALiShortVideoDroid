@@ -11,7 +11,7 @@ import com.aliyun.demo.http.EffectService;
 import com.aliyun.demo.http.HttpCallback;
 import com.aliyun.downloader.DownloaderManager;
 import com.aliyun.downloader.FileDownloaderModel;
-import com.aliyun.struct.form.ResourceForm;
+import com.aliyun.svideo.sdk.external.struct.form.ResourceForm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class CaptionLoader {
     }
 
 
-    public int loadAllCaption(String signature, final CaptionLoader.LoadCallback callback) {
+    public int loadAllCaption(String signature, final LoadCallback callback) {
 
         mService.loadEffectCaption(EffectService.EFFECT_CAPTION, signature
                 , mPackageName, new HttpCallback<List<ResourceForm>>() {
@@ -55,7 +55,6 @@ public class CaptionLoader {
                                     }
                                 }
                             }
-
                             callback.onLoadCompleted(localCaptions, result, null);
                         }
 
@@ -91,7 +90,12 @@ public class CaptionLoader {
         while(cursor.moveToNext()) {
             ResourceForm paster = new ResourceForm();
             paster.setIcon(cursor.getString(cursor.getColumnIndex(FileDownloaderModel.ICON)));
-            paster.setDescription(cursor.getString(cursor.getColumnIndex(FileDownloaderModel.DESCRIPTION)));
+            String description = cursor.getString(cursor.getColumnIndex(FileDownloaderModel.DESCRIPTION));
+            if ("assets".equals(description)){
+                continue;
+            }else {
+                paster.setDescription(description);
+            }
             paster.setId(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.ID)));
             paster.setIsNew(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.ISNEW)));
             paster.setLevel(cursor.getInt(cursor.getColumnIndex(FileDownloaderModel.LEVEL)));

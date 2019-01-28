@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">EditorBase</string>
+    <!-- 美颜相关  start -->
+    <string name="alivc_beauty">Face Filter</string>
+    <string name="alivc_fine_tune">Makeup</string>
+
+    <string name="beauty_whitening">Skin Whitening</string>
+    <string name="beauty_buffing">Skin Polishing</string>
+    <string name="beauty_blush">Skin Shining</string>
+    <string name="beauty_lip_gloss">Blusher</string>
+    <string name="beauty_short_jaw">Shorten Jaw</string>
+    <string name="beauty_bigeye">BigEye</string>
+    <string name="beauty_thinface">SlimFace</string>
+    <string name="alivc_beauty_level_advanced">Advanced</string>
+    <string name="alivc_beauty_level_normal">Normal</string>
+    <!-- 美颜相关  end   -->
+
+    <string name="alivc_tips_fine_tuning">点击可微调</string>
+</resources>

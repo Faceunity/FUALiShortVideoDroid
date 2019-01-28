@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="alivc_svideo_tab_indicator_color">#00C1DE</color>
+    <color name="aliyun_white">#FFF</color>
+    <color name="qupai_black_opacity_30pct">#4d000000</color>
+    <color name="qupai_white_opacity_70pct">#b3FFFFFF</color>
+    <color name="qupai_white_opacity_50pct">#80FFFFFF</color>
+    <color name="qupai_white_opacity_40pct">#66FFFFFF</color>
+    <color name="qupai_white_opacity_30pct">#4DFFFFFF</color>
+    <color name="qupai_white_opacity_60pct">#99FFFFFF</color>
+    <color name="aliyun_rate_item_select_bg">#00c2dd</color>
+    <color name="alivc_line_gray_light">#C3C5C6 </color>
+    <color name="alivc_line_gray_white">#D7D8D9</color>
+    <color name="alivic_record_effect_bg_color">#00C1DE</color>
+    <color name="alivc_transparent">#00FFFFFF</color>
+    <color name="colorPrimary_alpha_five">#1affffff</color>
+    <color name="colorPrimary_alpha_ten">#0cffffff</color>
+    <color name="colorPrimary_alpha_fifteen">#26ffffff</color>
+    <color name="alivc_color_pusher_colorAccent">#ff00c1de</color>
+    <color name="aliyun_video_color_action_bar_bg">#232A42</color>
+    <color name="aliyun_video_color_effect_item_bg">#1b2133</color>
+    <color name="aliyun_colorPrimary">#3F51B5</color>
+    <color name="aliyun_colorPrimaryDark">#303F9F</color>
+    <color name="aliyun_colorAccent">#FF4081</color>
+    <color name="aliyun_video_color_effect_bg_color">#EF4B81</color>
+    <color name="aliyun_record_fill_progress">#EF4B81</color>
+    <color name="aliyun_white_alpha_50">#7FFFFFFF</color>
+    <color name="aliyun_seek_bar_theme">#F05487</color>
+    <color name="aliyun_reocrd_bg">#232A42</color>
+    <color name="aliyun_tools_bar_color">#881B2133</color>
+    <color name="aliyun_color_red">#ff0000</color>
+    <color name="aliyun_music_select_actionbar_bg">#373d41</color>
+
+    <color name="aliyun_color_record_duraton">#fd4646</color>
+
+    <color name="alivc_svideo_action_bar_bg">#232A42</color>
+    <color name="alivc_chooser_pager_bg">#B3000000</color>
+
+    <color name="alivc_chooser_indicator_bg">#B3000000 </color>
+    <color name="effect_bg_color">#00C1DE</color>
+    <color name="alivc_bg_record_time">#33FFFFFF</color>
+    <color name="alivc_bg_rate_bar">#CC1C1F21</color>
+    <color name="alivc_bg_rate_selected">#F8F8F8</color>
+    <color name="alivc_text_333">#333</color>
+    <color name="alivc_line_gray">#979797</color>
+    <color name="alivc_bg_download">#7f000000</color>
+    <color name="alivc_svideo_gray">#C0C0C0</color>
+</resources>

@@ -1,47 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
-              android:background="@color/tab_bg_color"
-              android:paddingBottom="@dimen/bottom_editor_tab_padding"
-              android:paddingTop="@dimen/bottom_editor_tab_padding"
-              android:orientation="horizontal">
+              android:scrollbars="none">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/bottom_editor_tab_padding_b"
+        android:paddingTop="@dimen/bottom_editor_tab_padding"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tab_filter"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/aliyun_svideo_filter"/>
+        <TextView
+            android:id="@+id/tab_effect_audio_mix"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/music_effect_manager"/>
+        <TextView
+            android:id="@+id/tab_effect_overlay"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/motion_sticker_effect_manager"/>
 
-    <ImageView
-        android:id="@+id/tab_effect_filter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@mipmap/aliyun_svideo_filter"/>
-    <ImageView
-        android:id="@+id/tab_effect_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@mipmap/aliyun_svideo_overlay"/>
-    <ImageView
-        android:id="@+id/tab_effect_caption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@mipmap/aliyun_svideo_caption"/>
-    <ImageView
-        android:id="@+id/tab_effect_mv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@mipmap/aliyun_svideo_mv"/>
-    <ImageView
-        android:id="@+id/tab_effect_audio_mix"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@mipmap/aliyun_svideo_music"/>
-    <ImageView
-        android:id="@+id/tab_paint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@mipmap/aliyun_svideo_paint"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/tab_effect_caption"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/subtitle_effect_manager"/>
+        <TextView
+            android:id="@+id/tab_effect_mv"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/mv_effect_manager"/>
+        <TextView
+            android:id="@+id/tab_effect_filter"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/aliyun_svideo_effect"/>
+        <TextView
+            android:id="@+id/tab_effect_time"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/alivc_svideo_time"/>
+
+        <TextView
+            android:id="@+id/tab_effect_transition"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/alivc_svideo_transition"/>
+
+        <TextView
+            android:id="@+id/tab_paint"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/alivc_svideo_paint"/>
+
+
+    </LinearLayout>
+</HorizontalScrollView>

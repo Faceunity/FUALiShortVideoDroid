@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:clickable="true"
+    android:orientation="vertical">
+    <View
+        android:id="@+id/blank_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <com.aliyun.svideo.base.widget.beauty.seekbar.BeautySeekBar
+        android:id="@+id/beauty_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="49dp" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="185dp"
+        android:background="@color/alivc_chooser_bg">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="44.5dp">
+
+            <TextView
+                android:id="@+id/tv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:drawableLeft="@mipmap/aliyun_svideo_icon_back"
+                android:drawablePadding="5dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/alivc_beauty"
+                android:textColor="#ffffff"
+                android:textSize="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/alivc_fine_tune"
+                android:textColor="#ffffff"
+                android:textSize="12dp" />
+
+            <ImageView
+                android:id="@+id/iv_reset"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="5dp"
+                android:padding="10dp"
+                android:src="@drawable/icon_reset" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="44.5dp"
+            android:background="#c3c5c6" />
+
+            <LinearLayout
+                android:id="@+id/alivc_beauty_face"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="85.5dp"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:id="@+id/beauty_detail_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/beauty_buffing"
+                        android:drawableStart="@drawable/icon_buffing"
+                        android:drawableLeft="@drawable/icon_buffing"
+                        android:layout_marginRight="57dp"
+                        style="@style/BeautyDetailBtnStyle"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/beauty_whitening"
+                        android:drawableStart="@drawable/icon_whitening"
+                        android:drawableLeft="@drawable/icon_whitening"
+                        style="@style/BeautyDetailBtnStyle"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/beauty_ruddy"
+                        android:layout_marginLeft="57dp"
+                        android:drawableStart="@drawable/icon_ruddy"
+                        android:drawableLeft="@drawable/icon_ruddy"
+                        style="@style/BeautyDetailBtnStyle"
+                        />
+
+                </RadioGroup>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:text="@string/beauty_buffing"
+                        style="@style/BeautyDetailTextStyle"
+                        android:layout_marginRight="57dp"
+                        android:layout_marginEnd="57dp" />
+
+                    <TextView
+                        style="@style/BeautyDetailTextStyle"
+                        android:text="@string/beauty_whitening"
+                        />
+
+                    <TextView
+                        style="@style/BeautyDetailTextStyle"
+                        android:layout_marginLeft="57dp"
+                        android:text="@string/beauty_blush"
+                        android:layout_marginStart="57dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alivc_beauty_skin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+                        android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="85.5dp"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:id="@+id/beauty_skin_detail_group"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/beauty_bigeye"
+                    android:drawableStart="@drawable/icon_big_eye"
+                    android:drawableLeft="@drawable/icon_big_eye"
+                    android:layout_marginRight="40dp"
+                    style="@style/BeautyDetailBtnStyle"
+                    android:layout_marginEnd="40dp" />
+
+
+
+                <RadioButton
+                    android:id="@+id/beauty_thin_face"
+                    android:layout_marginLeft="40dp"
+                    android:drawableStart="@drawable/icon_thin_face"
+                    android:drawableLeft="@drawable/icon_thin_face"
+                    style="@style/BeautyDetailBtnStyle"
+                    android:layout_marginStart="40dp" />
+
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:text="@string/beauty_bigeye"
+                    style="@style/BeautyDetailTextStyle"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginEnd="40dp" />
+
+                <TextView
+                    android:text="@string/beauty_thinface"
+                    style="@style/BeautyDetailTextStyle"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

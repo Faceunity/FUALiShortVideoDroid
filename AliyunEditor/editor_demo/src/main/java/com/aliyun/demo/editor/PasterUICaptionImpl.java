@@ -8,19 +8,29 @@ import android.graphics.Bitmap;
 import android.view.TextureView;
 import android.view.ViewGroup;
 
-import com.aliyun.demo.editor.timeline.TimelineBar;
-import com.aliyun.demo.widget.AliyunPasterView;
+import com.aliyun.demo.editor.thumblinebar.OverlayThumbLineBar;
+import com.aliyun.demo.effects.control.UIEditorPage;
+import com.aliyun.demo.widget.BaseAliyunPasterView;
+import com.aliyun.qupai.editor.AliyunIEditor;
 import com.aliyun.qupai.editor.AliyunPasterController;
 
 public class PasterUICaptionImpl extends PasterUIGifImpl {
 
     private int textCenterOffsetX, textCenterOffsetY;
-    private int textWidth, textHeight;
-    public PasterUICaptionImpl(AliyunPasterView pasterView, AliyunPasterController controller, TimelineBar timelineBar) {
-        super(pasterView, controller, timelineBar);
 
-        textWidth = controller.getPasterTextWidth();
-        textHeight = controller.getPasterTextHeight();
+    public PasterUICaptionImpl(BaseAliyunPasterView pasterView, AliyunPasterController controller,
+                               OverlayThumbLineBar thumbLineBar,AliyunIEditor aliyunIEditor) {
+        this(pasterView, controller, thumbLineBar);
+        this.mAliyunIEditor = aliyunIEditor;
+        mEditorPage = UIEditorPage.CAPTION;
+    }
+
+    public PasterUICaptionImpl(BaseAliyunPasterView pasterView, AliyunPasterController controller,
+                               OverlayThumbLineBar thumbLineBar) {
+        super(pasterView, controller, thumbLineBar);
+
+        int textWidth = controller.getPasterTextWidth();
+        int textHeight = controller.getPasterTextHeight();
         textCenterOffsetX = controller.getPasterTextOffsetX();
         textCenterOffsetY = controller.getPasterTextOffsetY();
         int width = controller.getPasterWidth();
@@ -30,9 +40,6 @@ public class PasterUICaptionImpl extends PasterUIGifImpl {
         int top = textCenterOffsetY - textHeight / 2;
         int right = width - textCenterOffsetX - textWidth / 2;
         int bottom = height - textCenterOffsetY - textHeight / 2;
-//        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)mText.getLayoutParams();
-//        lp.leftMargin = textCenterOffsetX - textWidth / 2;
-//        lp.topMargin = textCenterOffsetY - textHeight / 2;
 
         mText.setText(controller.getText());
         mText.setEditCompleted(true);
@@ -98,25 +105,23 @@ public class PasterUICaptionImpl extends PasterUIGifImpl {
     @Override
     public int getPasterTextOffsetX() {
         float[] scale = mPasterView.getScale();
-        return (int)(textCenterOffsetX * scale[0]);
+        return (int) (textCenterOffsetX * scale[0]);
     }
 
     @Override
     public int getPasterTextOffsetY() {
         float[] scale = mPasterView.getScale();
-        return (int)(textCenterOffsetY * scale[1]);
+        return (int) (textCenterOffsetY * scale[1]);
     }
 
     @Override
     public int getPasterTextWidth() {
-        float[] scale = mPasterView.getScale();
-        return (int)(textWidth * scale[0]);
+        return mText.getTextWidth();
     }
 
     @Override
     public int getPasterTextHeight() {
-        float[] scale = mPasterView.getScale();
-        return (int)(textHeight * scale[1]);
+        return mText.getTextHeight();
     }
 
     @Override
@@ -128,8 +133,8 @@ public class PasterUICaptionImpl extends PasterUIGifImpl {
     protected void playPasterEffect() {
         TextureView pv = new TextureView(mPasterView.getContext());
         animPlayerView = mController.createPasterPlayer(pv);
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT);
         ViewGroup vg = (ViewGroup) mPasterView.getContentView();
         vg.addView(pv, 0, lp);
 
@@ -141,4 +146,5 @@ public class PasterUICaptionImpl extends PasterUIGifImpl {
         vg.removeViewAt(0);
         animPlayerView = null;
     }
+
 }

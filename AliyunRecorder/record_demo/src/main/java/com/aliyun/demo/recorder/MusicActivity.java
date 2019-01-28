@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aliyun.demo.R;
+import com.aliyun.demo.recorder.activity.AlivcRecorderActivity;
 import com.aliyun.demo.recorder.util.Common;
 import com.aliyun.demo.recorder.util.MusicQuery;
 
@@ -26,7 +27,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
+/**
+ * 音乐选择界面
+ */
 public class MusicActivity extends Activity implements View.OnClickListener{
 
     private RecyclerView mMusicList;
@@ -73,7 +76,7 @@ public class MusicActivity extends Activity implements View.OnClickListener{
     }
 
     private void getData(){
-        mRecordTime = getIntent().getIntExtra(CameraDemo.MUSIC_MAX_RECORD_TIME,10 *1000);
+        mRecordTime = getIntent().getIntExtra(AlivcRecorderActivity.MUSIC_MAX_RECORD_TIME,10 *1000);
         File[] files = new File(Common.SD_DIR + Common.QU_NAME + "/mp3").listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -207,8 +210,8 @@ public class MusicActivity extends Activity implements View.OnClickListener{
             finish();
         }else if(v == mCompeletBtn){
             Intent intent = new Intent();
-            intent.putExtra(CameraDemo.MUSIC_PATH,mMusicPath);
-            intent.putExtra(CameraDemo.MUSIC_START_TIME,mStartTime);
+            intent.putExtra(AlivcRecorderActivity.MUSIC_PATH,mMusicPath);
+            intent.putExtra(AlivcRecorderActivity.MUSIC_START_TIME,mStartTime);
             setResult(Activity.RESULT_OK,intent);
             finish();
         }else if(v == mOnlineMusicBtn){

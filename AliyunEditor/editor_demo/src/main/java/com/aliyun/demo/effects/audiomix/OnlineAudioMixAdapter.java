@@ -23,8 +23,8 @@ import com.aliyun.demo.effects.control.UIEditorPage;
 import com.aliyun.downloader.DownloaderManager;
 import com.aliyun.downloader.FileDownloaderCallback;
 import com.aliyun.downloader.FileDownloaderModel;
-import com.aliyun.quview.CircleProgressBar;
-import com.aliyun.struct.form.MusicForm;
+import com.aliyun.svideo.base.widget.CircleProgressBar;
+import com.aliyun.svideo.sdk.external.struct.form.MusicForm;
 
 import java.util.ArrayList;
 

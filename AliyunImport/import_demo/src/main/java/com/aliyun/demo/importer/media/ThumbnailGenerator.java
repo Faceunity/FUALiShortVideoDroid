@@ -33,7 +33,6 @@ public class ThumbnailGenerator {
 
     }
 
-    private Map<Integer, OnThumbnailGenerateListener> listeners = new HashMap<>();
 
     private Executor executor;
     private ContentResolver resolver;
@@ -54,8 +53,8 @@ public class ThumbnailGenerator {
 //            listener.onThumbnailGenerate(key, bmp);
 //            return ;
 //        }
-        ThumbnailTask task = new ThumbnailTask(type, id,resId);
-        listeners.put(key, listener);
+        ThumbnailTask task = new ThumbnailTask(type, id,resId,listener);
+//        listeners.put(key, listener);
         executor.execute(task);
     }
 
@@ -69,11 +68,13 @@ public class ThumbnailGenerator {
         private int type;
         private int id;
         private int resId;
+        private OnThumbnailGenerateListener listener;
 
-        public ThumbnailTask(int type, int id,int resId){
+        public ThumbnailTask(int type, int id,int resId,OnThumbnailGenerateListener listener){
             this.type = type;
             this.id = id;
             this.resId = resId;
+            this.listener = listener;
         }
 
         @Override
@@ -91,9 +92,9 @@ public class ThumbnailGenerator {
             }
             final int key = generateKey(type, id);
             if(bitmap == null){
-                if(listeners.containsKey(key)){
-                    listeners.remove(key);
-                }
+//                if(listeners.containsKey(key)){
+//                    listeners.remove(key);
+//                }
                 return ;
             }
 //            String memoryKey = MemoryCacheUtils.generateKey(String.valueOf(key), new ImageSize(120, 120));
@@ -101,11 +102,9 @@ public class ThumbnailGenerator {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(listeners.containsKey(key)){
-                        OnThumbnailGenerateListener l = listeners.remove(key);
-                        if(l != null){
-                            l.onThumbnailGenerate(key, bitmap);
-                        }
+                    if(listener != null){
+                        listener.onThumbnailGenerate(key,bitmap);
+                        listener = null;
                     }
                 }
             });

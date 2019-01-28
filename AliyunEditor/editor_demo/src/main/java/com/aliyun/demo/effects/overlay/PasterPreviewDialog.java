@@ -5,6 +5,7 @@
 package com.aliyun.demo.effects.overlay;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -22,8 +23,13 @@ public class PasterPreviewDialog extends DialogFragment {
     private static final String KEY_URL = "url";
     private static final String KEY_NAME = "name";
     private static final String KEY_ID = "id";
+    private static boolean isShow = false;
 
     public static PasterPreviewDialog newInstance(String url, String name, int id){
+        if (isShow){
+            return null;
+        }
+        isShow = true;
         PasterPreviewDialog dialog = new PasterPreviewDialog();
         Bundle args=new Bundle();
         args.putString(KEY_URL, url);
@@ -34,8 +40,13 @@ public class PasterPreviewDialog extends DialogFragment {
     }
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        isShow = false;
+    }
+
+    @Override
     public void onActivityCreated(Bundle arg0) {
-        // TODO Auto-generated method stub
         super.onActivityCreated(arg0);
     }
 
@@ -94,7 +105,6 @@ public class PasterPreviewDialog extends DialogFragment {
 
     @Override
     public void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
     }
 

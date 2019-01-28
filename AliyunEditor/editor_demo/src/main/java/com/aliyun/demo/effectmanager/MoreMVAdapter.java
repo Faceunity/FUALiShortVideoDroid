@@ -5,25 +5,28 @@
 package com.aliyun.demo.effectmanager;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.aliyun.common.utils.DensityUtil;
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.effects.imv.IMVPreviewDialog;
-import com.aliyun.quview.CircleProgressBar;
-import com.aliyun.struct.form.IMVForm;
+import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * MV更多 adapter
+ */
 public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHolder> {
     private static final String TAG = MoreMVAdapter.class.getName();
 
@@ -43,11 +46,13 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
     }
 
     class ImvViewHolder extends RecyclerView.ViewHolder {
-        private TextView mTvName, mTvDesc, mTvRightButton;
+        private TextView mTvName, mTvDesc;
+        private TextView mTvRightButton;
         private ImageView mIvIcon;
+        private ImageView downloadFinish;
         private EffectBody<IMVForm> mData;
         private int mPosition;
-        private CircleProgressBar downloadProgress;
+        private ProgressBar progressView;
 
         public void updateData(int position, EffectBody<IMVForm> data) {
             this.mData = data;
@@ -60,15 +65,13 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
 
         public ImvViewHolder(View itemView) {
             super(itemView);
-            mTvName = (TextView) itemView.findViewById(R.id.tv_name);
-            mTvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
-            mTvRightButton = (TextView) itemView.findViewById(R.id.tv_right_button);
-            mIvIcon = (ImageView) itemView.findViewById(R.id.iv_icon);
-            downloadProgress = (CircleProgressBar) itemView.findViewById(R.id.download_progress);
-            int width = DensityUtil.dip2px(itemView.getContext(),25);
-            downloadProgress.setBackgroundWidth(width, width);
-            downloadProgress.setProgressWidth(width);
-            downloadProgress.isFilled(true);
+            mTvName = (TextView)itemView.findViewById(R.id.tv_name);
+            mTvDesc = (TextView)itemView.findViewById(R.id.tv_desc);
+            mIvIcon = (ImageView)itemView.findViewById(R.id.iv_icon);
+            downloadFinish = (ImageView)itemView.findViewById(R.id.iv_download_finish);
+            progressView = itemView.findViewById(R.id.download_progress);
+            mTvRightButton = (TextView)itemView.findViewById(R.id.tv_right_button);
+            mTvRightButton.setText(mContext.getResources().getString(R.string.download_effect_edit));
             mTvRightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -81,14 +84,21 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
                     }
                 }
             });
-
+            downloadFinish.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mRightBtnClickListener != null) {
+                        mRightBtnClickListener.onLocalItemClick(mPosition, mData);
+                    }
+                }
+            });
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mData.getData().getPreviewMp4() != null && !"".equals(mData.getData().getPreviewMp4())) {
+                    if (mData.getData().getPreviewMp4() != null && !"".equals(mData.getData().getPreviewMp4())) {
                         IMVPreviewDialog imvDialog = IMVPreviewDialog.newInstance(mData.getData().getPreviewMp4(),
-                                mData.getData().getPreviewPic());
-                        imvDialog.show(((MoreMVActivity) mContext).getSupportFragmentManager(), "iMV");
+                            mData.getData().getPreviewPic());
+                        imvDialog.show(((MoreMVActivity)mContext).getSupportFragmentManager(), "iMV");
                     }
                 }
             });
@@ -98,13 +108,13 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
     @Override
     public int getItemViewType(int position) {
         int type = VIEW_TYPE_NO;
-        if(position >= 0 && position < mDataList.size()) {
+        if (position >= 0 && position < mDataList.size()) {
             EffectBody<IMVForm> data = mDataList.get(position);
-            if(data.isLocal()) {
+            if (data.isLocal()) {
                 return VIEW_TYPE_LOCAL;
-            }else if(data.isLoading()) {
+            } else if (data.isLoading()) {
                 return VIEW_TYPE_DOWNLOADING;
-            }else {
+            } else {
                 return VIEW_TYPE_REMOTE;
             }
         }
@@ -113,7 +123,8 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
 
     @Override
     public ImvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.aliyun_svideo_layout_effect_manager_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(
+            R.layout.aliyun_svideo_layout_effect_manager_list_item, parent, false);
         ImvViewHolder holder = new ImvViewHolder(view);
         return holder;
     }
@@ -122,21 +133,19 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
     public void onBindViewHolder(ImvViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         holder.mTvRightButton.setVisibility(View.VISIBLE);
-        holder.downloadProgress.setVisibility(View.GONE);
+        holder.progressView.setVisibility(View.GONE);
         switch (viewType) {
             case VIEW_TYPE_LOCAL:
-                holder.mTvRightButton.setText(R.string.use_effect_edit);
-                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_more_paster_use_bg);
+                holder.mTvRightButton.setVisibility(View.INVISIBLE);
+                holder.downloadFinish.setVisibility(View.VISIBLE);
                 holder.updateData(position, mDataList.get(position));
                 break;
             case VIEW_TYPE_REMOTE:
-                holder.mTvRightButton.setText(R.string.download_effect_edit);
-                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_more_paster_download_bg);
+                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_caption_manager_bg);
                 holder.updateData(position, mDataList.get(position));
                 break;
             case VIEW_TYPE_DOWNLOADING:
-                holder.mTvRightButton.setVisibility(View.GONE);
-                holder.downloadProgress.setVisibility(View.VISIBLE);
+                holder.mTvRightButton.setText(mContext.getResources().getString(R.string.downloading_effect_edit));
                 holder.updateData(position, mDataList.get(position));
                 break;
             default:
@@ -150,15 +159,15 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
     }
 
     public void updateProcess(ImvViewHolder viewHolder, int process, int position) {
-        if(viewHolder != null && viewHolder.mPosition == position) {
-            viewHolder.mTvRightButton.setVisibility(View.GONE);
-            viewHolder.downloadProgress.setVisibility(View.VISIBLE);
-            viewHolder.downloadProgress.setProgress(process);
+        if (viewHolder != null && viewHolder.mPosition == position) {
+            viewHolder.mTvRightButton.setBackgroundColor(Color.TRANSPARENT);
+            viewHolder.progressView.setVisibility(View.VISIBLE);
+            viewHolder.progressView.setProgress(process);
         }
     }
 
     public void notifyDownloadingStart(EffectBody<IMVForm> mvBody) {
-        if(!mLoadingMV.contains(mvBody.getData())) {
+        if (!mLoadingMV.contains(mvBody.getData())) {
             mLoadingMV.add(mvBody.getData());
             mvBody.setLoading(true);
         }
@@ -169,21 +178,21 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
         mvBody.setLoading(false);
         //Collections.sort(mDataList, mMVCompator);
         mLoadingMV.remove(mvBody.getData());
-        //notifyDataSetChanged();
-        notifyItemChanged(position);
+        notifyDataSetChanged();
+        //notifyItemChanged(position);
     }
 
     public synchronized void syncData(List<EffectBody<IMVForm>> syncDataList) {
-        if(syncDataList == null) { return ;}
+        if (syncDataList == null) { return;}
         ArrayList<EffectBody<IMVForm>> delList = new ArrayList<>();
-        for(EffectBody<IMVForm> item:mDataList) {
-            if(!syncDataList.contains(item)) {
+        for (EffectBody<IMVForm> item : mDataList) {
+            if (!syncDataList.contains(item)) {
                 delList.add(item);
             }
         }
         mDataList.removeAll(delList);
-        for(EffectBody<IMVForm> item:syncDataList) {
-            if(!mDataList.contains(item)) {
+        for (EffectBody<IMVForm> item : syncDataList) {
+            if (!mDataList.contains(item)) {
                 mDataList.add(item);
             }
         }
@@ -204,32 +213,32 @@ public class MoreMVAdapter extends RecyclerView.Adapter<MoreMVAdapter.ImvViewHol
     class IMVFormCompator implements Comparator<EffectBody<IMVForm>> {
         @Override
         public int compare(EffectBody<IMVForm> o1, EffectBody<IMVForm> o2) {
-            if(o1 == null && o2 == null) {
+            if (o1 == null && o2 == null) {
                 return 0; // o1 = o2
-            }else if(o1 == null && o2 != null) {
+            } else if (o1 == null && o2 != null) {
                 return -1; // o1 < o2
-            }else if(o1 != null && o2 == null) {
+            } else if (o1 != null && o2 == null) {
                 return 1; //o1 > o2
-            }else {
-                if(o1.isLocal() && !o2.isLocal()) {
+            } else {
+                if (o1.isLocal() && !o2.isLocal()) {
                     return -1; // o1 < o2
-                }else if(!o1.isLocal() && o2.isLocal()) {
+                } else if (!o1.isLocal() && o2.isLocal()) {
                     return 1;   //o1 > o2
-                }else {//o1 is local && o2 is local
-                    if(o1.getData() == null && o2.getData() == null) {
+                } else {//o1 is local && o2 is local
+                    if (o1.getData() == null && o2.getData() == null) {
                         return 0; // o1 = o2
-                    }else if(o1.getData() != null && o2.getData() == null) {
+                    } else if (o1.getData() != null && o2.getData() == null) {
                         return 1;   //o1 > o2
-                    }else if(o1.getData() == null && o2.getData() != null) {
+                    } else if (o1.getData() == null && o2.getData() != null) {
                         return -1; //o1 < o2
-                    }else {
+                    } else {
                         IMVForm ep1 = o1.getData();
                         IMVForm ep2 = o2.getData();
-                        if(ep1.getId() < ep2.getId()) {
+                        if (ep1.getId() < ep2.getId()) {
                             return -1; // o1 < o2
-                        }else if(ep1.getId() == ep2.getId()) {
+                        } else if (ep1.getId() == ep2.getId()) {
                             return 0;   // o1 = o2
-                        }else {
+                        } else {
                             return 1;   // o1 > o2
                         }
                     }

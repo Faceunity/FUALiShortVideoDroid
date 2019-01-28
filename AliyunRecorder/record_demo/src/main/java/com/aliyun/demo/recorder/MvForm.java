@@ -1,6 +1,6 @@
 package com.aliyun.demo.recorder;
 
-import com.aliyun.struct.form.AspectForm;
+import com.aliyun.svideo.sdk.external.struct.form.AspectForm;
 
 import java.util.List;
 

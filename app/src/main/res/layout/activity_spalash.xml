@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/splash_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/aliyun_black"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:paddingLeft="26dp"
+        android:paddingBottom="52dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="160dp"
+            android:gravity="start"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alivc_apsara_video_title"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_welcom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/solution_home_welcome_hint"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/spalash_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="-80dp"
+            android:src="@mipmap/alivc_bg_splash" />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/alivc_apsara_video_regist"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        android:singleLine="true"
+        android:textSize="10sp" />
+</LinearLayout>

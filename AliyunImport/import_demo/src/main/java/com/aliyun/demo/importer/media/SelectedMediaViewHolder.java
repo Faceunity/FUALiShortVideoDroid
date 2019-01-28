@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aliyun.svideo.base.MediaInfo;
 import com.aliyun.demo.importer.MediaImageLoader;
 import com.aliyun.demo.importer.R;
 

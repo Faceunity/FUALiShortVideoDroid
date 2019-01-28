@@ -4,13 +4,31 @@
 
 package com.aliyun.demo.effects.control;
 
-import com.aliyun.struct.form.AspectForm;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import com.aliyun.editor.TimeEffectType;
+import com.aliyun.svideo.sdk.external.struct.form.AspectForm;
+
+import java.io.Serializable;
 import java.util.List;
 
 
-public class EffectInfo {
+public class EffectInfo implements Serializable {
+
+    /**
+     * 用作取消的批处理
+     * 1.转场的取消
+     */
+    public List<EffectInfo> mutiEffect;
+
     public UIEditorPage type;
+
+    public TimeEffectType timeEffectType;
+
+    public float timeParam;
+
+    public boolean isMoment;
 
     public boolean isCategory;
 
@@ -22,7 +40,17 @@ public class EffectInfo {
 
     public int id;
 
+    public int mixId;
+
     public List<AspectForm> list;
+
+    public long startTime = -1;
+
+    public long endTime;
+
+    public long streamStartTime;
+
+    public long streamEndTime;
 
     String path;
 
@@ -35,4 +63,10 @@ public class EffectInfo {
     public void setPath(String path) {
         this.path = path;
     }
+
+    public int transitionType;
+
+    public int clipIndex;
+
+
 }

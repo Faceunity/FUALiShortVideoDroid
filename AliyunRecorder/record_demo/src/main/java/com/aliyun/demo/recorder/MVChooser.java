@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.aliyun.struct.form.IMVForm;
+import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,8 +102,9 @@ public class MVChooser extends DialogFragment implements MvAdapter.OnItemClickLi
             int space = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                if(parent.getChildPosition(view) != 0)
+                if(parent.getChildPosition(view) != 0) {
                     outRect.left = space;
+                }
             }
 
             @Override

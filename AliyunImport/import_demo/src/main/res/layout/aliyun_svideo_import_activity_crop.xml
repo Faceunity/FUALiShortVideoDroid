@@ -5,7 +5,7 @@
     android:background="@color/color_bg">
 
 
-    <com.aliyun.quview.VideoTrimFrameLayout
+    <com.aliyun.svideo.base.widget.VideoTrimFrameLayout
         android:id="@+id/video_surfaceLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +20,7 @@
             android:scaleY="1.0001" />
 
 
-    </com.aliyun.quview.VideoTrimFrameLayout>
+    </com.aliyun.svideo.base.widget.VideoTrimFrameLayout>
 
     <!--<FrameLayout-->
     <!--android:layout_width="match_parent"-->
@@ -81,12 +81,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
-            <com.aliyun.quview.HorizontalListView
+            <com.aliyun.svideo.base.widget.HorizontalListView
                 android:id="@+id/video_tailor_image_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.aliyun.quview.VideoSliceSeekBar
+            <com.aliyun.svideo.base.widget.VideoSliceSeekBar
                 android:id="@+id/seek_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

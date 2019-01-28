@@ -10,12 +10,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.widget.ImageView;
 
+import com.aliyun.svideo.base.MediaInfo;
+import com.aliyun.demo.importer.media.ThumbnailGenerator;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
-
-import com.aliyun.demo.importer.media.MediaInfo;
-import com.aliyun.demo.importer.media.ThumbnailGenerator;
 
 public class MediaImageLoader {
     private ThumbnailGenerator mThumbnailGenerator;

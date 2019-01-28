@@ -8,11 +8,13 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -20,31 +22,37 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aliyun.common.global.AliyunTag;
+import com.aliyun.demo.effects.caption.TextDialog;
 import com.aliyun.demo.util.ChineseUtil;
 import com.aliyun.demo.util.CompatUtil;
+import com.aliyun.nativerender.BitmapGenerator;
+import com.aliyun.qupai.editor.impl.text.TextBitmap;
+import com.aliyun.qupai.editor.impl.text.TextBitmapGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class AutoResizingTextView extends TextView {
+public class AutoResizingTextView extends TextView implements BitmapGenerator {
     private static final int NO_LINE_LIMIT = -1;
 
-    private int currentColor;
-    private Integer currentStrokeColor;
-    protected float strokeWidth;
-    protected Paint.Join strokeJoin;
-    protected float strokeMiter;
-    private boolean frozen = false;
-    boolean scaleByDrawable;
+    private int mCurrentColor = Color.WHITE;
+    private Integer mCurrentStrokeColor;
+    protected float mStrokeWidth;
+    protected Paint.Join mStrokeJoin;
+    protected float mStrokeMiter;
+    private boolean mFrozen = false;
+    boolean mScaleByDrawable;
 
-//    private int videoWidth;
-//    private int videoHeight;
+
+    //    private int videoWidth;
+    //    private int videoHeight;
 
     private RectF mTextRect = new RectF();
 
@@ -52,7 +60,7 @@ public class AutoResizingTextView extends TextView {
 
     private TextPaint mPaint;
 
-    private float textAngle;
+    private float mTextAngle;
 
     private float mMaxTextSize;
 
@@ -62,8 +70,8 @@ public class AutoResizingTextView extends TextView {
 
     private float mMinTextSize = 0;
 
-    private int lastWidth; //上次保存的动图宽度
-    private int lastHeight; //上次保存的动图高度
+    private int mLastWidth; //上次保存的动图宽度
+    private int mLastHeight; //上次保存的动图高度
 
     private int mWidth; //动图文字配置宽度
     private int mHeight;//动图文字配置高度
@@ -79,8 +87,9 @@ public class AutoResizingTextView extends TextView {
     private boolean isMirror;
     private boolean isTextOnly;
 
-    private float MAX_TEXTSIZE;
-    private StaticLayout layout;
+    private StaticLayout mLayout;
+    private TextBitmapGenerator mBitmapGenerator;
+    private TextBitmap mTextBitmap;
 
     private int mWidthLimit;
     private final SizeTester mSizeTester = new SizeTester() {
@@ -88,26 +97,28 @@ public class AutoResizingTextView extends TextView {
         @Override
         public int onTestSize(int suggestedSize, RectF availableSPace, String text) {
             mPaint.setTextSize(suggestedSize);
-//            boolean singleline = mMaxLines == 1;
-//            if (singleline) {
-//                mTextRect.bottom = mPaint.getFontSpacing();
-//                mTextRect.right = mPaint.measureText(text);
-//            } else {
-            layout = new StaticLayout(text, mPaint,
-                    mWidthLimit, Layout.Alignment.ALIGN_NORMAL, mSpacingMult,
-                    mSpacingAdd, true);
+            //            boolean singleline = mMaxLines == 1;
+            //            if (singleline) {
+            //                mTextRect.bottom = mPaint.getFontSpacing();
+            //                mTextRect.right = mPaint.measureText(text);
+            //            } else {
+            mLayout = new StaticLayout(text, mPaint,
+                mWidthLimit, Layout.Alignment.ALIGN_NORMAL, mSpacingMult,
+                mSpacingAdd, true);
             // return early if we have aliyun_svideo_more lines
             if (mMaxLines != NO_LINE_LIMIT
-                    && layout.getLineCount() > mMaxLines) {
+                    && mLayout.getLineCount() > mMaxLines) {
+                //大了
                 return 1;
             }
             int tl = calculateMaxLinesByText(text);
-            if (layout.getLineCount() > tl) {
+            if (mLayout.getLineCount() > tl) {
+                //大了
                 return 1;
             }
-            mTextRect.bottom = layout.getHeight();
+            mTextRect.bottom = mLayout.getHeight();
             mTextRect.right = getLayoutMaxWidth();
-//            }
+            //            }
 
             mTextRect.offsetTo(0, 0);
             Log.d("BINARYTEXT", "suggest size : " + suggestedSize +
@@ -127,8 +138,8 @@ public class AutoResizingTextView extends TextView {
     private ImageView mImageView;
 
     public void setVideoSize(int width, int height) {
-//        videoWidth = width;
-//        videoHeight = height;
+        //        videoWidth = width;
+        //        videoHeight = height;
     }
 
     public void setImageView(ImageView imageView) {
@@ -138,25 +149,19 @@ public class AutoResizingTextView extends TextView {
     public Bitmap layoutToBitmap() {
         int textWidth = mWidth;
         int textHeight = mHeight;
-//        int measuredWidth = getMeasuredWidth();
-//        int measuredHeight = getMeasuredHeight();
-//        float ratioWidth = measuredWidth * 1.0f / videoWidth;
-//        float rationHeight = measuredHeight * 1.0f / videoHeight;
-        //setTextWidth((int) (mWidth * Math.min(ratioWidth, rationHeight)));
-        //setTextHeight((int) (mHeight * Math.min(ratioWidth, rationHeight)));
         Layout layout = getLayout();
         if (layout == null) {
             measureSelf(mWidth, mHeight);
             int w = mWidth + getPaddingLeft() + getPaddingRight();
             int h = mHeight + getPaddingTop() + getPaddingBottom();
             super.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+                MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
             layout = getLayout();
         }
 
         if (layout == null) {
-            layout = this.layout;
-            if(layout == null){
+            layout = this.mLayout;
+            if (layout == null) {
                 return null;
             }
         }
@@ -191,28 +196,21 @@ public class AutoResizingTextView extends TextView {
         if (w == 0 || h == 0) {
             return null;
         }
-//        int originW = w, originH = h;
-//        w = AliYunMathUtils.convertΩonvertFun(w);
-//        h = AliYunMathUtils.convertFun(h);
-//        Log.d("Math", "after convert w:"+w+", h:"+h);
-
         Bitmap textBmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(textBmp);
-//        canvas.translate((w - originW) / 2, (h - originH) / 2);
-//        canvas.translate((originW - rw) / 2, (originH - rh) / 2);
         canvas.translate((w - rw) / 2, (h - rh) / 2);
 
         TextPaint paint = layout.getPaint();
-        if (currentStrokeColor != null && currentStrokeColor != 0) {
+        if (mCurrentStrokeColor != null && mCurrentStrokeColor != 0) {
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeJoin(strokeJoin);
-            paint.setStrokeMiter(strokeMiter);
+            paint.setStrokeJoin(mStrokeJoin);
+            paint.setStrokeMiter(mStrokeMiter);
             paint.setStrokeWidth(generateStrokeWidth());
-            paint.setColor(currentStrokeColor);
+            paint.setColor(mCurrentStrokeColor);
             layout.draw(canvas);
         }
 
-        paint.setColor(currentColor);
+        paint.setColor(mCurrentColor);
         paint.setStyle(Paint.Style.FILL);
         layout.draw(canvas);
         if (mImageView != null) {
@@ -220,11 +218,11 @@ public class AutoResizingTextView extends TextView {
         }
 
 
-//        try {
-//            generateFileFromBitmap(textBmp, "/sdcard/test.png", "image/png");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        //        try {
+        //            generateFileFromBitmap(textBmp, "/sdcard/test.png", "image/png");
+        //        } catch (IOException e) {
+        //            e.printStackTrace();
+        //        }
         setTextWidth(textWidth);
         setTextHeight(textHeight);
         return textBmp;
@@ -240,9 +238,9 @@ public class AutoResizingTextView extends TextView {
             outputFile.createNewFile();
         }
         FileOutputStream outputStream = new FileOutputStream(outputFile);
-        srcMimeType = TextUtils.isEmpty(srcMimeType) ? "jpeg":srcMimeType;
+        srcMimeType = TextUtils.isEmpty(srcMimeType) ? "jpeg" : srcMimeType;
         if (outputPath.endsWith("jpg") || outputPath.endsWith("jpeg")
-                || srcMimeType.endsWith("jpg") || srcMimeType.endsWith("jpeg")) {
+            || srcMimeType.endsWith("jpg") || srcMimeType.endsWith("jpeg")) {
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         } else if (outputPath.endsWith("png") || srcMimeType.endsWith("png")) {
             bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
@@ -283,24 +281,24 @@ public class AutoResizingTextView extends TextView {
 
     private int getLayoutMaxWidth() {
         int maxWidth = -1;
-        for (int i = 0; i < layout.getLineCount(); i++) {
-            if (maxWidth < layout.getLineWidth(i)) {
-                maxWidth = (int) layout.getLineWidth(i);
+        for (int i = 0; i < mLayout.getLineCount(); i++) {
+            if (maxWidth < mLayout.getLineWidth(i)) {
+                maxWidth = (int) mLayout.getLineWidth(i);
             }
         }
         return maxWidth;
     }
 
-    private static int binarySearch(int start, int end, String text, SizeTester sizeTester,
+    private int binarySearch(int start, int end, String text, SizeTester sizeTester,
                                     RectF availableSpace) {
         int lastBest = start;
         int lo = start;
         int hi = end - 1;
         int mid = 0;
         Log.d("BINARYTEXT", "start : " + start +
-                " end : " + end +
-                " width : " + availableSpace.right +
-                " height : " + availableSpace.bottom);
+            " end : " + end +
+            " width : " + availableSpace.right +
+            " height : " + availableSpace.bottom);
         while (lo <= hi) {
             mid = (lo + hi) >>> 1;
             int midValCmp = sizeTester.onTestSize(mid, availableSpace, text);
@@ -326,11 +324,11 @@ public class AutoResizingTextView extends TextView {
     private int mMaxHeightWhenOutof;
 
     private void initialize() {
-        strokeJoin = Paint.Join.ROUND;
-        strokeMiter = 10f;
-        MAX_TEXTSIZE = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, 180,
-                getResources().getDisplayMetrics());
+        mStrokeJoin = Paint.Join.ROUND;
+        mStrokeMiter = 10f;
+        mMaxTextSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP, 180,
+            getResources().getDisplayMetrics());
         mMaxTextSize = getResources().getDisplayMetrics().widthPixels;
         mAvailableSpaceRect = new RectF();
         if (mMaxLines == 0) {
@@ -349,7 +347,7 @@ public class AutoResizingTextView extends TextView {
                 int pw = ((ViewGroup) getParent()).getWidth();
                 int ph = ((ViewGroup) getParent()).getHeight();
                 int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        30, getResources().getDisplayMetrics());
+                    30, getResources().getDisplayMetrics());
                 mMaxWidthWhenOutof = pw - padding;
                 mMaxHeightWhenOutof = ph - padding * 3;
 
@@ -360,7 +358,7 @@ public class AutoResizingTextView extends TextView {
     }
 
     public float getMaxTextSize() {
-        return MAX_TEXTSIZE;
+        return mMaxTextSize;
     }
 
     public void setEditCompleted(boolean isEditCompleted) {
@@ -411,48 +409,47 @@ public class AutoResizingTextView extends TextView {
     }
 
     public void restore(int width, int height) {
-        lastHeight = height;
-        lastWidth = width;
+        mLastHeight = height;
+        mLastWidth = width;
     }
 
-    public void setCurrentColor(int currentColor) {
-        this.currentColor = currentColor;
-        setTextColor(currentColor);
+    public void setCurrentColor(int mCurrentColor) {
+        this.mCurrentColor = mCurrentColor;
+        setTextColor(mCurrentColor);
     }
 
     public void setMirror(boolean isMirror) {
         this.isMirror = isMirror;
-        float angle = (float) Math.toDegrees(textAngle);
+        float angle = (float) Math.toDegrees(mTextAngle);
         setRotation(isMirror ? -angle : angle);
         requestLayout();
     }
 
-    public void setTextAngle(float textAngle) {
-        this.textAngle = textAngle;
-        setRotation((float) Math.toDegrees(textAngle));
+    public void setTextAngle(float mTextAngle) {
+        this.mTextAngle = mTextAngle;
+        setRotation((float) Math.toDegrees(mTextAngle));
     }
 
     public float getTextRotation() {
-        return textAngle;
+        return mTextAngle;
     }
 
     public void setTextStrokeColor(int currentStrokeColor) {
-        this.currentStrokeColor = currentStrokeColor;
+        this.mCurrentStrokeColor = currentStrokeColor;
         invalidate();
     }
 
     public int getTextColor() {
-        return currentColor;
+        return mCurrentColor;
     }
 
     public int getTextStrokeColor() {
-        return currentStrokeColor;
+        return mCurrentStrokeColor;
     }
 
     @Override
     public void setText(final CharSequence text, BufferType type) {
         super.setText(filtrateText(text), type);
-//        calculateMaxLinesByText(getText());
     }
 
     private int calculateMaxLinesByText(CharSequence text) {
@@ -507,8 +504,8 @@ public class AutoResizingTextView extends TextView {
         return result;
     }
 
-    public float getStrokeWidth() {
-        return strokeWidth;
+    public float getmStrokeWidth() {
+        return mStrokeWidth;
     }
 
     public int getMaxLines() {
@@ -583,23 +580,28 @@ public class AutoResizingTextView extends TextView {
         } else {
             float base = getTextSize();
             float minLimit = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10,
-                    getResources().getDisplayMetrics());
+                getResources().getDisplayMetrics());
             maxTextSize = Math.max(base, minLimit);
         }
 
         mWidthLimit = (int) mAvailableSpaceRect.right;
         mPaint = new TextPaint(getPaint());
         super.setTextSize(
-                TypedValue.COMPLEX_UNIT_PX,
-                efficientTextSizeSearch(startSize, (int) maxTextSize,
-                        mSizeTester, mAvailableSpaceRect));
+            TypedValue.COMPLEX_UNIT_PX,
+            efficientTextSizeSearch(startSize, (int) maxTextSize,
+                mSizeTester, mAvailableSpaceRect));
     }
 
     private int efficientTextSizeSearch(int start, int end,
                                         SizeTester sizeTester, RectF availableSpace) {
         String text = getText().toString();
-        return binarySearch(start, end, ChineseUtil.halfToFull(text),
-                sizeTester, availableSpace);
+        if (isTextOnly) {
+            //添加10个字换行
+            text = TextDialog.lineFeedText(getText().toString());
+        }
+
+        int textSize = binarySearch(start, end, text, sizeTester, availableSpace);
+        return textSize;
     }
 
     protected boolean isNeedSelfMeasure() {
@@ -611,7 +613,7 @@ public class AutoResizingTextView extends TextView {
         int w, h;
         if (isNeedSelfMeasure()) {
             super.onMeasure(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT);
             w = getMeasuredWidth();
             h = getMeasuredHeight();
             setMeasuredDimension(w + 30, h + 30);
@@ -624,9 +626,9 @@ public class AutoResizingTextView extends TextView {
             h = MeasureSpec.getSize(heightMeasureSpec);
         }
 
-        if (lastHeight == 0 || lastWidth == 0) {
-            lastHeight = h;
-            lastWidth = w;
+        if (mLastHeight == 0 || mLastWidth == 0) {
+            mLastHeight = h;
+            mLastWidth = w;
         }
         setMeasuredDimension(w, h);
         measureSelf(w, h);
@@ -644,17 +646,17 @@ public class AutoResizingTextView extends TextView {
         int bottom = 0;
         float rotx, roty;
 
-        if (lastHeight == 0 || lastWidth == 0) {
+        if (mLastHeight == 0 || mLastWidth == 0) {
             rotx = 1;
             roty = 1;
         } else {
-            rotx = (float) width / (float) lastWidth;
-            roty = (float) height / (float) lastHeight;
+            rotx = (float) width / (float) mLastWidth;
+            roty = (float) height / (float) mLastHeight;
         }
 
         if (mWidth == 0 || mHeight == 0) {
-            mWidth = lastWidth;
-            mHeight = lastHeight;
+            mWidth = mLastWidth;
+            mHeight = mLastHeight;
         }
 
         w = (int) (mWidth * rotx);
@@ -681,21 +683,20 @@ public class AutoResizingTextView extends TextView {
 
         adjustTextSize();
 
-//        if(!isTextOnly && layout != null && mMaxLines != 1){
-//            int ww = getLayoutMaxWidth();
-//            left += (w - ww) / 2;
-//            right += (w - ww) / 2;
-//
-//        }
-//        int disx = (width - left - right - w) / 2;
-//        int disy = (height - top - bottom - h) / 2;
+        //            int ww = getLayoutMaxWidth();
+        //            left += (w - ww) / 2;
+        //            right += (w - ww) / 2;
+        //
+        //        }
+        //        int disx = (width - left - right - w) / 2;
+        //        int disy = (height - top - bottom - h) / 2;
 
         setPadding(left, top, right, bottom);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (scaleByDrawable) {
+        if (mScaleByDrawable) {
             int alpha = getPaint().getAlpha();
             getPaint().setAlpha(0);
             super.onDraw(canvas);
@@ -706,14 +707,14 @@ public class AutoResizingTextView extends TextView {
         int restoreColor = this.getCurrentTextColor();
         this.setShadowLayer(0, 0, 0, 0);
 
-        if (currentStrokeColor != null && currentStrokeColor != 0) {
+        if (mCurrentStrokeColor != null && mCurrentStrokeColor != 0) {
             TextPaint paint = this.getPaint();
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeJoin(strokeJoin);
-            paint.setStrokeMiter(strokeMiter);
-            this.setTextColor(currentStrokeColor);
-            strokeWidth = generateStrokeWidth();
-            paint.setStrokeWidth(strokeWidth);
+            paint.setStrokeJoin(mStrokeJoin);
+            paint.setStrokeMiter(mStrokeMiter);
+            this.setTextColor(mCurrentStrokeColor);
+            mStrokeWidth = generateStrokeWidth();
+            paint.setStrokeWidth(mStrokeWidth);
             super.onDraw(canvas);
             paint.setStyle(Paint.Style.FILL);
         }
@@ -752,42 +753,119 @@ public class AutoResizingTextView extends TextView {
 
     // Keep these things locked while onDraw in processing
     public void freeze() {
-        frozen = true;
+        mFrozen = true;
     }
 
     public void unfreeze() {
-        frozen = false;
+        mFrozen = false;
     }
 
 
     @Override
     public void requestLayout() {
-        if (!frozen) super.requestLayout();
+        if (!mFrozen) {
+            super.requestLayout();
+        }
     }
 
     @Override
     public void postInvalidate() {
-        if (!frozen) super.postInvalidate();
+        if (!mFrozen) {
+            super.postInvalidate();
+        }
     }
 
     @Override
     public void postInvalidate(int left, int top, int right, int bottom) {
-        if (!frozen) super.postInvalidate(left, top, right, bottom);
+        if (!mFrozen) {
+            super.postInvalidate(left, top, right, bottom);
+        }
     }
 
     @Override
     public void invalidate() {
-        if (!frozen) super.invalidate();
+        if (!mFrozen) {
+            super.invalidate();
+        }
     }
 
     @Override
     public void invalidate(Rect rect) {
-        if (!frozen) super.invalidate(rect);
+        if (!mFrozen) {
+            super.invalidate(rect);
+        }
     }
 
     @Override
     public void invalidate(int l, int t, int r, int b) {
-        if (!frozen) super.invalidate(l, t, r, b);
+        if (!mFrozen) {
+            super.invalidate(l, t, r, b);
+        }
+    }
+
+    /**
+     * 该方法会在非UI线程被调用，因此不能执行UI更新操作
+     * @param bmpWidth
+     * @param bmpHeight
+     * @return
+     */
+    @Override
+    public Bitmap generateBitmap(int bmpWidth, int bmpHeight) {
+        if(mBitmapGenerator == null) {
+            mTextBitmap = new TextBitmap();
+            mBitmapGenerator = new TextBitmapGenerator();
+        }
+        mTextBitmap.mText = getText().toString();
+        mTextBitmap.mFontPath = mFontPath;
+        mTextBitmap.mBmpWidth = bmpWidth;
+        mTextBitmap.mBmpHeight = bmpHeight;
+        mTextBitmap.mTextWidth = bmpWidth;
+        mTextBitmap.mTextHeight = bmpHeight;
+        mTextBitmap.mTextColor = mCurrentColor;
+        mTextBitmap.mTextStrokeColor = mCurrentStrokeColor;
+        mTextBitmap.mTextAlignment = Layout.Alignment.ALIGN_CENTER;
+        mBitmapGenerator.updateTextBitmap(mTextBitmap);
+        return mBitmapGenerator.generateBitmap(bmpWidth, bmpHeight);
+    }
+
+    public int getTextWidth() {
+        Layout layout = getLayout();
+        if (layout == null) {
+            measureSelf(mWidth, mHeight);
+            int w = mWidth + getPaddingLeft() + getPaddingRight();
+            int h = mHeight + getPaddingTop() + getPaddingBottom();
+            super.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+            layout = getLayout();
+        }
+
+        if (layout == null) {
+            layout = this.mLayout;
+            if (layout == null) {
+                return 0;
+            }
+        }
+        return layout.getWidth();
+    }
+
+    public int getTextHeight() {
+        Layout layout = getLayout();
+        if (layout == null) {
+            measureSelf(mWidth, mHeight);
+            int w = mWidth + getPaddingLeft() + getPaddingRight();
+            int h = mHeight + getPaddingTop() + getPaddingBottom();
+            super.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+            layout = getLayout();
+        }
+
+        if (layout == null) {
+            layout = this.mLayout;
+            if (layout == null) {
+                return 0;
+            }
+        }
+        return layout.getHeight();
     }
 
     private interface SizeTester {
@@ -798,6 +876,6 @@ public class AutoResizingTextView extends TextView {
          * text, it takes less space than {@code availableSpace}, > 0
          * otherwise
          */
-        public int onTestSize(int suggestedSize, RectF availableSpace, String text);
+        int onTestSize(int suggestedSize, RectF availableSpace, String text);
     }
 }

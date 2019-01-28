@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="MySwitchTheme">
+        <item name="colorControlActivated">@color/alivic_record_effect_bg_color</item>
+        <item name="colorSwitchThumbNormal">#FFF1F1F1</item>
+        <item name="android:colorForeground">@color/colorPrimary_alpha_five</item>
+    </style>
+</resources>

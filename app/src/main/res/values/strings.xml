@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Aliyun Video Client</string>
+    <string name="solution_apsarav">ApsaraV</string>
+    <string name="solution_push">Publish</string>
+    <string name="solution_live_room">Live Room</string>
+    <string name="solution_player">Player</string>
+    <string name="solution_svideo">Svideo</string>
+    <string name="solution_upload">Upload</string>
+    <string name="solution_recorder">Recorder</string>
+    <string name="solution_camera">Camera</string>
+    <string name="solution_crop">Crop</string>
+    <string name="solution_edit">Edit</string>
+    <string name="solution_community">community</string>
+    <string name="solution_videocall">Video Call</string>
+
+    <string name="solution_home_welcome_hint">WELCOME TO START THE \nVIDEO JOURNEY</string>
+    <string name="solution_wait_remind">Product features are under development...</string>
+    <string name="solution_unable_merge_remind">Unable Merge Desx</string>
+    <string name="resetstr">Switch Success, reloading data...</string>
+    <string name="alivc_apsara_video_regist">© 2009&#8211;2018 Copyright by Alibaba Cloud All rights reserved</string>
+
+    <string name="alivc_apsara_video_title">Aparsara Video</string>
+</resources>

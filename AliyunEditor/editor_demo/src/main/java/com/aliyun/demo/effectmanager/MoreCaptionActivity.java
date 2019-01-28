@@ -19,7 +19,6 @@ import com.aliyun.common.global.AppInfo;
 import com.aliyun.common.logger.Logger;
 import com.aliyun.common.utils.CommonUtil;
 import com.aliyun.common.utils.ToastUtil;
-import com.aliyun.demo.actionbar.ActionBarActivity;
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.http.EffectService;
 import com.aliyun.demo.util.Common;
@@ -29,16 +28,16 @@ import com.aliyun.downloader.FileDownloaderModel;
 import com.aliyun.jasonparse.JSONSupportImpl;
 import com.aliyun.qupaiokhttp.HttpRequest;
 import com.aliyun.qupaiokhttp.StringHttpRequestCallback;
-import com.aliyun.struct.form.FontForm;
-import com.aliyun.struct.form.PasterForm;
-import com.aliyun.struct.form.ResourceForm;
+import com.aliyun.svideo.sdk.external.struct.form.FontForm;
+import com.aliyun.svideo.sdk.external.struct.form.PasterForm;
+import com.aliyun.svideo.sdk.external.struct.form.ResourceForm;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-public class MoreCaptionActivity extends ActionBarActivity implements
+public class MoreCaptionActivity extends AbstractActionBarActivity implements
         MoreCaptionAdapter.OnItemRightButtonClickListener, View.OnClickListener {
     private static final String TAG = MoreCaptionActivity.class.getName();
 
@@ -50,6 +49,7 @@ public class MoreCaptionActivity extends ActionBarActivity implements
     private Hashtable<Integer, Boolean> mIsBreak = null;
     private List<ResourceForm> mLoadingCaption = null;
     private int mFontResIndex = 0;
+    private AsyncTask<Void, Void, List<EffectBody<ResourceForm>>> loadCaptionResource;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class MoreCaptionActivity extends ActionBarActivity implements
         setActionBarLeftClickListener(this);
         setActionBarRightClickListener(this);
         mRvMorePaster = (RecyclerView) findViewById(R.id.rv_more_paster);
-        mAdapter = new MoreCaptionAdapter(mData, new ArrayList<EffectBody<ResourceForm>>(), this);
+        mAdapter = new MoreCaptionAdapter(mData, this);
         mRvMorePaster.setAdapter(mAdapter);
         mRvMorePaster.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL,
@@ -76,34 +76,22 @@ public class MoreCaptionActivity extends ActionBarActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-
-        new AsyncTask<Void, Void, List<ResourceForm>>() {
-            @Override
-            protected List<ResourceForm> doInBackground(Void... voids) {
-                List<ResourceForm> list = mCaptionLoader.loadLocalCaptions();
-                return list;
-            }
-
-            @Override
-            protected void onPostExecute(List<ResourceForm> list) {
-                if(list != null) {
-                    List<EffectBody<ResourceForm>> localData = new ArrayList<>();
-                    EffectBody<ResourceForm> body;
-                    for(ResourceForm paster:list) {
-                        body = new EffectBody<ResourceForm>(paster, true);
-                        localData.add(body);
-                    }
-                    mAdapter.setLocalData(localData);
-                }
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         mCaptionLoader.loadAllCaption(AppInfo.getInstance().obtainAppSignature(getApplicationContext()),
                 new CaptionLoader.LoadCallback() {
             @Override
             public void onLoadCompleted(List<ResourceForm> localInfos,
                                         List<ResourceForm> remoteInfos,
                                         Throwable e) {
+                if(localInfos != null) {
+                    List<EffectBody<ResourceForm>> localData = null;
+                    localData = new ArrayList<>();
+                    EffectBody<ResourceForm> body;
+                    for(ResourceForm paster:localInfos) {
+                        body = new EffectBody<>(paster, true);
+                        localData.add(body);
+                    }
+                    mAdapter.setRemoteData(localData);
+                }
                 List<EffectBody<ResourceForm>> remoteData = new ArrayList<>();
                 if (remoteInfos != null) {
                     EffectBody<ResourceForm> body;
@@ -113,6 +101,7 @@ public class MoreCaptionActivity extends ActionBarActivity implements
                     }
                 }
                 mAdapter.setRemoteData(remoteData);
+
                 mIsBreak = new Hashtable<Integer, Boolean>(remoteData.size());
                 mLoadingCaption = new ArrayList<ResourceForm>(remoteData.size());
             }
@@ -334,7 +323,6 @@ public class MoreCaptionActivity extends ActionBarActivity implements
 
     @Override
     public void onLocalItemClick(int position, EffectBody<ResourceForm> data) {
-        //TODO 使用该字幕
         Intent intent = new Intent();
         intent.putExtra(SELECTED_ID, data.getData().getId());
         setResult(Activity.RESULT_OK, intent);
@@ -362,6 +350,12 @@ public class MoreCaptionActivity extends ActionBarActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DownloaderManager.getInstance().pauseAllTask();
+        // 需求要求, 下载过程中返回上层页面, 继续在后台下载
+        //DownloaderManager.getInstance().pauseAllTask();
+
+        if (loadCaptionResource !=null) {
+            loadCaptionResource.cancel(true);
+            loadCaptionResource = null;
+        }
     }
 }

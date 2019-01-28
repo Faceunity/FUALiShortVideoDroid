@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -61,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/aliyun_svideo_switch_light_selector_magic" />
+            android:src="@drawable/aliyun_svideo_switch_magic_camera_light_selector" />
 
         <ImageView
             android:id="@+id/aliyun_switch_camera"
@@ -69,14 +70,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/aliyun_svideo_switch_camera_selector_magic" />
+            android:src="@drawable/aliyun_svideo_switch_magic_camera_selector" />
         <ImageView
             android:id="@+id/aliyun_complete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/aliyun_svideo_record_complete_selector" />
+            android:src="@drawable/aliyun_svideo_magic_camera_complete_selector" />
         </LinearLayout>
         <ImageView
             android:id="@+id/aliyun_back"
@@ -86,33 +87,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:src="@mipmap/aliyun_svideo_icon_cancel" />
-        <!--<TextView-->
-            <!--android:id="@+id/face_1"-->
-            <!--android:layout_width="40dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal|left"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_marginLeft="65dp"-->
-            <!--android:layout_marginTop="10dp"-->
-            <!--android:text="1" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/face_2"-->
-            <!--android:layout_width="40dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal|left"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_marginLeft="105dp"-->
-            <!--android:layout_marginTop="10dp"-->
-            <!--android:text="2" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/face_3"-->
-            <!--android:layout_width="40dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal|left"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_marginLeft="145dp"-->
-            <!--android:layout_marginTop="10dp"-->
-            <!--android:text="3" />-->
+
     </FrameLayout>
 
     <LinearLayout
@@ -217,7 +192,7 @@
                 android:background="@drawable/aliyun_svideo_shape_oval_white"
                 android:visibility="visible">
 
-                <com.aliyun.quview.FanProgressBar
+                <com.aliyun.svideo.base.widget.FanProgressBar
                     android:id="@+id/aliyun_record_progress"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -232,7 +207,7 @@
 
             </FrameLayout>
 
-            <com.aliyun.quview.CircleProgressBar
+            <com.aliyun.svideo.base.widget.CircleProgressBar
                 android:id="@+id/aliyun_download_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -262,7 +237,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center" />
     </FrameLayout>
-    <com.aliyun.quview.RecordTimelineView
+    <com.aliyun.svideo.base.widget.RecordTimelineView
         android:id="@+id/aliyun_record_timeline"
         android:layout_width="match_parent"
         android:layout_height="10dp" />

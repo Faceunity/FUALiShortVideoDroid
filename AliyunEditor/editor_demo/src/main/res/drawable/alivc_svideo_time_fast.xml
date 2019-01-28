@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:width="40dp"
+                android:height="40dp" />
+            <solid android:color="#33FFFFFF" />
+        </shape>
+    </item>
+    <item
+        android:top="13dp"
+        android:bottom="13dp"
+        android:left="10dp"
+        android:right="10dp"
+        android:gravity="center"
+        android:drawable="@mipmap/alivc_svideo_effect_time_fast"/>
+</layer-list>

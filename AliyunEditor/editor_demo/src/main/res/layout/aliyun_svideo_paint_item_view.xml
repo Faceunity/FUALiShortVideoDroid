@@ -9,10 +9,10 @@
 
     <ImageView
         android:id="@+id/paint_color_image"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_gravity="center"
-        android:padding="1dp"
-        android:src="@drawable/aliyun_svideo_shape_oval_red"
-        android:background="@drawable/aliyun_svideo_shape_effect_selector"/>
+        android:padding="5dp"
+
+        android:src="@drawable/aliyun_svideo_shape_oval_red" />
 </LinearLayout>

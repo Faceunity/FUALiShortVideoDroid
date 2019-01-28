@@ -60,8 +60,12 @@ public class DownloaderManager {
      * @return
      */
     public static DownloaderManager getInstance() {
-        if (mDownloadManager == null || (mDbController == null && mContext != null)) {
-            mDownloadManager = new DownloaderManager();
+        if (mDownloadManager == null) {
+            synchronized (DownloaderManager.class) {
+                if (mDownloadManager == null || (mDbController == null && mContext != null)) {
+                    mDownloadManager = new DownloaderManager();
+                }
+            }
         }
         return mDownloadManager;
     }
@@ -180,6 +184,7 @@ public class DownloaderManager {
                 task = FileDownloader.getImpl().create(model.getUrl())
                     .setPath(model.getPath())
                     .setCallbackProgressTimes(100)
+                    .setCallbackProgressMinInterval(100)
                     .setAutoRetryTimes(mAutoRetryTimes)
                     .setListener(bridgeListener);
                 for (int i = 0; i < mHeaders.size(); i++) {
@@ -586,10 +591,10 @@ public class DownloaderManager {
         ShellUtils.execCommand("chmod 777 " + path, false);
 
         final int id = FileDownloadUtils.generateId(url, path);
-        FileDownloaderModel model = getFileDownloaderModelById(id);
-        if (model != null) {
-            return model;
-        }
+//        FileDownloaderModel model = getFileDownloaderModelById(id);
+//        if (model != null) {
+//            return model;
+//        }
         downloaderModel.setTaskId(id);
         //去除添加数据库操作，等下载完成后插入数据库
 //        model = mDbController.addTask(downloaderModel);

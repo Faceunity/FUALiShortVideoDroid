@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:layout_gravity="bottom"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_beauty_detail"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@mipmap/alivc_beauty_icon_detail" />
+
+    <FrameLayout
+        android:layout_width="345dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        >
+        <RadioGroup
+            android:id="@+id/beauty_normal_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/beauty0"
+                style="@style/BeautyLevelBtnStyle"
+                android:text="0" />
+
+            <RadioButton
+                android:id="@+id/beauty1"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="1" />
+
+            <RadioButton
+                android:id="@+id/beauty2"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="2" />
+
+            <RadioButton
+                android:id="@+id/beauty3"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="3" />
+
+            <RadioButton
+                android:id="@+id/beauty4"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="4" />
+
+            <RadioButton
+                android:id="@+id/beauty5"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="5" />
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/beauty_advanced_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <RadioButton
+                android:id="@+id/beauty_advanced_0"
+                style="@style/BeautyLevelBtnStyle"
+                android:text="0" />
+
+            <RadioButton
+                android:id="@+id/beauty_advanced_1"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="1" />
+
+            <RadioButton
+                android:id="@+id/beauty_advanced_2"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="2" />
+
+            <RadioButton
+                android:id="@+id/beauty_advanced_3"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="3" />
+
+            <RadioButton
+                android:id="@+id/beauty_advanced_4"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="4" />
+
+            <RadioButton
+                android:id="@+id/beauty_advanced_5"
+                style="@style/BeautyLevelBtnStyle"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="5" />
+        </RadioGroup>
+    </FrameLayout>
+</LinearLayout>

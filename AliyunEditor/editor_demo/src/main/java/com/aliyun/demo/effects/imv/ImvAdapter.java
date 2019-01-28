@@ -12,25 +12,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.effectmanager.MoreMVActivity;
 import com.aliyun.demo.effects.control.BaseChooser;
 import com.aliyun.demo.effects.control.EffectInfo;
 import com.aliyun.demo.effects.control.OnItemClickListener;
 import com.aliyun.demo.effects.control.UIEditorPage;
-import com.aliyun.quview.CircularImageView;
-import com.aliyun.struct.form.IMVForm;
+import com.aliyun.svideo.base.widget.CircularImageView;
+import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ViewTarget;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * mv效果选择页面adapter
+ */
 public class ImvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener{
 
     private Context mContext;
@@ -98,10 +102,13 @@ public class ImvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
 
         }
         if(mSelectedPos == position) {
-            iMVViewHolder.mImage.setSelected(true);
+
+            iMVViewHolder.mImage.setVisibility(View.GONE);
+            iMVViewHolder.mIvSelectState.setVisibility(View.VISIBLE);
             mSelectedHolder = iMVViewHolder;
         } else {
-            iMVViewHolder.mImage.setSelected(false);
+            iMVViewHolder.mImage.setVisibility(View.VISIBLE);
+            iMVViewHolder.mIvSelectState.setVisibility(View.GONE);
         }
         iMVViewHolder.mName.setText(name);
         iMVViewHolder.itemView.setTag(holder);
@@ -116,11 +123,13 @@ public class ImvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
     public static class IMVViewHolder extends RecyclerView.ViewHolder{
         FrameLayout frameLayout;
         CircularImageView mImage;
+        ImageView mIvSelectState;
         TextView mName;
         public IMVViewHolder(View itemView) {
             super(itemView);
             mImage = (CircularImageView) itemView.findViewById(R.id.resource_image_view);
             mName = (TextView) itemView.findViewById(R.id.resource_name);
+            mIvSelectState = itemView.findViewById(R.id.iv_select_state);
         }
     }
 
@@ -160,20 +169,45 @@ public class ImvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
 
     public void setEffectInfo(IMVViewHolder holder, int index) {
         if(mSelectedPos != index && holder != null) {
-            mSelectedHolder.mImage.setSelected(false);
-            holder.mImage.setSelected(true);
+            if (mSelectedHolder!=null){
+                mSelectedHolder.mImage.setVisibility(View.VISIBLE);
+                mSelectedHolder.mIvSelectState.setVisibility(View.GONE);
+            }
+            holder.mImage.setVisibility(View.GONE);
+            holder.mIvSelectState.setVisibility(View.VISIBLE);
             mSelectedPos = index;
             mSelectedHolder = holder;
             setEffecteffective(index);
         }
     }
 
+    /**
+     * 根据下标获取数据, 回调itemclick
+     * @param index 索引
+     */
     public void setEffecteffective(int index) {
+        if (index < 0 || index >= mDataList.size()) {
+            return;
+        }
         EffectInfo effectInfo = new EffectInfo();
         effectInfo.type = UIEditorPage.MV;
         effectInfo.list = mDataList.get(index).getAspectList();
         effectInfo.id = mDataList.get(index).getId();
-        mItemClick.onItemClick(effectInfo, effectInfo.id);
+        if (mItemClick != null) {
+            mItemClick.onItemClick(effectInfo, effectInfo.id);
+        }
+    }
+
+    /**
+     * 设置数据更新
+     * @param index
+     */
+    public void setEffecteffectiveAndNotify(int index){
+        notifyItemChanged(mSelectedPos);
+        notifyItemChanged(index);
+        mSelectedPos = index;
+        setEffecteffective(index);
+
     }
 
     public void setSelectedPos(int position) {

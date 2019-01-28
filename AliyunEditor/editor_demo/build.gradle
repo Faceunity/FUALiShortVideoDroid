@@ -7,43 +7,21 @@ android {
     defaultConfig {
         minSdkVersion externalMinSdkVersion
         targetSdkVersion externalTargetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    android {
-        lintOptions {
-            abortOnError false
+        consumerProguardFiles 'lib-proguard-rules.pro'
+        jackOptions {
+            enabled true
         }
     }
 }
 
 dependencies {
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile (project(':AliyunVideoSdk')) {
-        transitive = false
-    }
-//    compile project(':vod-upload-android-sdk-release')
-//    compile project(':Aliyunvodauth-release')
-
-    compile project(':AliyunView')
-    compile externalAndroidAppCompatV7
-    compile externalAndroidRecyclerView
-    compile externalAndroidDesign
-    compile project(':AliyunFileDownLoader:downloadermanager')
-    compile externalGSON
-    compile externalGlide
-    compile externalGlideOkHttp
-    compile externalAliyunOSS
-    compile externalEventBus
+    api project(':AliyunSVideoBase')
+    implementation project(":AliyunSvideoMusic")
+    api project(':AliyunFileDownLoader:downloadermanager')
+    implementation externalAndroidDesign
+    implementation externalGSON
+    implementation externalGlide
+    implementation externalAliyunOSS
+    implementation externalEventBus
 
 }

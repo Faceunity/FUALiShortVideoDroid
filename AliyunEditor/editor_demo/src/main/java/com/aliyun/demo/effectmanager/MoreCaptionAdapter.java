@@ -4,62 +4,55 @@
 
 package com.aliyun.demo.effectmanager;
 
-import java.util.List;
-
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.aliyun.common.utils.DensityUtil;
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.effects.overlay.PasterPreviewDialog;
-import com.aliyun.quview.CircleProgressBar;
-import com.aliyun.struct.form.ResourceForm;
+import com.aliyun.svideo.sdk.external.struct.form.ResourceForm;
+import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 public class MoreCaptionAdapter extends RecyclerView.Adapter<MoreCaptionAdapter.CaptionViewHolder> {
     private static final String TAG = MoreCaptionAdapter.class.getName();
     private static final int VIEW_TYPE_LOCAL = 1;
     private static final int VIEW_TYPE_REMOTE = 2;
-    private List<EffectBody<ResourceForm>> mRemoteDataList;
-    private List<EffectBody<ResourceForm>> mLocalDataList;
+    private static final int VIEW_TYPE_DOWNLOADING = 3;
+    private List<EffectBody<ResourceForm>> mDataList;
     private Context mContext;
 
     private OnItemRightButtonClickListener mRightBtnClickListener;
 
-    public MoreCaptionAdapter(List<EffectBody<ResourceForm>> remoteList,
-                              List<EffectBody<ResourceForm>> localList,
+    public MoreCaptionAdapter(List<EffectBody<ResourceForm>> localList,
                               Context context) {
-        this.mRemoteDataList = remoteList;
-        this.mLocalDataList = localList;
+        this.mDataList = localList;
         this.mContext = context;
     }
 
     public synchronized void changeToLocal(EffectBody<ResourceForm> remoteData) {
-        remoteData.setLocal(true);
-        mRemoteDataList.remove(remoteData);
-        mLocalDataList.add(remoteData);
+        for (EffectBody<ResourceForm> effectBody : mDataList) {
+            if (effectBody.equals(remoteData)){
+                effectBody.setLocal(true);
+                effectBody.setLoading(false);
+            }
+        }
         notifyDataSetChanged();
     }
-
-    private int convert2RemotePosition(int position) {
-        if (mLocalDataList == null || mLocalDataList.size() == 0) {
-            return position;
-        } else {
-            return position - mLocalDataList.size();
-        }
-    }
-
     class CaptionViewHolder extends RecyclerView.ViewHolder {
+        private ImageView downloadFinish;
         private TextView mTvName, mTvDesc, mTvRightButton;
         private ImageView mIvIcon;
         private EffectBody<ResourceForm> mData;
         private int mPosition;
-        private CircleProgressBar downloadProgress;
+        private ProgressBar downloadProgress;
 
         public void updateData(int position, EffectBody<ResourceForm> data) {
             this.mData = data;
@@ -72,15 +65,12 @@ public class MoreCaptionAdapter extends RecyclerView.Adapter<MoreCaptionAdapter.
 
         public CaptionViewHolder(View itemView) {
             super(itemView);
-            mTvName = (TextView) itemView.findViewById(R.id.tv_name);
-            mTvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
-            mTvRightButton = (TextView) itemView.findViewById(R.id.tv_right_button);
-            mIvIcon = (ImageView) itemView.findViewById(R.id.iv_icon);
-            downloadProgress = (CircleProgressBar) itemView.findViewById(R.id.download_progress);
-            int width = DensityUtil.dip2px(itemView.getContext(),25);
-            downloadProgress.setBackgroundWidth(width, width);
-            downloadProgress.setProgressWidth(width);
-            downloadProgress.isFilled(true);
+            mTvName = (TextView)itemView.findViewById(R.id.tv_name);
+            mTvDesc = (TextView)itemView.findViewById(R.id.tv_desc);
+            mTvRightButton = (TextView)itemView.findViewById(R.id.tv_right_button);
+            mIvIcon = (ImageView)itemView.findViewById(R.id.iv_icon);
+            downloadProgress = (ProgressBar)itemView.findViewById(R.id.download_progress);
+            downloadFinish = (ImageView)itemView.findViewById(R.id.iv_download_finish);
             mTvRightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -97,10 +87,12 @@ public class MoreCaptionAdapter extends RecyclerView.Adapter<MoreCaptionAdapter.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mData.getData().getPreviewUrl() != null && !"".equals(mData.getData().getPreviewUrl())) {
+                    if (mData.getData().getPreviewUrl() != null && !"".equals(mData.getData().getPreviewUrl())) {
                         PasterPreviewDialog dialog = PasterPreviewDialog.newInstance(mData.getData().getPreviewUrl(),
-                                mData.getData().getName(), mData.getData().getId());
-                        dialog.show(((MoreCaptionActivity) mContext).getSupportFragmentManager(), "aliyun_svideo_caption");
+                            mData.getData().getName(), mData.getData().getId());
+                        if (dialog != null){
+                            dialog.show(((MoreCaptionActivity)mContext).getSupportFragmentManager(), "aliyun_svideo_caption");
+                        }
                     }
                 }
             });
@@ -109,71 +101,104 @@ public class MoreCaptionAdapter extends RecyclerView.Adapter<MoreCaptionAdapter.
 
     @Override
     public int getItemViewType(int position) {
-        if(mLocalDataList == null || mLocalDataList.size() == 0) {
-            return VIEW_TYPE_REMOTE;
-        }else if(position < mLocalDataList.size()) {
-            return VIEW_TYPE_LOCAL;
-        }else {
-            return VIEW_TYPE_REMOTE;
+        int type = VIEW_TYPE_LOCAL;
+        if(position >= 0 && position < mDataList.size()) {
+            EffectBody<ResourceForm> data = mDataList.get(position);
+            if(data.isLocal()) {
+                return VIEW_TYPE_LOCAL;
+            }else if(data.isLoading()) {
+                return VIEW_TYPE_DOWNLOADING;
+            }else {
+                return VIEW_TYPE_REMOTE;
+            }
         }
+        return type;
     }
 
     @Override
     public CaptionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.aliyun_svideo_layout_effect_manager_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(
+            R.layout.aliyun_svideo_layout_effect_caption_list_item, parent, false);
         CaptionViewHolder holder = new CaptionViewHolder(view);
-        switch (viewType) {
-            case VIEW_TYPE_LOCAL:
-                holder.mTvRightButton.setText(R.string.use_effect_edit);
-                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_more_paster_use_bg);
-                break;
-            case VIEW_TYPE_REMOTE:
-                holder.mTvRightButton.setText(R.string.download_effect_edit);
-                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_more_paster_download_bg);
-                break;
-            default:
-                break;
-        }
 
         return holder;
     }
 
-
     @Override
     public void onBindViewHolder(CaptionViewHolder holder, int position) {
         int viewType = getItemViewType(position);
-        holder.mTvRightButton.setVisibility(View.VISIBLE);
-        holder.downloadProgress.setVisibility(View.GONE);
         switch (viewType) {
             case VIEW_TYPE_LOCAL:
-                holder.updateData(position, mLocalDataList.get(position));
+                holder.mTvRightButton.setVisibility(View.VISIBLE);
+                holder.downloadFinish.setVisibility(View.VISIBLE);
+                holder.mTvRightButton.setBackgroundColor(Color.TRANSPARENT);
+                holder.downloadProgress.setVisibility(View.GONE);
                 break;
             case VIEW_TYPE_REMOTE:
-                holder.updateData(position, mRemoteDataList.get(convert2RemotePosition(position)));
+                holder.mTvRightButton.setVisibility(View.VISIBLE);
+                holder.mTvRightButton.setText(R.string.download_effect_edit);
+                holder.mTvRightButton.setBackgroundResource(R.drawable.aliyun_svideo_shape_caption_manager_bg);
+                holder.downloadFinish.setVisibility(View.GONE);
+                holder.downloadProgress.setVisibility(View.GONE);
+                break;
+            case VIEW_TYPE_DOWNLOADING:
+                holder.downloadFinish.setVisibility(View.GONE);
+                holder.downloadProgress.setVisibility(View.VISIBLE);
+                holder.mTvRightButton.setVisibility(View.VISIBLE);
+                holder.mTvRightButton.setText(R.string.downloading_effect_edit);
+                holder.mTvRightButton.setBackgroundColor(Color.TRANSPARENT);
+                break;
+            default:
                 break;
         }
+        holder.updateData(position, mDataList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mLocalDataList == null ? mRemoteDataList.size() : mLocalDataList.size()+mRemoteDataList.size();
+        return mDataList.size();
     }
 
     public void updateProcess(CaptionViewHolder viewHolder, int process, int position) {
-        if(viewHolder != null && viewHolder.mPosition == position) {
-            viewHolder.mTvRightButton.setVisibility(View.GONE);
+
+        if (viewHolder != null && viewHolder.mPosition == position) {
+            viewHolder.mTvRightButton.setBackgroundColor(Color.TRANSPARENT);
             viewHolder.downloadProgress.setVisibility(View.VISIBLE);
             viewHolder.downloadProgress.setProgress(process);
+            if (viewHolder.mData!=null){
+                viewHolder.mData.setLoading(true);
+            }
         }
+        //if (viewHolder != null) {
+        //    if (process > 0) {
+        //        viewHolder.mTvRightButton.setText(mContext.getResources().getString(R.string.downloading_effect_edit));
+        //    } else {
+        //        viewHolder.mTvRightButton.setText(mContext.getResources().getString(R.string.download_effect_edit));
+        //    }
+        //}
     }
 
-    public void setRemoteData(List<EffectBody<ResourceForm>> dataList) {
-        this.mRemoteDataList = dataList;
-        notifyDataSetChanged();
-    }
-
-    public void setLocalData(List<EffectBody<ResourceForm>> dataList) {
-        this.mLocalDataList = dataList;
+    public synchronized void setRemoteData(List<EffectBody<ResourceForm>> dataList) {
+        List<Integer> localIds = null;
+        //if (dataList!=null&&dataList.size()>0){
+        //    localIds = new ArrayList<>(dataList.size());
+        //    for (EffectBody<ResourceForm> effectBody : dataList) {
+        //        localIds.add(effectBody.getData().getId());
+        //    }
+        //}
+        //if(localIds != null && localIds.size() > 0) {
+        //    for (EffectBody<ResourceForm> effectBody : mDataList) {
+        //        if (localIds.contains(effectBody.getData().getId())){
+        //            mDataList.remove(effectBody);
+        //        }
+        //    }
+        //}
+        for (EffectBody<ResourceForm> effectBody : dataList) {
+            if (mDataList.contains(effectBody)){
+                mDataList.remove(effectBody);
+            }
+        }
+        mDataList.addAll(dataList);
         notifyDataSetChanged();
     }
 

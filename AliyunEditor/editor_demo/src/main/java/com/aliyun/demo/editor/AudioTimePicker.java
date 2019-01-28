@@ -5,8 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.aliyun.demo.editor.timeline.TimelineBar;
-import com.aliyun.demo.editor.timeline.TimelineOverlay;
+import com.aliyun.demo.editor.thumblinebar.OverlayThumbLineBar;
+import com.aliyun.demo.editor.thumblinebar.ThumbLineOverlay;
+import com.aliyun.demo.effects.control.UIEditorPage;
 
 /**
  * Created by aa on 2017/12/14.
@@ -15,19 +16,19 @@ import com.aliyun.demo.editor.timeline.TimelineOverlay;
 public class AudioTimePicker {
 
     private View picker;
-    private TimelineBar timelineBar;
-    private TimelineOverlay audioOverlay;
+    private OverlayThumbLineBar timelineBar;
+    private ThumbLineOverlay audioOverlay;
     private long videoDuration;
     private long start;
     private long end;
-    private TimelineOverlay.TimelineOverlayView overlayView;
+    private ThumbLineOverlay.ThumbLineOverlayView overlayView;
 
-    AudioTimePicker(Context ctx, View v, TimelineBar b, long duration){
+    AudioTimePicker(Context ctx, View v, OverlayThumbLineBar b, long duration){
         picker = v;
         timelineBar = b;
         videoDuration = end = duration;
         final View rootView = LayoutInflater.from(ctx).inflate(R.layout.aliyun_svideo_layout_timeline_overlay, null);
-        overlayView = new TimelineOverlay.TimelineOverlayView() {
+        overlayView = new ThumbLineOverlay.ThumbLineOverlayView() {
 
             @Override
             public ViewGroup getContainer() {
@@ -54,24 +55,25 @@ public class AudioTimePicker {
     void showAudioTimePicker(){
         picker.setVisibility(View.VISIBLE);
         if(audioOverlay == null){
-            audioOverlay = timelineBar.addOverlay(0, videoDuration, overlayView, 0);
-            audioOverlay.setOnSelectedDurationChangeListener(new TimelineOverlay.OnSelectedDurationChangeListener() {
-                @Override
-                public void onDurationChange(long startTime, long endTime, long duration) {
-                    start = startTime;
-                    end = endTime;
-                }
-            });
+            audioOverlay = timelineBar.addOverlay(0, videoDuration, overlayView, 0,false, UIEditorPage.AUDIO_MIX
+            ,new ThumbLineOverlay.OnSelectedDurationChangeListener() {
+                    @Override
+                    public void onDurationChange(long startTime, long endTime, long duration) {
+                        start = startTime;
+                        end = endTime;
+                    }
+                });
+
         }
 
-        audioOverlay.switchState(TimelineOverlay.STATE_ACTIVE);
+        audioOverlay.switchState(ThumbLineOverlay.STATE_ACTIVE);
 
     }
 
     void hideAudioTimePicker(){
         picker.setVisibility(View.GONE);
         if(audioOverlay != null){
-            audioOverlay.switchState(TimelineOverlay.STATE_FIX);
+            audioOverlay.switchState(ThumbLineOverlay.STATE_FIX);
         }
     }
 

@@ -9,21 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ViewTarget;
+import com.aliyun.svideo.sdk.external.struct.form.ResourceForm;
 import com.aliyun.demo.editor.R;
 import com.aliyun.demo.effects.control.EffectInfo;
 import com.aliyun.demo.effects.control.OnItemClickListener;
-import com.aliyun.quview.CircularImageView;
-import com.aliyun.struct.form.ResourceForm;
+import com.aliyun.svideo.base.widget.CircularImageView;
 
 import java.util.ArrayList;
-
 
 public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
 
@@ -32,6 +26,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ArrayList<ResourceForm> data = new ArrayList<>();
     private OnMoreClickListener mMoreClickListener;
     private int mSelectedPosition = 0;
+    //是否显示字体分类
+    private boolean mIsShowFontCategory;
     private static final int VIEW_TYPE_SELECTED = 1;
     private static final int VIEW_TYPE_UNSELECTED = 2;
 
@@ -44,30 +40,49 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return;
         }
         this.data = data;
+        if (mIsShowFontCategory) {
+            ResourceForm resourceForm = new ResourceForm();
+            this.data.add(0,resourceForm);
+        }
         notifyDataSetChanged();
     }
+
+    public void addShowFontCategory(){
+
+        mIsShowFontCategory = true;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.aliyun_svideo_category_item_view, parent, false);
-        CategoryViewHolder filterViewHolder = new CategoryViewHolder(view);
-        filterViewHolder.frameLayout = (FrameLayout) view.findViewById(R.id.category_image);
-        return filterViewHolder;
+        return new CategoryViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
+        final CategoryViewHolder categoryViewHolder = (CategoryViewHolder)holder;
         ResourceForm form = data.get(position);
         int viewType = getItemViewType(position);
-        if (form.isMore()) {
+        if (position == 0 && mIsShowFontCategory){
+            categoryViewHolder.mName.setVisibility(View.VISIBLE);
+            categoryViewHolder.mImage.setVisibility(View.GONE);
+            categoryViewHolder.mName.setText(R.string.caption_effect_font_category_name);
+        }else if (form.isMore()) {
+            categoryViewHolder.mName.setVisibility(View.GONE);
+            categoryViewHolder.mImage.setVisibility(View.VISIBLE);
             categoryViewHolder.mImage.setImageResource(R.mipmap.aliyun_svideo_more);
         } else {
-            Glide.with(mContext).load(form.getIcon()).into(new ViewTarget<CircularImageView, GlideDrawable>(categoryViewHolder.mImage) {
-                @Override
-                public void onResourceReady(GlideDrawable glideDrawable, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                    categoryViewHolder.mImage.setImageBitmap(((GlideBitmapDrawable) glideDrawable).getBitmap());
-                }
-            });
+            categoryViewHolder.mImage.setVisibility(View.GONE);
+            categoryViewHolder.mName.setVisibility(View.VISIBLE);
+            categoryViewHolder.mName.setText(form.getName());
+            /*Glide.with(mContext).load(form.getIcon()).into(
+                new ViewTarget<CircularImageView, GlideDrawable>(categoryViewHolder.mImage) {
+                    @Override
+                    public void onResourceReady(GlideDrawable glideDrawable,
+                                                GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        categoryViewHolder.mImage.setImageBitmap(((GlideBitmapDrawable)glideDrawable).getBitmap());
+                    }
+                });*/
         }
         categoryViewHolder.itemView.setTag(holder);
         categoryViewHolder.itemView.setOnClickListener(this);
@@ -77,6 +92,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             case VIEW_TYPE_UNSELECTED:
                 categoryViewHolder.itemView.setSelected(false);
+                break;
+            default:
                 break;
         }
     }
@@ -93,13 +110,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(lasPos);
     }
 
-    private static class CategoryViewHolder extends RecyclerView.ViewHolder{
+    private static class CategoryViewHolder extends RecyclerView.ViewHolder {
 
-        FrameLayout frameLayout;
         CircularImageView mImage;
+        TextView mName;
+
         public CategoryViewHolder(View itemView) {
             super(itemView);
-            mImage = (CircularImageView) itemView.findViewById(R.id.category_image_source);
+            mImage = itemView.findViewById(R.id.category_image_source);
+            mName = itemView.findViewById(R.id.tv_category_name_source);
         }
     }
 
@@ -109,7 +128,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onClick(View view) {
-        CategoryViewHolder viewHolder = (CategoryViewHolder) view.getTag();
+        CategoryViewHolder viewHolder = (CategoryViewHolder)view.getTag();
         int position = viewHolder.getAdapterPosition();
         ResourceForm form = data.get(position);
         if (form.isMore()) {
@@ -131,9 +150,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        if(position == mSelectedPosition) {
+        if (position == mSelectedPosition) {
             return VIEW_TYPE_SELECTED;
-        }else {
+        } else {
             return VIEW_TYPE_UNSELECTED;
         }
     }

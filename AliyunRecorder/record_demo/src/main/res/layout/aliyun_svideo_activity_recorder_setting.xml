@@ -4,307 +4,273 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/aliyun_color_bg"
+              android:background="@color/colorPrimary"
               android:gravity="center_horizontal"
               android:orientation="vertical">
 
     <include layout="@layout/aliyun_svideo_view_action_bar"/>
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="30dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:gravity="right|center"
-            android:text="@string/aliyun_min_record_duration"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-
-        <EditText
-            android:id="@+id/aliyun_min_duration_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/aliyun_svideo_shape_rect_gray"
-            android:hint="@string/aliyun_min_record_duration_hint"
-            android:inputType="number"
-            android:paddingLeft="10dp"
-            android:textColorHint="@android:color/darker_gray"
-            android:textSize="14sp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:gravity="right|center"
-            android:text="@string/aliyun_max_record_duration"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-
-        <EditText
-            android:id="@+id/aliyun_max_duration_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/aliyun_svideo_shape_rect_gray"
-            android:hint="@string/aliyun_max_record_duration_hint"
-            android:inputType="number"
-            android:paddingLeft="10dp"
-            android:textColorHint="@android:color/darker_gray"
-            android:textSize="14sp"/>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:gravity="right|center"
-            android:text="@string/aliyun_gop"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-
-        <EditText
-            android:id="@+id/aliyun_gop_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/aliyun_svideo_shape_rect_gray"
-            android:hint="@string/aliyun_gop_hint"
-            android:inputType="number"
-            android:paddingLeft="10dp"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/darker_gray"
-            android:textSize="14sp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:gravity="right|center"
-            android:text="@string/aliyun_bitrate"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-
-        <EditText
-            android:id="@+id/aliyun_bitrate_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/aliyun_svideo_shape_rect_gray"
-            android:hint="@string/aliyun_bitrate_hint"
-            android:inputType="number"
-            android:paddingLeft="10dp"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/darker_gray"
-            android:textSize="14sp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:gravity="right|center"
-            android:text="@string/aliyun_video_quality"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-
-        <SeekBar
-            android:id="@+id/aliyun_quality_seekbar"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:maxHeight="5dp"
-            android:minHeight="5dp"
-            android:progressDrawable="@drawable/aliyun_svideo_seekbar_drawable"
-            android:thumb="@drawable/aliyun_svideo_seekbar_thum"/>
-
-        <TextView
-            android:id="@+id/aliyun_quality_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="222*2222"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:gravity="right|center"
-            android:text="@string/aliyun_resolution"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-
-        <SeekBar
-            android:id="@+id/aliyun_resolution_seekbar"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:maxHeight="5dp"
-            android:minHeight="5dp"
-            android:progress="50"
-            android:progressDrawable="@drawable/aliyun_svideo_seekbar_drawable"
-            android:thumb="@drawable/aliyun_svideo_seekbar_thum"/>
-
-        <TextView
-            android:id="@+id/aliyun_resolution_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="222*2222"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:gravity="right|center"
-            android:text="@string/aliyun_ratio"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-
-        <SeekBar
-            android:id="@+id/aliyun_ratio_seekbar"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:maxHeight="5dp"
-            android:minHeight="5dp"
-            android:progress="50"
-            android:progressDrawable="@drawable/aliyun_svideo_seekbar_drawable"
-            android:thumb="@drawable/aliyun_svideo_seekbar_thum"/>
-
-        <TextView
-            android:id="@+id/aliyun_ratio_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="222*2222"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"/>
-    </LinearLayout>
-
-    <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-        <TextView android:id="@+id/tv_video_codec"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginRight="5dp"
-                  android:gravity="right|center"
-                  android:text="@string/aliyun_video_codec"
-                  android:textColor="@android:color/white"
-                  android:textSize="14sp"
-        />
-
-        <SeekBar
-            android:id="@+id/aliyun_video_codec_seekbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/tv_video_codec"
-            android:layout_toRightOf="@+id/tv_video_codec"
-            android:maxHeight="5dp"
-            android:minHeight="5dp"
-            android:progress="0" android:progressDrawable="@drawable/aliyun_svideo_seekbar_drawable"
-            android:thumb="@drawable/aliyun_svideo_seekbar_thum"
-            android:max="2"
-        />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/aliyun_video_codec_seekbar"
-            android:layout_toRightOf="@id/tv_video_codec"
-            android:maxHeight="5dp"
-            android:minHeight="5dp"
-            android:orientation="horizontal"
-        >
-            <TextView android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="1"
-                      android:text="@string/aliyun_hardware_encoder"
-                      android:textColor="@android:color/white"
-                      android:textSize="11sp"
-            />
-            <TextView android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="1"
-                      android:text="@string/aliyun_openh264_encoder"
-                      android:textColor="@android:color/white"
-                      android:textSize="11sp"
-                      android:gravity="center"
-            />
-            <TextView android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="1"
-                      android:text="@string/aliyun_ffmpeg_encoder"
-                      android:textColor="@android:color/white"
-                      android:textSize="11sp"
-                      android:gravity="right"
-            />
-        </LinearLayout>
-    </RelativeLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
 
-    <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:text="@string/aliyun_bit_rate"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/aliyun_bitrate_edit"
+                style="@style/alivc_record_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:hint="@string/aliyun_bitrate_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/aliyun_min_record_duration"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/aliyun_min_duration_edit"
+                style="@style/alivc_record_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/aliyun_min_record_duration_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+
+                android:paddingLeft="15dp"
+                android:text="@string/aliyun_max_record_duration"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/aliyun_max_duration_edit"
+                style="@style/alivc_record_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/aliyun_max_record_duration_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/aliyun_gop"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/aliyun_gop_edit"
+                style="@style/alivc_record_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/aliyun_gop_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/aliyun_video_quality"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_video_quality_super"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/aliyun_video_quality_super" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_video_quality_high"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/aliyun_video_quality_high" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_video_quality_normal"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/aliyun_video_quality_meidan" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/alivc_video_quality_low"
+                style="@style/alivc_record_btn_style"
+                android:layout_marginTop="15dp"
+                android:text="@string/aliyun_video_quality_low" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/aliyun_ratio"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_video_ratio_9_16"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/aliyun_reocrd_ratio_9_16" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_video_ratio_3_4"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/aliyun_record_ratio_3_4" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_video_ratio_1_1"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/aliyun_record_ratio_1_1" />
+
+            </LinearLayout>
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/aliyun_resolution"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_record_resolution_360p"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/aliyun_record_resolution_360p" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_record_resolution_480p"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/aliyun_record_resolution_480p" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_record_resolution_540p"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/aliyun_record_resolution_540p" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/alivc_record_resolution_720p"
+                style="@style/alivc_record_btn_style"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="30dp"
+                android:text="@string/aliyun_record_resolution_720p" />
+            <TextView
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/aliyun_video_codec"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_record_encoder_hardware"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/aliyun_hardware_encoder" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_record_encoder_openh264"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/aliyun_openh264_encoder" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_record_encoder_ffmpeg"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/aliyun_ffmpeg_encoder" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    <Button
         android:id="@+id/aliyun_start_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/aliyun_seek_bar_theme"
-        android:padding="10dp"
+        android:layout_width="match_parent"
         android:text="@string/aliyun_start_record"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:background="@drawable/alivc_bg_start_record"
+        android:layout_height="44dp" />
+
+
 </LinearLayout>

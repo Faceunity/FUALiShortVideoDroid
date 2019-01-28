@@ -15,4 +15,18 @@
             <enum name="round" value="2" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="AlivcEditUIStyle">
+        <attr name="filterImage" format="reference"/>
+        <attr name="musicImage" format="reference"/>
+        <attr name="pasterImage" format="reference"/>
+        <attr name="captionImage" format="reference"/>
+        <attr name="mvImage" format="reference"/>
+        <attr name="effectImage" format="reference"/>
+        <attr name="timeImage" format="reference"/>
+        <attr name="translationImage" format="reference"/>
+        <attr name="paintImage" format="reference"/>
+        <attr name="playImage" format="reference"/>
+        <attr name="pauseImage" format="reference"/>
+        <attr name="finishImage" format="reference"/>
+    </declare-styleable>
 </resources>

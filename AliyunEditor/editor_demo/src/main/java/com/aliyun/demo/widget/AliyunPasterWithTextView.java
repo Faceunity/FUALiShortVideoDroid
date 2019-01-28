@@ -10,24 +10,21 @@ import android.util.Log;
 import android.view.View;
 import com.aliyun.demo.editor.R;
 
-public class AliyunPasterWithTextView extends AliyunPasterView {
+public class AliyunPasterWithTextView extends BaseAliyunPasterView {
 
 	private boolean isEditCompleted;
 	private boolean isCouldShowLabel;
 
 	public AliyunPasterWithTextView(Context context) {
 		this(context, null);
-		// TODO Auto-generated constructor stub
 	}
 
 	public AliyunPasterWithTextView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
-		// TODO Auto-generated constructor stub
 	}
 
 	public AliyunPasterWithTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 	}
 
 	public boolean isEditCompleted() {
@@ -114,12 +111,12 @@ public class AliyunPasterWithTextView extends AliyunPasterView {
 	private int mContentWidth;
 	private int mContentHeight;
 
-    public void setContentWidth(int content_width) {
-		this.mContentWidth = content_width;
+    public void setContentWidth(int contentWidth) {
+		this.mContentWidth = contentWidth;
 	}
 
-	public void setContentHeight(int content_height) {
-		this.mContentHeight = content_height;
+	public void setContentHeight(int contentHeight) {
+		this.mContentHeight = contentHeight;
 	}
 
 	@Override
@@ -165,7 +162,6 @@ public class AliyunPasterWithTextView extends AliyunPasterView {
 
 	@Override
 	public View getContentView() {
-		// TODO Auto-generated method stub
 		return mContentView;
 	}
 

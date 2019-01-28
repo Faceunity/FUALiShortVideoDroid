@@ -4,6 +4,8 @@
 
 package com.aliyun.demo.importer.media;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -23,11 +25,13 @@ public class GalleryDirChooser {
     private View anchor;
     private boolean isShowGalleryDir;
     private GalleryDirAdapter adapter;
+    private Activity mActivity;
 
     public GalleryDirChooser(Context context, View anchor,
                              ThumbnailGenerator thumbnailGenerator,
                              final MediaStorage storage){
         this.anchor = anchor;
+        this.mActivity = (Activity) context;
         RecyclerView recyclerView = (RecyclerView)View.inflate(context,
                 R.layout.aliyun_svideo_import_layout_qupai_effect_container_normal, null);
         adapter = new GalleryDirAdapter(thumbnailGenerator);
@@ -81,7 +85,11 @@ public class GalleryDirChooser {
         adapter.setAllFileCount(count);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void showOrHideGalleryDir(){
+        if(mActivity.isDestroyed()){
+            return;
+        }
         if(isShowGalleryDir){
             popupWindow.dismiss();
         }else{

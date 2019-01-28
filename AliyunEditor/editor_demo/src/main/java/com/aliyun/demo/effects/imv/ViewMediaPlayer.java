@@ -89,7 +89,6 @@ public class ViewMediaPlayer extends TextureView implements TextureView.SurfaceT
     }
 
     public View getShowView() {
-        // TODO Auto-generated method stub
         return this;
     }
 
