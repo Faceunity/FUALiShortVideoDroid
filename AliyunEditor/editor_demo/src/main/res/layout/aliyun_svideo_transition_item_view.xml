@@ -8,13 +8,13 @@
     android:paddingTop="15dp">
     <ImageView
         android:id="@+id/iv_thumbnail"
-        android:layout_width="64dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/alivc_svideo_effect_transition_thumb_width"
+        android:layout_height="@dimen/alivc_svideo_effect_transition_thumb_height"
         android:scaleType="centerCrop"/>
     <ImageView
         android:id="@+id/iv_transition"
         android:layout_marginLeft="15dp"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/alivc_svideo_effect_transition_thumb_height"
+        android:layout_height="@dimen/alivc_svideo_effect_transition_thumb_height"
         android:scaleType="centerCrop"/>
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.aliyun.apsaravideo.music.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -194,9 +195,9 @@ public class NotchScreenUtil {
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         try {
             Class layoutParamsExCls = Class.forName("com.huawei.android.view.LayoutParamsEx");
-            Constructor con=layoutParamsExCls.getConstructor(WindowManager.LayoutParams.class);
-            Object layoutParamsExObj=con.newInstance(layoutParams);
-            Method method=layoutParamsExCls.getMethod("addHwFlags", int.class);
+            Constructor con = layoutParamsExCls.getConstructor(WindowManager.LayoutParams.class);
+            Object layoutParamsExObj = con.newInstance(layoutParams);
+            Method method = layoutParamsExCls.getMethod("addHwFlags", int.class);
             method.invoke(layoutParamsExObj, FLAG_NOTCH_SUPPORT_HW);
         } catch (ClassNotFoundException e) {
             Log.e(TAG, "hw add notch screen flag api error");
@@ -242,5 +243,21 @@ public class NotchScreenUtil {
         } catch (Exception e) {
             Log.e(TAG, "other Exception");
         }
+    }
+
+    /**
+     * 获取传音CF8手机刘海和虚拟按键的总高度
+     *
+     * @return px
+     */
+    public static int getTECNOCF8NotchAndNaviHeight() {
+
+        int height = 0;
+        if (Build.MODEL.toUpperCase().contains("TECNO CF8")) {
+            //传音技术反馈这款手机的刘海是自定义的，不能通过反射得到高度
+            //只能通过界面自己计算出来刘海和虚拟底部的总高度
+            height = 72;
+        }
+        return height;
     }
 }

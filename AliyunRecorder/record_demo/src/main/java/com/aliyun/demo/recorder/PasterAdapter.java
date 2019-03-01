@@ -5,22 +5,18 @@
 package com.aliyun.demo.recorder;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.aliyun.demo.R;
 import com.aliyun.svideo.base.widget.CircularImageView;
 import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
-
+import com.aliyun.video.common.utils.image.ImageLoaderImpl;
+import com.aliyun.video.common.utils.image.AbstractImageLoaderTarget;
 
 import java.util.List;
 
@@ -57,14 +53,15 @@ public class PasterAdapter extends RecyclerView.Adapter<PasterAdapter.AssetInfoV
             holder.itemView.setTag(null);
         }else{
             holder.itemView.setVisibility(View.VISIBLE);
-            Glide.with(context.getApplicationContext()).load(data.get(position).getIcon())
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .into(new ViewTarget<CircularImageView, GlideDrawable>(holder.imageView) {
-                        @Override
-                        public void onResourceReady(GlideDrawable glideDrawable, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            holder.imageView.setImageBitmap(((GlideBitmapDrawable) glideDrawable).getBitmap());
-                        }
-                    });
+
+            new ImageLoaderImpl().loadImage(context.getApplicationContext(),data.get(position).getIcon())
+                .into(holder.imageView, new AbstractImageLoaderTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource) {
+                        holder.imageView.setImageDrawable(resource);
+                    }
+                });
+
             holder.itemView.setTag(data.get(position));
         }
     }

@@ -3,6 +3,6 @@
 
     <item android:state_activated="true" android:color="@android:color/white"/>
     <item android:state_selected="true" android:color="@android:color/white"/>
-    <item android:color="@color/qupai_white_opacity_50pct"/>
+    <item android:color="@color/aliyun_white_opacity_50pct"/>
 
 </selector>

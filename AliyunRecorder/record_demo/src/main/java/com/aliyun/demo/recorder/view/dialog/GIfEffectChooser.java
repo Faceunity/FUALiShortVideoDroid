@@ -1,35 +1,45 @@
 package com.aliyun.demo.recorder.view.dialog;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.aliyun.demo.recorder.view.effects.mv.AlivcMVChooseView;
-import com.aliyun.demo.recorder.view.effects.mv.MvSelectListener;
+import com.aliyun.demo.R;
+import com.aliyun.demo.recorder.view.effects.otherfilter.ARView;
 import com.aliyun.demo.recorder.view.effects.otherfilter.AnimojiView;
 import com.aliyun.demo.recorder.view.effects.otherfilter.BackgroundView;
 import com.aliyun.demo.recorder.view.effects.otherfilter.DistortingMirrorAdapter;
 import com.aliyun.demo.recorder.view.effects.otherfilter.DistortingMirrorView;
 import com.aliyun.demo.recorder.view.effects.otherfilter.DongMLvjView;
 import com.aliyun.demo.recorder.view.effects.otherfilter.Effect;
+import com.aliyun.demo.recorder.view.effects.otherfilter.ExpressionView;
 import com.aliyun.demo.recorder.view.effects.otherfilter.GestureView;
+import com.aliyun.demo.recorder.view.effects.otherfilter.MusicView;
 import com.aliyun.demo.recorder.view.effects.otherfilter.ThreeDStickerView;
 import com.aliyun.demo.recorder.view.effects.paster.AlivcPasterChooseView;
 import com.aliyun.demo.recorder.view.effects.paster.PasterSelectListener;
-import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
 import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
+import com.faceunity.OnFUControlListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GIfEffectChooser extends BasePageChooser {
-    private MvSelectListener mvSelectListener;
     private PasterSelectListener pasterSelectListener;
+
     private DistortingMirrorAdapter.OnItemListener onItemListener;
     private DistortingMirrorAdapter.OnItemListener animojiItemListener;
     private DistortingMirrorAdapter.OnItemListener threeDItemListener;
     private DistortingMirrorAdapter.OnItemListener dongMLvjItemListener;
     private DistortingMirrorAdapter.OnItemListener gestureItemListener;
     private DistortingMirrorAdapter.OnItemListener backgroundItemListener;
+    private DistortingMirrorAdapter.OnItemListener musicItemListener;
+    private DistortingMirrorAdapter.OnMusicListener musicTimeListener;
+    private DistortingMirrorAdapter.OnItemListener expressionItemListener;
+    private DistortingMirrorAdapter.OnItemListener arItemListener;
+    private DistortingMirrorAdapter.OnDescriptionChangeListener expressionDesListener;
 
     private AlivcPasterChooseView pasterChooseView;
     private DistortingMirrorView distortingMirrorView;
@@ -38,29 +48,38 @@ public class GIfEffectChooser extends BasePageChooser {
     private DongMLvjView lvjView;
     private GestureView gestureView;
     private BackgroundView backgroundView;
+    private MusicView musicView;
+    private ExpressionView expressionView;
+    private ARView arView;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //适配有底部导航栏的手机，在full的style下会盖住部分视图的bug
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.QUDemoFullFitStyle);
+    }
 
     @Override
     public List<Fragment> createPagerFragmentList() {
         List<Fragment> fragments = new ArrayList<>();
-        AlivcMVChooseView mvChooseView = new AlivcMVChooseView();
-        mvChooseView.setMvSelectListener(new MvSelectListener() {
-            @Override
-            public void onMvSelected(IMVForm imvForm) {
-                Log.e("GIfEffectChooser", "onMvSelected");
-                if (mvSelectListener != null) {
-                    mvSelectListener.onMvSelected(imvForm);
-                }
-            }
-        });
+
         pasterChooseView = new AlivcPasterChooseView();
         pasterChooseView.setPasterSelectListener(new PasterSelectListener() {
             @Override
-            public void onPasterSelected(PreviewPasterForm imvForm) {
+            public void onPasterSelected(PreviewPasterForm pasterForm) {
                 if (pasterSelectListener != null) {
-                    pasterSelectListener.onPasterSelected(imvForm);
+                    pasterSelectListener.onPasterSelected(pasterForm);
+                }
+            }
+
+            @Override
+            public void onSelectPasterDownloadFinish(String path) {
+                if (pasterSelectListener != null) {
+                    pasterSelectListener.onSelectPasterDownloadFinish(path);
                 }
             }
         });
+
         distortingMirrorView = new DistortingMirrorView();
         distortingMirrorView.setOnItemListener(new DistortingMirrorAdapter.OnItemListener() {
             @Override
@@ -115,19 +134,60 @@ public class GIfEffectChooser extends BasePageChooser {
                     backgroundItemListener.onPosition(position, effect);
             }
         });
+
+        musicView = new MusicView();
+        musicView.setOnItemListener(new DistortingMirrorAdapter.OnItemListener() {
+            @Override
+            public void onPosition(int position, Effect effect) {
+                if (musicItemListener != null)
+                    musicItemListener.onPosition(position, effect);
+            }
+        });
+        musicView.setOnMusicListener(new DistortingMirrorAdapter.OnMusicListener() {
+            @Override
+            public void onMusic(long time) {
+                if (musicTimeListener != null) {
+                    musicTimeListener.onMusic(time);
+                }
+            }
+        });
+
+        expressionView = new ExpressionView();
+        expressionView.setOnItemListener(new DistortingMirrorAdapter.OnItemListener() {
+            @Override
+            public void onPosition(int position, Effect effect) {
+                if (expressionItemListener != null)
+                    expressionItemListener.onPosition(position, effect);
+            }
+        });
+        expressionView.setOnDescriptionChangeListener(new DistortingMirrorAdapter.OnDescriptionChangeListener() {
+            @Override
+            public void onDescriptionChangeListener(int description) {
+                if (expressionDesListener != null)
+                    expressionDesListener.onDescriptionChangeListener(description);
+            }
+        });
+
+        arView = new ARView();
+        arView.setOnItemListener(new DistortingMirrorAdapter.OnItemListener() {
+            @Override
+            public void onPosition(int position, Effect effect) {
+                if (arItemListener != null)
+                    arItemListener.onPosition(position, effect);
+            }
+        });
+
         fragments.add(pasterChooseView);
-        fragments.add(mvChooseView);
         fragments.add(threeDSticker);
         fragments.add(animojiView);
         fragments.add(distortingMirrorView);
         fragments.add(backgroundView);
         fragments.add(lvjView);
         fragments.add(gestureView);
+        fragments.add(musicView);
+        fragments.add(expressionView);
+        fragments.add(arView);
         return fragments;
-    }
-
-    public void setMvSelectListener(MvSelectListener mvSelectListener) {
-        this.mvSelectListener = mvSelectListener;
     }
 
     public void setPasterSelectListener(PasterSelectListener pasterSelectListener) {
@@ -158,6 +218,26 @@ public class GIfEffectChooser extends BasePageChooser {
         this.backgroundItemListener = backgroundItemListener;
     }
 
+    public void setMusicItemListener(DistortingMirrorAdapter.OnItemListener musicItemListener) {
+        this.musicItemListener = musicItemListener;
+    }
+
+    public void setMusicTimeListener(DistortingMirrorAdapter.OnMusicListener musicTimeListener) {
+        this.musicTimeListener = musicTimeListener;
+    }
+
+    public void setExpressionItemListener(DistortingMirrorAdapter.OnItemListener expressionItemListener) {
+        this.expressionItemListener = expressionItemListener;
+    }
+
+    public void setExpressionDesListener(DistortingMirrorAdapter.OnDescriptionChangeListener listener) {
+        this.expressionDesListener = listener;
+    }
+
+    public void setArItemListener(DistortingMirrorAdapter.OnItemListener arItemListener) {
+        this.arItemListener = arItemListener;
+    }
+
     public void clearBundle() {
         distortingMirrorView.clearBundle();
     }
@@ -185,4 +265,17 @@ public class GIfEffectChooser extends BasePageChooser {
     public void clearGesture() {
         gestureView.clearBundle();
     }
+
+    public void clearMusic() {
+        musicView.clearBundle();
+    }
+
+    public void clearExpression() {
+        expressionView.clearBundle();
+    }
+
+    public void clearAr() {
+        arView.clearBundle();
+    }
+
 }

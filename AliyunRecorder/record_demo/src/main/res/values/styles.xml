@@ -18,8 +18,13 @@
         <item name="android:cacheColorHint">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+    <style name="QUDemoFullFitStyle" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 
-    <style name="bottom_dialog_animation">
+    <style name="record_bottom_dialog_animation">
         <item name="android:windowEnterAnimation">@anim/aliyun_video_anim_trans_from_bottom</item>
         <item name="android:windowExitAnimation">@anim/aliyun_video_anim_layout_bottom_out</item>
     </style>
@@ -54,7 +59,7 @@
     <!--录制模块的UI配置（专业版）-->
     <style name="AlivcRecordUIStyle" parent="Theme.AppCompat.NoActionBar">
         <!--音乐按钮图片-->
-        <item name="musicImage">@mipmap/alivc_svideo_icon_magic_music</item>
+        <item name="recordMusicImage">@mipmap/alivc_svideo_icon_magic_music</item>
         <!--闪光灯按钮图片 - 开启-->
         <item name="lightImageOpen">@mipmap/aliyun_svideo_icon_magic_light</item>
         <!--闪光灯按钮图片 - 自动-->

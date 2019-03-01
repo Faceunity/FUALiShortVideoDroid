@@ -18,7 +18,7 @@ dependencies {
     api project(':AliyunSVideoBase')
     implementation project(":AliyunSvideoMusic")
     api project(path: ':AliyunFileDownLoader:downloadermanager')
-    implementation externalGlide
     implementation externalGSON
+    implementation project(':faceunity')
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 }

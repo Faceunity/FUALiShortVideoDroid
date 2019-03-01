@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AliyunVideoUIStytle" >
-        <item name="qusnap_background_color">@color/aliyun_color_bg</item>
+        <item name="qusnap_background_color">@color/aliyun_base_color_bg</item>
         <item name="qusnap_tint_color">@color/aliyun_tint_color</item>
         <item name="qusnap_timeline_backgound_color">@color/aliyun_timeline_backgound_color</item>
         <item name="qusnap_timeline_del_backgound_color">@color/aliyun_timeline_background_del_color</item>

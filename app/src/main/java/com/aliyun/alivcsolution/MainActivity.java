@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import com.aliyun.alivcsolution.adapter.MultilayerGridAdapter;
 import com.aliyun.alivcsolution.model.ScenesModel;
 import com.aliyun.alivcsolution.utils.PermissionUtils;
 import com.aliyun.svideo.base.utils.FastClickUtil;
+import com.aliyun.video.common.SdcardUtils;
+import com.aliyun.video.common.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
      * module数据，
      */
     private int[] modules = new int[] {
-        R.string.solution_recorder, R.string.solution_crop,
-        R.string.solution_edit
+        R.string.solution_recorder,
+        R.string.solution_edit, R.string.solution_crop
     };
     private int[] homeicon = {
-        R.mipmap.icon_home_svideo,R.mipmap.icon_home_edit,
-        R.mipmap.icon_home_svideo
+        R.mipmap.icon_home_svideo_record,
+        R.mipmap.icon_home_svideo_edit, R.mipmap.icon_home_svideo_crop
 
     };
     /**
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         setDatas();
 
         buildHomeItem();
+        SdcardUtils.checkAvailableSize(this, 100);
     }
 
     /**
@@ -178,60 +182,61 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDatas() {
         listDatas = new ArrayList<>();
-        for(int i=0;i<modules.length;i++){
+        for (int i = 0; i < modules.length; i++) {
             listDatas.add(new ScenesModel(getResources().getString(modules[i]), homeicon[i]));
         }
     }
 
-    private void buildHomeItem(){
+    private void buildHomeItem() {
         LayoutInflater inflater = LayoutInflater.from(this);
         totalPage = (int) Math.ceil(listDatas.size() * 1.0 / mPageSize);
         viewPagerList = new ArrayList<>();
 
 
-        for(int i=0;i<totalPage;i++){
+        for (int i = 0; i < totalPage; i++) {
             //每个页面都是inflate出一个新实例
-            GridView gridView = (GridView) inflater.inflate(R.layout.alivc_home_girdview,viewPager,false);
-            gridView.setAdapter(new MultilayerGridAdapter(this,listDatas,i,mPageSize));
+            GridView gridView = (GridView) inflater.inflate(R.layout.alivc_home_girdview, viewPager, false);
+            gridView.setAdapter(new MultilayerGridAdapter(this, listDatas, i, mPageSize));
             //添加item点击监听
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (FastClickUtil.isFastClick()){
+                    if (FastClickUtil.isFastClick()) {
                         return;
                     }
                     switch (position) {
-                        case 0:
+                    case 0:
 
-                            // 视频拍摄
-                            Intent record = new Intent();
-                            //判断是编辑模块进入还是通过社区模块的编辑功能进入
-                            //svideo: 短视频
-                            //community: 社区
-                            record.setClassName(MainActivity.this,"com.aliyun.demo.recorder.activity.AlivcParamSettingActivity");
-                            record.putExtra(INTENT_PARAM_KEY_ENTRANCE, INTENT_PARAM_KEY_VALUE);
-                            startActivity(record);
+                        // 视频拍摄
+                        Intent record = new Intent();
+                        //判断是编辑模块进入还是通过社区模块的编辑功能进入
+                        //svideo: 短视频
+                        //community: 社区
+                        record.setClassName(MainActivity.this, "com.aliyun.demo.recorder.activity.AlivcParamSettingActivity");
+                        record.putExtra(INTENT_PARAM_KEY_ENTRANCE, INTENT_PARAM_KEY_VALUE);
+                        startActivity(record);
 
-                            break;
-                        case 1:
-                            // 视频裁剪
-                            Intent crop = new Intent();
-                            crop.setClassName(MainActivity.this,"com.aliyun.demo.crop.CropSettingActivity");
-                            startActivity(crop);
+                        break;
+                    case 1:
+                        // 视频编辑
+                        Intent edit = new Intent();
+                        edit.setClassName(MainActivity.this, "com.aliyun.svideo.editor.EditorSettingActivity");
+                        //判断是编辑模块进入还是通过社区模块的编辑功能进入
+                        //svideo: 短视频
+                        //community: 社区
+                        edit.putExtra(INTENT_PARAM_KEY_ENTRANCE, INTENT_PARAM_KEY_VALUE);
+                        startActivity(edit);
+                        break;
+                    case 2:
+                        // 视频裁剪
+                        Intent crop = new Intent();
+                        crop.setClassName(MainActivity.this, "com.aliyun.demo.crop.CropSettingActivity");
+                        startActivity(crop);
 
-                            break;
-                        case 2:
-                            // 视频编辑
-                            Intent edit = new Intent();
-                            edit.setClassName(MainActivity.this,"com.aliyun.demo.importer.ImportEditSettingActivity");
-                            //判断是编辑模块进入还是通过社区模块的编辑功能进入
-                            //svideo: 短视频
-                            //community: 社区
-                            edit.putExtra(INTENT_PARAM_KEY_ENTRANCE, INTENT_PARAM_KEY_VALUE);
-                            startActivity(edit);
-                            break;
-                        default:
-                            break;
+                        break;
+
+                    default:
+                        break;
                     }
                 }
             });
@@ -245,20 +250,20 @@ public class MainActivity extends AppCompatActivity {
         //小圆点指示器
         if (totalPage > 1) {
             ivPoints = new ImageView[totalPage];
-            for(int i=0;i<ivPoints.length;i++){
+            for (int i = 0; i < ivPoints.length; i++) {
                 ImageView imageView = new ImageView(this);
                 //设置图片的宽高
-                imageView.setLayoutParams(new ViewGroup.LayoutParams(10,10));
-                if(i == 0){
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(10, 10));
+                if (i == 0) {
                     imageView.setBackgroundResource(R.mipmap.page_selected_indicator);
-                }else{
+                } else {
                     imageView.setBackgroundResource(R.mipmap.page_normal_indicator);
                 }
                 ivPoints[i] = imageView;
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 layoutParams.leftMargin = (int)getResources().getDimension(R.dimen.alivc_home_points_item_margin);//设置点点点view的左边距
                 layoutParams.rightMargin = (int)getResources().getDimension(R.dimen.alivc_home_points_item_margin);;//设置点点点view的右边距
-                points.addView(imageView,layoutParams);
+                points.addView(imageView, layoutParams);
             }
             points.setVisibility(View.VISIBLE);
         } else {

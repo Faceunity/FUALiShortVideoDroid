@@ -1,5 +1,7 @@
 package com.aliyun.demo.recorder.view.dialog;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -47,8 +49,8 @@ public abstract class BasePageChooser extends BaseChooser{
         }
         mViewPager.setAdapter(new DialogPageAdapter(getChildFragmentManager(), mPageList));
         mTabPageIndicator.setViewPager(mViewPager);
-
     }
+
     ViewPager.SimpleOnPageChangeListener simpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener(){
         @Override
         public void onPageSelected(int position) {
@@ -67,6 +69,7 @@ public abstract class BasePageChooser extends BaseChooser{
     @Override
     public void onStart() {
         super.onStart();
+
         if (mViewPager != null) {
             mViewPager.addOnPageChangeListener(simpleOnPageChangeListener);
         }
@@ -74,6 +77,15 @@ public abstract class BasePageChooser extends BaseChooser{
         llBlank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
+                    解决crash:java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+                    原因:after onSaveInstanceState invoke commit,而 show 会触发 commit 操作
+                    fragment is added and its state has already been saved，
+                    Any operations that would change saved state should not be performed if this method returns true
+                */
+                if(isStateSaved()){
+                    return ;
+                }
                 dismiss();
             }
         });

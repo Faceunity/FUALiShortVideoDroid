@@ -8,7 +8,9 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,7 +32,7 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
     private TextView mAliyunCompeletBtn;
     private TextView mAliyunOnlineMusic;
     private TextView mAliyunLocalMusic;
-    private RecyclerView mAliyunMusicList;
+    private RecyclerView mAliyunMusicRecyclerView;
     private MusicAdapter mMusicAdapter;
     private Handler mPlayHandler = new Handler(Looper.getMainLooper());
     private MediaPlayer mMediaPlayer;
@@ -55,12 +57,37 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
     private MusicSelectListener musicSelectListener;
     private MusicFileBean mSelectMusic;
     private TextView mAlivcMusicCopyrightTV;
+    /**
+     * 选中的角标
+     */
+    private int mSelectPosition;
 
     private boolean isViewAttached;
     /**
      * 用于判断当前界面是否可见, 如果不可见, 下载完成后不能自动播放
      */
     private boolean isVisible;
+
+    /**
+     * 判断该界面是否显示过
+     */
+    boolean isShowed;
+    /**
+     * 缓存上次选择的音乐
+     */
+    private MusicFileBean mCacheMusic;
+    /**
+     * 缓存上次选择的时间
+     */
+    private int mCacheStartTime;
+    /**
+     * 缓存上次选择的角标
+     */
+    private int mCachePosition;
+    /**
+     * 缓存上次选择的tab 网络/本地
+     */
+    private boolean mCacheIsLocalMusic;
 
     public MusicChooseView(Context context) {
         super(context);
@@ -88,11 +115,30 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
         mmr = new MediaMetadataRetriever();
         isViewAttached = true;
         setVisibleStatus(true);
-        if (isLocalMusic) {
+        if (mCacheIsLocalMusic) {
             mAliyunLocalMusic.performClick();
         } else {
             mAliyunOnlineMusic.performClick();
         }
+        //恢复上次选择的音乐和开始时间 并且开始播放
+        if (isShowed && mCacheMusic != null && mMusicAdapter != null) {
+
+
+            mMusicAdapter.notifySelectPosition(mCacheStartTime, mCachePosition);
+            mAliyunMusicRecyclerView.scrollToPosition(mCachePosition);
+            Log.d(TAG, "onAttachedToWindow notifySelectPosition");
+            try {
+                prepareMusiceInfo(mCacheMusic, mCacheMusic.path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mMediaPlayer.setLooping(true);
+            mPlayHandler.postDelayed(mMusciRunnable, 0);
+        } else if (isShowed && mMusicAdapter != null) {
+            mMusicAdapter.notifySelectPosition(0, 0);
+            mAliyunMusicRecyclerView.scrollToPosition(0);
+        }
+
     }
 
     @Override
@@ -101,10 +147,9 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
         setVisibleStatus(false);
         isViewAttached = false;
         mPlayHandler.removeCallbacks(mMusciRunnable);
-            mMediaPlayer.stop();
+        mMediaPlayer.stop();
         mMediaPlayer.release();
         mmr.release();
-
     }
 
 
@@ -145,9 +190,9 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
         mAliyunOnlineMusic.setOnClickListener(this);
         mAliyunLocalMusic = findViewById(R.id.aliyun_local_music);
         mAliyunLocalMusic.setOnClickListener(this);
-        mAliyunMusicList = findViewById(R.id.aliyun_music_list);
+        mAliyunMusicRecyclerView = findViewById(R.id.aliyun_music_list);
         mAlivcMusicCopyrightTV = findViewById(R.id.alivc_music_copyright);
-        mAliyunMusicList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mAliyunMusicRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         if (mMusicAdapter == null) {
             mMusicAdapter = new MusicAdapter();
@@ -163,11 +208,17 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
                 @Override
                 public void onSelectMusic(final int position, final EffectBody<MusicFileBean> effectBody) {
                     final MusicFileBean musicFileBean = effectBody.getData();
+                    mSelectMusic = musicFileBean;
+                    mSelectPosition = position;
 
                     if (effectBody.isLocal()) {
                         onMusicSelected(musicFileBean, position);
                     } else {
-                        onMusicSelected(new MusicFileBean(), position);
+
+                        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                            //如果正在播放音乐，停止播放
+                            mMediaPlayer.stop();
+                        }
                         musicLoader.downloadMusic(musicFileBean, new FileDownloaderCallback() {
                             @Override
                             public void onStart(int downloadId, long soFarBytes, long totalBytes, int preProgress) {
@@ -184,8 +235,8 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
                                 super.onProgress(downloadId, soFarBytes, totalBytes, speed, progress);
                                 if (!isLocalMusic) {
                                     mMusicAdapter.updateProcess(
-                                        (MusicAdapter.MusicViewHolder)mAliyunMusicList
-                                            .findViewHolderForAdapterPosition(position), progress, position);
+                                        (MusicAdapter.MusicViewHolder) mAliyunMusicRecyclerView
+                                        .findViewHolderForAdapterPosition(position), progress, position);
                                 }
                             }
 
@@ -193,13 +244,20 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
                             public void onFinish(int downloadId, String path) {
                                 super.onFinish(downloadId, path);
                                 effectBody.getData().setPath(path);
-                                if (isVisible) {
-                                    if (position == mMusicAdapter.getSelectIndex() && !isLocalMusic) {
-                                        onMusicSelected(effectBody.getData(), position);
-
-                                    }
-                                    mMusicAdapter.notifyDownloadingComplete(effectBody, position);
+                                //if (isVisible) {
+                                if (mMusicAdapter == null) {
+                                    return;
                                 }
+                                // 无论是否可见, 都要去刷新界面信息
+                                // 否则在下载过程中退后台, 当下载进度完成再返回前台时, 下载进度会卡在99%的状态
+                                if (position == mMusicAdapter.getSelectIndex() && !isLocalMusic) {
+                                    onMusicSelected(effectBody.getData(), position);
+
+                                }
+                                mMusicAdapter.notifyDownloadingComplete((MusicAdapter.MusicViewHolder)
+                                                                        mAliyunMusicRecyclerView
+                                                                        .findViewHolderForAdapterPosition(position), effectBody, position);
+                                //}
 
                             }
 
@@ -215,45 +273,81 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
                 }
             });
         }
-        mAliyunMusicList.setAdapter(mMusicAdapter);
+        mAliyunMusicRecyclerView.setAdapter(mMusicAdapter);
 
     }
 
     private void onMusicSelected(MusicFileBean musicFileBean, int position) {
-        mSelectMusic = musicFileBean;
-        String path = mSelectMusic.getPath();
-        mStartTime = 0;
+
+        if (mSelectPosition != position ) {
+            //恢复时，不能重置
+            mStartTime = 0;
+        }
         try {
             if (isVisible) {
-                mPlayHandler.removeCallbacks(mMusciRunnable);
-                mMediaPlayer.reset();
-                if (path == null || path.isEmpty()) {
-                    mMusicPath = null;
-                    return;
-                }
-                mMediaPlayer.setDataSource(path);
-                mMediaPlayer.prepare();
-
-                //mmr.setDataSource(path);
-                //long duration = Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                int duration = mMediaPlayer.getDuration();
-                mSelectMusic.duration = duration;
-                if (duration < mRecordTime) {
-                    mLoopTime = (int)duration;
-                } else {
-                    mLoopTime = mRecordTime;
-                }
-                mMusicPath = path;
-                musicFileBean.setDuration(duration);
+                //mPlayHandler.removeCallbacks(mMusciRunnable);
+                //mMediaPlayer.reset();
+                //if (path == null || path.isEmpty()) {
+                //    mMusicPath = null;
+                //    return;
+                //}
+                //mMediaPlayer.setDataSource(path);
+                //mMediaPlayer.prepare();
+                //
+                ////mmr.setDataSource(path);
+                ////long duration = Long.parseLong(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                //int duration = mMediaPlayer.getDuration();
+                //mSelectMusic.duration = duration;
+                //if (duration < mRecordTime) {
+                //    mLoopTime = (int)duration;
+                //} else {
+                //    mLoopTime = mRecordTime;
+                //}
+                //mMusicPath = path;
+                //musicFileBean.setDuration(duration);
+                //mMusicAdapter.notifyItemChanged(position);
+                //mMediaPlayer.setLooping(true);
+                //mPlayHandler.postDelayed(mMusciRunnable, 0);
+                prepareMusiceInfo(musicFileBean, musicFileBean.path);
                 mMusicAdapter.notifyItemChanged(position);
                 mMediaPlayer.setLooping(true);
                 mPlayHandler.postDelayed(mMusciRunnable, 0);
+            } else if (isShowed) {
+                // 如果界面不可见, 且曾经显示过, 再去更新item信息, 但不能播放
+                prepareMusiceInfo(musicFileBean, musicFileBean.path);
+                mMusicAdapter.notifyItemChanged(position);
+                mMediaPlayer.setLooping(true);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 准备要播放的音乐资源
+     */
+    private void prepareMusiceInfo(MusicFileBean musicFileBean, String path) throws IOException, IllegalStateException {
+        mPlayHandler.removeCallbacks(mMusciRunnable);
+        mMediaPlayer.reset();
+        if (TextUtils.isEmpty(path)) {
+            mMusicPath = null;
+            return;
+        }
+        mMediaPlayer.setDataSource(path);
+        mMediaPlayer.prepare();
+
+        int duration = mMediaPlayer.getDuration();
+        mSelectMusic.duration = duration;
+        if (duration < mRecordTime) {
+            mLoopTime = (int)duration;
+        } else {
+            mLoopTime = mRecordTime;
+        }
+        mMusicPath = path;
+        musicFileBean.setDuration(duration);
+
     }
 
     private Runnable mMusciRunnable = new Runnable() {
@@ -275,15 +369,17 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
 
             if (musicSelectListener != null) {
                 musicSelectListener.onMusicSelect(mSelectMusic, mStartTime);
+                //缓存选择的值
+                mCacheMusic = mSelectMusic;
+                mCacheStartTime = mStartTime;
+                mCachePosition = mSelectPosition;
+                mCacheIsLocalMusic = isLocalMusic;
             }
         } else if (v == mAliyunOnlineMusic) {
             if (isLocalMusic) {
                 isLocalMusic = false;
-                mLastSelectIndex = mCurrentSelectIndex;
-                mCurrentSelectIndex = mMusicAdapter.getSelectIndex();
-                mMusicAdapter.setData(mOnlineMusicList, mLastSelectIndex);
-            } else {
-                mMusicAdapter.setData(mOnlineMusicList, mMusicAdapter.getSelectIndex());
+
+                mMusicAdapter.setData(mOnlineMusicList, 0);
             }
             mAlivcMusicCopyrightTV.setVisibility(View.VISIBLE);
             mAliyunOnlineMusic.setSelected(true);
@@ -293,11 +389,7 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
 
             if (!isLocalMusic) {
                 isLocalMusic = true;
-                mLastSelectIndex = mCurrentSelectIndex;
-                mCurrentSelectIndex = mMusicAdapter.getSelectIndex();
-                mMusicAdapter.setData(mLocalMusicList, mLastSelectIndex);
-            } else {
-                mMusicAdapter.setData(mLocalMusicList, mMusicAdapter.getSelectIndex());
+                mMusicAdapter.setData(mLocalMusicList, 0);
             }
 
             mAlivcMusicCopyrightTV.setVisibility(View.INVISIBLE);
@@ -318,6 +410,7 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
         }
     }
 
+
     /**
      * 设置view的可见状态, 如果不可见, 则停止音乐播放, 如果可见,开始播放
      *
@@ -327,10 +420,11 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
         isVisible = visibleStatus;
         if (isViewAttached) {
             if (visibleStatus) {
-                if (isPlaying) {
-                    mMediaPlayer.start();
-                    mPlayHandler.postDelayed(mMusciRunnable, mLoopTime - playedTime);
-                }
+                //if (isPlaying) {
+                mMediaPlayer.start();
+                mPlayHandler.postDelayed(mMusciRunnable, mLoopTime - playedTime);
+                //}
+                isShowed = true;
             } else {
                 isVisible = false;
                 if (mMediaPlayer.isPlaying()) {

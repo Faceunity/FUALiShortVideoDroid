@@ -15,12 +15,10 @@
     <dimen name="bottom_editor_effect_tab">60dp</dimen>
     <dimen name="action_bar_profile_title_drawablePadding">4dp</dimen>
     <dimen name="font_size_20px">10.0sp</dimen>
-    <dimen name="font_size_28px">14.0sp</dimen>
     <dimen name="font_size_22px">11.0sp</dimen>
     <dimen name="effect_list_view_size">100dp</dimen>
     <dimen name="effect_overlay_view_size">80dp</dimen>
     <dimen name="effect_music_view_size">300dp</dimen>
-    <dimen name="list_item_space">10dp</dimen>
     <dimen name="effect_image_size">50dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -29,6 +27,8 @@
     <dimen name="alivc_svideo_effect_title_height">45dp</dimen>
     <dimen name="alivc_svideo_effect_height">215dp</dimen>
     <dimen name="alivc_svideo_effect_tip_height">30dp</dimen>
+    <dimen name="alivc_svideo_effect_transition_thumb_height">32dp</dimen>
+    <dimen name="alivc_svideo_effect_transition_thumb_width">64dp</dimen>
     <dimen name="alivc_svideo_effect_icon_wh">48dp</dimen>
     <dimen name="alivc_svideo_effect_icon_padding">8dp</dimen>
     <dimen name="alivc_svideo_tab_tv_iv_distance">10dp</dimen>

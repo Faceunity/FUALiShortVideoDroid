@@ -102,8 +102,9 @@ import java.util.Map;
  * 视频录制界面
  *      原魔法相机CameraDemo
  */
+@Deprecated
 public class AlivcRecorderActivity extends Activity implements View.OnClickListener, GestureDetector.OnGestureListener,
-        View.OnTouchListener, ScaleGestureDetector.OnScaleGestureListener {
+    View.OnTouchListener, ScaleGestureDetector.OnScaleGestureListener {
     private static final String TAG = "AlivcRecorderActivity";
     private static final String LOCAL_SETTING_NAME = "sdk_record_download_paster";
     public static final String NEED_GALLERY = "need_gallery";
@@ -263,36 +264,36 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
         mGop = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_GOP, 5);
         mBitrate = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_BITRATE, 0);
         mVideoQuality = (VideoQuality) getIntent().getSerializableExtra(AliyunSnapVideoParam.VIDEO_QUALITY);
-        if(mVideoQuality == null){
+        if (mVideoQuality == null) {
             mVideoQuality = VideoQuality.HD;
         }
         mVideoCodec = (VideoCodecs) getIntent().getSerializableExtra(AliyunSnapVideoParam.VIDEO_CODEC);
-        if(mVideoCodec == null) {
+        if (mVideoCodec == null) {
             mVideoCodec = VideoCodecs.H264_HARDWARE;
         }
-        isNeedClip = getIntent().getBooleanExtra(AliyunSnapVideoParam.NEED_CLIP,true);
-        isNeedGallery = getIntent().getBooleanExtra(NEED_GALLERY,true) && mGalleryVisibility == 0;
+        isNeedClip = getIntent().getBooleanExtra(AliyunSnapVideoParam.NEED_CLIP, true);
+        isNeedGallery = getIntent().getBooleanExtra(NEED_GALLERY, true) && mGalleryVisibility == 0;
         mVideoParam = new AliyunVideoParam.Builder()
-            .gop(mGop)
-            .bitrate(mBitrate)
-            .frameRate(25)
-            .videoQuality(mVideoQuality)
-            .videoCodec(mVideoCodec)
-            .build();
+        .gop(mGop)
+        .bitrate(mBitrate)
+        .frameRate(25)
+        .videoQuality(mVideoQuality)
+        .videoCodec(mVideoCodec)
+        .build();
 
         /**
          * 裁剪参数
          */
-        mFrame = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE,25);
+        mFrame = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE, 25);
         mCropMode = (VideoDisplayMode) getIntent().getSerializableExtra(AliyunSnapVideoParam.CROP_MODE);
-        if(mCropMode == null){
+        if (mCropMode == null) {
             mCropMode = VideoDisplayMode.SCALE;
         }
-        mMinCropDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MIN_CROP_DURATION,2000);
-        mMinVideoDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MIN_VIDEO_DURATION,2000);
-        mMaxVideoDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MAX_VIDEO_DURATION,10000);
+        mMinCropDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MIN_CROP_DURATION, 2000);
+        mMinVideoDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MIN_VIDEO_DURATION, 2000);
+        mMaxVideoDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MAX_VIDEO_DURATION, 10000);
         mSortMode = getIntent().getIntExtra(AliyunSnapVideoParam.SORT_MODE, AliyunSnapVideoParam.SORT_MODE_MERGE);
-        
+
     }
 
 
@@ -407,7 +408,7 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
                         String path = Common.QU_DIR + "maohuzi";
                         final EffectPaster paster = new EffectPaster(path);
                         paster.isTrack = false;
-                        if(mEffDirs != null){
+                        if (mEffDirs != null) {
                             EffectFilter effectFilter = new EffectFilter(mEffDirs[filterIndex]);
                             recorder.applyFilter(effectFilter);
                         }
@@ -467,6 +468,11 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
             public int onScaledIdBack(int scaledId, int textureWidth, int textureHeight, float[] matrix) {
                 return scaledId;
             }
+
+            @Override
+            public void onTextureDestroyed() {
+
+            }
         });
         recorder.setEncoderInfoCallback(new EncoderInfoCallback() {
             @Override
@@ -491,18 +497,18 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
         if (!mConflictEffects.isEmpty()) {
             for (Map.Entry<Object, Integer> entry : mConflictEffects.entrySet()) {
                 switch (entry.getValue()) {
-                    case TYPE_FILTER:
-                        recorder.applyFilter((EffectFilter) entry.getKey());
-                        break;
-                    case TYPE_MV:
-                        recorder.applyMv((EffectBean) entry.getKey());
-                        break;
-                    case TYPE_MUSIC:
-                        EffectBean music = (EffectBean) entry.getKey();
-                        recorder.setMusic(music.getPath(), music.getStartTime(), music.getDuration());
-                        break;
-                    default:
-                        break;
+                case TYPE_FILTER:
+                    recorder.applyFilter((EffectFilter) entry.getKey());
+                    break;
+                case TYPE_MV:
+                    recorder.applyMv((EffectBean) entry.getKey());
+                    break;
+                case TYPE_MUSIC:
+                    EffectBean music = (EffectBean) entry.getKey();
+                    recorder.setMusic(music.getPath(), music.getStartTime(), music.getDuration());
+                    break;
+                default:
+                    break;
                 }
             }
         }
@@ -594,44 +600,46 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
         addConstantPaster();
         initPasterView();
     }
-
+    /**
+     * 素材分发服务为官方demo演示使用，无法达到商业化使用程度。请自行搭建相关的服务
+     */
     private void initPasterResourceOnLine() {
         StringBuilder resUrl = new StringBuilder();
         resUrl.append(Common.BASE_URL).append("/api/res/prepose")
-                .append("?packageName=")
-                .append(getApplicationInfo().packageName)
-                .append("&signature=")
-                .append(AppInfo.getInstance().obtainAppSignature(getApplicationContext()));
+        .append("?packageName=")
+        .append(getApplicationInfo().packageName)
+        .append("&signature=")
+        .append(AppInfo.getInstance().obtainAppSignature(getApplicationContext()));
         Logger.getDefaultLogger().d("pasterUrl url = " + resUrl.toString());
         HttpRequest.get(resUrl.toString(),
-                new StringHttpRequestCallback() {
-                    @Override
-                    protected void onSuccess(String s) {
-                        super.onSuccess(s);
-                        JSONSupportImpl jsonSupport = new JSONSupportImpl();
-                        try {
-                            List<PreviewResourceForm> resourceList = jsonSupport.readListValue(s,
-                                    new TypeToken<List<PreviewResourceForm>>() {
-                                    }.getType());
-                            if (resourceList != null && resourceList.size() > 0) {
-                                for (int i = 0; i < resourceList.size(); i++) {
-                                    resources.addAll(resourceList.get(i).getPasterList());
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            initPasterResourceLocal();
+        new StringHttpRequestCallback() {
+            @Override
+            protected void onSuccess(String s) {
+                super.onSuccess(s);
+                JSONSupportImpl jsonSupport = new JSONSupportImpl();
+                try {
+                    List<PreviewResourceForm> resourceList = jsonSupport.readListValue(s,
+                    new TypeToken<List<PreviewResourceForm>>() {
+                    } .getType());
+                    if (resourceList != null && resourceList.size() > 0) {
+                        for (int i = 0; i < resourceList.size(); i++) {
+                            resources.addAll(resourceList.get(i).getPasterList());
                         }
-                        addConstantPaster();
-                        initPasterView();
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    initPasterResourceLocal();
+                }
+                addConstantPaster();
+                initPasterView();
+            }
 
-                    @Override
-                    public void onFailure(int errorCode, String msg) {
-                        super.onFailure(errorCode, msg);
-                        initPasterResourceLocal();
-                    }
-                });
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+                initPasterResourceLocal();
+            }
+        });
     }
 
     private void initPasterView() {
@@ -666,7 +674,7 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
                 initPasterResource();
                 initAssetPath();
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void fillItemBlank() {
@@ -724,7 +732,7 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
 //        fanProgressBar = (FanProgressBar) findViewById(R.id.record_progress);
         progressBar = (CircleProgressBar) findViewById(R.id.aliyun_download_progress);
         recordTimelineView = (RecordTimelineView) findViewById(R.id.aliyun_record_timeline);
-        recordTimelineView.setColor(R.color.aliyun_color_record_duraton, R.color.aliyun_colorPrimary, R.color.qupai_black_opacity_70pct, R.color.aliyun_transparent);
+        recordTimelineView.setColor(R.color.aliyun_color_record_duraton, R.color.aliyun_music_colorPrimary, R.color.qupai_black_opacity_70pct, R.color.aliyun_transparent);
         recordBg = (FrameLayout) findViewById(R.id.aliyun_record_bg);
         recordBg.setOnTouchListener(this);
         waitingLayout = (FrameLayout) findViewById(R.id.aliyun_copy_res_tip);
@@ -790,7 +798,6 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
                     @Override
                     public void onEffectChanged(MvForm effect) {
                         if (effect == null) {
-                            recorder.applyMv(null);
                             if (mCurrMv != null) {
                                 mConflictEffects.remove(mCurrMv);
                                 mCurrMv = null;
@@ -800,10 +807,10 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
                             String path = MVResourceUtil.getMVPath(effect.list, mGlSurfaceWidth, mGlSurfaceHeight);
                             mv.setPath(path);
                             recorder.applyMv(mv);
-                            if(path == null){
+                            if (path == null) {
                                 mConflictEffects.remove(mCurrMv);
                                 mCurrMv = null;
-                            }else{
+                            } else {
                                 mConflictEffects.put(mv, TYPE_MV);
                                 mCurrMv = mv;
                             }
@@ -856,7 +863,7 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
                 FileDownloaderModel fileDownloaderModel = new FileDownloaderModel();
                 fileDownloaderModel.setUrl(pasterForm.getUrl());
                 fileDownloaderModel.setPath(DownloadFileUtils.getAssetPackageDir(this,
-                        pasterForm.getName(), pasterForm.getId()).getAbsolutePath());
+                                            pasterForm.getName(), pasterForm.getId()).getAbsolutePath());
                 fileDownloaderModel.setId(pasterForm.getId());
                 fileDownloaderModel.setIsunzip(1);
 
@@ -969,7 +976,7 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
             if (resultCode == Activity.RESULT_OK) {
                 String path = data.getStringExtra(MUSIC_PATH);
                 int startTime = data.getIntExtra(MUSIC_START_TIME, 0);
-                if(music != null){
+                if (music != null) {
                     mConflictEffects.remove(music);
                 }
                 music = new EffectBean();
@@ -992,7 +999,7 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
 //                }, 4000);
 //                recorder.setMusic(path, startTime, clipManager.getMaxDuration());
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                if(music != null){
+                if (music != null) {
                     mConflictEffects.remove(music);
                 }
                 recorder.setMusic(null, 0, 0);
@@ -1023,27 +1030,27 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
 
     private void txtFadeIn() {
         filterTxt.animate().alpha(1).setDuration(FILTER_ANIMATION_DURATION / 2).setListener(
-                new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
+        new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
 
-                    }
+            }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        txtFadeOut();
-                    }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                txtFadeOut();
+            }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
+            @Override
+            public void onAnimationCancel(Animator animation) {
 
-                    }
+            }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
-                    }
-                }).start();
+            }
+        }).start();
     }
 
     private void txtFadeOut() {
@@ -1103,20 +1110,20 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
                 flashType = FlashType.OFF;
             }
             switch (flashType) {
-                case AUTO:
-                    v.setSelected(false);
-                    v.setActivated(true);
-                    break;
-                case ON:
-                    v.setSelected(true);
-                    v.setActivated(false);
-                    break;
-                case OFF:
-                    v.setSelected(true);
-                    v.setActivated(true);
-                    break;
-                default:
-                    break;
+            case AUTO:
+                v.setSelected(false);
+                v.setActivated(true);
+                break;
+            case ON:
+                v.setSelected(true);
+                v.setActivated(false);
+                break;
+            case OFF:
+                v.setSelected(true);
+                v.setActivated(true);
+                break;
+            default:
+                break;
             }
             recorder.setLight(flashType);
         } else if (v == backBtn) {
@@ -1174,7 +1181,7 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
             protected void onPostExecute(Object o) {
                 waitingLayout.setVisibility(View.GONE);
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -1263,6 +1270,12 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
                         return false;
                     }
                     videoPath = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DCIM + File.separator + System.currentTimeMillis() + ".mp4";
+                    File file = new File(Environment.getExternalStorageDirectory()
+                                         + File.separator
+                                         + Environment.DIRECTORY_DCIM);
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
                     recorder.setOutputPath(videoPath);
 
                     handleRecordStart();
@@ -1405,31 +1418,31 @@ public class AlivcRecorderActivity extends Activity implements View.OnClickListe
         return vh;
     }
 
-    public static void startRecord(Context context,AliyunSnapVideoParam param){
-        Intent intent = new Intent(context,AlivcRecorderActivity.class);
-        intent.putExtra(AliyunSnapVideoParam.VIDEO_RESOLUTION,param.getResolutionMode());
-        intent.putExtra(AliyunSnapVideoParam.VIDEO_RATIO,param.getRatioMode());
-        intent.putExtra(AliyunSnapVideoParam.RECORD_MODE,param.getRecordMode());
-        intent.putExtra(AliyunSnapVideoParam.FILTER_LIST,param.getFilterList());
-        intent.putExtra(AliyunSnapVideoParam.BEAUTY_LEVEL,param.getBeautyLevel());
-        intent.putExtra(AliyunSnapVideoParam.BEAUTY_STATUS,param.getBeautyStatus());
+    public static void startRecord(Context context, AliyunSnapVideoParam param) {
+        Intent intent = new Intent(context, AlivcRecorderActivity.class);
+        intent.putExtra(AliyunSnapVideoParam.VIDEO_RESOLUTION, param.getResolutionMode());
+        intent.putExtra(AliyunSnapVideoParam.VIDEO_RATIO, param.getRatioMode());
+        intent.putExtra(AliyunSnapVideoParam.RECORD_MODE, param.getRecordMode());
+        intent.putExtra(AliyunSnapVideoParam.FILTER_LIST, param.getFilterList());
+        intent.putExtra(AliyunSnapVideoParam.BEAUTY_LEVEL, param.getBeautyLevel());
+        intent.putExtra(AliyunSnapVideoParam.BEAUTY_STATUS, param.getBeautyStatus());
         intent.putExtra(AliyunSnapVideoParam.CAMERA_TYPE, param.getCameraType());
         intent.putExtra(AliyunSnapVideoParam.FLASH_TYPE, param.getFlashType());
-        intent.putExtra(AliyunSnapVideoParam.NEED_CLIP,param.isNeedClip());
-        intent.putExtra(AliyunSnapVideoParam.MAX_DURATION,param.getMaxDuration());
-        intent.putExtra(AliyunSnapVideoParam.MIN_DURATION,param.getMinDuration());
-        intent.putExtra(AliyunSnapVideoParam.VIDEO_QUALITY,param.getVideoQuality());
-        intent.putExtra(AliyunSnapVideoParam.VIDEO_GOP,param.getGop());
+        intent.putExtra(AliyunSnapVideoParam.NEED_CLIP, param.isNeedClip());
+        intent.putExtra(AliyunSnapVideoParam.MAX_DURATION, param.getMaxDuration());
+        intent.putExtra(AliyunSnapVideoParam.MIN_DURATION, param.getMinDuration());
+        intent.putExtra(AliyunSnapVideoParam.VIDEO_QUALITY, param.getVideoQuality());
+        intent.putExtra(AliyunSnapVideoParam.VIDEO_GOP, param.getGop());
         intent.putExtra(AliyunSnapVideoParam.VIDEO_BITRATE, param.getVideoBitrate());
-        intent.putExtra(AliyunSnapVideoParam.SORT_MODE,param.getSortMode());
+        intent.putExtra(AliyunSnapVideoParam.SORT_MODE, param.getSortMode());
         intent.putExtra(AliyunSnapVideoParam.VIDEO_CODEC, param.getVideoCodec());
 
 
-        intent.putExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE,param.getFrameRate());
+        intent.putExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE, param.getFrameRate());
         intent.putExtra(AliyunSnapVideoParam.CROP_MODE, param.getScaleMode());
-        intent.putExtra(AliyunSnapVideoParam.MIN_CROP_DURATION,param.getMinCropDuration());
-        intent.putExtra(AliyunSnapVideoParam.MIN_VIDEO_DURATION,param.getMinVideoDuration());
-        intent.putExtra(AliyunSnapVideoParam.MAX_VIDEO_DURATION,param.getMaxVideoDuration());
+        intent.putExtra(AliyunSnapVideoParam.MIN_CROP_DURATION, param.getMinCropDuration());
+        intent.putExtra(AliyunSnapVideoParam.MIN_VIDEO_DURATION, param.getMinVideoDuration());
+        intent.putExtra(AliyunSnapVideoParam.MAX_VIDEO_DURATION, param.getMaxVideoDuration());
         intent.putExtra(AliyunSnapVideoParam.SORT_MODE, param.getSortMode());
 
         context.startActivity(intent);

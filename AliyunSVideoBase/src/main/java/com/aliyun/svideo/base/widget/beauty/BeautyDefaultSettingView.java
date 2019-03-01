@@ -67,7 +67,7 @@ public class BeautyDefaultSettingView extends LinearLayout {
 //        ));
         textView.setPadding(10,0,10,0);
         textView.setText(getResources().getString(R.string.alivc_tips_fine_tuning));
-        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.alivc_white));
+        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.alivc_base_white));
         alivcPopupView.setContentView(textView);
         mRgNormalGroup.check(R.id.beauty3);
         mRgAdvancedGroup.check(R.id.beauty_advanced_3);

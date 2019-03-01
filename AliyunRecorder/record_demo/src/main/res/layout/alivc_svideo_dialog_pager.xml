@@ -20,7 +20,7 @@
             android:layout_marginBottom="5dp"
             android:layout_height="match_parent"
 
-            android:background="@color/alivc_line_gray"/>
+            android:background="@color/alivc_common_line_gray"/>
 
         <com.aliyun.svideo.base.widget.PagerSlidingTabStrip
             android:id="@+id/alivc_dialog_indicator"

@@ -45,6 +45,13 @@ public class ActionInfo {
     }
 
     /**
+     * 清空记录的tag页面 --使用默认的页面
+     */
+    public void clearTagClass() {
+        mTagClassNames.clear();
+    }
+
+    /**
      * 设置finish页面
      *
      * @param className 目标Activity的name，示例com.aliyun.demo.editor.EditorActivity
@@ -81,24 +88,24 @@ public class ActionInfo {
      *
      * @param key {@link SVideoAction}
      */
-    private String getDefaultTargetConfig(SVideoAction key) {
+    public static String getDefaultTargetConfig(SVideoAction key) {
         String tagClassName;
         switch (key) {
-            case CROP_TARGET_CLASSNAME:
-                //裁剪完成默认返回
-                tagClassName = null;
-                break;
-            case RECORD_TARGET_CLASSNAME:
-                //录制完成默认进入编辑页面
-                tagClassName = "com.aliyun.demo.editor.EditorActivity";
-                break;
-            case EDITOR_TARGET_CLASSNAME:
-                //编辑合成默认进入发布页面
-                tagClassName = "com.aliyun.demo.publish.UploadActivity";
-                break;
-            default:
-                tagClassName = null;
-                break;
+        case CROP_TARGET_CLASSNAME:
+            //裁剪完成默认返回
+            tagClassName = null;
+            break;
+        case RECORD_TARGET_CLASSNAME:
+            //录制完成默认进入编辑页面
+            tagClassName = "com.aliyun.svideo.editor.editor.EditorActivity";
+            break;
+        case EDITOR_TARGET_CLASSNAME:
+            //编辑合成默认进入发布页面
+            tagClassName = "com.aliyun.svideo.editor.publish.UploadActivity";
+            break;
+        default:
+            tagClassName = null;
+            break;
         }
         return tagClassName;
     }

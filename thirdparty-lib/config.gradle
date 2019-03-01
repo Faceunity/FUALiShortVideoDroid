@@ -3,18 +3,18 @@ ext {
     //==Android Third party,include Application Layer,SDK Layer==
 
     //Build Gradle Plugin
-    externalAndroidBuildGradlePlugin = 'com.android.tools.build:gradle:3.0.1'
+    externalAndroidBuildGradlePlugin = 'com.android.tools.build:gradle:3.2.1'
 
     //Android support Libraries
-    externalAndroidAppCompatV7 = 'com.android.support:appcompat-v7:26.1.0'
+    externalAndroidAppCompatV7 = 'com.android.support:appcompat-v7:27.1.0'
     externalAndroidAppCompatV7ToSnapSvideo = 'com.android.support:appcompat-v7:24.2.1'
 
     externalAndroidCardView = 'com.android.support:cardview-v7:21.0.+'
     externalAndroidMultiDex = 'com.android.support:multidex:1.0.2'
-    externalAndroidRecyclerView = 'com.android.support:recyclerview-v7:26.1.0'
+    externalAndroidRecyclerView = 'com.android.support:recyclerview-v7:27.1.0'
     externalAndroidSupportV13 = 'com.android.support:support-v13:23.4.0'
-    externalAndroidSupportV4 = 'com.android.support:support-v4:26.1.0'
-    externalAndroidDesign = 'com.android.support:design:24.2.1'
+    externalAndroidSupportV4 = 'com.android.support:support-v4:27.1.0'
+    externalAndroidDesign = 'com.android.support:design:27.1.0'
 
     //Test related third party libraries
     externalAndroidTestEspressoCore = 'com.android.support.test.espresso:espresso-core:2.2.2'
@@ -32,7 +32,7 @@ ext {
     externalPagerSlidingTabStrip = 'com.astuetz:pagerslidingtabstrip:1.0.1'
     externalEasyPermissions = 'pub.devrel:easypermissions:0.2.1'
     externalOrmLiteAndroid = 'com.j256.ormlite:ormlite-android:4.48'
-    externalGlide = 'com.github.bumptech.glide:glide:3.7.0'
+    externalGlide = 'com.github.bumptech.glide:glide:4.8.0'
     externalGlideOkHttp = 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     externalSimpleZXing = 'com.acker:simplezxing:1.5'
     externalPicasso = 'com.squareup.picasso:picasso:2.5.2'
@@ -49,14 +49,18 @@ ext {
     externalGSON = 'com.google.code.gson:gson:2.8.0'
     externalMqtt = 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     externalHttpCore = 'org.apache.httpcomponents:httpcore:4.4.1'
+    externalFaceUnity = 'com.faceunity:nama:5.3.0-lite'
 
+    //Aliyun SDK
+    externalAliyunVodUpload = 'com.aliyun.video.android:upload:1.5.2'
+    externalAlivcConan = 'com.alivc.conan:AlivcConan:0.9.0'
 
     //Android SDK/Tools Version
-    externalCompileSdkVersion = 26
-    externalBuildToolsVersion = '26.0.2'
+    externalCompileSdkVersion = 27
+    externalBuildToolsVersion = '28.0.3'
     //The MinSdkVersion of the product you can add like this: externalSVideoMinSdkVersion 15
-    externalMinSdkVersion = 15
-    externalPlayerMinSdkVersion = 16
+    externalMinSdkVersion = 18
+    externalPlayerMinSdkVersion = 18
     externalLiveMinSdkVersion = 18
-    externalTargetSdkVersion = 26
+    externalTargetSdkVersion = 27
 }

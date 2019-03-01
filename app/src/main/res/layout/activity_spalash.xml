@@ -3,7 +3,7 @@
     android:id="@+id/splash_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/aliyun_black"
+    android:background="@drawable/alivc_lanch_loading"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -38,16 +38,6 @@
                 android:textSize="14sp" />
 
         </LinearLayout>
-
-
-        <ImageView
-            android:id="@+id/spalash_bg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="-80dp"
-            android:src="@mipmap/alivc_bg_splash" />
     </RelativeLayout>
     <TextView
         android:layout_width="wrap_content"

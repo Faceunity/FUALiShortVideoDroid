@@ -44,8 +44,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aliyun.svideo.R;
 import com.aliyun.common.utils.DensityUtil;
+import com.aliyun.svideo.R;
 
 import java.util.Locale;
 

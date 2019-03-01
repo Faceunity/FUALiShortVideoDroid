@@ -24,7 +24,7 @@ public class AlivcEditorRoute {
      */
     public static void startEditorActivity(Activity activity, AlivcSvideoEditParam param, ArrayList<MediaInfo> mediaInfos) {
         Intent intent = new Intent();
-        intent.setClassName(activity, "com.aliyun.demo.editor.EditorActivity");
+        intent.setClassName(activity, "com.aliyun.svideo.editor.editor.EditorActivity");
         param.setMediaInfo(mediaInfos.get(0));
         AliyunVideoParam mVideoParam = param.generateVideoParam();
         intent.putExtra("video_param", mVideoParam);

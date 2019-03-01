@@ -9,7 +9,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
@@ -20,33 +22,37 @@ public class SplashActivity extends Activity{
     /**
      * 动画时间 2000ms
      */
-    private static final int ANIMATOR_DURATION = 2000;
+    private  final int ANIMATOR_DURATION = 2000;
 
     /**
      * 动画样式-- 透明度动画
      */
-    private static final String ANIMATOR_STYLE = "alpha";
+    private  final String ANIMATOR_STYLE = "alpha";
 
     /**
      * 动画起始值
      */
-    private static final float ANIMATOR_VALUE_START = 0f;
+    private  final float ANIMATOR_VALUE_START = 0f;
 
     /**
      * 动画结束值
      */
-    private static final float ANIMATOR_VALUE_END = 1f;
+    private  final float ANIMATOR_VALUE_END = 1f;
     private ObjectAnimator alphaAnimIn;
+    private LinearLayout splashView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //todo 排查错误
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if (strangeError()) {
+            return;
+        }
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_spalash);
-        LinearLayout splashView = findViewById(R.id.splash_view);
+        splashView = findViewById(R.id.splash_view);
 
         alphaAnimIn = ObjectAnimator.ofFloat(splashView, ANIMATOR_STYLE, ANIMATOR_VALUE_START, ANIMATOR_VALUE_END);
 
@@ -62,6 +68,41 @@ public class SplashActivity extends Activity{
         });
     }
 
+    /**
+     * 处理手机在第一次安装时, 退后台再次启动app, 会重新走splash页面
+     * 目前只针对已知存在该问题的机型做处理
+     * @return
+     */
+    private boolean strangeError() {
+        if (isStrangeErrorBrand()) {
+            Intent intent = getIntent();
+            if (!isTaskRoot()
+                && intent != null
+                && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                && intent.getAction() != null
+                && intent.getAction().equals(Intent.ACTION_MAIN)) {
+                finish();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断手机品牌
+     * GIONEE: 金立
+     * OPPO: oppo
+     * samsung: 三星
+     * LeEco: 乐视
+     * @return true:Oppo ,  flase:其它
+     */
+    private boolean isStrangeErrorBrand() {
+        return "GIONEE".equalsIgnoreCase(Build.BRAND)
+            || "OPPO".equalsIgnoreCase(Build.BRAND)
+            || "samsung".equalsIgnoreCase(Build.BRAND)
+            || "LeEco".equalsIgnoreCase(Build.BRAND);
+    }
+
     private void setJumpToMain(){
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
@@ -70,11 +111,17 @@ public class SplashActivity extends Activity{
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (alphaAnimIn != null) {
+            alphaAnimIn.cancel();
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-
         if (alphaAnimIn != null) {
-
             alphaAnimIn.cancel();
         }
     }
@@ -82,6 +129,9 @@ public class SplashActivity extends Activity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (splashView != null) {
+            splashView.clearAnimation();
+        }
         if (alphaAnimIn != null) {
             alphaAnimIn.cancel();
             alphaAnimIn.removeAllListeners();

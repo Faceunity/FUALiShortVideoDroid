@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:background="?attr/qusnap_background_color">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
 
     <com.aliyun.svideo.base.widget.VideoTrimFrameLayout
         android:id="@+id/aliyun_video_surfaceLayout"
@@ -20,6 +25,8 @@
             />
 
     </com.aliyun.svideo.base.widget.VideoTrimFrameLayout>
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/aliyun_list_layout"
@@ -38,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/aliyun_svideo_icon_cancel" />
+                android:src="@mipmap/aliyun_svideo_crop_icon_cancel" />
 
             <ImageView
                 android:id="@+id/aliyun_transform"

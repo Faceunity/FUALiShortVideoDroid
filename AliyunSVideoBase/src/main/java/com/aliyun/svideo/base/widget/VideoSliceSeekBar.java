@@ -66,7 +66,7 @@ public class VideoSliceSeekBar extends View {
     private SeekBarChangeListener scl;
     private int resSweepLeft = R.mipmap.aliyun_svideo_icon_sweep_left,resSweepRight = R.mipmap.aliyun_svideo_icon_sweep_right;
     private int resFrame = R.mipmap.aliyun_svideo_icon_frame;
-    private int resBackground = R.color.aliyun_color_bg;
+    private int resBackground = R.color.aliyun_base_color_bg;
     private int resPaddingColor  =  android.R.color.holo_red_dark;
 
 

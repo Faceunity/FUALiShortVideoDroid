@@ -10,20 +10,23 @@ import android.text.TextUtils;
 public class Effect {
     public static final int EFFECT_TYPE_NONE = 0;
     public static final int EFFECT_TYPE_NORMAL = 1;
+    public static final int EFFECT_TYPE_AR = 2;
+    public static final int EFFECT_TYPE_EXPRESSION = 4;
     public static final int EFFECT_TYPE_BACKGROUND = 5;
     public static final int EFFECT_TYPE_GESTURE = 6;
     public static final int EFFECT_TYPE_DONGM_LVJ = 7;
     public static final int EFFECT_TYPE_ANIMOJI = 8;
     public static final int EFFECT_TYPE_FACE_WARP = 10;
+    public static final int EFFECT_TYPE_MUSIC_FILTER = 11;
 
     private String bundleName;
     private int resId;
     private String path;
     private int maxFace;
     private int effectType;
-    private String description;
+    private int description;
 
-    public Effect(String bundleName, int resId, String path, int maxFace, int effectType, String description) {
+    public Effect(String bundleName, int resId, String path, int maxFace, int effectType, int description) {
         this.bundleName = bundleName;
         this.resId = resId;
         this.path = path;
@@ -52,7 +55,7 @@ public class Effect {
         return effectType;
     }
 
-    public String description() {
+    public int description() {
         return description;
     }
 

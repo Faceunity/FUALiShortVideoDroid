@@ -111,4 +111,15 @@ public class BeautySkinDetailChooser extends BaseChooser implements OnBeautyPara
     public void setBeautyLevel(int beautyLevel) {
         this.beautyLevel = beautyLevel;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (beautyDetailSettingView != null) {
+            beautyDetailSettingView.setBackClickListener(null);
+            beautyDetailSettingView.setBeautyParamsChangeListener(null);
+            beautyDetailSettingView.setOnBlanckViewClickListener(null);
+            beautyDetailSettingView = null;
+        }
+    }
 }

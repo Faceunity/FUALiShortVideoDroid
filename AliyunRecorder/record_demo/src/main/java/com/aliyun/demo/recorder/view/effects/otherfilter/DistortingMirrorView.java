@@ -9,21 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.aliyun.common.global.AppInfo;
 import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.view.dialog.IPageTab;
 import com.aliyun.demo.recorder.view.dialog.OnClearEffectListener;
-import com.aliyun.demo.recorder.view.effects.EffectBody;
-import com.aliyun.demo.recorder.view.effects.manager.EffectLoader;
-import com.aliyun.demo.recorder.view.effects.mv.MVAdapter;
-import com.aliyun.demo.recorder.view.effects.paster.AlivcPasterAdapter;
-import com.aliyun.demo.recorder.view.effects.paster.AlivcPasterChooseView;
-import com.aliyun.demo.recorder.view.effects.paster.PasterSelectListener;
-import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
-import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 哈哈镜

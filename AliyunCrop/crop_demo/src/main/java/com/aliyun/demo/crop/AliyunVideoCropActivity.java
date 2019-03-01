@@ -26,7 +26,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aliyun.common.global.Version;
@@ -49,13 +48,15 @@ import com.aliyun.svideo.base.widget.HorizontalListView;
 import com.aliyun.svideo.base.widget.SizeChangedNotifier;
 import com.aliyun.svideo.base.widget.VideoSliceSeekBar;
 import com.aliyun.svideo.base.widget.VideoTrimFrameLayout;
+import com.aliyun.svideo.player.AliyunISVideoPlayer;
+import com.aliyun.svideo.player.AliyunSVideoPlayerCreator;
+import com.aliyun.svideo.player.PlayerCallback;
 import com.aliyun.svideo.sdk.external.struct.common.CropKey;
 import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
 import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
+import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
 import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
-
 import java.io.File;
-import java.io.IOException;
 
 
 /**
@@ -64,9 +65,8 @@ import java.io.IOException;
  * Created by Administrator on 2017/1/16.
  */
 
-public class AliyunVideoCropActivity extends Activity implements TextureView.SurfaceTextureListener,
-        VideoSliceSeekBar.SeekBarChangeListener, HorizontalListView.OnScrollCallBack, SizeChangedNotifier.Listener,
-        MediaPlayer.OnVideoSizeChangedListener, VideoTrimFrameLayout.OnVideoScrollCallBack, View.OnClickListener, CropCallback, Handler.Callback {
+public class AliyunVideoCropActivity extends Activity implements TextureView.SurfaceTextureListener, HorizontalListView.OnScrollCallBack, SizeChangedNotifier.Listener,
+    MediaPlayer.OnVideoSizeChangedListener, VideoTrimFrameLayout.OnVideoScrollCallBack, View.OnClickListener, CropCallback, Handler.Callback {
 
     public static final VideoDisplayMode SCALE_CROP = VideoDisplayMode.SCALE;
     public static final VideoDisplayMode SCALE_FILL = VideoDisplayMode.FILL;
@@ -89,8 +89,10 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
     private TextureView textureview;
     private Surface mSurface;
 
-
-    private MediaPlayer mPlayer;
+    /**
+     * sdk提供的播放器，支持非关键帧的实时预览
+     */
+    private AliyunISVideoPlayer mPlayer;
     private ImageView cancelBtn, nextBtn, transFormBtn;
     private TextView dirationTxt;
 
@@ -104,7 +106,6 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
 //    private ProgressDialog progressDialog;
 
     private long videoPos;
-    private long lastVideoSeekTime;
 
 
     private String path;
@@ -113,6 +114,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
     private int resolutionMode;
     private int ratioMode;
     private VideoQuality quality = VideoQuality.HD;
+    private VideoCodecs mVideoCodec = VideoCodecs.H264_HARDWARE;
     private int frameRate;
     private int gop;
     private int mBitrate;
@@ -141,7 +143,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
 
     private Handler playHandler = new Handler(this);
 
-    private int currentPlayPos;
+    private long currentPlayPos;
 
     private boolean isPause = false;
     private boolean isCropping = false;
@@ -181,7 +183,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         } catch (Exception e) {
             ToastUtil.showToast(this, R.string.aliyun_video_crop_error);
         }//获取精确的视频时间
-        resolutionMode = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_RESOLUTION, AliyunSnapVideoParam.RESOLUTION_540P);
+        resolutionMode = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_RESOLUTION, AliyunSnapVideoParam.RESOLUTION_720P);
         cropMode = (VideoDisplayMode) getIntent().getSerializableExtra(AliyunSnapVideoParam.CROP_MODE);
         if (cropMode == null) {
             cropMode = VideoDisplayMode.SCALE;
@@ -190,14 +192,14 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         if (quality == null) {
             quality = VideoQuality.HD;
         }
-        gop = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_GOP, 5);
+        gop = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_GOP, 250);
         mBitrate = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_BITRATE, 0);
-        frameRate = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE, 25);
-        ratioMode = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_RATIO, AliyunSnapVideoParam.RATIO_MODE_3_4);
+        frameRate = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE, 30);
+        ratioMode = getIntent().getIntExtra(AliyunSnapVideoParam.VIDEO_RATIO, AliyunSnapVideoParam.RATIO_MODE_9_16);
         cropDuration = getIntent().getIntExtra(AliyunSnapVideoParam.MIN_CROP_DURATION, 2000);
         isUseGPU = getIntent().getBooleanExtra(AliyunSnapVideoParam.CROP_USE_GPU, false);
+        mVideoCodec = (VideoCodecs) getIntent().getSerializableExtra(AliyunSnapVideoParam.VIDEO_CODEC);
     }
-
 
 
     public static final String getVersion() {
@@ -209,7 +211,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         kFrame = new FrameExtractor10();
         kFrame.setDataSource(path);
         seekBar = (VideoSliceSeekBar) findViewById(R.id.aliyun_seek_bar);
-        seekBar.setSeekBarChangeListener(this);
+        seekBar.setSeekBarChangeListener(mSeekBarListener);
         int minDiff = (int) (cropDuration / (float) duration * 100) + 1;
         seekBar.setProgressMinDiff(minDiff > 100 ? 100 : minDiff);
         listView = (HorizontalListView) findViewById(R.id.aliyun_video_tailor_image_list);
@@ -250,24 +252,24 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
     }
 
     private void resizeFrame() {
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) frame.getLayoutParams();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frame.getLayoutParams();
         switch (ratioMode) {
-            case AliyunSnapVideoParam.RATIO_MODE_1_1:
-                layoutParams.width = screenWidth;
-                layoutParams.height = screenWidth;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_3_4:
-                layoutParams.width = screenWidth;
-                layoutParams.height = screenWidth * 4 / 3;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_9_16:
-                layoutParams.width = screenWidth;
-                layoutParams.height = screenWidth * 16 / 9;
-                break;
-            default:
-                layoutParams.width = screenWidth;
-                layoutParams.height = screenWidth * 16 / 9;
-                break;
+        case AliyunSnapVideoParam.RATIO_MODE_1_1:
+            layoutParams.width = screenWidth;
+            layoutParams.height = screenWidth;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_3_4:
+            layoutParams.width = screenWidth;
+            layoutParams.height = screenWidth * 4 / 3;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_9_16:
+            layoutParams.width = screenWidth;
+            layoutParams.height = screenWidth * 16 / 9;
+            break;
+        default:
+            layoutParams.width = screenWidth;
+            layoutParams.height = screenWidth * 16 / 9;
+            break;
         }
         frame.setLayoutParams(layoutParams);
     }
@@ -276,35 +278,45 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         if (mPlayer == null) {
             mSurface = new Surface(surface);
-            mPlayer = new MediaPlayer();
-            mPlayer.setSurface(mSurface);
-            try {
-                mPlayer.setDataSource(path);
-                mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        if (!isPause) {
-                            playVideo();
-                            playState = PLAY_VIDEO;
-                        } else {
-                            isPause = false;
-                            mPlayer.start();
-                            mPlayer.seekTo(currentPlayPos);
-                            playHandler.sendEmptyMessageDelayed(PAUSE_VIDEO, 100);
+            mPlayer = AliyunSVideoPlayerCreator.createPlayer();
+            mPlayer.init(this);
+
+            mPlayer.setPlayerCallback(new PlayerCallback() {
+                @Override
+                public void onPlayComplete() {
+
+                }
+
+                @Override
+                public void onDataSize(int dataWidth, int dataHeight) {
+                    frameWidth = frame.getWidth();
+                    frameHeight = frame.getHeight();
+                    videoWidth = dataWidth;
+                    videoHeight = dataHeight;
+                    if (crop != null && mEndTime == 0) {
+                        try {
+                            mEndTime = (long) (crop.getVideoDuration(path) * 1.0f / 1000);
+                        } catch (Exception e) {
+                            ToastUtil.showToast(AliyunVideoCropActivity.this, R.string.aliyun_video_crop_error);
                         }
                     }
-                });
-                mPlayer.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mPlayer.setOnVideoSizeChangedListener(this);
-            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
+                    if (cropMode == SCALE_CROP) {
+                        scaleCrop(dataWidth, dataHeight);
+                    } else if (cropMode == SCALE_FILL) {
+                        scaleFill(dataWidth, dataHeight);
+                    }
+                    mPlayer.setDisplaySize(textureview.getLayoutParams().width, textureview.getLayoutParams().height);
                     playVideo();
+
+                }
+
+                @Override
+                public void onError(int i) {
+                    Log.e(TAG, "错误码 : " + i);
                 }
             });
+            mPlayer.setDisplay(mSurface);
+            mPlayer.setSource(path);
 
         }
     }
@@ -312,7 +324,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
+        mPlayer.setDisplaySize(width, height);
     }
 
     @Override
@@ -320,6 +332,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         if (mPlayer != null) {
             mPlayer.stop();
             mPlayer.release();
+            playState = END_VIDEO;
             mPlayer = null;
             mSurface = null;
         }
@@ -331,35 +344,37 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
 
     }
 
-    @Override
-    public void seekBarValueChanged(float leftThumb, float rightThumb, int whitchSide) {
-        long seekPos = 0;
-        if (whitchSide == 0) {
-            seekPos = (long) (duration * leftThumb / 100);
-            mStartTime = seekPos;
-        } else if (whitchSide == 1) {
-            seekPos = (long) (duration * rightThumb / 100);
-            mEndTime = seekPos;
+    private VideoSliceSeekBar.SeekBarChangeListener mSeekBarListener = new VideoSliceSeekBar.SeekBarChangeListener() {
+        @Override
+        public void seekBarValueChanged(float leftThumb, float rightThumb, int whitchSide) {
+            long seekPos = 0;
+            if (whitchSide == 0) {
+                seekPos = (long) (duration * leftThumb / 100);
+                mStartTime = seekPos;
+            } else if (whitchSide == 1) {
+                seekPos = (long) (duration * rightThumb / 100);
+                mEndTime = seekPos;
+            }
+            dirationTxt.setText((float) (mEndTime - mStartTime) / 1000 + "");
+            if (mPlayer != null) {
+                mPlayer.seek((int) seekPos);
+            }
+            Log.e(TAG, "mStartTime" + mStartTime);
         }
-        dirationTxt.setText((float) (mEndTime - mStartTime) / 1000 + "");
-        if(mPlayer != null){
-            mPlayer.seekTo((int) seekPos);
-        }
-        Log.e(TAG,"mStartTime" +mStartTime);
-    }
 
-    @Override
-    public void onSeekStart() {
-        pauseVideo();
-    }
-
-    @Override
-    public void onSeekEnd() {
-        needPlayStart = true;
-        if (playState == PLAY_VIDEO) {
-            playVideo();
+        @Override
+        public void onSeekStart() {
+            pauseVideo();
         }
-    }
+
+        @Override
+        public void onSeekEnd() {
+            needPlayStart = true;
+            if (playState == PAUSE_VIDEO) {
+                playVideo();
+            }
+        }
+    };
 
     private void resetScroll() {
         mScrollX = 0;
@@ -374,7 +389,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
     @Override
     protected void onResume() {
         super.onResume();
-        if (isPause){
+        if (isPause) {
             playVideo();
         }
     }
@@ -383,7 +398,6 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
     protected void onPause() {
         if (playState == PLAY_VIDEO) {
             pauseVideo();
-            playState = PAUSE_VIDEO;
         }
         isPause = true;
         super.onPause();
@@ -393,7 +407,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
     protected void onDestroy() {
         super.onDestroy();
 //        msc.disconnect();
-        if(crop != null) {
+        if (crop != null) {
             crop.dispose();
             crop = null;
         }
@@ -406,18 +420,18 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         float videoRatio = (float) b / s;
         float ratio = 1f;
         switch (ratioMode) {
-            case AliyunSnapVideoParam.RATIO_MODE_1_1:
-                ratio = 1f;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_3_4:
-                ratio = (float) 4 / 3;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_9_16:
-                ratio = (float) 16 / 9;
-                break;
-            default:
-                ratio = (float) 16 / 9;
-                break;
+        case AliyunSnapVideoParam.RATIO_MODE_1_1:
+            ratio = 1f;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_3_4:
+            ratio = (float) 4 / 3;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_9_16:
+            ratio = (float) 16 / 9;
+            break;
+        default:
+            ratio = (float) 16 / 9;
+            break;
         }
         if (videoWidth > videoHeight) {
             layoutParams.width = frameWidth;
@@ -445,18 +459,18 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         float videoRatio = (float) b / s;
         float ratio = 1f;
         switch (ratioMode) {
-            case AliyunSnapVideoParam.RATIO_MODE_1_1:
-                ratio = 1f;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_3_4:
-                ratio = (float) 4 / 3;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_9_16:
-                ratio = (float) 16 / 9;
-                break;
-            default:
-                ratio = (float) 16 / 9;
-                break;
+        case AliyunSnapVideoParam.RATIO_MODE_1_1:
+            ratio = 1f;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_3_4:
+            ratio = (float) 4 / 3;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_9_16:
+            ratio = (float) 16 / 9;
+            break;
+        default:
+            ratio = (float) 16 / 9;
+            break;
         }
         if (videoWidth > videoHeight) {
             layoutParams.height = frameHeight;
@@ -481,7 +495,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
 
     private void scanFile() {
         MediaScannerConnection.scanFile(getApplicationContext(),
-                new String[]{outputPath}, new String[]{"video/mp4"}, null);
+                                        new String[] {outputPath}, new String[] {"video/mp4"}, null);
 //        if(msc != null && msc.isConnected()) {
 //            msc.scanFile(outputPath, "video/mp4");
 //        }
@@ -491,10 +505,10 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         if (mPlayer == null) {
             return;
         }
-        mPlayer.seekTo((int) mStartTime);
-        mPlayer.start();
+        mPlayer.seek((int) mStartTime);
+        mPlayer.resume();
+        playState = PLAY_VIDEO;
         videoPos = mStartTime;
-        lastVideoSeekTime = System.currentTimeMillis();
         playHandler.sendEmptyMessage(PLAY_VIDEO);
         //重新播放之后修改为false，防止暂停、播放的时候重新开始播放
         needPlayStart = false;
@@ -505,6 +519,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
             return;
         }
         mPlayer.pause();
+        playState = PAUSE_VIDEO;
         playHandler.removeMessages(PLAY_VIDEO);
         seekBar.showFrameProgress(false);
         seekBar.invalidate();
@@ -519,8 +534,8 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
             needPlayStart = false;
             return;
         }
-        lastVideoSeekTime = System.currentTimeMillis()+videoPos-currentPlayPos;
-        mPlayer.start();
+        mPlayer.resume();
+        playState = PLAY_VIDEO;
         playHandler.sendEmptyMessage(PLAY_VIDEO);
     }
 
@@ -601,13 +616,10 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
     public void onVideoSingleTapUp() {
         if (playState == END_VIDEO) {
             playVideo();
-            playState = PLAY_VIDEO;
         } else if (playState == PLAY_VIDEO) {
             pauseVideo();
-            playState = PAUSE_VIDEO;
         } else if (playState == PAUSE_VIDEO) {
             resumeVideo();
-            playState = PLAY_VIDEO;
         }
     }
 
@@ -625,26 +637,26 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
             }
         } else if (v == nextBtn) {
             switch (mAction) {
-                case CropKey.ACTION_TRANSCODE:
-                    startCrop();
-                    break;
-                case CropKey.ACTION_SELECT_TIME:
-                    Intent intent = getIntent();
-                    intent.putExtra(CropKey.RESULT_KEY_CROP_PATH, path);
-                    intent.putExtra(CropKey.RESULT_KEY_DURATION, mEndTime - mStartTime);
-                    intent.putExtra(CropKey.RESULT_KEY_START_TIME, mStartTime);
-                    //裁剪之后的跳转
-                    String tagClassName = AliyunSvideoActionConfig.getInstance().getAction().getTagClassName(ActionInfo.SVideoAction.CROP_TARGET_CLASSNAME);
-                    if (tagClassName == null){
-                        setResult(Activity.RESULT_OK, intent);
-                        finish();
-                    }else {
-                        intent.setClassName(this,tagClassName);
-                        startActivity(intent);
-                    }
-                    break;
-                default:
-                    break;
+            case CropKey.ACTION_TRANSCODE:
+                startCrop();
+                break;
+            case CropKey.ACTION_SELECT_TIME:
+                Intent intent = getIntent();
+                intent.putExtra(CropKey.RESULT_KEY_CROP_PATH, path);
+                intent.putExtra(CropKey.RESULT_KEY_DURATION, mEndTime - mStartTime);
+                intent.putExtra(CropKey.RESULT_KEY_START_TIME, mStartTime);
+                //裁剪之后的跳转
+                String tagClassName = AliyunSvideoActionConfig.getInstance().getAction().getTagClassName(ActionInfo.SVideoAction.CROP_TARGET_CLASSNAME);
+                if (tagClassName == null) {
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+                } else {
+                    intent.setClassName(this, tagClassName);
+                    startActivity(intent);
+                }
+                break;
+            default:
+                break;
             }
         } else if (v == cancelBtn) {
             onBackPressed();
@@ -668,21 +680,27 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         int cropWidth;
         int cropHeight;
         outputPath = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DCIM + File.separator + "crop_" + System.currentTimeMillis() + ".mp4";
+        File file = new File(Environment.getExternalStorageDirectory()
+                             + File.separator
+                             + Environment.DIRECTORY_DCIM);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
         float videoRatio = (float) videoHeight / videoWidth;
         float outputRatio = 1f;
         switch (ratioMode) {
-            case AliyunSnapVideoParam.RATIO_MODE_1_1:
-                outputRatio = 1f;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_3_4:
-                outputRatio = (float) 4 / 3;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_9_16:
-                outputRatio = (float) 16 / 9;
-                break;
-            default:
-                outputRatio = (float) 16 / 9;
-                break;
+        case AliyunSnapVideoParam.RATIO_MODE_1_1:
+            outputRatio = 1f;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_3_4:
+            outputRatio = (float) 4 / 3;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_9_16:
+            outputRatio = (float) 16 / 9;
+            break;
+        default:
+            outputRatio = (float) 16 / 9;
+            break;
         }
         if (videoRatio > outputRatio) {
             posX = 0;
@@ -691,39 +709,39 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
                 posY++;
             }
             switch (resolutionMode) {
-                case AliyunSnapVideoParam.RESOLUTION_360P:
-                    outputWidth = 360;
-                    break;
-                case AliyunSnapVideoParam.RESOLUTION_480P:
-                    outputWidth = 480;
-                    break;
-                case AliyunSnapVideoParam.RESOLUTION_540P:
-                    outputWidth = 540;
-                    break;
-                case AliyunSnapVideoParam.RESOLUTION_720P:
-                    outputWidth = 720;
-                    break;
-                default:
-                    outputWidth = 720;
-                    break;
+            case AliyunSnapVideoParam.RESOLUTION_360P:
+                outputWidth = 360;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_480P:
+                outputWidth = 480;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_540P:
+                outputWidth = 540;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_720P:
+                outputWidth = 720;
+                break;
+            default:
+                outputWidth = 720;
+                break;
             }
             cropWidth = videoWidth;
             cropHeight = 0;
             switch (ratioMode) {
-                case AliyunSnapVideoParam.RATIO_MODE_1_1:
-                    cropHeight = videoWidth;
-                    outputHeight = outputWidth;
-                    break;
-                case AliyunSnapVideoParam.RATIO_MODE_3_4:
-                    cropHeight = videoWidth * 4 / 3;
-                    outputHeight = outputWidth * 4 / 3;
-                    break;
-                case AliyunSnapVideoParam.RATIO_MODE_9_16:
-                    cropHeight = videoWidth * 16 / 9;
-                    outputHeight = outputWidth * 16 / 9;
-                    break;
-                default:
-                    break;
+            case AliyunSnapVideoParam.RATIO_MODE_1_1:
+                cropHeight = videoWidth;
+                outputHeight = outputWidth;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_3_4:
+                cropHeight = videoWidth * 4 / 3;
+                outputHeight = outputWidth * 4 / 3;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_9_16:
+                cropHeight = videoWidth * 16 / 9;
+                outputHeight = outputWidth * 16 / 9;
+                break;
+            default:
+                break;
             }
         } else {
             posX = ((lp.width - frameWidth) / 2 + mScrollX) * videoHeight / frameHeight;
@@ -732,41 +750,41 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
                 posX++;
             }
             switch (resolutionMode) {
-                case AliyunSnapVideoParam.RESOLUTION_360P:
-                    outputWidth = 360;
-                    break;
-                case AliyunSnapVideoParam.RESOLUTION_480P:
-                    outputWidth = 480;
-                    break;
-                case AliyunSnapVideoParam.RESOLUTION_540P:
-                    outputWidth = 540;
-                    break;
-                case AliyunSnapVideoParam.RESOLUTION_720P:
-                    outputWidth = 720;
-                    break;
-                default:
-                    outputWidth = 720;
-                    break;
+            case AliyunSnapVideoParam.RESOLUTION_360P:
+                outputWidth = 360;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_480P:
+                outputWidth = 480;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_540P:
+                outputWidth = 540;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_720P:
+                outputWidth = 720;
+                break;
+            default:
+                outputWidth = 720;
+                break;
             }
             cropWidth = 0;
             cropHeight = videoHeight;
             switch (ratioMode) {
-                case AliyunSnapVideoParam.RATIO_MODE_1_1:
-                    cropWidth = videoHeight;
-                    outputHeight = outputWidth;
-                    break;
-                case AliyunSnapVideoParam.RATIO_MODE_3_4:
-                    cropWidth = videoHeight * 3 / 4;
-                    outputHeight = outputWidth * 4 / 3;
-                    break;
-                case AliyunSnapVideoParam.RATIO_MODE_9_16:
-                    cropWidth = videoHeight * 9 / 16;
-                    outputHeight = outputWidth * 16 / 9;
-                    break;
-                default:
-                    cropWidth = videoHeight * 9 / 16;
-                    outputHeight = outputWidth * 16 / 9;
-                    break;
+            case AliyunSnapVideoParam.RATIO_MODE_1_1:
+                cropWidth = videoHeight;
+                outputHeight = outputWidth;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_3_4:
+                cropWidth = videoHeight * 3 / 4;
+                outputHeight = outputWidth * 4 / 3;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_9_16:
+                cropWidth = videoHeight * 9 / 16;
+                outputHeight = outputWidth * 16 / 9;
+                break;
+            default:
+                cropWidth = videoHeight * 9 / 16;
+                outputHeight = outputWidth * 16 / 9;
+                break;
             }
         }
         CropParam cropParam = new CropParam();
@@ -783,8 +801,9 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         cropParam.setGop(gop);
         cropParam.setVideoBitrate(mBitrate);
         cropParam.setQuality(quality);
-        //cropParam.setVideoCodec(VideoCodecs.H264_SOFT_FFMPEG);
+        cropParam.setVideoCodec(mVideoCodec);
         cropParam.setFillColor(Color.BLACK);
+        cropParam.setCrf(0);
 //        cropParam.setCrf(27);
 //        if ((mEndTime - mStartTime) /  1000 / 60 >= 5) {
 //            ToastUtil.showToast(this, R.string.aliyun_video_duration_5min_tip);
@@ -808,7 +827,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
 
         int ret = crop.startCrop();
         if (ret < 0) {
-            ToastUtil.showToast(this, getString(R.string.aliyun_video_crop_error) + "错误码 ：" + ret);
+            ToastUtil.showToast(this, getString(R.string.aliyun_crop_error) + "错误码 ：" + ret);
             return;
         }
         startCropTimestamp = System.currentTimeMillis();
@@ -818,7 +837,9 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
 
 
     }
+
     long startCropTimestamp;
+
     private void deleteFile() {
         new AsyncTask() {
             @Override
@@ -826,7 +847,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
                 FileUtils.deleteFile(outputPath);
                 return null;
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -848,14 +869,14 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
                 mCropProgressBg.setVisibility(View.GONE);
                 seekBar.setSliceBlocked(false);
                 switch (code) {
-                    case AliyunErrorCode.ERROR_MEDIA_NOT_SUPPORTED_VIDEO:
-                        ToastUtil.showToast(AliyunVideoCropActivity.this, R.string.aliyun_video_crop_error);
-                        break;
-                    case AliyunErrorCode.ERROR_MEDIA_NOT_SUPPORTED_AUDIO:
-                        ToastUtil.showToast(AliyunVideoCropActivity.this, R.string.aliyun_not_supported_audio);
-                        break;
-                    default:
-                        break;
+                case AliyunErrorCode.ERROR_MEDIA_NOT_SUPPORTED_VIDEO:
+                    ToastUtil.showToast(AliyunVideoCropActivity.this, R.string.aliyun_video_crop_error);
+                    break;
+                case AliyunErrorCode.ERROR_MEDIA_NOT_SUPPORTED_AUDIO:
+                    ToastUtil.showToast(AliyunVideoCropActivity.this, R.string.aliyun_not_supported_audio);
+                    break;
+                default:
+                    break;
                 }
 //                progressDialog.dismiss();
                 setResult(Activity.RESULT_CANCELED, getIntent());
@@ -882,11 +903,11 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
                 intent.putExtra(CropKey.RESULT_KEY_FILE_PATH, path);
                 //裁剪之后的跳转
                 String tagClassName = AliyunSvideoActionConfig.getInstance().getAction().getTagClassName(ActionInfo.SVideoAction.CROP_TARGET_CLASSNAME);
-                if (tagClassName == null){
+                if (tagClassName == null) {
                     setResult(Activity.RESULT_OK, intent);
                     finish();
-                }else {
-                    intent.setClassName(AliyunVideoCropActivity.this,tagClassName);
+                } else {
+                    intent.setClassName(AliyunVideoCropActivity.this, tagClassName);
                     startActivity(intent);
                 }
 //                progressDialog.dismiss();
@@ -910,43 +931,44 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         finish();
         isCropping = false;
     }
+
     private final String TAG = "AliyunVideoCropActivity";
 
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
-            case PAUSE_VIDEO:
-                pauseVideo();
-                playState = PAUSE_VIDEO;
-                break;
-            case PLAY_VIDEO:
-                if (mPlayer != null) {
-                    currentPlayPos = (int) (videoPos + System.currentTimeMillis() - lastVideoSeekTime);
-                    Log.d(TAG, "currentPlayPos:"+currentPlayPos);
-                    if (currentPlayPos < mEndTime) {
-                        seekBar.showFrameProgress(true);
-                        seekBar.setFrameProgress(currentPlayPos / (float) duration);
-                        playHandler.sendEmptyMessageDelayed(PLAY_VIDEO, 100);
-                    } else {
-                        playVideo();
-                    }
+        case PAUSE_VIDEO:
+            pauseVideo();
+            break;
+        case PLAY_VIDEO:
+            if (mPlayer != null) {
+                currentPlayPos = mPlayer.getCurrentPosition() / 1000;
+                Log.d(TAG, "currentPlayPos:" + currentPlayPos);
+                if (currentPlayPos < mEndTime) {
+                    seekBar.showFrameProgress(true);
+                    seekBar.setFrameProgress(currentPlayPos / (float) duration);
+                    playHandler.sendEmptyMessageDelayed(PLAY_VIDEO, 100);
+                } else {
+                    playVideo();
                 }
-                break;
-            default:
-                break;
+            }
+            break;
+        default:
+            break;
         }
         return false;
     }
 
     /**
      * 调转到该activity方法
+     *
      * @param context
      * @param svideoParam 配置参数，需要包含需要剪切的MediaInfo信息
      * @param requestCode
      */
-    public static void startCropForResult(Activity context, AlivcSvideoEditParam svideoParam, int requestCode){
+    public static void startCropForResult(Activity context, AlivcSvideoEditParam svideoParam, int requestCode) {
         MediaInfo mediaInfo = svideoParam.getMediaInfo();
-        if (mediaInfo==null){
+        if (mediaInfo == null) {
             return;
         }
         Intent intent = new Intent(context, AliyunVideoCropActivity.class);
@@ -958,10 +980,12 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         intent.putExtra(AlivcSvideoEditParam.VIDEO_GOP, svideoParam.getGop());
         intent.putExtra(AlivcSvideoEditParam.VIDEO_BITRATE, svideoParam.getBitrate());
         intent.putExtra(AlivcSvideoEditParam.VIDEO_FRAMERATE, svideoParam.getFrameRate());
-        intent.putExtra(AlivcSvideoEditParam.VIDEO_RESOLUTION,svideoParam.getResolutionMode());
-        intent.putExtra(AlivcSvideoEditParam.CROP_ACTION,svideoParam.getCropAction());
+        intent.putExtra(AlivcSvideoEditParam.VIDEO_RESOLUTION, svideoParam.getResolutionMode());
+        intent.putExtra(AlivcSvideoEditParam.CROP_ACTION, svideoParam.getCropAction());
+        intent.putExtra(AliyunSnapVideoParam.VIDEO_CODEC, svideoParam.getVideoCodec());
         context.startActivityForResult(intent, requestCode);
     }
+
     public static void startCropForResult(Activity activity, int requestCode, AliyunSnapVideoParam param) {
         Intent intent = new Intent(activity, MediaActivity.class);
         intent.putExtra(AliyunSnapVideoParam.SORT_MODE, param.getSortMode());
@@ -969,6 +993,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         intent.putExtra(AliyunSnapVideoParam.VIDEO_RATIO, param.getRatioMode());
         intent.putExtra(AliyunSnapVideoParam.NEED_RECORD, param.isNeedRecord());
         intent.putExtra(AliyunSnapVideoParam.VIDEO_QUALITY, param.getVideoQuality());
+        intent.putExtra(AliyunSnapVideoParam.VIDEO_CODEC, param.getVideoCodec());
         intent.putExtra(AliyunSnapVideoParam.VIDEO_GOP, param.getGop());
         intent.putExtra(AliyunSnapVideoParam.VIDEO_BITRATE, param.getVideoBitrate());
         intent.putExtra(AliyunSnapVideoParam.VIDEO_FRAMERATE, param.getFrameRate());

@@ -107,7 +107,9 @@ public class MusicAdapter extends RecyclerView.Adapter implements View.OnClickLi
                     }
                 }
             });
-            ((MusicViewHolder)holder).scrollBar.scrollTo(mScrollX[position],0);
+            if (position < mScrollX.length) {
+                ((MusicViewHolder)holder).scrollBar.scrollTo(mScrollX[position], 0);
+            }
             ((MusicViewHolder)holder).musicSelect.setVisibility(View.VISIBLE);
         }else {
             ((MusicViewHolder)holder).musicName.setText(mediaEntity.title);

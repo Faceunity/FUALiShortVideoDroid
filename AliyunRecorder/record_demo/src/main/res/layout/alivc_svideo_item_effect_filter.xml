@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="1dp"
-            android:background="@drawable/aliyun_svideo_shape_effect_selector"
+            android:background="@drawable/aliyun_svideo_record_shape_effect_selector"
             android:scaleType="centerInside" />
     </FrameLayout>
     <TextView

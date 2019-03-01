@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">编辑Demo</string>
     <string name="edit_nav_edit">编辑</string>
     <string name="edit_nav_save_and_share">保存／分享></string>
     <string name="effect_mananger_nav_edit">特效管理</string>

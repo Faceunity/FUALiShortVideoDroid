@@ -1,8 +1,12 @@
 package com.aliyun.demo.recorder.view.dialog;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.widget.RadioGroup;
 
+import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.view.effects.face.AlivcBeautyFaceFragment;
 import com.aliyun.demo.recorder.view.effects.filter.AlivcFilterChooseFragment;
 import com.aliyun.demo.recorder.view.effects.filter.EffectInfo;
@@ -71,6 +75,14 @@ public class BeautyEffectChooser extends BasePageChooser implements OnFilterItem
      * 当前viewpager的选中下标
      */
     public int currentTabPosition;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //适配有底部导航栏的手机，在full的style下会盖住部分视图的bug
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.QUDemoFullFitStyle);
+    }
+
     @Override
     public List<Fragment> createPagerFragmentList() {
         List<Fragment> fragments = new ArrayList<>();
@@ -88,7 +100,7 @@ public class BeautyEffectChooser extends BasePageChooser implements OnFilterItem
         beautyFaceFragment.setBeautyParams(beautyParams);
         beautySkinFragment.setBeautyParams(beautyParams);
         // dialog的tab切换监听
-        setOnUpdatePageSelectedListener(new OnUpdatePageSelectedListener(){
+        setOnUpdatePageSelectedListener(new OnUpdatePageSelectedListener() {
 
 
             @Override

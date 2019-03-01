@@ -58,7 +58,7 @@
     <color name="qupai_line_gray_cc">#cccccc</color>
     <color name="qupai_black_opacity_10pct">#1a000000</color>
     <color name="qupai_black_opacity_20pct">#33000000</color>
-    <color name="qupai_black_opacity_30pct">#4d000000</color>
+    <color name="aliyun_black_opacity_30pct">#4d000000</color>
     <color name="qupai_black_opacity_40pct">#66000000</color>
     <color name="qupai_black_opacity_60pct">#99000000</color>
     <color name="qupai_black_opacity_50pct">#80000000</color>
@@ -129,16 +129,16 @@
     <color name="aliyun_balloon_bg_color">#e5FCD68C </color>
     <color name="aliyun_eeditor_header_text">#1F2123</color>
 
-    <color name="alivc_white">#FFFFFF</color>
-    <color name="qupai_white_opacity_70pct">#b3FFFFFF</color>
-    <color name="qupai_white_opacity_50pct">#80FFFFFF</color>
-    <color name="qupai_white_opacity_40pct">#66FFFFFF</color>
-    <color name="qupai_white_opacity_30pct">#4DFFFFFF</color>
-    <color name="qupai_white_opacity_60pct">#99FFFFFF</color>
+    <color name="alivc_base_white">#FFFFFF</color>
+    <color name="aliyun_white_opacity_70pct">#b3FFFFFF</color>
+    <color name="aliyun_white_opacity_50pct">#80FFFFFF</color>
+    <color name="aliyun_white_opacity_40pct">#66FFFFFF</color>
+    <color name="aliyun_white_opacity_30pct">#4DFFFFFF</color>
+    <color name="aliyun_white_opacity_60pct">#99FFFFFF</color>
 
     <color name="qupai_record_delete">#5D5B63</color>
 
-    <color name="aliyun_color_bg">#232A42</color>
+    <color name="aliyun_base_color_bg">#232A42</color>
     <color name="aliyun_tab_indicator_color">#EF4B81</color>
     <color name="aliyun_transparent">#00ffffff</color>
     <color name="aliyun_halftransparent">#66000000</color>

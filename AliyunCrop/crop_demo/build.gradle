@@ -16,5 +16,4 @@ android {
 
 dependencies {
     api project(':AliyunSVideoBase')
-    implementation externalGlide
 }

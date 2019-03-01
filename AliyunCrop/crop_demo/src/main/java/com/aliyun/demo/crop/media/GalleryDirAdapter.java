@@ -19,7 +19,13 @@ public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 implements View.OnClickListener{
 
     public interface OnItemClickListener {
-        boolean onItemClick(GalleryDirAdapter adapter, int adapter_position);
+        /**
+         * item click
+         * @param adapter GalleryDirAdapter
+         * @param adapterPosition 点击的position
+         * @return boolean
+         */
+        boolean onItemClick(GalleryDirAdapter adapter, int adapterPosition);
     }
 
     private ThumbnailGenerator thumbnailGenerator;
@@ -66,21 +72,24 @@ public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return mediaDirs.size();
+        return mediaDirs != null ? mediaDirs.size() : 0;
     }
 
     public MediaDir getItem(int position){
+        if (position < 0 || position >= mediaDirs.size()) {
+            return null;
+        }
         return mediaDirs.get(position);
     }
 
     @Override
     public void onClick(View v) {
         RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) v.getTag();
-        int adapter_pos = holder.getAdapterPosition();
+        int adapterPos = holder.getAdapterPosition();
 
         if (onItemClickListener != null) {
             Log.d("active", "onItemClick");
-            if (!onItemClickListener.onItemClick(this, adapter_pos)) {
+            if (!onItemClickListener.onItemClick(this, adapterPos)) {
                 Log.d("active","onItemClick1");
             }
         }

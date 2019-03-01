@@ -155,7 +155,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:layout_gravity="bottom">
@@ -224,7 +224,7 @@
                 app:spv_start_color="@color/aliyun_white"
                 app:spv_max_text_size="14sp"
                 app:spv_min_text_size="14sp"
-                app:spv_end_color="#C3C5C6 "
+                app:spv_end_color="#C3C5C6"
                 android:layout_height="45dp" />
             <TextView
                 android:visibility="visible"

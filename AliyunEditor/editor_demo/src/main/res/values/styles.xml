@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="bottom_dialog_animation">
+    <style name="edit_bottom_dialog_animation">
         <item name="android:windowEnterAnimation">@anim/aliyun_svideo_anim_trans_from_bottom</item>
         <item name="android:windowExitAnimation">@anim/aliyun_svideo_anim_layout_bottom_out</item>
     </style>
@@ -37,19 +37,6 @@
         <item name="android:drawablePadding">@dimen/alivc_svideo_tab_tv_iv_distance</item>
     </style>
 
-    <style name="CustomDialogStyle" parent="android:style/Theme.Dialog">
-        <!--背景颜色及和透明程度-->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <!--是否去除标题 -->
-        <item name="android:windowNoTitle">true</item>
-        <!--是否去除边框-->
-        <item name="android:windowFrame">@null</item>
-        <!--是否浮现在activity之上-->
-        <item name="android:windowIsFloating">true</item>
-        <!--是否模糊-->
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
-
     <!--编辑模块的主题UI配置-->
     <style name="AlivcEditUIStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <!--滤镜item对应的图片-->
@@ -77,4 +64,5 @@
         <!--编辑完成对应图标-->
         <item name="finishImage">@mipmap/aliyun_svideo_complete_red</item>
     </style>
+
 </resources>

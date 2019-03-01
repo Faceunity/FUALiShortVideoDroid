@@ -6,6 +6,7 @@ package com.aliyun.demo.recorder.view.effects.filter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,11 +19,8 @@ import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.view.effects.filter.interfaces.OnFilterItemClickListener;
 import com.aliyun.svideo.base.widget.CircularImageView;
 import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ViewTarget;
+import com.aliyun.video.common.utils.image.ImageLoaderImpl;
+import com.aliyun.video.common.utils.image.AbstractImageLoaderTarget;
 
 import java.util.List;
 
@@ -66,12 +64,11 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             EffectFilter effectFilter = new EffectFilter(path);
             name = effectFilter.getName();
             if (filterViewHolder != null) {
-                Glide.with(mContext).load(effectFilter.getPath() + "/icon.png").into(
-                    new ViewTarget<CircularImageView, GlideDrawable>(filterViewHolder.mImage) {
+                new ImageLoaderImpl().loadImage(mContext,effectFilter.getPath() + "/icon.png")
+                    .into(filterViewHolder.mImage, new AbstractImageLoaderTarget<Drawable>() {
                         @Override
-                        public void onResourceReady(GlideDrawable glideDrawable,
-                                                    GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            filterViewHolder.mImage.setImageBitmap(((GlideBitmapDrawable)glideDrawable).getBitmap());
+                        public void onResourceReady(@NonNull Drawable resource) {
+                            filterViewHolder.mImage.setImageDrawable(resource);
                         }
                     });
             }

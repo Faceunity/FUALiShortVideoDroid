@@ -12,11 +12,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 import com.aliyun.demo.crop.R;
-
-
+import com.aliyun.video.common.utils.image.ImageLoaderImpl;
 
 public class GalleryDirViewHolder extends RecyclerView.ViewHolder {
 
@@ -39,22 +36,24 @@ public class GalleryDirViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setData(final MediaDir dir){
-        String dir_name;
+        if (dir == null) {
+            return;
+        }
+        String dirName;
         if(dir.id == -1){
-            dir_name = sortDirTxt.getResources().getString(R.string.aliyun_gallery_all_media);
+            dirName = sortDirTxt.getResources().getString(R.string.aliyun_gallery_all_media);
         }else{
-            dir_name = dir.dirName;
+            dirName = dir.dirName;
         }
 
-        sortDirTxt.setText(dir_name);
+        sortDirTxt.setText(dirName);
 
         final int videoNum = dir.fileCount;
         sortFileNum.setText(String.valueOf(videoNum));
 
         if(dir.thumbnailUrl != null){
             String uri = "file://" + dir.thumbnailUrl;
-            Glide.with(thumbImage.getContext()).load(uri).into(thumbImage);
-//            ImageLoader.getInstance().displayImage(uri, thumbImage, UILOptions.DISK);
+            new ImageLoaderImpl().loadImage(thumbImage.getContext(),uri).into(thumbImage);
         }else{
             thumbImage.setImageDrawable(new ColorDrawable(Color.GRAY));
             thumbnailGenerator.generateThumbnail(dir.type, dir.id,dir.resId,

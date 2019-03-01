@@ -2,14 +2,15 @@ package com.aliyun.demo.recorder.view;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.hardware.Camera;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.opengl.GLSurfaceView;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
@@ -19,10 +20,13 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.aliyun.apsaravideo.music.music.MusicFileBean;
 import com.aliyun.common.global.AliyunTag;
@@ -52,7 +56,6 @@ import com.aliyun.demo.recorder.view.dialog.GIfEffectChooser;
 import com.aliyun.demo.recorder.view.effects.face.BeautyFaceDetailChooser;
 import com.aliyun.demo.recorder.view.effects.filter.EffectInfo;
 import com.aliyun.demo.recorder.view.effects.filter.interfaces.OnFilterItemClickListener;
-import com.aliyun.demo.recorder.view.effects.mv.MvSelectListener;
 import com.aliyun.demo.recorder.view.effects.otherfilter.DistortingMirrorAdapter;
 import com.aliyun.demo.recorder.view.effects.otherfilter.Effect;
 import com.aliyun.demo.recorder.view.effects.paster.PasterSelectListener;
@@ -60,6 +63,11 @@ import com.aliyun.demo.recorder.view.effects.skin.BeautySkinDetailChooser;
 import com.aliyun.demo.recorder.view.music.MusicChooser;
 import com.aliyun.demo.recorder.view.music.MusicSelectListener;
 import com.aliyun.downloader.zipprocessor.DownloadFileUtils;
+import com.aliyun.recorder.AliyunRecorderCreator;
+import com.aliyun.recorder.supply.AliyunIClipManager;
+import com.aliyun.recorder.supply.AliyunIRecorder;
+import com.aliyun.recorder.supply.EncoderInfoCallback;
+import com.aliyun.recorder.supply.RecordCallback;
 import com.aliyun.svideo.base.widget.ProgressDialog;
 import com.aliyun.svideo.base.widget.RecordTimelineView;
 import com.aliyun.svideo.base.widget.beauty.BeautyConstants;
@@ -73,27 +81,22 @@ import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyModeChangeListener;
 import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyParamsChangeListener;
 import com.aliyun.svideo.base.widget.beauty.listener.OnBeautySkinItemSeletedListener;
 import com.aliyun.svideo.base.widget.beauty.listener.OnViewClickListener;
-import com.aliyun.recorder.AliyunRecorderCreator;
-import com.aliyun.recorder.supply.AliyunIClipManager;
-import com.aliyun.recorder.supply.AliyunIRecorder;
-import com.aliyun.recorder.supply.EncoderInfoCallback;
-import com.aliyun.recorder.supply.RecordCallback;
 import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
 import com.aliyun.svideo.sdk.external.struct.effect.EffectBean;
 import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
 import com.aliyun.svideo.sdk.external.struct.effect.EffectPaster;
 import com.aliyun.svideo.sdk.external.struct.encoder.EncoderInfo;
 import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
-import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
 import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
 import com.aliyun.svideo.sdk.external.struct.recorder.MediaInfo;
 import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
-import com.faceunity.wrapper.faceunity;
+import com.aliyun.video.common.utils.ThreadUtils;
 import com.google.gson.Gson;
 import com.qu.preview.callback.OnFrameCallBack;
 import com.qu.preview.callback.OnTextureIdCallBack;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -101,7 +104,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AliyunSVideoRecordView extends RelativeLayout
-        implements DialogVisibleListener, ScaleGestureDetector.OnScaleGestureListener, SensorEventListener {
+        implements DialogVisibleListener, ScaleGestureDetector.OnScaleGestureListener {
     private static final String TAG = AliyunSVideoRecordView.class.getSimpleName();
     private static final String TAG_GIF_CHOOSER = "gif";
     private static final String TAG_BEAUTY_CHOOSER = "beauty";
@@ -119,7 +122,11 @@ public class AliyunSVideoRecordView extends RelativeLayout
     private static final int PAGE_TAB_BEAUTY_SKIN = 2;
     private static int TEST_VIDEO_WIDTH = 540;
     private static int TEST_VIDEO_HEIGHT = 960;
-    private GLSurfaceView mGLSurfaceView;
+    /**
+     * v3.7.8改动, GlsurfaceView --> SurfaceView
+     * AliyunIRecorder.setDisplayView(GLSurfaceView surfaceView) =====>> AliyunIRecorder.setDisplayView(SurfaceView surfaceView)
+     */
+    private SurfaceView mSurfaceView;
     private ControlView mControlView;
     private RecordTimelineView mRecordTimeView;
     private AlivcCountDownView mCountDownView;
@@ -166,6 +173,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
      * 第三方高级美颜支持库faceUnity管理类
      */
     private FaceUnityManager faceUnityManager;
+    private TextView textView;//表情识别提示文本
     /**
      * 相机的原始NV21数据
      */
@@ -192,17 +200,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
     private boolean isbeautyDetailShowing;
 
     /**
-     * 是否需要使用faceUnity false : 如果当前是普通美颜, 则不需要使用 true: 如果当前是高级美颜, 或者使用了美肌效果, 需要使用
-     */
-    private boolean isUseFaceUnity = false;
-    private boolean isUseHAHAJING = false;//是否使用哈哈镜
-    private boolean isUseAnimoji = false;//是否使用Animoji
-    private boolean isUseThreeD = false;//是否使用3D贴纸
-    private boolean isUseDongMLvj = false;//是否使用动漫滤镜
-    private boolean isUseBackground = false;//是否使用背景分割
-    private boolean isUseGesture = false;//是否使用手势识别
-    private Effect effect;//当前道具
-    /**
      * 高级美颜参数值 美白, 红润, 磨皮
      */
     private float beautyColorLevel;
@@ -213,14 +210,25 @@ public class AliyunSVideoRecordView extends RelativeLayout
      */
     private BeautyLevel defaultBeautyLevel = BeautyLevel.BEAUTY_LEVEL_THREE;
     /**
+     * 是否需要使用faceUnity false : 如果当前是普通美颜, 则不需要使用 true: 如果当前是高级美颜, 或者使用了美肌效果, 需要使用
+     */
+    private boolean isUseHAHAJING = false;//是否使用哈哈镜
+    private boolean isUseAnimoji = false;//是否使用Animoji
+    private boolean isUseThreeD = false;//是否使用3D贴纸
+    private boolean isUseDongMLvj = false;//是否使用动漫滤镜
+    private boolean isUseBackground = false;//是否使用背景分割
+    private boolean isUseGesture = false;//是否使用手势识别
+    private boolean isUseMusic = false;//是否使用音乐滤镜
+    private boolean isUseExpression = false;//是否使用表情识别
+    private boolean isUseAr = false;//是否使用ar面具
+    private long musicTime = 0;//记录音乐的时间
+    private Effect effect;//当前道具
+    /**
      * 当前美颜模式
      */
     private BeautyMode currentBeautyFaceMode = BeautyMode.Advanced;
     public static final int TYPE_FILTER = 1;
-    public static final int TYPE_MV = 2;
     public static final int TYPE_MUSIC = 3;
-    private EffectBean effectMv;
-    //
     private LinkedHashMap<Integer, Object> mConflictEffects = new LinkedHashMap<>();
     private EffectBean effectMusic;
     private AsyncTask<Void, Void, Void> finishRecodingTask;
@@ -261,6 +269,10 @@ public class AliyunSVideoRecordView extends RelativeLayout
      * faceUnity的初始化结果 true: 初始化成功 false: 初始化失败
      */
     private static boolean faceInitResult;
+    /**
+     * 是否处于后台
+     */
+    private boolean mIsBackground;
 
     /**
      * 恢复冲突的特效，这些特效都是会彼此冲突的，比如滤镜和MV，因为MV中也有滤镜效果，所以MV和滤镜的添加顺序 会影响最终产生视频的效果，在恢复时必须严格按照用户的操作顺序来恢复，
@@ -272,11 +284,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 switch (entry.getKey()) {
                     case TYPE_FILTER:
                         recorder.applyFilter((EffectFilter) entry.getValue());
-                        break;
-                    case TYPE_MV:
-                        if (!isMusicViewShowing) {
-                            recorder.applyMv((EffectBean) entry.getValue());
-                        }
                         break;
                     case TYPE_MUSIC:
                         EffectBean music = (EffectBean) entry.getValue();
@@ -300,6 +307,11 @@ public class AliyunSVideoRecordView extends RelativeLayout
      * 美颜美肌点击了back按钮
      */
     private boolean isbeautyDetailBack;
+
+    /**
+     * 用于防止sdk的oncomplete回调之前, 再次调用startRecord
+     */
+    private boolean tempIsComplete = true;
 
     public AliyunSVideoRecordView(Context context) {
         super(context);
@@ -325,8 +337,9 @@ public class AliyunSVideoRecordView extends RelativeLayout
         initBeautyParam();
         initRecorder();
         initRecordTimeView();
+        initText();
         copyAssets();
-
+        initFaceUnity(getContext());
     }
 
     private void initBeautyParam() {
@@ -362,6 +375,16 @@ public class AliyunSVideoRecordView extends RelativeLayout
             }
         }
         rememberBeautyBean.setBeautyList(rememberParamList);
+    }
+
+    public void onPause() {
+        mIsBackground = true;
+        stopMusic();
+    }
+
+    public void onResume() {
+        mIsBackground = false;
+        playMusic(effect);
     }
 
     private static class BeautyParamCopyTask extends AsyncTask<Void, Void, Void> {
@@ -400,11 +423,9 @@ public class AliyunSVideoRecordView extends RelativeLayout
         protected Void doInBackground(Void... voids) {
             AliyunSVideoRecordView recordView = weakReference.get();
             if (recordView != null) {
-                recordView.isUseFaceUnity = false;
-                recordView.faceUnityManager = FaceUnityManager.getInstance(recordView.getContext());
+                recordView.faceUnityManager = FaceUnityManager.getInstance(weakReference.get().getContext());
                 faceInitResult = recordView.faceUnityManager.createBeautyItem(recordView.getContext());
                 recordView.faceunityDefaultParam();
-                recordView.isUseFaceUnity = true;
 
                 recordView.faceUnityManager.createBeautyItem(recordView.getContext(), recordView.isUseDongMLvj, recordView.effect);
             }
@@ -428,7 +449,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
     private void initRecordTimeView() {
         mRecordTimeView = new RecordTimelineView(getContext());
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, DensityUtil.dip2px(getContext(), 10));
-        mRecordTimeView.setColor(R.color.aliyun_color_record_duraton, R.color.aliyun_colorPrimary, R.color.aliyun_white,
+        mRecordTimeView.setColor(R.color.aliyun_color_record_duraton, R.color.aliyun_music_colorPrimary, R.color.aliyun_white,
                 R.color.alivc_bg_record_time);
         mRecordTimeView.setMaxDuration(clipManager.getMaxDuration());
         mRecordTimeView.setMinDuration(clipManager.getMinDuration());
@@ -436,23 +457,33 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
     }
 
+    private void initText() {
+        textView = new TextView(getContext());
+        textView.setTextSize(16);
+        textView.setTextColor(Color.WHITE);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(CENTER_IN_PARENT);
+        textView.setLayoutParams(params);
+        addView(textView);
+    }
+
     /**
      * 初始化surfaceView
      */
     private void initSurfaceView() {
-        mGLSurfaceView = new GLSurfaceView(getContext());
+        mSurfaceView = new SurfaceView(getContext());
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getContext(), this);
         final GestureDetector gestureDetector = new GestureDetector(getContext(),
                 new GestureDetector.SimpleOnGestureListener() {
                     @Override
                     public boolean onSingleTapUp(MotionEvent e) {
-                        float x = e.getX() / mGLSurfaceView.getWidth();
-                        float y = e.getY() / mGLSurfaceView.getHeight();
+                        float x = e.getX() / mSurfaceView.getWidth();
+                        float y = e.getY() / mSurfaceView.getHeight();
                         recorder.setFocus(x, y);
                         return true;
                     }
                 });
-        mGLSurfaceView.setOnTouchListener(new OnTouchListener() {
+        mSurfaceView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getPointerCount() >= 2) {
@@ -463,7 +494,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 return true;
             }
         });
-        addSubView(mGLSurfaceView);
+        addSubView(mSurfaceView);
     }
 
     /**
@@ -482,7 +513,9 @@ public class AliyunSVideoRecordView extends RelativeLayout
             @Override
             public void onNextClick() {
                 // 完成录制
-                finishRecording();
+                if (!isStopToCompleteDuration) {
+                    finishRecording();
+                }
             }
 
             @Override
@@ -544,6 +577,10 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
             @Override
             public void onReadyRecordClick(boolean isCancel) {
+                if (isStopToCompleteDuration) {
+                    /*TODO  这里是因为如果 SDK 还没有回调onComplete,倒计时录制，会crash */
+                    return;
+                }
                 if (isCancel) {
                     cancelReadyRecord();
                 } else {
@@ -554,16 +591,30 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
             @Override
             public void onStartRecordClick() {
+                if (!tempIsComplete) {
+                    // 连续点击开始录制，停止录制，要保证在onComplete回调回来再允许点击开始录制,
+                    // 否则SDK会出现ANR问题, v3.7.8修复会影响较大, 工具包暂时处理
+                    return;
+                }
                 startRecord();
             }
 
             @Override
             public void onStopRecordClick() {
+                if (!tempIsComplete) {
+                    // 连续点击开始录制，停止录制，要保证在onComplete回调回来再允许点击开始录制,
+                    // 否则SDK会出现ANR问题, v3.7.8修复会影响较大, 工具包暂时处理
+                    return;
+                }
                 stopRecord();
             }
 
             @Override
             public void onDeleteClick() {
+                if (isStopToCompleteDuration) {
+                    // 这里是因为如果 SDK 还没有回调onComplete,点击回删会出现删除的不是最后一段的问题
+                    return;
+                }
                 mRecordTimeView.deleteLast();
                 clipManager.deletePart();
                 isMaxDuration = false;
@@ -612,22 +663,21 @@ public class AliyunSVideoRecordView extends RelativeLayout
             mControlView.setRecordState(RecordState.STOP);
             return;
         }
-        if (recorder != null) {
+        if (recorder != null && !mIsBackground) {
+            // 快速显示回删字样, 将音乐按钮置灰,假设此时已经有片段, 在录制失败时, 需要改回false
+            mControlView.setHasRecordPiece(true);
             mControlView.setRecordState(RecordState.RECORDING);
             mControlView.setRecording(true);
-            videoPath = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DCIM
-                    + File.separator + System.currentTimeMillis() + ".mp4";
+            String outputBasePath = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DCIM;
+            videoPath = outputBasePath + File.separator + System.currentTimeMillis() + ".mp4";
+            File file = new File(outputBasePath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
             recorder.setOutputPath(videoPath);
             recorder.startRecording();
-            Log.d(TAG, "startRecording    isStopToCompleteDuration:" + isStopToCompleteDuration);
-            if (effectMv != null && !TextUtils.isEmpty(effectMv.getPath())) {
-                if (recorder.getClipManager().getPartCount() == 0) {
-                    recorder.restartMv();
-                } else {
-                    recorder.resumeMv();
-                }
 
-            }
+            Log.d(TAG, "startRecording    isStopToCompleteDuration:" + isStopToCompleteDuration);
             if (mControlView.getFlashType() == FlashType.ON
                     && mControlView.getCameraType() == CameraType.BACK) {
                 recorder.setLight(com.aliyun.svideo.sdk.external.struct.recorder.FlashType.TORCH);
@@ -639,6 +689,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
     /**
      * 视频是是否正正在已经调用stopRecord到onComplete回调过程中这段时间，这段时间不可再次调用stopRecord
+     * true: 正在调用stop~onComplete, false反之
      */
     private boolean isStopToCompleteDuration;
 
@@ -649,6 +700,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
         Log.d(TAG, "stopRecord    isStopToCompleteDuration:" + isStopToCompleteDuration);
         if (recorder != null && !isStopToCompleteDuration && mControlView.isRecording()) {//
             isStopToCompleteDuration = true;
+            tempIsComplete = false;
             if (mControlView.getFlashType() == FlashType.ON
                     && mControlView.getCameraType() == CameraType.BACK) {
                 recorder.setLight(com.aliyun.svideo.sdk.external.struct.recorder.FlashType.OFF);
@@ -659,10 +711,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
             if ((progressBar == null || !progressBar.isShowing())) {
                 recorder.stopRecording();
 
-            }
-
-            if (effectMv != null && !TextUtils.isEmpty(effectMv.getPath())) {
-                recorder.pauseMv();
             }
 
         }
@@ -740,40 +788,17 @@ public class AliyunSVideoRecordView extends RelativeLayout
     }
 
     /**
+     * 当前所选中的动图路径
+     */
+    private String currPasterPath;
+
+    /**
      * 显示动图效果调节控件
      */
     private void showGifEffectView() {
         if (gifEffectChooser == null) {
             gifEffectChooser = new GIfEffectChooser();
             gifEffectChooser.setDismissListener(this);
-            gifEffectChooser.setMvSelectListener(new MvSelectListener() {
-                @Override
-                public void onMvSelected(IMVForm imvForm) {
-                    if (isAllowChangeMv) {
-                        if (effectMv == null) {
-                            effectMv = new EffectBean();
-                        }
-                        effectMv.setId(imvForm.getId());
-                        String path = null;
-                        if (imvForm.getAspectList() != null) {
-                            path = Common.getMVPath(imvForm.getAspectList(), mGLSurfaceView.getWidth(),
-                                    mGLSurfaceView.getHeight());
-                        }
-                        effectMv.setPath(path);
-                        mConflictEffects.remove(TYPE_MV);
-
-                        recorder.applyMv(effectMv);
-                        if (TextUtils.isEmpty(path)) {
-
-                            restoreConflictEffect();
-                        } else {
-                            mConflictEffects.put(TYPE_MV, effectMv);
-                        }
-                    } else {
-                        FixedToastUtils.show(mActivity, getResources().getString(R.string.alivc_not_allow_change_mv));
-                    }
-                }
-            });
             gifEffectChooser.setPasterSelectListener(new PasterSelectListener() {
                 @Override
                 public void onPasterSelected(PreviewPasterForm imvForm) {
@@ -790,11 +815,18 @@ public class AliyunSVideoRecordView extends RelativeLayout
                         path = DownloadFileUtils.getAssetPackageDir(getContext(),
                                 imvForm.getName(), imvForm.getId()).getAbsolutePath();
                     }
-
+                    currPasterPath = path;
                     addEffectToRecord(path);
 
                 }
+
+                @Override
+                public void onSelectPasterDownloadFinish(String path) {
+                    // 所选的paster下载完成后, 记录该paster 的path
+                    currPasterPath = path;
+                }
             });
+
             //3D贴纸
             gifEffectChooser.setThreeDItemListener(new DistortingMirrorAdapter.OnItemListener() {
                 @Override
@@ -879,14 +911,107 @@ public class AliyunSVideoRecordView extends RelativeLayout
                     }
                 }
             });
+            //音乐滤镜
+            gifEffectChooser.setMusicItemListener(new DistortingMirrorAdapter.OnItemListener() {
+                @Override
+                public void onPosition(int position, Effect effect) {
+                    if (faceUnityManager != null) {
+                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
+                            isUseMusic = false;
+                            stopMusic();
+                            AliyunSVideoRecordView.this.effect = effect;
+                        } else {
+                            clearOtherFilter(9, effect);
+                            playMusic(effect);
+                        }
+                        faceUnityManager.createItem(effect);
+                    }
+                }
+            });
+            gifEffectChooser.setMusicTimeListener(new DistortingMirrorAdapter.OnMusicListener() {
+                @Override
+                public void onMusic(long time) {
+                    musicTime = time;
+                }
+            });
+            //表情识别
+            gifEffectChooser.setExpressionItemListener(new DistortingMirrorAdapter.OnItemListener() {
+                @Override
+                public void onPosition(int position, Effect effect) {
+                    if (faceUnityManager != null) {
+                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
+                            isUseExpression = false;
+                        } else {
+                            clearOtherFilter(10, effect);
+                        }
+                        faceUnityManager.createItem(effect);
+                    }
+                }
+            });
+            gifEffectChooser.setExpressionDesListener(new DistortingMirrorAdapter.OnDescriptionChangeListener() {
+                @Override
+                public void onDescriptionChangeListener(int description) {
+                    showDescription(description, 1500);
+                }
+            });
+            //ar面具
+            gifEffectChooser.setArItemListener(new DistortingMirrorAdapter.OnItemListener() {
+                @Override
+                public void onPosition(int position, Effect effect) {
+                    if (faceUnityManager != null) {
+                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
+                            isUseAr = false;
+                        } else {
+                            clearOtherFilter(11, effect);
+                        }
+                        faceUnityManager.createItem(effect);
+                    }
+                }
+            });
+
+//            gifEffectChooser.setDismissListener(new DialogVisibleListener() {
+//                @Override
+//                public void onDialogDismiss() {
+//
+//                }
+//
+//                @Override
+//                public void onDialogShow() {
+//                    if (!TextUtils.isEmpty(currPasterPath)) {
+//                        // dialog显示后,如果记录的paster不为空, 使用该paster
+//                        addEffectToRecord(currPasterPath);
+//                    }
+//                }
+//            });
         }
         gifEffectChooser.show(getFragmentManager(), TAG_GIF_CHOOSER);
     }
 
+    private Runnable effectDescriptionHide = new Runnable() {
+        @Override
+        public void run() {
+            textView.setText("");
+            textView.setVisibility(View.INVISIBLE);
+        }
+    };
+
+    protected void showDescription(int str, int time) {
+        if (str == 0) {
+            return;
+        }
+        textView.removeCallbacks(effectDescriptionHide);
+        textView.setVisibility(View.VISIBLE);
+        textView.setText(str);
+        textView.postDelayed(effectDescriptionHide, time);
+    }
+
+
     //type:1.gif；2.MV；3. 2d/3d贴纸；4.animoji；5.哈哈镜
-    // 6.背景分割；7.动漫滤镜；8.手势识别
+    // 6.背景分割；7.动漫滤镜；8.手势识别; 9.音乐滤镜；10.表情识别
+    //11.ar面具
     private void clearOtherFilter(int type, Effect effect) {
         this.effect = effect;
+        musicTime = 0;
         switch (type) {
             case 1:
                 isUseThreeD = false;
@@ -992,6 +1117,66 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
                 isUseGesture = true;
                 break;
+            case 9:
+                isUseThreeD = false;
+                gifEffectChooser.clearThreeD();
+                isUseAnimoji = false;
+                gifEffectChooser.clearAnimoji();
+                isUseHAHAJING = false;
+                gifEffectChooser.clearBundle();
+                isUseBackground = false;
+                gifEffectChooser.clearBackGround();
+                isUseDongMLvj = false;
+                gifEffectChooser.clearDongMLvj();
+                isUseGesture = false;
+                gifEffectChooser.clearGesture();
+                isUseExpression = false;
+                gifEffectChooser.clearExpression();
+                isUseAr = false;
+                gifEffectChooser.clearAr();
+
+                isUseMusic = true;
+                break;
+            case 10:
+                isUseThreeD = false;
+                gifEffectChooser.clearThreeD();
+                isUseAnimoji = false;
+                gifEffectChooser.clearAnimoji();
+                isUseHAHAJING = false;
+                gifEffectChooser.clearBundle();
+                isUseBackground = false;
+                gifEffectChooser.clearBackGround();
+                isUseDongMLvj = false;
+                gifEffectChooser.clearDongMLvj();
+                isUseGesture = false;
+                gifEffectChooser.clearGesture();
+                isUseMusic = false;
+                gifEffectChooser.clearMusic();
+                isUseAr = false;
+                gifEffectChooser.clearAr();
+
+                isUseExpression = true;
+                break;
+            case 11:
+                isUseThreeD = false;
+                gifEffectChooser.clearThreeD();
+                isUseAnimoji = false;
+                gifEffectChooser.clearAnimoji();
+                isUseHAHAJING = false;
+                gifEffectChooser.clearBundle();
+                isUseBackground = false;
+                gifEffectChooser.clearBackGround();
+                isUseDongMLvj = false;
+                gifEffectChooser.clearDongMLvj();
+                isUseGesture = false;
+                gifEffectChooser.clearGesture();
+                isUseMusic = false;
+                gifEffectChooser.clearMusic();
+                isUseExpression = false;
+                gifEffectChooser.clearExpression();
+
+                isUseAr = true;
+                break;
             default:
                 break;
         }
@@ -1019,28 +1204,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
             }
         }
         return fm;
-    }
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Sensor部分~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-            if (Math.abs(x) > 3 || Math.abs(y) > 3) {
-                if (Math.abs(x) > Math.abs(y) && faceUnityManager != null) {
-                    faceUnityManager.setTrackOrientation(x > 0 ? 0 : 180);
-                } else {
-                    faceUnityManager.setTrackOrientation(y > 0 ? 90 : 270);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
     /**
@@ -1100,15 +1263,12 @@ public class AliyunSVideoRecordView extends RelativeLayout
             @Override
             public void onItemSelected(int postion) {
                 currentBeautySkinPosition = postion;
-                // 当前下标是0, 并且美颜模式为不同 不需要需要开启faceUnity效果
-                if (postion == 0 && currentBeautyFaceMode == BeautyMode.Normal) {
-                    isUseFaceUnity = false;
-                } else {
-                    isUseFaceUnity = true;
-                }
                 BeautyParams beautyParams = rememberParamList.get(postion);
-                faceUnityManager.setFaceBeautyEnlargeEye((float) beautyParams.beautyBigEye / 100);
-                faceUnityManager.setFaceBeautyCheekThin((float) beautyParams.beautySlimFace / 100 * 1.5f);
+                if (faceUnityManager != null) {
+                    faceUnityManager.setFaceBeautyEnlargeEye((float) beautyParams.beautyBigEye / 100);
+                    faceUnityManager.setFaceBeautyCheekThin((float) beautyParams.beautySlimFace / 100 * 1.5f);
+                }
+
             }
         });
         // 美颜微调dialog
@@ -1142,16 +1302,11 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 if (checkedId == R.id.rb_level_advanced) {
                     currentBeautyFaceMode = BeautyMode.Advanced;
                     recorder.setBeautyStatus(false);
-                    isUseFaceUnity = true;
                     tempColorLevel = beautyColorLevel;
                     tempRedLevel = beautyRedLevel;
                     tempBlurLevel = beautyBlurLevel;
                 } else if (checkedId == R.id.rb_level_normal) {
                     currentBeautyFaceMode = BeautyMode.Normal;
-                    // 如果当前美肌选择的不是第0个下标, 仍然需要使用faceUnity
-                    if (currentBeautySkinPosition != 0) {
-                        isUseFaceUnity = true;
-                    }
                     recorder.setBeautyStatus(true);
                     recorder.setBeautyLevel(defaultBeautyLevel.getValue());
                     tempColorLevel = 0;
@@ -1299,6 +1454,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 isbeautyDetailShowing = false;
                 beautySkinDetailChooser.dismiss();
                 isbeautyDetailBack = true;
+                beautyEffectChooser.show(getFragmentManager(), TAG_BEAUTY_CHOOSER);
             }
         });
 
@@ -1321,7 +1477,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 }
                 saveBeautyParams(currentBeautySkinPosition, AliyunSVideoRecordView.this.beautyParams);
                 isbeautyDetailBack = false;
-                showBeautyFaceView();
             }
 
             @Override
@@ -1336,7 +1491,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
     private void initRecorder() {
         recorder = AliyunRecorderCreator.getRecorderInstance(getContext());
-        recorder.setDisplayView(mGLSurfaceView);
+        recorder.setDisplayView(mSurfaceView);
         clipManager = recorder.getClipManager();
         clipManager.setMaxDuration(MAX_RECORD_TIME);
         clipManager.setMinDuration(getMaxRecordTime());
@@ -1377,10 +1532,12 @@ public class AliyunSVideoRecordView extends RelativeLayout
         recorder.setRecordCallback(new RecordCallback() {
             @Override
             public void onComplete(final boolean validClip, final long clipDuration) {
-
-                Log.e(TAG, "onComplete:" + validClip + clipDuration);
-                Log.e(TAG, "thread" + Thread.currentThread().getName());
-                post(new Runnable() {
+                Log.e(TAG, "onComplete   duration : " + clipDuration +
+                        ", clipManager.getDuration() = " + clipManager.getDuration());
+                tempIsComplete = true;
+                //Log.e(TAG, "onComplete:" + validClip + clipDuration);
+                //Log.e(TAG, "thread" + Thread.currentThread().getName());
+                ThreadUtils.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(TAG, "onComplete    isStopToCompleteDuration:" + isStopToCompleteDuration);
@@ -1403,13 +1560,28 @@ public class AliyunSVideoRecordView extends RelativeLayout
             public void onFinish(final String outputPath) {
                 Log.e(TAG, "onFinish:" + outputPath);
 
-                post(new Runnable() {
+                ThreadUtils.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (mCompleteListener != null) {
-                            int duration = clipManager.getDuration();
+                            final int duration = clipManager.getDuration();
                             //deleteAllPart();
-                            mCompleteListener.onComplete(outputPath, duration);
+                            // 选择音乐后, 在录制完合成过程中退后台
+                            // 保持在后台情况下, sdk合成完毕后, 会仍然执行跳转代码, 此时会弹起跳转后的页面
+                            if (activityStoped) {
+                                pendingCompseFinishRunnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!isStopToCompleteDuration) {
+                                            mCompleteListener.onComplete(outputPath, duration);
+                                        }
+                                    }
+                                };
+                            } else {
+                                if (!isStopToCompleteDuration) {
+                                    mCompleteListener.onComplete(outputPath, duration);
+                                }
+                            }
                         }
                     }
                 });
@@ -1418,49 +1590,71 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
             @Override
             public void onProgress(final long duration) {
-                Log.e(TAG, "onProgress:" + duration);
-                isAllowChangeMv = false;
-                //设置录制进度
-                if (mRecordTimeView != null) {
-                    mRecordTimeView.setDuration((int) duration);
-                }
-                recordTime = (int) duration + clipManager.getDuration();
-                if (recordTime <= clipManager.getMaxDuration() && recordTime >= clipManager.getMinDuration()) {
-                    // 2018/7/11 让下一步按钮可点击
-                    mControlView.setCompleteEnable(true);
-                } else {
-                    mControlView.setCompleteEnable(false);
-                }
-                if (mControlView != null && mControlView.getRecordState().equals(RecordState.STOP)) {
-                    return;
-                }
-                if (mControlView != null) {
-                    mControlView.setRecordTime(TimeFormatterUtils.formatTime(recordTime));
-                }
+                Log.e(TAG, "onProgress   duration : " + duration +
+                        ", clipManager.getDuration() : " + clipManager.getDuration());
+                final int currentDuration = clipManager.getDuration();
+                ThreadUtils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        isAllowChangeMv = false;
+                        recordTime = 0;
+                        //设置录制进度
+                        if (mRecordTimeView != null) {
+                            mRecordTimeView.setDuration((int) duration);
+                        }
+
+                        recordTime = (int) (currentDuration + duration);
+                        if (recordTime <= clipManager.getMaxDuration() && recordTime >= clipManager.getMinDuration()) {
+                            // 2018/7/11 让下一步按钮可点击
+                            mControlView.setCompleteEnable(true);
+                        } else {
+                            mControlView.setCompleteEnable(false);
+                        }
+                        if (mControlView != null && mControlView.getRecordState().equals(RecordState.STOP)) {
+                            return;
+                        }
+                        if (mControlView != null) {
+                            mControlView.setRecordTime(TimeFormatterUtils.formatTime(recordTime));
+                        }
+
+                    }
+                });
+
             }
 
             @Override
             public void onMaxDuration() {
                 Log.e(TAG, "onMaxDuration:");
                 isMaxDuration = true;
-                if (mControlView != null) {
-                    mControlView.setCompleteEnable(false);
-                    mControlView.setRecordState(RecordState.STOP);
-                }
+                ThreadUtils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mControlView != null) {
+                            mControlView.setCompleteEnable(false);
+                            mControlView.setRecordState(RecordState.STOP);
+                        }
+                    }
+                });
+
             }
 
             @Override
             public void onError(int errorCode) {
                 Log.e(TAG, "onError:" + errorCode);
-                recordTime = 0;
-
-                handleStopCallback(false, 0);
+                ThreadUtils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recordTime = 0;
+                        tempIsComplete = true;
+                        handleStopCallback(false, 0);
+                    }
+                });
             }
 
             @Override
             public void onInitReady() {
                 Log.e(TAG, "onInitReady");
-                post(new Runnable() {
+                ThreadUtils.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         restoreConflictEffect();
@@ -1491,14 +1685,18 @@ public class AliyunSVideoRecordView extends RelativeLayout
         recorder.setOnTextureIdCallback(new OnTextureIdCallBack() {
             @Override
             public int onTextureIdBack(int textureId, int textureWidth, int textureHeight, float[] matrix) {
-                if ((isUseFaceUnity || isUseThreeD || isUseAnimoji || isUseHAHAJING
-                        || isUseBackground || isUseDongMLvj || isUseGesture) && faceInitResult) {
+
+                //******************************** start ******************************************
+                //这块代码会影响到标准版的faceUnity功能 改动的时候要关联app gradle 一起改动
+                if (faceInitResult && currentBeautyFaceMode == BeautyMode.Advanced && faceUnityManager != null) {
                     /**
                      * faceInitResult fix bug:反复退出进入会出现黑屏情况,原因是因为release之后还在调用渲染的接口,必须要保证release了之后不能再调用渲染接口
                      */
                     return faceUnityManager.draw(frameBytes, mFuImgNV21Bytes, textureId, frameWidth, frameHeight, mFrameId++, mControlView.getCameraType().getType()
-                            , getPictureRotation(), isUseThreeD, isUseAnimoji, isUseGesture);
+                            , getPictureRotation(), isUseThreeD, isUseAnimoji, isUseGesture, isUseMusic, musicTime);
+
                 }
+                //******************************** end ********************************************
                 return textureId;
             }
 
@@ -1511,6 +1709,16 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 //}
 
                 return scaledId;
+            }
+
+            @Override
+            public void onTextureDestroyed() {
+                // sdk3.7.8改动, 自定义渲染（第三方渲染）销毁gl资源，以前GLSurfaceView时可以通过GLSurfaceView.queueEvent来做，
+                // 现在增加了一个gl资源销毁的回调，需要统一在这里面做。
+                if (faceUnityManager != null && faceInitResult) {
+                    faceUnityManager.release();
+                    faceInitResult = false;
+                }
             }
         });
 
@@ -1582,13 +1790,20 @@ public class AliyunSVideoRecordView extends RelativeLayout
         return rotation;
     }
 
+
+    private boolean activityStoped;
+    private Runnable pendingCompseFinishRunnable;
+
     /**
      * 开始预览
      */
     public void startPreview() {
+        activityStoped = false;
+        if (pendingCompseFinishRunnable != null) {
+            pendingCompseFinishRunnable.run();
+        }
+        pendingCompseFinishRunnable = null;
         if (recorder != null) {
-            //在startPreview的时候初始化faceUnity,保证和faceUnity的release成对出现
-            initFaceUnity(getContext());
 
             recorder.startPreview();
             if (isAllowChangeMv) {
@@ -1620,35 +1835,17 @@ public class AliyunSVideoRecordView extends RelativeLayout
      * 结束预览
      */
     public void stopPreview() {
-        mGLSurfaceView.queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                /**
-                 * 释放faceUnity相关，因为faceUnity的销毁必须要再渲染线程中做.我们使用queueEvent来保证release方法在渲染线程中使用
-                 * 目前放在stopPreview中调用release,主要是保证存在mGLSurfaceView没有销毁GL线程还存在
-                 */
-                if (faceUnityManager != null && faceInitResult) {
-                    faceUnityManager.release();
-                    faceInitResult = false;
-                }
-            }
-        });
-
+        activityStoped = true;
         if (mControlView != null && mCountDownView != null && mControlView.getRecordState().equals(RecordState.READY)) {
             mCountDownView.cancle();
             mControlView.setRecordState(RecordState.STOP);
             mControlView.setRecording(false);
         }
-        //解决部分机型锁屏音乐不停止的问题，以后sdk同学需要解决
-        if (isAllowChangeMv) {
-            recorder.applyMv(null);
-        }
-        if (mControlView != null && mControlView.getRecordState().equals(RecordState.RECORDING)) {
-            recorder.cancelRecording();
 
+        if (mControlView != null && mControlView.getRecordState().equals(RecordState.RECORDING)) {
+            recorder.stopRecording();
         }
         recorder.stopPreview();
-
 
         if (beautyEffectChooser != null) {
             beautyEffectChooser.dismiss();
@@ -1662,12 +1859,31 @@ public class AliyunSVideoRecordView extends RelativeLayout
             orientationDetector.disable();
         }
 
+        //if (musicChooseView != null) {
+        //    musicChooseView.dismiss();
+        //}
+
     }
 
     /**
      * 销毁录制，在activity或者fragment被销毁时调用此方法
      */
     public void destroyRecorder() {
+        //mGLSurfaceView.queueEvent(new Runnable() {
+        //    @Override
+        //    public void run() {
+        ///**
+        // * 释放faceUnity相关，因为faceUnity的销毁必须要再渲染线程中做.我们使用queueEvent来保证release方法在渲染线程中使用
+        // * 目前放在stopPreview中调用release,主要是保证存在mGLSurfaceView没有销毁GL线程还存在
+        // */
+        //        if (faceUnityManager != null && faceInitResult) {
+        //            faceUnityManager.release();
+        //            faceInitResult = false;
+        //        }
+        //
+        //        Log.e(TAG, "run");
+        //    }
+        //});
 
         if (finishRecodingTask != null) {
             finishRecodingTask.cancel(true);
@@ -1695,8 +1911,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
     }
 
     /**
-     * 结束录制，并且将录制片段视频拼接成一个视频
-     * 跳转editorActivity在合成完成的回调的方法中，{@link AlivcSvideoRecordActivity#onResume()}
+     * 结束录制，并且将录制片段视频拼接成一个视频 跳转editorActivity在合成完成的回调的方法中，{@link AlivcSvideoRecordActivity#onResume()}
      */
     private void finishRecording() {
         //弹窗提示
@@ -1716,7 +1931,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
     /**
      * 录制结束的AsyncTask
      */
-    public class FinishRecodingTask extends AsyncTask<Void, Void, Void> {
+    public static class FinishRecodingTask extends AsyncTask<Void, Void, Void> {
         WeakReference<AliyunSVideoRecordView> weakReference;
 
         FinishRecodingTask(AliyunSVideoRecordView recordView) {
@@ -1725,6 +1940,10 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
         @Override
         protected Void doInBackground(Void... voids) {
+            if (weakReference == null) {
+                return null;
+            }
+
             AliyunSVideoRecordView recordView = weakReference.get();
             if (recordView != null) {
                 recordView.recorder.finishRecording();
@@ -1735,10 +1954,15 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (progressBar != null) {
-                progressBar.dismiss();
+            if (weakReference == null) {
+                return;
             }
-
+            AliyunSVideoRecordView recordView = weakReference.get();
+            if (recordView != null) {
+                if (recordView.progressBar != null) {
+                    recordView.progressBar.dismiss();
+                }
+            }
         }
     }
 
@@ -1754,34 +1978,40 @@ public class AliyunSVideoRecordView extends RelativeLayout
             public void run() {
 
                 mControlView.setRecordState(RecordState.STOP);
+                if (mControlView != null) {
+                    mControlView.setRecording(false);
+                }
 
-                if (isValid && duration > 200) {
+                if (!isValid) {
+                    if (mRecordTimeView != null) {
+                        mRecordTimeView.setDuration(0);
 
+                        if (mRecordTimeView.getTimelineDuration() == 0) {
+                            mControlView.setHasRecordPiece(false);
+                        }
+                    }
+                    return;
+                }
+
+                if (duration > 200) {
                     if (mRecordTimeView != null) {
                         mRecordTimeView.setDuration((int) duration);
                         mRecordTimeView.clipComplete();
                     }
+                    mControlView.setHasRecordPiece(true);
+                    isAllowChangeMv = false;
                 } else {
+
                     if (mRecordTimeView != null) {
                         mRecordTimeView.setDuration(0);
                     }
-                }
-                if (mControlView != null) {
-                    mControlView.setRecording(false);
-                }
-                if (isValid) {
-                    if (duration > 200) {
-                        mControlView.setHasRecordPiece(true);
-                        isAllowChangeMv = false;
-                    } else {
-
-                        clipManager.deletePart();
-                        if (clipManager.getDuration() == 0) {
-                            isAllowChangeMv = true;
-                            mControlView.setHasRecordPiece(false);
-                        }
-                        isMaxDuration = false;
+                    //todo 小于200毫秒的视频会导致合成视频出现异常，这里会做删除
+                    clipManager.deletePart();
+                    if (clipManager.getDuration() == 0) {
+                        isAllowChangeMv = true;
+                        mControlView.setHasRecordPiece(false);
                     }
+                    isMaxDuration = false;
                 }
 
             }
@@ -1989,8 +2219,8 @@ public class AliyunSVideoRecordView extends RelativeLayout
             recorder.setMediaInfo(getMediaInfo());
 
         }
-        if (mGLSurfaceView != null) {
-            LayoutParams params = (LayoutParams) mGLSurfaceView.getLayoutParams();
+        if (mSurfaceView != null) {
+            LayoutParams params = (LayoutParams) mSurfaceView.getLayoutParams();
             int screenWidth = getResources().getDisplayMetrics().widthPixels;
 
             int height = 0;
@@ -2009,7 +2239,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
                     break;
             }
             params.height = height;
-            mGLSurfaceView.setLayoutParams(params);
+            mSurfaceView.setLayoutParams(params);
         }
 
     }
@@ -2072,10 +2302,11 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
     private MediaInfo getMediaInfo() {
         MediaInfo info = new MediaInfo();
+        info.setFps(35);
         info.setVideoWidth(getVideoWidth());
         info.setVideoHeight(getVideoHeight());
         info.setVideoCodec(mVideoCodec);
-        info.setCrf(25);
+        info.setCrf(0);
         return info;
     }
 
@@ -2125,6 +2356,86 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 break;
         }
         return height;
+    }
+
+    //************音乐滤镜的播放*******//
+    private MediaPlayer mediaPlayer;
+    private Handler mMusicHandler;
+    private static final int MUSIC_TIME = 50;
+    Runnable mMusicRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                musicTime = mediaPlayer.getCurrentPosition();
+                Log.d("ssss", "time=" + musicTime);
+            }
+//                mOnMusicListener.onMusic(mediaPlayer.getCurrentPosition());
+            mMusicHandler.postDelayed(mMusicRunnable, MUSIC_TIME);
+        }
+    };
+
+    public void stopMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+            mMusicHandler.removeCallbacks(mMusicRunnable);
+        }
+    }
+
+    public void playMusic(Effect effect) {
+        if (effect == null)
+            return;
+        if (effect.effectType() != Effect.EFFECT_TYPE_MUSIC_FILTER) {
+            return;
+        }
+        stopMusic();
+
+        if (effect.effectType() != Effect.EFFECT_TYPE_MUSIC_FILTER) {
+            return;
+        }
+        mediaPlayer = new MediaPlayer();
+        mMusicHandler = new Handler();
+
+        /**
+         * mp3
+         */
+        try {
+            AssetFileDescriptor descriptor = getContext().getAssets().openFd("musicfilter/" + effect.bundleName() + ".mp3");
+            mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+            descriptor.close();
+
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.prepareAsync();
+            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                @Override
+                public void onBufferingUpdate(MediaPlayer mp, int percent) {
+
+                }
+            });
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    // 装载完毕回调
+                    //mediaPlayer.setVolume(1f, 1f);
+                    mediaPlayer.setLooping(false);
+                    mediaPlayer.seekTo(0);
+                    mediaPlayer.start();
+
+                    mMusicHandler.postDelayed(mMusicRunnable, MUSIC_TIME);
+                }
+            });
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mediaPlayer.seekTo(0);
+                    mediaPlayer.start();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            mediaPlayer = null;
+        }
     }
 
 }

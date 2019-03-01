@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="MySwitchTheme">
+        <item name="colorControlActivated">@color/media_control_activated_color</item>
+        <item name="colorSwitchThumbNormal">#FFF1F1F1</item>
+        <item name="android:colorForeground">@color/comoon_colorPrimary_alpha_five</item>
+    </style>
+</resources>

@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <com.aliyun.demo.widget.AutoResizingEditText
+        <com.aliyun.svideo.editor.widget.AutoResizingEditText
             android:id="@id/qupai_overlay_content_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
             android:visibility="gone"
             >
 
-            <com.aliyun.demo.widget.WheelView
+            <com.aliyun.svideo.editor.widget.WheelView
                 android:id="@+id/font_custom_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

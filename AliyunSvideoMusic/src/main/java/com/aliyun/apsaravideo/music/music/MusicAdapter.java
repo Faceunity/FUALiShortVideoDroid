@@ -1,6 +1,7 @@
 package com.aliyun.apsaravideo.music.music;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,20 +11,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aliyun.apsaravideo.music.R;
-import com.aliyun.svideo.base.widget.CircleProgressBar;
-import com.aliyun.svideo.base.widget.MusicHorizontalScrollView;
-import com.aliyun.svideo.base.widget.MusicWaveView;
+import com.aliyun.apsaravideo.music.widget.CircleProgressBar;
+import com.aliyun.apsaravideo.music.widget.MusicHorizontalScrollView;
+import com.aliyun.apsaravideo.music.widget.MusicWaveView;
 import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MusicAdapter extends RecyclerView.Adapter{
+public class MusicAdapter extends RecyclerView.Adapter {
     private List<EffectBody<MusicFileBean>> dataList = new ArrayList<>();
-    private int mRecordDuration = 10*1000;
+    private int mRecordDuration = 10 * 1000;
     private OnMusicSeek onMusicSeek;
     private int mSelectIndex = 0;
     private int[] mScrollX;
+    private SparseIntArray mCacheScrollX = new SparseIntArray();
 
     private ArrayList<MusicFileBean> mLoadingMusic = new ArrayList<>();//正在下载的的音乐
 
@@ -40,101 +42,117 @@ public class MusicAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        ((MusicViewHolder)holder).updateData(position,dataList.get(position));
+        ((MusicViewHolder)holder).updateData(position, dataList.get(position));
         int viewType = getItemViewType(position);
         final MusicFileBean musicFileBean = dataList.get(position).getData();
         switch (viewType) {
-            case VIEW_TYPE_NO:
-                ((MusicViewHolder)holder).musicName.setText(R.string.aliyun_empty_music);
-                ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.GONE);
-                ((MusicViewHolder)holder).musicSinger.setVisibility(View.GONE);
-                ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.GONE);
-                ((MusicViewHolder)holder).scrollBar.setScrollViewListener(null);
-                if(mSelectIndex == 0){
-                    ((MusicViewHolder)holder).musicName.setSelected(true);
-                    ((MusicViewHolder)holder).musicSinger.setSelected(true);
-                }else{
-                    ((MusicViewHolder)holder).musicName.setSelected(false);
-                    ((MusicViewHolder)holder).musicSinger.setSelected(false);
-                }
-                break;
-            case VIEW_TYPE_LOCAL:
+        case VIEW_TYPE_NO:
+            ((MusicViewHolder)holder).musicName.setText(R.string.aliyun_empty_music);
+            ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.GONE);
+            ((MusicViewHolder)holder).musicSinger.setVisibility(View.GONE);
+            ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.GONE);
+            ((MusicViewHolder)holder).scrollBar.setScrollViewListener(null);
+            if (mSelectIndex == 0) {
+                ((MusicViewHolder)holder).musicName.setSelected(true);
+                ((MusicViewHolder)holder).musicSinger.setSelected(true);
+            } else {
+                ((MusicViewHolder)holder).musicName.setSelected(false);
+                ((MusicViewHolder)holder).musicSinger.setSelected(false);
+            }
+            break;
+        case VIEW_TYPE_LOCAL:
 
-                ((MusicViewHolder)holder).downloadProgress.setVisibility(View.GONE);
-                if (position == mSelectIndex){
-                    ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.VISIBLE);
-                    ((MusicViewHolder)holder).musicName.setSelected(true);
-                    ((MusicViewHolder)holder).musicSinger.setSelected(true);
-                    ((MusicViewHolder)holder).musicName.setText(musicFileBean.getTitle());
-                    if(musicFileBean.artist == null || musicFileBean.artist.isEmpty()){
-                        ((MusicViewHolder)holder).musicSinger.setVisibility(View.GONE);
-                    }else{
-                        ((MusicViewHolder)holder).musicSinger.setVisibility(View.VISIBLE);
-                        ((MusicViewHolder)holder).musicSinger.setText(musicFileBean.artist);
+            ((MusicViewHolder)holder).downloadProgress.setVisibility(View.GONE);
+            if (position == mSelectIndex) {
+                ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.VISIBLE);
+                ((MusicViewHolder)holder).musicName.setSelected(true);
+                ((MusicViewHolder)holder).musicSinger.setSelected(true);
+                ((MusicViewHolder)holder).musicName.setText(musicFileBean.getTitle());
+                if (musicFileBean.artist == null || musicFileBean.artist.isEmpty()) {
+                    ((MusicViewHolder)holder).musicSinger.setVisibility(View.GONE);
+                } else {
+                    ((MusicViewHolder)holder).musicSinger.setVisibility(View.VISIBLE);
+                    ((MusicViewHolder)holder).musicSinger.setText(musicFileBean.artist);
+                }
+
+                ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.VISIBLE);
+                ((MusicViewHolder)holder).musicWave.setDisplayTime(mRecordDuration);
+                ((MusicViewHolder)holder).musicWave.setTotalTime(musicFileBean.duration);
+                ((MusicViewHolder)holder).musicWave.layout();
+                ((MusicViewHolder)holder).musicWave.setVisibility(View.VISIBLE);
+                ((MusicViewHolder)holder).scrollBar.setScrollViewListener(new MusicHorizontalScrollView.ScrollViewListener() {
+                    @Override
+                    public void onScrollChanged(HorizontalScrollView scrollView, int x, int y, int oldx, int oldy) {
+                        if (position < mScrollX.length) { //添加判断，解决选择音乐片段的时候，切换模式引起的数组越界问题
+                            mScrollX[position] = x;
+                            setDurationTxt(((MusicViewHolder)holder), x, musicFileBean.duration);
+                        }
+
                     }
-                    ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.VISIBLE);
-                    ((MusicViewHolder)holder).musicWave.setDisplayTime(mRecordDuration);
-                    ((MusicViewHolder)holder).musicWave.setTotalTime(musicFileBean.duration);
-                    ((MusicViewHolder)holder).musicWave.layout();
-                    ((MusicViewHolder)holder).scrollBar.setScrollViewListener(new MusicHorizontalScrollView.ScrollViewListener() {
-                        @Override
-                        public void onScrollChanged(HorizontalScrollView scrollView, int x, int y, int oldx, int oldy) {
-                            if (position<mScrollX.length){//添加判断，解决选择音乐片段的时候，切换模式引起的数组越界问题
-                                mScrollX[position] = x;
-                                setDurationTxt(((MusicViewHolder)holder),x,musicFileBean.duration);
-                            }
 
+                    @Override
+                    public void onScrollStop() {
+
+                        if (onMusicSeek != null && position < mScrollX.length) { //添加判断，解决选择音乐片段的时候，切换模式引起的数组越界问题
+                            onMusicSeek.onSeekStop((int) ((float)mScrollX[position] / ((MusicViewHolder)holder).musicWave.getMusicLayoutWidth() * musicFileBean.duration));
                         }
-
-                        @Override
-                        public void onScrollStop() {
-
-                            if(onMusicSeek != null&&position<mScrollX.length){//添加判断，解决选择音乐片段的时候，切换模式引起的数组越界问题
-                                onMusicSeek.onSeekStop((int) ((float)mScrollX[position] / ((MusicViewHolder)holder).musicWave.getMusicLayoutWidth() * musicFileBean.duration));
-                            }
-                        }
-                    });
-                    ((MusicViewHolder)holder).scrollBar.scrollTo(mScrollX[position],0);
-                }else {
-                    ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.GONE);
-                    ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.GONE);
-                    ((MusicViewHolder)holder).scrollBar.setScrollViewListener(null);
-                    ((MusicViewHolder)holder).musicName.setSelected(false);
-                    ((MusicViewHolder)holder).musicSinger.setSelected(false);
+                    }
+                });
+                if (position != 0 && mCacheScrollX.keyAt(0) == position && musicFileBean.duration != 0) {
+                    //恢复选中的开始时间
+                    mScrollX[position] = mCacheScrollX.valueAt(0) * ((MusicViewHolder)holder).musicWave.getMusicLayoutWidth() / musicFileBean.duration;
                 }
-                break;
-            case VIEW_TYPE_REMOTE:
+
+                //这里需要一个延时scroll，不然首次无法正确定位
+                holder.itemView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (position < mScrollX.length) {
+                            ((MusicViewHolder)holder).scrollBar.scrollTo(mScrollX[position], 0);
+                        }
+                    }
+                }, 50);
+
+            } else {
                 ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.GONE);
-                ((MusicViewHolder)holder).downloadProgress.setVisibility(View.GONE);
                 ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.GONE);
                 ((MusicViewHolder)holder).scrollBar.setScrollViewListener(null);
                 ((MusicViewHolder)holder).musicName.setSelected(false);
                 ((MusicViewHolder)holder).musicSinger.setSelected(false);
-                if(mSelectIndex == position){
-                    ((MusicViewHolder)holder).musicName.setSelected(true);
-                    ((MusicViewHolder)holder).musicSinger.setSelected(true);
-                }else{
-                    ((MusicViewHolder)holder).musicName.setSelected(false);
-                    ((MusicViewHolder)holder).musicSinger.setSelected(false);
-                }
-                break;
-            case VIEW_TYPE_DOWNLOADING:
-                ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.GONE);
-                ((MusicViewHolder)holder).downloadProgress.setVisibility(View.VISIBLE);
-                ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.GONE);
-                ((MusicViewHolder)holder).scrollBar.setScrollViewListener(null);
+            }
+            break;
+        case VIEW_TYPE_REMOTE:
+            ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.GONE);
+            ((MusicViewHolder)holder).downloadProgress.setVisibility(View.GONE);
+            ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.GONE);
+            ((MusicViewHolder)holder).scrollBar.setScrollViewListener(null);
+            ((MusicViewHolder)holder).musicName.setSelected(false);
+            ((MusicViewHolder)holder).musicSinger.setSelected(false);
+            if (mSelectIndex == position) {
+                ((MusicViewHolder)holder).musicName.setSelected(true);
+                ((MusicViewHolder)holder).musicSinger.setSelected(true);
+            } else {
                 ((MusicViewHolder)holder).musicName.setSelected(false);
                 ((MusicViewHolder)holder).musicSinger.setSelected(false);
-                if(mSelectIndex == position){
-                    ((MusicViewHolder)holder).musicName.setSelected(true);
-                    ((MusicViewHolder)holder).musicSinger.setSelected(true);
-                }else{
-                    ((MusicViewHolder)holder).musicName.setSelected(false);
-                    ((MusicViewHolder)holder).musicSinger.setSelected(false);
-                }
-                break;
-            default:
-                break;
+            }
+            break;
+        case VIEW_TYPE_DOWNLOADING:
+            ((MusicViewHolder)holder).mLocalIcon.setVisibility(View.GONE);
+            ((MusicViewHolder)holder).downloadProgress.setVisibility(View.VISIBLE);
+            ((MusicViewHolder)holder).musicInfoLayout.setVisibility(View.GONE);
+            ((MusicViewHolder)holder).scrollBar.setScrollViewListener(null);
+            ((MusicViewHolder)holder).musicName.setSelected(false);
+            ((MusicViewHolder)holder).musicSinger.setSelected(false);
+            if (mSelectIndex == position) {
+                ((MusicViewHolder)holder).musicName.setSelected(true);
+                ((MusicViewHolder)holder).musicSinger.setSelected(true);
+            } else {
+                ((MusicViewHolder)holder).musicName.setSelected(false);
+                ((MusicViewHolder)holder).musicSinger.setSelected(false);
+            }
+            break;
+        default:
+            break;
         }
 
 
@@ -146,17 +164,17 @@ public class MusicAdapter extends RecyclerView.Adapter{
     public int getItemCount() {
         return dataList.size();
     }
-    public void setData(ArrayList<EffectBody<MusicFileBean>> dataList, int selectIndex){
+    public void setData(ArrayList<EffectBody<MusicFileBean>> dataList, int selectIndex) {
 
         this.dataList.clear();
         this.dataList.addAll(dataList);
         MusicFileBean mediaEntity = new MusicFileBean();
-        EffectBody<MusicFileBean> effectBody = new EffectBody<>(mediaEntity,true);
-        this.dataList.add(0,effectBody);
+        EffectBody<MusicFileBean> effectBody = new EffectBody<>(mediaEntity, true);
+        this.dataList.add(0, effectBody);
         mScrollX = new int[this.dataList.size()];
         mSelectIndex = selectIndex;
-        if(onMusicSeek != null){
-            onMusicSeek.onSelectMusic(selectIndex,this.dataList.get(selectIndex));
+        if (onMusicSeek != null) {
+            onMusicSeek.onSelectMusic(selectIndex, this.dataList.get(selectIndex));
         }
         notifyDataSetChanged();
     }
@@ -164,13 +182,13 @@ public class MusicAdapter extends RecyclerView.Adapter{
     public int getItemViewType(int position) {
         int type = VIEW_TYPE_NO;
 
-        if(position > 0 && position < dataList.size()) {
+        if (position > 0 && position < dataList.size()) {
             EffectBody<MusicFileBean> data = dataList.get(position);
-            if(data.isLocal()) {
+            if (data.isLocal()) {
                 return VIEW_TYPE_LOCAL;
-            }else if(data.isLoading()) {
+            } else if (data.isLoading()) {
                 return VIEW_TYPE_DOWNLOADING;
-            }else {
+            } else {
                 return VIEW_TYPE_REMOTE;
             }
         }
@@ -181,7 +199,7 @@ public class MusicAdapter extends RecyclerView.Adapter{
      * @param musicBody
      */
     public void notifyDownloadingStart(EffectBody<MusicFileBean> musicBody) {
-        if(!mLoadingMusic.contains(musicBody.getData())) {
+        if (!mLoadingMusic.contains(musicBody.getData())) {
             mLoadingMusic.add(musicBody.getData());
             musicBody.setLoading(true);
         }
@@ -189,23 +207,36 @@ public class MusicAdapter extends RecyclerView.Adapter{
 
     /**
      * 下载结束
+     * @param viewHolder
      * @param mvBody
      * @param position
      */
-    public synchronized void notifyDownloadingComplete(EffectBody<MusicFileBean> mvBody, int position) {
+    public synchronized void notifyDownloadingComplete(MusicViewHolder viewHolder, EffectBody<MusicFileBean> mvBody, int position) {
         mvBody.setLocal(true);
         mvBody.setLoading(false);
         mLoadingMusic.remove(mvBody.getData());
         notifyItemChanged(position);
+        //下载完成后，重置downloadProgress控件的Progress
+        if (viewHolder != null && viewHolder.downloadProgress != null) {
+            viewHolder.downloadProgress.setProgress(0);
+        }
     }
 
     public void updateProcess(MusicViewHolder viewHolder, int process, int position) {
-        if(viewHolder != null && viewHolder.mPosition == position) {
+        if (viewHolder != null && viewHolder.mPosition == position) {
             viewHolder.mLocalIcon.setVisibility(View.GONE);
             viewHolder.downloadProgress.setVisibility(View.VISIBLE);
             viewHolder.downloadProgress.setProgress(process);
         }
     }
+
+    public void notifySelectPosition(int cacheStartTime, int cachePosition) {
+
+        mCacheScrollX.put(cachePosition, cacheStartTime);
+        mSelectIndex = cachePosition;
+        notifyDataSetChanged();
+    }
+
     /**
      * 监听接口，外部实现
      */
@@ -224,7 +255,7 @@ public class MusicAdapter extends RecyclerView.Adapter{
          */
         void onLocalItemClick(int position, EffectBody<IMVForm> data);
     }
-    class MusicViewHolder extends RecyclerView.ViewHolder{
+    class MusicViewHolder extends RecyclerView.ViewHolder {
         public TextView musicName;
         public TextView musicSinger;
         public MusicWaveView musicWave;
@@ -242,11 +273,11 @@ public class MusicAdapter extends RecyclerView.Adapter{
             this.mPosition = position;
             MusicFileBean music = data.getData();
             musicName.setText(music.title);
-            if(music.artist == null || music.artist.isEmpty()){
+            if (music.artist == null || music.artist.isEmpty()) {
                 musicSinger.setVisibility(View.GONE);
-            }else{
+            } else {
                 musicSinger.setVisibility(View.VISIBLE);
-                musicSinger.setText("- "+music.artist);
+                musicSinger.setText("- " + music.artist);
             }
         }
         public MusicViewHolder(View itemView) {
@@ -262,13 +293,13 @@ public class MusicAdapter extends RecyclerView.Adapter{
             mLocalIcon = itemView.findViewById(R.id.alivc_record_local_iv);
             downloadProgress = (CircleProgressBar) itemView.findViewById(R.id.download_progress);
             downloadProgress.isFilled(true);
-            setDurationTxt(this,0,0);
+            setDurationTxt(this, 0, 0);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mSelectIndex!=mPosition){
-                        if(onMusicSeek!=null){
-                            onMusicSeek.onSelectMusic(mPosition,mData);
+                    if (mSelectIndex != mPosition) {
+                        if (onMusicSeek != null) {
+                            onMusicSeek.onSelectMusic(mPosition, mData);
                         }
                         mSelectIndex = mPosition;
                         if (mSelectIndex < mScrollX.length) {
@@ -285,7 +316,7 @@ public class MusicAdapter extends RecyclerView.Adapter{
         }
 
     }
-    private void setDurationTxt(MusicViewHolder holder,int x,int duration){
+    private void setDurationTxt(MusicViewHolder holder, int x, int duration) {
         int leftTime = (int) ((float)x / holder.musicWave.getMusicLayoutWidth() * duration);
         int rightTime = leftTime + mRecordDuration;
         int time = leftTime / 1000;

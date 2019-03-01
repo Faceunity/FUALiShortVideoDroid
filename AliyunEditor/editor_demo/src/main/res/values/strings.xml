@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">编辑Demo</string>
     <string name="edit_nav_edit">编辑</string>
     <string name="edit_nav_save_and_share">保存／分享></string>
     <string name="effect_mananger_nav_edit">特效管理</string>
@@ -35,7 +34,15 @@
     <string name="not_supported_audio">不支持的音频格式</string>
     <string name="not_supported_video">不支持的视频格式</string>
     <string name="not_supported_pixel_format">不支持的文件</string>
+    <string name="decoder_error_interrupt">解码失败</string>
+    <string name="transition_effect_manager">转场</string>
+    <string name="aliyun_svideo_transition_limit">一段视频无法添加转场</string>
 
+
+    <string name="add_music_start_time">开始时间(ms)</string>
+    <string name="add_music_end_time">结束时间(ms)</string>
+    <string name="add_music_play_time">播放时间</string>
+    <string name="add_music_audio_time">音频时间</string>
 
     <string name="caption_effect_font_category_name">纯文字</string>
     <string name="caption_effect_bottom_keyboard">键盘</string>

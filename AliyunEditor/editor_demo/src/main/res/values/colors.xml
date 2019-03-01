@@ -65,11 +65,10 @@
     <color name="tab_text_color">#6E768B</color>
     <color name="bg_effect_manager">#232A42</color>
     <color name="action_bar_bg_50pct">#7f232A42</color>
-    <color name="seek_bar_theme">#F05487</color>
+    <color name="edit_seek_bar_theme">#F05487</color>
     <color name="white_transparent_40">#66FFFFFF</color>
     <color name="timeline_bar_active_overlay">#66EF4B81</color>
     <color name="timeline_bar_fix_overlay">#66EF4B81</color>
-    <color name="effect_bg_color">#00C1DE</color>
     <color name="qupai_black_opacity_80pct">#cc000000</color>
     <color name="effect_font_bottom_tab_indicator">#00C1DE</color>
 
@@ -91,6 +90,5 @@
     <color name="aliyun_animation_filter_color4">#E6F35C4B</color>
     <color name="aliyun_animation_filter_color5">#E6798ECD</color>
 
-    <color name="alivc_chooser_pager_bg">#B3000000</color>
     <color name="alivc_svideo_text_gray_light">#C3C5C6</color>
 </resources>

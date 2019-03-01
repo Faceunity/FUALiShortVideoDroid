@@ -2,28 +2,26 @@ package com.aliyun.demo.recorder.view.effects.paster;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.view.effects.EffectBody;
-import com.aliyun.demo.recorder.view.effects.mv.MVAdapter;
 import com.aliyun.svideo.base.widget.CircleProgressBar;
 import com.aliyun.svideo.base.widget.CircularImageView;
 import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.aliyun.video.common.utils.image.ImageLoaderImpl;
+import com.aliyun.video.common.utils.image.ImageLoaderOptions;
+import com.aliyun.video.common.utils.image.AbstractImageLoaderTarget;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.PasterViewHolder> implements View.OnClickListener {
-    private static final String TAG = MVAdapter.class.getName();
+public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.PasterViewHolder> implements View.OnClickListener{
 
     private static final int VIEW_TYPE_NO = 0;
     private static final int VIEW_TYPE_LOCAL = 1;
@@ -34,23 +32,21 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
 
     private ArrayList<PreviewPasterForm> mLoadingMV = new ArrayList<>();//正在下载的的mv
     private int mSelectedMVId = -1;
-
     public void setmItemClickListener(OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
 
     private OnItemClickListener mItemClickListener;
-
     public AlivcPasterAdapter(Context mContext) {
         this.mContext = mContext;
         PreviewPasterForm form = new PreviewPasterForm();
-        EffectBody<PreviewPasterForm> effectBody = new EffectBody<PreviewPasterForm>(form, true);
-        mDataList.add(0, effectBody);
+        EffectBody<PreviewPasterForm> effectBody = new EffectBody<PreviewPasterForm>(form,true);
+        mDataList.add(0,effectBody);
     }
 
     @Override
     public PasterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.alivc_svideo_item_effect_mv, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.alivc_svideo_item_effect_mv, parent,false);
         PasterViewHolder holder = new PasterViewHolder(view);
         return holder;
     }
@@ -74,9 +70,9 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
             case VIEW_TYPE_REMOTE:
                 holder.ivDownloadIcon.setVisibility(View.VISIBLE);
                 //下载失败替换下载图标
-                if (mDataList.get(position).isLoadingError()) {
+                if (mDataList.get(position).isLoadingError()){
                     holder.ivDownloadIcon.setImageResource(R.mipmap.alivc_svideo_icon_replay);
-                } else {
+                }else {
                     holder.ivDownloadIcon.setImageResource(R.mipmap.alivc_svideo_icon_download);
                 }
                 holder.downloadProgress.setVisibility(View.GONE);
@@ -91,9 +87,9 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
             default:
                 break;
         }
-        if (mSelectedMVId == mDataList.get(position).getData().getId()) {
+        if (mSelectedMVId==mDataList.get(position).getData().getId()){
             holder.resourceImageView.setSelected(true);
-        } else {
+        }else {
             holder.resourceImageView.setSelected(false);
         }
     }
@@ -107,20 +103,19 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
     public void onClick(View v) {
 
     }
-
     @Override
     public int getItemViewType(int position) {
         int type = VIEW_TYPE_NO;
-        if (position == 0) {
+        if (position==0){
             return VIEW_TYPE_NO;
         }
-        if (position > 0 && position < mDataList.size()) {
+        if(position > 0 && position < mDataList.size()) {
             EffectBody<PreviewPasterForm> data = mDataList.get(position);
-            if (data.isLocal()) {
+            if(data.isLocal()) {
                 return VIEW_TYPE_LOCAL;
-            } else if (data.isLoading()) {
+            }else if(data.isLoading()) {
                 return VIEW_TYPE_DOWNLOADING;
-            } else {
+            }else {
                 return VIEW_TYPE_REMOTE;
             }
         }
@@ -129,11 +124,10 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
 
     /**
      * 下载开始
-     *
      * @param mvBody
      */
     public void notifyDownloadingStart(EffectBody<PreviewPasterForm> mvBody) {
-        if (!mLoadingMV.contains(mvBody.getData())) {
+        if(!mLoadingMV.contains(mvBody.getData())) {
             mLoadingMV.add(mvBody.getData());
             mvBody.setLoading(true);
         }
@@ -141,27 +135,25 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
 
     /**
      * 下载结束
-     *
      * @param mvBody
      * @param position
      */
-    public synchronized void notifyDownloadingComplete(EffectBody<PreviewPasterForm> mvBody, int position, boolean isError) {
+    public synchronized void notifyDownloadingComplete(EffectBody<PreviewPasterForm> mvBody, int position,boolean isError) {
         mvBody.setLocal(true);
         mvBody.setLoading(false);
         mLoadingMV.remove(mvBody.getData());
-        if (isError) {
+        if (isError){
             mvBody.setLocal(false);
             mvBody.setLoading(false);
             mvBody.setLoadingError(true);
-        } else {
+        }else {
             mvBody.setLocal(true);
             mvBody.setLoading(false);
         }
         notifyItemChanged(position);
     }
-
     public void updateProcess(PasterViewHolder viewHolder, int process, int position) {
-        if (viewHolder != null && viewHolder.mPosition == position) {
+        if(viewHolder != null && viewHolder.mPosition == position) {
             viewHolder.ivDownloadIcon.setVisibility(View.GONE);
             viewHolder.downloadProgress.setVisibility(View.VISIBLE);
             viewHolder.downloadProgress.setProgress(process);
@@ -170,22 +162,19 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
 
     /**
      * 刷新
-     *
      * @param syncDataList
      */
     public synchronized void syncData(List<EffectBody<PreviewPasterForm>> syncDataList) {
-        if (syncDataList == null) {
-            return;
-        }
+        if(syncDataList == null) { return ;}
         ArrayList<EffectBody<PreviewPasterForm>> delList = new ArrayList<>();
-        for (EffectBody<PreviewPasterForm> item : mDataList) {
-            if (syncDataList.contains(item)) {
+        for(EffectBody<PreviewPasterForm> item:mDataList) {
+            if(syncDataList.contains(item)) {
                 delList.add(item);
             }
         }
         mDataList.removeAll(delList);
-        for (EffectBody<PreviewPasterForm> item : syncDataList) {
-            if (!mDataList.contains(item)) {
+        for(EffectBody<PreviewPasterForm> item:syncDataList) {
+            if(!mDataList.contains(item)) {
                 //if (!item.isLocal()) {
                 mDataList.add(item);
                 //}
@@ -200,59 +189,54 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
     interface OnItemClickListener {
         /**
          * 外部实现下载事件
-         *
          * @param position 点击位置
-         * @param data     数据
+         * @param data 数据
          */
         void onRemoteItemClick(int position, EffectBody<PreviewPasterForm> data);
 
         /**
          * 外部实现应用此mv
-         *
          * @param position 点击位置
-         * @param data     该位置数据
+         * @param data 该位置数据
          */
         void onLocalItemClick(int position, EffectBody<PreviewPasterForm> data);
     }
 
-    class PasterViewHolder extends RecyclerView.ViewHolder {
-        private RelativeLayout resourceImage;
+    class PasterViewHolder extends RecyclerView.ViewHolder{
         private CircularImageView resourceImageView;
         private ImageView ivDownloadIcon;
         private EffectBody<PreviewPasterForm> mData;
         private int mPosition;
         private CircleProgressBar downloadProgress;
-        private SimpleTarget<Bitmap> simpleTarget;
-
         public void updateData(int position, EffectBody<PreviewPasterForm> data) {
             this.mData = data;
             this.mPosition = position;
             PreviewPasterForm paster = data.getData();
-            Glide.with(resourceImageView.getContext()).load(paster.getIcon()).asBitmap().into(simpleTarget);
+
+            new ImageLoaderImpl().loadImage(resourceImageView.getContext(),paster.getIcon(),
+                    new ImageLoaderOptions.Builder().asBitmap().build()
+                ).into(resourceImageView, new AbstractImageLoaderTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource) {
+                    resourceImageView.setImageBitmap(resource);
+                }
+            });
 
         }
-
         public PasterViewHolder(View itemView) {
             super(itemView);
-            resourceImage = (RelativeLayout) itemView.findViewById(R.id.resource_image);
             resourceImageView = (CircularImageView) itemView.findViewById(R.id.resource_image_view);
             ivDownloadIcon = (ImageView) itemView.findViewById(R.id.iv_download_icon);
             downloadProgress = (CircleProgressBar) itemView.findViewById(R.id.download_progress);
             downloadProgress.isFilled(true);
-            simpleTarget = new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    resourceImageView.setImageBitmap(resource);
-                }
-            };
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mItemClickListener != null) {
-                        if (mData.isLocal()) {
-                            mItemClickListener.onLocalItemClick(mPosition, mData);
-                        } else {
-                            mItemClickListener.onRemoteItemClick(mPosition, mData);
+                    if(mItemClickListener!=null){
+                        if (mData.isLocal()){
+                            mItemClickListener.onLocalItemClick(mPosition,mData );
+                        }else {
+                            mItemClickListener.onRemoteItemClick(mPosition,mData );
                         }
 
                         notifyItemChanged(getSelectedPostion());
@@ -265,7 +249,6 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
         }
 
     }
-
     private int getSelectedPostion() {
         int size = mDataList.size();
         for (int i = 0; i < size; i++) {
@@ -275,7 +258,6 @@ public class AlivcPasterAdapter extends RecyclerView.Adapter<AlivcPasterAdapter.
         }
         return 0;
     }
-
     public void setSelectedMVId(int mSelectedMVId) {
         this.mSelectedMVId = mSelectedMVId;
     }

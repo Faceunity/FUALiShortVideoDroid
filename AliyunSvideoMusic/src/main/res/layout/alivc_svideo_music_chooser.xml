@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/qupai_black_opacity_90pct"
+    android:background="#E6000000"
     >
     <FrameLayout
         android:layout_width="match_parent"
@@ -15,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/alivc_record_title_icon_padding"
-            android:src = "@mipmap/aliyun_svideo_icon_back"
+            android:src = "@mipmap/music_aliyun_svideo_icon_back"
             android:layout_marginLeft="15dp"
             android:layout_gravity="left|center_vertical"/>
         <TextView

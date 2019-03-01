@@ -34,6 +34,6 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:scaleType="centerInside"
-            android:src="@mipmap/aliyun_svideo_icon_next" />
+            android:src="@mipmap/aliyun_svideo_record_icon_next" />
     </FrameLayout>
 </FrameLayout>

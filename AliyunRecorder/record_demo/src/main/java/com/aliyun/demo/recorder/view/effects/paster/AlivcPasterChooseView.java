@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,9 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 人脸贴图
+ */
 public class AlivcPasterChooseView extends Fragment implements IPageTab, AlivcPasterAdapter.OnItemClickListener, OnClearEffectListener {
     //RecyclerView列数
     private static final int SPAN_COUNT = 5;
@@ -30,7 +34,7 @@ public class AlivcPasterChooseView extends Fragment implements IPageTab, AlivcPa
     private EffectLoader mPaterLoader;
     private ArrayList<PreviewPasterForm> mLoadingMv;
     private AlivcPasterAdapter mAdapter;
-    private int mSelectedMVId = 0;
+    private int mSelectedMVId = -1;
     private PasterSelectListener mPasterSelectListener;
 
     @Override
@@ -95,7 +99,7 @@ public class AlivcPasterChooseView extends Fragment implements IPageTab, AlivcPa
 
     @Override
     public String getTabTitle() {
-        return "动图";
+        return "人脸贴纸";
     }
 
     @Override
@@ -128,12 +132,15 @@ public class AlivcPasterChooseView extends Fragment implements IPageTab, AlivcPa
 
             @Override
             public void onFinish(int downloadId, String path) {
+                if (mPasterSelectListener != null && mSelectedMVId == pasterForm.getId()) {
+                    mPasterSelectListener.onSelectPasterDownloadFinish(path);
 
-                if (mPasterSelectListener != null && mSelectedMVId == pasterForm.getId() && !isDestory) {
-                    mPasterSelectListener.onPasterSelected(data.getData());
+                    if (!isDestory) {
+                        mPasterSelectListener.onPasterSelected(data.getData());
+                    }
                 }
-                mAdapter.notifyDownloadingComplete(data, position, false);
 
+                mAdapter.notifyDownloadingComplete(data, position, false);
             }
 
             @Override

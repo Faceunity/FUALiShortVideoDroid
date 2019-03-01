@@ -12,5 +12,6 @@ android {
 
 dependencies {
     implementation project(':AliyunFileDownLoader:downloadermanager')
-    implementation project(':AliyunSVideoBase')
+    implementation externalAndroidAppCompatV7
+    implementation externalAndroidRecyclerView
 }

@@ -53,7 +53,7 @@ public class AlivcParamSettingActivity extends Activity implements View.OnClickL
 
     private int mResolutionMode, mRatioMode;
     private VideoQuality mVideoQuality;
-    private VideoCodecs mVideoCodec = VideoCodecs.H264_HARDWARE;
+    private VideoCodecs mVideoCodec = VideoCodecs.H264_SOFT_FFMPEG;
     private String[] mEffDirs;
     private AsyncTask<Void, Void, Void> copyAssetsTask;
     private AsyncTask<Void, Void, Void> initAssetPath;
@@ -207,7 +207,7 @@ public class AlivcParamSettingActivity extends Activity implements View.OnClickL
         //初始化配置
         onRatioSelected(mRecordRatio9P16Btn);
         onEncoderSelected(mEncorderHardwareBtn);
-        onResolutionSelected(mRecordResolutionP540Btn);
+        onResolutionSelected(mRecordResolutionP720Btn);
         onQualitySelected(mQualityHighBtn);
     }
 
@@ -219,8 +219,8 @@ public class AlivcParamSettingActivity extends Activity implements View.OnClickL
             }
             int min = 2000;
             int max = 15000;
-            int gop = 5;
-            int bitrate = 2000;
+            int gop = 250;
+            int bitrate = 0;
 
             String minDuration = minDurationEt.getText().toString().trim();
             if (!TextUtils.isEmpty(minDuration)) {
@@ -255,6 +255,12 @@ public class AlivcParamSettingActivity extends Activity implements View.OnClickL
                 return;
             }
 
+            if (min >= max) {
+                Toast.makeText(this, getResources().getString(R.string.aliyun_record_duration_error),
+                    Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String gopValue = gopEt.getText().toString().trim();
             if (!TextUtils.isEmpty(gopValue)) {
                 try {
@@ -270,12 +276,6 @@ public class AlivcParamSettingActivity extends Activity implements View.OnClickL
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-
-            if (min >= max) {
-                Toast.makeText(this, getResources().getString(R.string.aliyun_recoder_duration_error),
-                    Toast.LENGTH_SHORT).show();
-                return;
             }
             AliyunSnapVideoParam recordParam = new AliyunSnapVideoParam.Builder()
                 .setResolutionMode(mResolutionMode)
@@ -299,7 +299,7 @@ public class AlivcParamSettingActivity extends Activity implements View.OnClickL
                 .setMinVideoDuration(4000)
                 .setMaxVideoDuration(29 * 1000)
                 .setMinCropDuration(3000)
-                .setFrameRate(25)
+                .setFrameRate(30)
                 .setCropMode(VideoDisplayMode.SCALE)
                 .build();
             AlivcSvideoRecordActivity.startRecord(this, recordParam, entrance);

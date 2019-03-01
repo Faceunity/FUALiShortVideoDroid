@@ -22,7 +22,6 @@ import com.aliyun.svideo.base.widget.beauty.seekbar.BeautySeekBar;
  * @author xlx
  */
 public class BeautyDetailSettingView extends LinearLayout {
-    private Context mContext;
     /**
      * 美颜美肌参数, 包括磨皮, 美白, 红润, 大眼, 瘦脸
      */
@@ -61,25 +60,21 @@ public class BeautyDetailSettingView extends LinearLayout {
     private int beautyLevel = 3;
 
     public BeautyDetailSettingView(Context context) {
-        super(context);
-        mContext = context;
-        initView();
+        this(context, null);
+
     }
 
     public BeautyDetailSettingView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        mContext = context;
-        initView();
+        this(context, attrs, 0);
     }
 
     public BeautyDetailSettingView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContext = context;
         initView();
     }
 
     private void initView() {
-        LayoutInflater.from(mContext).inflate(R.layout.alivc_beauty_detail, this);
+        LayoutInflater.from(getContext()).inflate(R.layout.alivc_beauty_detail, this);
         mTvBack = findViewById(R.id.tv_back);
         mSeekBar = findViewById(R.id.beauty_seekbar);
         View blankView = findViewById(R.id.blank_view);

@@ -8,4 +8,10 @@
         <item name="windowNoTitle">true</item>
 
     </style>
+    <style name="Theme.MyAppTheme" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@drawable/alivc_lanch_loading</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

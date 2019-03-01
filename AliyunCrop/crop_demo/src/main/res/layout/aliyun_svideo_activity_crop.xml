@@ -5,23 +5,28 @@
     android:layout_height="match_parent"
     android:background="?attr/qusnap_background_color">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <com.aliyun.svideo.base.widget.VideoTrimFrameLayout
-        android:id="@+id/aliyun_video_surfaceLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black">
-
-        <TextureView
-            android:id="@+id/aliyun_video_textureview"
-            android:layout_width="wrap_content"
+        <com.aliyun.svideo.base.widget.VideoTrimFrameLayout
+            android:id="@+id/aliyun_video_surfaceLayout"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scaleX="1.0001"
-            android:scaleY="1.0001" />
+            android:background="@android:color/black">
+
+            <TextureView
+                android:id="@+id/aliyun_video_textureview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleX="1.0001"
+                android:scaleY="1.0001" />
 
 
-    </com.aliyun.svideo.base.widget.VideoTrimFrameLayout>
+        </com.aliyun.svideo.base.widget.VideoTrimFrameLayout>
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/aliyun_duration_txt"
@@ -59,15 +64,16 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp">
+            >
 
             <ImageView
                 android:id="@+id/aliyun_back"
+                android:padding="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/aliyun_svideo_icon_cancel" />
+                android:src="@mipmap/aliyun_svideo_crop_icon_cancel" />
 
             <ImageView
                 android:id="@+id/aliyun_transform"
@@ -79,6 +85,7 @@
 
             <ImageView
                 android:id="@+id/aliyun_next"
+                android:padding="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -95,6 +102,7 @@
         android:layout_gravity="center"
         android:background="@drawable/aliyun_svideo_shape_oval_gray"
         android:visibility="gone">
+
         <com.aliyun.svideo.base.widget.FanProgressBar
             android:id="@+id/aliyun_crop_progress"
             android:layout_width="match_parent"

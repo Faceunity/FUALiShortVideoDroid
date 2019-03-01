@@ -12,6 +12,8 @@
     <string name="solution_edit">Edit</string>
     <string name="solution_community">community</string>
     <string name="solution_videocall">Video Call</string>
+    <string name="solution_audiocall">Audio Call</string>
+
 
     <string name="solution_home_welcome_hint">WELCOME TO START THE \nVIDEO JOURNEY</string>
     <string name="solution_wait_remind">Product features are under development...</string>

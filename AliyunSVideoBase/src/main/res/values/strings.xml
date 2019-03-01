@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">EditorBase</string>
     <!-- 美颜相关  start -->
     <string name="alivc_beauty">Face Filter</string>
     <string name="alivc_fine_tune">Makeup</string>

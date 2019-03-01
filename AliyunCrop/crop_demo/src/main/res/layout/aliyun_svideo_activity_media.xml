@@ -7,7 +7,7 @@
 
     <FrameLayout
             android:layout_width="match_parent"
-            android:background="@color/aliyun_color_bg"
+            android:background="@color/aliyun_base_color_bg"
             android:layout_height="?android:attr/actionBarSize"
             android:id="@+id/aliyun_gallery_actionBar">
 
@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
                 android:contentDescription="@null"
-                android:src="@drawable/aliyun_svideo_icon_back" />
+                android:src="@mipmap/aliyun_svideo_icon_back" />
 
         <LinearLayout
                 android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/aliyun_color_bg"
+            android:background="@color/aliyun_base_color_bg"
             android:id="@+id/aliyun_gallery_container">
         <!--底部空出tab的高度-->
         <android.support.v7.widget.RecyclerView

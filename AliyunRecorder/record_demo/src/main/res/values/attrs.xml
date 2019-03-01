@@ -3,7 +3,7 @@
 
 
     <!--滚动选择器通用属性-->
-    <declare-styleable name="ScrollPickerView">
+    <declare-styleable name="BaseScrollPickerView">
         <!-- 中间item的背景-->
         <attr name="spv_center_item_background" format="reference|color"/>
         <!-- 可见的item数量，默认为3个-->
@@ -40,7 +40,7 @@
     </declare-styleable>
 
     <declare-styleable name="AlivcRecordUIStyle">
-        <attr name="musicImage" format="reference"/>
+        <attr name="recordMusicImage" format="reference"/>
         <attr name="lightImageOpen" format="reference"/>
         <attr name="lightImageAuto" format="reference"/>
         <attr name="lightImageClose" format="reference"/>

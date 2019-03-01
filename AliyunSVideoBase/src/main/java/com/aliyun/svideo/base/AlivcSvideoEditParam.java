@@ -8,6 +8,7 @@ import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoParam;
 import com.aliyun.svideo.sdk.external.struct.common.CropKey;
 import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
 import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
+import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
 import com.duanqu.transcode.NativeParser;
 
 /**
@@ -30,6 +31,7 @@ import com.duanqu.transcode.NativeParser;
     public static final String VIDEO_PATH = "video_path";
     public static final String VIDEO_DURATION = "video_duration";
     public static final String CROP_ACTION = "action";
+    public static final String VIDEO_CODEC = "video_codexc";
     /**
      * 是否真裁剪
      */
@@ -75,6 +77,12 @@ import com.duanqu.transcode.NativeParser;
      * 视频分辨率
      */
     private int mResolutionMode;
+
+    /**
+     * 编码
+     */
+    private VideoCodecs mVideoCodec = VideoCodecs.H264_HARDWARE;
+
     /**
      * 视频裁剪模式
      */
@@ -97,16 +105,19 @@ import com.duanqu.transcode.NativeParser;
      *  community: 社区
      */
     private String entrance;
-    private boolean isOpenCrop;//相册页面是否打开裁剪的入口
+    /**
+     * 相册页面是否打开裁剪的入口
+     */
+    private boolean isOpenCrop;
 
     /**
      * 初始化成员变量
      */
     private AlivcSvideoEditParam() {
-        mGop = 5;
-        mFrameRate = 25;
+        mGop = 250;
+        mFrameRate = 30;
         mRatio = RATIO_MODE_9_16;
-        mVideoQuality = VideoQuality.SSD;
+        mVideoQuality = VideoQuality.HD;
         mResolutionMode = RESOLUTION_720P;
         mCropMode = VideoDisplayMode.FILL;
         entrance = "svideo";
@@ -116,12 +127,13 @@ import com.duanqu.transcode.NativeParser;
         AliyunVideoParam param = new AliyunVideoParam.Builder()
             .frameRate(mFrameRate)
             .gop(mGop)
-            .crf(25)
+            .crf(0)
             .bitrate(mBitrate)
             .videoQuality(mVideoQuality)
             .scaleMode(mCropMode)
             .outputWidth(getVideoWidth())
             .outputHeight(getVideoHeight(this.mediaInfo))
+            .videoCodec(mVideoCodec)
             .build();
         return param;
     }
@@ -218,6 +230,10 @@ import com.duanqu.transcode.NativeParser;
         this.hasTailAnimation = hasTailAnimation;
     }
 
+    public VideoCodecs getVideoCodec() {
+        return mVideoCodec;
+    }
+
     public static class Build{
         private AlivcSvideoEditParam param = new AlivcSvideoEditParam();
         public Build setFrameRate(int mFrameRate) {
@@ -265,6 +281,12 @@ import com.duanqu.transcode.NativeParser;
             this.param.isOpenCrop = isOpenCrop;
             return this;
         }
+
+        public Build setVideoCodec(VideoCodecs mVideoCodec) {
+            this.param.mVideoCodec = mVideoCodec;
+            return this;
+        }
+
         public AlivcSvideoEditParam build(){
             return this.param;
         }

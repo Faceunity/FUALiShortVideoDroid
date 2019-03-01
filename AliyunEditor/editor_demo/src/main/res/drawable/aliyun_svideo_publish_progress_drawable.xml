@@ -2,7 +2,7 @@
 
     <item android:id="@android:id/background">
         <shape>
-            <solid android:color="@color/qupai_white_opacity_60pct"/>
+            <solid android:color="@color/aliyun_white_opacity_60pct"/>
         </shape>
     </item>
 

@@ -10,6 +10,7 @@ buildscript {
     apply from: 'thirdparty-lib/config.gradle'
     dependencies {
         classpath externalAndroidBuildGradlePlugin
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
 
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -22,6 +23,7 @@ allprojects {
         google()
         jcenter()
         maven { url "http://maven.aliyun.com/nexus/content/repositories/releases" }
+        //阿里云的镜像服务器
         flatDir { dirs 'src/main/libs' }
     }
 

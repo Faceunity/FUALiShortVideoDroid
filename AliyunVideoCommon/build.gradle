@@ -1,0 +1,26 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion externalCompileSdkVersion
+    buildToolsVersion externalBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion externalMinSdkVersion
+        targetSdkVersion externalTargetSdkVersion
+    }
+
+}
+
+dependencies {
+    implementation ('com.aliyun.ams:alicloud-android-ha-adapter:1.1.0.6.2-open@aar'){
+        transitive=true
+    }
+    implementation ('com.aliyun.ams:alicloud-android-ha-ut-analytics:1.1.0.1-open@aar'){
+        transitive=true
+    }
+    implementation (externalGlide){
+        exclude group: "com.android.support"
+    }
+    implementation externalAndroidSupportV4
+    implementation externalAndroidAppCompatV7
+}

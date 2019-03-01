@@ -43,11 +43,12 @@ import com.aliyun.svideo.sdk.external.struct.MediaType;
 import com.aliyun.svideo.sdk.external.struct.common.CropKey;
 import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
 import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
+import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
 import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
-import com.bumptech.glide.Glide;
+import com.aliyun.video.common.utils.image.ImageLoaderImpl;
 
 import java.io.File;
-
+import java.lang.ref.WeakReference;
 
 /**
  * Copyright (C) 2010-2013 Alibaba Group Holding Limited
@@ -85,6 +86,7 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
     private int resolutionMode;
     private int ratioMode;
     private VideoQuality quality = VideoQuality.HD;
+    private VideoCodecs mVideoCodecs = VideoCodecs.H264_HARDWARE;
     private int frameRate;
     private int gop;
 
@@ -102,7 +104,7 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
     private boolean isCropping = false;
     private String mSuffix;
     private String mMimeType;
-
+    private AsyncTask<Void, Void, Void> mDeleteTask;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,7 +119,7 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
         getData();
         initView();
         initSurface();
-        Glide.with(getApplicationContext()).load("file://" + path).into(mImageView);
+        new ImageLoaderImpl().loadImage(this,"file://" + path).into(mImageView);
         frame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -145,6 +147,10 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
         quality = (VideoQuality) getIntent().getSerializableExtra(AlivcSvideoEditParam.VIDEO_QUALITY);
         if (quality == null) {
             quality = VideoQuality.HD;
+        }
+        mVideoCodecs =(VideoCodecs) getIntent().getSerializableExtra(AlivcSvideoEditParam.VIDEO_CODEC);
+        if (mVideoCodecs == null) {
+            mVideoCodecs = VideoCodecs.H264_HARDWARE;
         }
         gop = getIntent().getIntExtra(AlivcSvideoEditParam.VIDEO_GOP, 5);
         frameRate = getIntent().getIntExtra(AlivcSvideoEditParam.VIDEO_FRAMERATE, 25);
@@ -187,7 +193,7 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
     }
 
     private void resizeFrame() {
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) frame.getLayoutParams();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frame.getLayoutParams();
         switch (ratioMode) {
             case AliyunSnapVideoParam.RATIO_MODE_1_1:
                 layoutParams.width = screenWidth;
@@ -241,9 +247,10 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
             crop.dispose();
             crop = null;
         }
-        if (mImageView != null) {
-            Glide.clear(mImageView);
-            mImageView = null;
+
+        if (mDeleteTask != null) {
+            mDeleteTask.cancel(true);
+            mDeleteTask = null;
         }
     }
 
@@ -448,6 +455,12 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
                 + Environment.DIRECTORY_DCIM
                 + File.separator + "crop_"
                 + System.currentTimeMillis() + mSuffix;
+        File file = new File(Environment.getExternalStorageDirectory()
+                + File.separator
+                + Environment.DIRECTORY_DCIM);
+        if(!file.exists()){
+            file.mkdirs();
+        }
         float videoRatio = (float) mImageHeight / mImageWidth;
         float outputRatio = 1f;
         switch (ratioMode) {
@@ -556,6 +569,7 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
         cropParam.setFrameRate(frameRate);
         cropParam.setGop(gop);
         cropParam.setQuality(quality);
+        cropParam.setVideoCodec(mVideoCodecs);
         cropParam.setFillColor(Color.BLACK);
 
         mCropProgressBg.setVisibility(View.VISIBLE);
@@ -580,14 +594,31 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
     }
 
     private void deleteFile() {
-        new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                FileUtils.deleteFile(outputPath);
+        mDeleteTask = new DeleteFileTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private static class DeleteFileTask extends AsyncTask<Void, Void, Void> {
+
+        private WeakReference<AliyunImageCropActivity> weakReference;
+
+        DeleteFileTask(AliyunImageCropActivity activity) {
+            weakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (weakReference == null) {
                 return null;
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            AliyunImageCropActivity activity = weakReference.get();
+            if (activity != null) {
+                FileUtils.deleteFile(activity.outputPath);
+            }
+
+            return null;
+        }
     }
+
 
     @Override
     public void onProgress(final int percent) {
@@ -683,6 +714,7 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
         intent.putExtra(AlivcSvideoEditParam.VIDEO_BITRATE, svideoParam.getBitrate());
         intent.putExtra(AlivcSvideoEditParam.VIDEO_FRAMERATE, svideoParam.getFrameRate());
         intent.putExtra(AlivcSvideoEditParam.VIDEO_RESOLUTION,svideoParam.getResolutionMode());
+        intent.putExtra(AlivcSvideoEditParam.VIDEO_CODEC,svideoParam.getVideoCodec());
         context.startActivityForResult(intent, requestCode);
     }
 

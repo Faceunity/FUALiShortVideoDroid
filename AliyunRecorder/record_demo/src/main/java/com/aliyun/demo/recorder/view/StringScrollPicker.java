@@ -13,8 +13,6 @@ import android.util.AttributeSet;
 import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.util.ColorUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -23,7 +21,7 @@ import java.util.List;
  * 字符串滚动选择器
  * Created by huangziwei on 16-12-6.
  */
-public class StringScrollPicker extends ScrollPickerView<CharSequence> {
+public class StringScrollPicker extends BaseScrollPickerView<CharSequence> {
 
 
     private int mMeasureWidth;

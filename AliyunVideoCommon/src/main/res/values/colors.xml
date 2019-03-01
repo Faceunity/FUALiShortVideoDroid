@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="alivc_dialog_bg_translucent">#E6373d41</color>
+    <color name="alivc_common_white">#e7e7e7</color>
+    <color name="comoon_colorPrimary_alpha_five">#1affffff</color>
+    <color name="alivc_black_alpha_eight">#CC000000</color>
+    <color name="alivc_333">#333</color>
+    <color name="alivc_common_line_gray">#D7D8D9</color>
+    <color name="alivc_text_confirm">#00C1DE</color>
+    <color name="alivc_text_cancel">#666</color>
+</resources>

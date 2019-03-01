@@ -14,11 +14,17 @@
         android:layout_gravity="bottom"
         android:background="#00000000">
 
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            >
         <com.aliyun.svideo.base.widget.beauty.BeautyDefaultSettingView
             android:id="@+id/default_setting"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="bottom" />
+        </HorizontalScrollView>
     </FrameLayout>
 
 

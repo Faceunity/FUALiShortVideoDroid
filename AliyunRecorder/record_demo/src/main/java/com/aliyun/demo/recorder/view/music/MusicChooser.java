@@ -2,28 +2,35 @@ package com.aliyun.demo.recorder.view.music;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.aliyun.apsaravideo.music.music.MusicChooseView;
 import com.aliyun.apsaravideo.music.music.MusicFileBean;
+import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.view.dialog.BaseChooser;
 
 /**
  * @author zsy_18 data:2018/8/29
  */
-public class MusicChooser extends BaseChooser{
+public class MusicChooser extends BaseChooser {
     private MusicSelectListener musicSelectListener;
     //视频录制时长
-    private int mRecordTime = 10*1000;
+    private int mRecordTime = 10 * 1000;
     private MusicChooseView musicChooseView;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        if (musicChooseView==null){
+        if (musicChooseView == null) {
             musicChooseView = new MusicChooseView(getContext());
 
             musicChooseView.setRecordTime(mRecordTime);
@@ -39,8 +46,8 @@ public class MusicChooser extends BaseChooser{
                     dismiss();
                 }
             });
-        }else {
-            if (musicChooseView.getParent()!=null){
+        } else {
+            if (musicChooseView.getParent() != null) {
                 ((ViewGroup)musicChooseView.getParent()).removeView(musicChooseView);
             }
         }
@@ -54,7 +61,7 @@ public class MusicChooser extends BaseChooser{
 
     public void setRecordTime(int mRecordTime) {
         this.mRecordTime = mRecordTime;
-        if (musicChooseView!=null){
+        if (musicChooseView != null) {
             musicChooseView.setRecordTime(mRecordTime);
         }
     }

@@ -401,6 +401,11 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
             public int onScaledIdBack(int scaledId, int textureWidth, int textureHeight, float[] matrix) {
                 return scaledId;
             }
+
+            @Override
+            public void onTextureDestroyed() {
+
+            }
         });
         mClipManager = mRecorder.getClipManager();
         mClipManager.setMinDuration(mMinDuration);
@@ -412,7 +417,7 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
         info.setVideoWidth(resolution[0]);
         info.setVideoHeight(resolution[1]);
         info.setVideoCodec(mVideoCodec);
-        info.setCrf(25);
+        info.setCrf(0);
 //        EncoderDebugger debugger = EncoderDebugger.debug(this, 528, 704);
         mRecorder.setMediaInfo(info);
         mCameraType = mRecorder.getCameraCount() == 1 ? CameraType.BACK : mCameraType;
@@ -467,7 +472,7 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
                     List<String> tempFileList = mClipManager.getVideoPathList();
                     Class editor = null;
                     try {
-                        editor = Class.forName("com.aliyun.demo.editor.EditorActivity");
+                        editor = Class.forName("com.aliyun.svideo.editor.editor.EditorActivity");
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -634,7 +639,7 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
         mVideoParam = new AliyunVideoParam.Builder()
                 .gop(mGop)
                 .bitrate(mBitrate)
-                .frameRate(25)
+                .frameRate(30)
                 .videoQuality(mVideoQuality)
                 .videoCodec(mVideoCodec)
                 .build();
@@ -938,7 +943,7 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
 //        List<String> tempFileList = mClipManager.getVideoPathList();
 //        Class editor = null;
 //        try {
-//            editor = Class.forName("com.aliyun.demo.editor.EditorActivity");
+//            editor = Class.forName("com.aliyun.svideo.editor.editor.EditorActivity");
 //        } catch (ClassNotFoundException e) {
 //            e.printStackTrace();
 //        }
@@ -971,6 +976,12 @@ public class AliyunVideoRecorder extends Activity implements View.OnClickListene
 
     private void startRecording() {
         String videoPath = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DCIM + File.separator + System.currentTimeMillis() + ".mp4";
+        File file = new File(Environment.getExternalStorageDirectory()
+                + File.separator
+                + Environment.DIRECTORY_DCIM);
+        if(!file.exists()){
+            file.mkdirs();
+        }
         mRecorder.setOutputPath(videoPath);
         handleRecordStart();
         mRecorder.setRotation(getPictureRotation());

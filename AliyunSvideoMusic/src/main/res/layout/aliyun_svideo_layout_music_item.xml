@@ -40,17 +40,17 @@
                 android:textColor="@color/alivc_record_music_singer_text"
                 android:textSize="12sp" />
         </LinearLayout>
-        <com.aliyun.svideo.base.widget.CircleProgressBar
+        <com.aliyun.apsaravideo.music.widget.CircleProgressBar
             android:id="@+id/download_progress"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerInParent="true"
             android:visibility="visible"
-            app:progressColor="@color/alivic_record_effect_bg_color"
-            app:backgroundColor="@color/alivc_transparent"
-            app:backgroundWidth="20dp"
-            app:backgroundHeight="20dp"
-            app:progressWidth="20dp"/>
+            app:musicProgressColor="@color/alivic_record_effect_bg_color"
+            app:musicBackgroundColor="@color/alivc_transparent"
+            app:musicBackgroundWidth="20dp"
+            app:musicBackgroundHeight="20dp"
+            app:musicProgressWidth="20dp"/>
         <ImageView
             android:id="@+id/alivc_record_local_iv"
             android:layout_width="20dp"
@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp">
 
-            <com.aliyun.svideo.base.widget.MusicHorizontalScrollView
+            <com.aliyun.apsaravideo.music.widget.MusicHorizontalScrollView
                 android:id="@+id/aliyun_scroll_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -77,11 +77,11 @@
                 android:overScrollMode="never"
                 android:scrollbars="none">
 
-                <com.aliyun.svideo.base.widget.MusicWaveView
+                <com.aliyun.apsaravideo.music.widget.MusicWaveView
                     android:id="@+id/aliyun_wave_view"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp" />
-            </com.aliyun.svideo.base.widget.MusicHorizontalScrollView>
+            </com.aliyun.apsaravideo.music.widget.MusicHorizontalScrollView>
 
             <ImageView
                 android:id="@+id/aliyun_music_selcet_bg"

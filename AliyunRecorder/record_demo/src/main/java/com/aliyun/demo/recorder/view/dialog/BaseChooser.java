@@ -39,7 +39,7 @@ public class BaseChooser extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getDialog().getWindow().getAttributes().windowAnimations = R.style.bottom_dialog_animation;
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.record_bottom_dialog_animation;
     }
 
     @Nullable
@@ -55,7 +55,7 @@ public class BaseChooser extends DialogFragment {
         super.onResume();
         DisplayMetrics dpMetrics = new DisplayMetrics();
         getActivity().getWindow().getWindowManager().getDefaultDisplay()
-                .getMetrics(dpMetrics);
+        .getMetrics(dpMetrics);
         WindowManager.LayoutParams p = getDialog().getWindow().getAttributes();
         p.width = dpMetrics.widthPixels;
 
@@ -67,22 +67,32 @@ public class BaseChooser extends DialogFragment {
             notchSize = NotchScreenUtil.getNotchSize(getContext());
         }
         // 减去缺口高度, 如果不是刘海屏, 那么notchSize[1] = 0, 所以不会影响非刘海屏的尺寸
-        p.height = dpMetrics.heightPixels - notchSize[1];
+        // 适配传音CF8手机
+        p.height = dpMetrics.heightPixels - notchSize[1] - NotchScreenUtil.getTECNOCF8NotchAndNaviHeight();
 
         getDialog().getWindow().setAttributes(p);
     }
 
     @Override
     public void show(FragmentManager manager, String tag) {
+        /*
+            解决crash:java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+            原因:after onSaveInstanceState invoke commit,而 show 会触发 commit 操作
+            fragment is added and its state has already been saved，
+            Any operations that would change saved state should not be performed if this method returns true
+         */
+        if (isStateSaved()) {
+            return ;
+        }
         super.show(manager, tag);
-        if (dismissListener!=null){
+        if (dismissListener != null) {
             dismissListener.onDialogShow();
         }
     }
 
     @Override
     public int show(FragmentTransaction transaction, String tag) {
-        if (dismissListener!=null){
+        if (dismissListener != null) {
             dismissListener.onDialogShow();
         }
         return super.show(transaction, tag);
@@ -91,7 +101,7 @@ public class BaseChooser extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if(dismissListener != null) {
+        if (dismissListener != null) {
             dismissListener.onDialogDismiss();
         }
     }

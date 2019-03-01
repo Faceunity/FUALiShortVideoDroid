@@ -41,8 +41,10 @@ public class Common {
 //            + "/";
 
     public static String SD_DIR ;
-//    public static final String BASE_URL = "http://m.api.inner.alibaba.net";
-    public static final String BASE_URL = "https://m-api.qupaicloud.com";   //外网地址（正式环境）TODO:上线前要干掉
+    /**
+     * 素材分发服务为官方demo演示使用，无法达到商业化使用程度。请自行搭建相关的服务
+     */
+    public static final String BASE_URL = "https://m-api.qupaicloud.com";
     public final static String QU_NAME = "AliyunDemo";
     public final static String EFFET_ROOTER = "AliyunEditorDemo";
     public final static String QU_MV = "aliyun_svideo_mv";
@@ -65,15 +67,13 @@ public class Common {
         MV16_9
     };
 
-    static private void copyFileToSD(Context cxt, String src, String dst) throws IOException
-    {
+    static private void copyFileToSD(Context cxt, String src, String dst) throws IOException {
         InputStream myInput;
         OutputStream myOutput = new FileOutputStream(dst);
         myInput = cxt.getAssets().open(src);
         byte[] buffer = new byte[1024];
         int length = myInput.read(buffer);
-        while(length > 0)
-        {
+        while (length > 0) {
             myOutput.write(buffer, 0, length);
             length = myInput.read(buffer);
         }
@@ -85,25 +85,24 @@ public class Common {
     static public void copySelf(Context cxt, String root) {
         try {
             String[] files = cxt.getAssets().list(root);
-            if(files.length > 0) {
+            if (files.length > 0) {
                 File subdir = new File(Common.SD_DIR + root);
                 if (!subdir.exists()) {
                     subdir.mkdirs();
                 }
                 for (String fileName : files) {
-                    if (new File(Common.SD_DIR + root + File.separator + fileName).exists()){
+                    if (new File(Common.SD_DIR + root + File.separator + fileName).exists()) {
                         continue;
                     }
-                    copySelf(cxt,root + "/" + fileName);
+                    copySelf(cxt, root + "/" + fileName);
                 }
-            }else{
-                Logger.getDefaultLogger().d("copy...."+Common.SD_DIR+root);
-                OutputStream myOutput = new FileOutputStream(Common.SD_DIR+root);
+            } else {
+                Logger.getDefaultLogger().d("copy...." + Common.SD_DIR + root);
+                OutputStream myOutput = new FileOutputStream(Common.SD_DIR + root);
                 InputStream myInput = cxt.getAssets().open(root);
                 byte[] buffer = new byte[1024 * 8];
                 int length = myInput.read(buffer);
-                while(length > 0)
-                {
+                while (length > 0) {
                     myOutput.write(buffer, 0, length);
                     length = myInput.read(buffer);
                 }
@@ -120,10 +119,10 @@ public class Common {
     static public void copyAll(Context cxt) {
         SD_DIR = StorageUtils.getCacheDirectory(cxt).getAbsolutePath() + File.separator;
         QU_DIR = SD_DIR + QU_NAME + File.separator;
-        EFFECT_DIR = SD_DIR+EFFET_ROOTER+File.separator;
+        EFFECT_DIR = SD_DIR + EFFET_ROOTER + File.separator;
         File dir = new File(Common.QU_DIR);
         File dir2 = new File(Common.EFFECT_DIR);
-        copySelf(cxt,QU_NAME);
+        copySelf(cxt, QU_NAME);
         copySelf(cxt, EFFET_ROOTER);
         dir.mkdirs();
         dir2.mkdirs();
@@ -135,16 +134,16 @@ public class Common {
         File[] files = new File(srcDir).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                if(name != null && name.endsWith(".zip")) {
+                if (name != null && name.endsWith(".zip")) {
                     return true;
                 }
                 return false;
             }
         });
-        if (files==null){
+        if (files == null) {
             return;
         }
-        for(final File file : files) {
+        for (final File file : files) {
             int len = file.getAbsolutePath().length();
             if (!new File(file.getAbsolutePath().substring(0, len - 4)).exists()) {
                 try {
@@ -190,13 +189,13 @@ public class Common {
     }
 
     private static void insertDB(String name) {
-        if(name.endsWith(QU_MV)) {
+        if (name.endsWith(QU_MV)) {
             insertMV();
         } else if (name.endsWith(QU_CAPTION)) {
             insertCaption();
         } else if (name.endsWith(QU_OVERLAY)) {
             insertOverlay();
-        }else if (name.endsWith(QU_PASTER)){
+        } else if (name.endsWith(QU_PASTER)) {
             insertPaster();
         }
     }
@@ -204,38 +203,39 @@ public class Common {
 
     public static void insertMV() {
         File file = new File(EFFECT_DIR, QU_MV);
-        if(file.exists() && file.isDirectory()) {
+        if (file.exists() && file.isDirectory()) {
             String path = "";
             File[] files = file.listFiles();
-            if(files == null) {
+            if (files == null) {
                 return;
             }
 
-            for(File fs : files) {
-                if(fs.exists() && fs.isDirectory()) {
+            for (File fs : files) {
+                if (fs.exists() && fs.isDirectory()) {
                     String name = fs.getName();
                     File[] filesTemp = fs.listFiles();
-                    if(filesTemp == null) {
+                    if (filesTemp == null) {
                         return;
                     }
                     int id = 103;
-                    for(File fileTemp : filesTemp) {
+                    for (File fileTemp : filesTemp) {
                         FileDownloaderModel model = new FileDownloaderModel();
                         model.setEffectType(EffectService.EFFECT_MV);
                         model.setName(name);
                         model.setId(id);
                         model.setPath(fs.getAbsolutePath());
-                        if(path == null || "".equals(path)) {
+                        model.setDescription("assets");//用于区分打包还是下载
+                        if (path == null || "".equals(path)) {
                             path = fileTemp.getAbsolutePath() + File.separator + "icon.png";
                         }
                         model.setPreviewpic(path);
                         model.setIcon(path);
                         String pathTemp = fileTemp.getAbsolutePath();
-                        if(pathTemp.endsWith(MV1_1)) {
+                        if (pathTemp.endsWith(MV1_1)) {
                             model.setAspect(1);
-                        } else if(pathTemp.endsWith(MV3_4) || pathTemp.endsWith(MV4_3)) {
+                        } else if (pathTemp.endsWith(MV3_4) || pathTemp.endsWith(MV4_3)) {
                             model.setAspect(2);
-                        } else if(pathTemp.endsWith(MV9_16) || pathTemp.endsWith(MV16_9)) {
+                        } else if (pathTemp.endsWith(MV9_16) || pathTemp.endsWith(MV16_9)) {
                             model.setAspect(3);
                         }
                         model.setIsunzip(1);
@@ -253,12 +253,12 @@ public class Common {
 
     public static void insertCaption() {
         File file = new File(EFFECT_DIR, QU_CAPTION);
-        if(file.exists() && file.isDirectory()) {
+        if (file.exists() && file.isDirectory()) {
             File[] files = file.listFiles();
-            if(files == null) {
+            if (files == null) {
                 return;
             }
-            for(File fs : files) {
+            for (File fs : files) {
                 FileDownloaderModel model = new FileDownloaderModel();
                 model.setEffectType(EffectService.EFFECT_CAPTION);
                 model.setId(166);
@@ -281,7 +281,7 @@ public class Common {
 
     private static void insertPaster() {
         File file = new File(QU_DIR, QU_PASTER);
-        if(file.exists() && file.isDirectory()) {
+        if (file.exists() && file.isDirectory()) {
             FileDownloaderModel model = new FileDownloaderModel();
             model.setId(150);
             model.setPath(QU_DIR + QU_PASTER );
@@ -304,23 +304,23 @@ public class Common {
         File file = new File(EFFECT_DIR, QU_OVERLAY);
         JSONSupport jsonSupport = new JSONSupportImpl();
         ResourceForm paster = null;
-        if(file.exists() && file.isDirectory()) {
+        if (file.exists() && file.isDirectory()) {
             File[] files = file.listFiles();
-            for(File fs : files) {
-                if(fs.exists() && !fs.isDirectory()) {
+            for (File fs : files) {
+                if (fs.exists() && !fs.isDirectory()) {
                     try {
                         paster = jsonSupport.readValue(fs, ResourceForm.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                if(paster != null) {
+                if (paster != null) {
                     List<PasterForm> mPasterlList = paster.getPasterList();
-                    if(mPasterlList == null) {
+                    if (mPasterlList == null) {
                         return;
                     }
                     String icon = "";
-                    for(PasterForm pasterForm : mPasterlList) {
+                    for (PasterForm pasterForm : mPasterlList) {
                         FileDownloaderModel model = new FileDownloaderModel();
                         model.setId(paster.getId());
                         model.setPath(EFFECT_DIR + QU_OVERLAY + File.separator + pasterForm.getName());
@@ -354,7 +354,7 @@ public class Common {
     }
     public static String getMVPath(List<AspectForm> list, int w, int h) {
         String path = null;
-        if(list == null || list.size() == 0) {
+        if (list == null || list.size() == 0) {
             return path;
         }
         path = calculatePercent(list, w, h);
@@ -363,30 +363,30 @@ public class Common {
     public static String calculatePercent(List<AspectForm> list, int w, int h) {
         int result = 0;
         String path = null;
-        if(list == null || list.size() == 0 || h <= 0 || w <= 0) {
+        if (list == null || list.size() == 0 || h <= 0 || w <= 0) {
             return path;
         }
-        float percent = (float)w/h;
+        float percent = (float)w / h;
         int aspect = 0;
         Map map = new IdentityHashMap();
-        for(int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             aspect = list.get(i).getAspect();
             path = list.get(i).getPath();
-            if(aspect == 1 && exits(path + File.separator + MV1_1)) {
+            if (aspect == 1 && exits(path + File.separator + MV1_1)) {
                 map.put(new Integer(1), (float)1);
-            } else if(aspect == 2) {
-                if(exits(path + File.separator + MV3_4)) {
-                    map.put(new Integer(2), (float)3/4);
+            } else if (aspect == 2) {
+                if (exits(path + File.separator + MV3_4)) {
+                    map.put(new Integer(2), (float)3 / 4);
                 }
-                if(exits(path + File.separator + MV4_3)) {
-                    map.put(new Integer(3), (float)4/3);
+                if (exits(path + File.separator + MV4_3)) {
+                    map.put(new Integer(3), (float)4 / 3);
                 }
-            } else if(aspect == 3) {
-                if(exits(path + File.separator + MV9_16)) {
-                    map.put(new Integer(4), (float)9/16);
+            } else if (aspect == 3) {
+                if (exits(path + File.separator + MV9_16)) {
+                    map.put(new Integer(4), (float)9 / 16);
                 }
-                if(exits(path + File.separator + MV16_9)) {
-                    map.put(new Integer(5), (float)16/9);
+                if (exits(path + File.separator + MV16_9)) {
+                    map.put(new Integer(5), (float)16 / 9);
                 }
             }
         }
@@ -395,22 +395,22 @@ public class Common {
         Iterator iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
-            if(diffNum == -1) {
+            if (diffNum == -1) {
                 diffNum = Math.abs(percent - (float)entry.getValue());
                 result = (Integer) entry.getKey();
                 continue;
             }
 
             float diffNumTemp = Math.abs(percent - (float)entry.getValue());
-            if(diffNum >= diffNumTemp) {
+            if (diffNum >= diffNumTemp) {
                 diffNum = diffNumTemp;
                 result = (Integer) entry.getKey();
 
             }
         }
-        if(result != 0) {
-            for(AspectForm form : list) {
-                if(result == 1 && form.getAspect() == 1) {
+        if (result != 0) {
+            for (AspectForm form : list) {
+                if (result == 1 && form.getAspect() == 1) {
                     path = form.getPath();
                     break;
                 } else if ((result == 2 || result == 3) && form.getAspect() == 2) {
@@ -428,11 +428,11 @@ public class Common {
 
     public static boolean exits(String path) {
         boolean isExits = false;
-        if(path == null || "".equals(path)) {
+        if (path == null || "".equals(path)) {
             return isExits;
         }
         File file = new File(path);
-        if(file.exists()) {
+        if (file.exists()) {
             isExits = true;
         }
         return isExits;
@@ -445,10 +445,10 @@ public class Common {
     public static List<String> getColorFilterList() {
         List<String> list = new ArrayList<>();
         File file = new File(QU_DIR, QU_COLOR_FILTER);
-        if(file.exists() && file.isDirectory()) {
+        if (file.exists() && file.isDirectory()) {
             File[] files = file.listFiles();
-            for(File fileTemp : files) {
-                if(fileTemp.exists()) {
+            for (File fileTemp : files) {
+                if (fileTemp.exists()) {
                     list.add(fileTemp.getAbsolutePath());
                 }
             }

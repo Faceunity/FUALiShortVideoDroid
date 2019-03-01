@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.aliyun.demo.widget.AliyunPasterWithImageView
+<com.aliyun.svideo.editor.widget.AliyunPasterWithImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/edit_overlay"
     android:layout_width="match_parent"
@@ -44,4 +44,4 @@
             android:padding="10dp"
             android:src="@drawable/aliyun_svideo_theme_default_btn_edit_overlay_mirror_selector"/>
 
-</com.aliyun.demo.widget.AliyunPasterWithImageView>
+</com.aliyun.svideo.editor.widget.AliyunPasterWithImageView>

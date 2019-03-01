@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="@dimen/alert_dialog_w"
+        android:layout_height="@dimen/alert_dialog_h"
+        android:background="@android:color/white"
+        android:id="@+id/contentWrap"
+        android:gravity="center_horizontal">
+        <ImageView
+            android:id="@+id/iv_dialog_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_delete_tips"
+            android:layout_marginTop="20dp"/>
+        <TextView
+            android:id="@+id/tv_dialog_message"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"
+            android:text="正在进行视频合成，确定要放弃吗？"
+            android:textColor="@color/alivc_333"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/alivc_common_line_gray"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp">
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="取消"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/tv_confirm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:textColor="@color/alivc_text_confirm"
+                android:text="确认"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</merge>

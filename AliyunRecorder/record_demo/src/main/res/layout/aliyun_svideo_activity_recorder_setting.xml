@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:paddingLeft="15dp"
-                android:text="@string/aliyun_gop"
+                android:text="@string/aliyun_record_gop"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
@@ -88,7 +88,7 @@
                 style="@style/alivc_record_line_style"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="@string/aliyun_gop_hint"
+                android:hint="@string/aliyun_record_gop_hint"
                 android:inputType="number" />
 
             <TextView
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:paddingLeft="15dp"
-                android:text="@string/aliyun_video_quality"
+                android:text="@string/aliyun_svideo_record_quality"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
@@ -109,7 +109,7 @@
                 <Button
                     android:id="@+id/alivc_video_quality_super"
                     style="@style/alivc_record_btn_style"
-                    android:text="@string/aliyun_video_quality_super" />
+                    android:text="@string/aliyun_svideo_record_quality_super" />
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -120,13 +120,13 @@
                         android:id="@+id/alivc_video_quality_high"
                         style="@style/alivc_record_btn_style"
                         android:layout_gravity="center"
-                        android:text="@string/aliyun_video_quality_high" />
+                        android:text="@string/aliyun_record_video_quality_high" />
                 </FrameLayout>
 
                 <Button
                     android:id="@+id/alivc_video_quality_normal"
                     style="@style/alivc_record_btn_style"
-                    android:text="@string/aliyun_video_quality_meidan" />
+                    android:text="@string/aliyun_svideo_record_quality_meidan" />
 
             </LinearLayout>
 
@@ -134,7 +134,7 @@
                 android:id="@+id/alivc_video_quality_low"
                 style="@style/alivc_record_btn_style"
                 android:layout_marginTop="15dp"
-                android:text="@string/aliyun_video_quality_low" />
+                android:text="@string/aliyun_svideo_record_quality_low" />
 
             <TextView
 
@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:paddingLeft="15dp"
-                android:text="@string/aliyun_ratio"
+                android:text="@string/aliyun_record_ratio"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
@@ -182,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:paddingLeft="15dp"
-                android:text="@string/aliyun_resolution"
+                android:text="@string/aliyun_record_resolution"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
@@ -219,20 +219,20 @@
             <Button
                 android:id="@+id/alivc_record_resolution_720p"
                 style="@style/alivc_record_btn_style"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/aliyun_record_resolution_720p" />
             <TextView
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
                 android:paddingLeft="15dp"
-                android:text="@string/aliyun_video_codec"
+                android:text="@string/aliyun_record_video_codec"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
             <LinearLayout
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
@@ -241,7 +241,7 @@
                 <Button
                     android:id="@+id/alivc_record_encoder_hardware"
                     style="@style/alivc_record_btn_style"
-                    android:text="@string/aliyun_hardware_encoder" />
+                    android:text="@string/aliyun_record_hardware_encoder" />
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -252,13 +252,13 @@
                         android:id="@+id/alivc_record_encoder_openh264"
                         style="@style/alivc_record_btn_style"
                         android:layout_gravity="center"
-                        android:text="@string/aliyun_openh264_encoder" />
+                        android:text="@string/aliyun_record_openh264_encoder" />
                 </FrameLayout>
 
                 <Button
                     android:id="@+id/alivc_record_encoder_ffmpeg"
                     style="@style/alivc_record_btn_style"
-                    android:text="@string/aliyun_ffmpeg_encoder" />
+                    android:text="@string/aliyun_record_ffmpeg_encoder" />
 
             </LinearLayout>
         </LinearLayout>

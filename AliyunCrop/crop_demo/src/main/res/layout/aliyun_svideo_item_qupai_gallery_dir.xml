@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100000px"
     android:layout_height="wrap_content"
-    android:background="@color/aliyun_color_bg"
+    android:background="@color/aliyun_base_color_bg"
     android:orientation="vertical" >
 
     <LinearLayout

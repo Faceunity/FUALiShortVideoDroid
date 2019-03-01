@@ -1,6 +1,5 @@
 package com.aliyun.svideo.base;
 
-import com.alibaba.sdk.android.vod.upload.model.SvideoInfo;
 
 /**
  * @author cross_ly

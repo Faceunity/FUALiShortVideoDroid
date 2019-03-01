@@ -15,6 +15,8 @@ import android.view.View;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RecordTimelineView extends View {
+
+    private final static String TAG = RecordTimelineView.class.getSimpleName();
     private int maxDuration;
     private int minDuration;
     private CopyOnWriteArrayList<DrawInfo> clipDurationList = new CopyOnWriteArrayList<>();
@@ -62,6 +64,8 @@ public class RecordTimelineView extends View {
                 case SELECT:
                     paint.setColor(getResources().getColor(selectColor));
                     break;
+                    default:
+                        paint.setColor(getResources().getColor(offsetColor));
             }
             if (info.drawType==DrawType.OFFSET){
                 canvas.drawRect((lastTotalDuration - info.length) / (float)maxDuration * getWidth(),0f,lastTotalDuration/(float)maxDuration * getWidth(),getHeight(),paint);
@@ -89,6 +93,7 @@ public class RecordTimelineView extends View {
         info.drawType = DrawType.OFFSET;
         clipDurationList.add(info);
         currentClipDuration = new DrawInfo();
+        Log.i(TAG,"TotalDuration :" + getTimelineDuration() + " ,currentDuration : " + currentClipDuration.length + " ,count : " + clipDurationList.size());
         invalidate();
     }
 
@@ -135,6 +140,7 @@ public class RecordTimelineView extends View {
         }
         this.currentClipDuration.drawType = DrawType.DURATION;
         this.currentClipDuration.length = duration;
+        Log.i(TAG,"currentDuration :" + duration + " ,cache TotalDuration :" + (getTimelineDuration() + duration));
         invalidate();
     }
 
@@ -146,13 +152,36 @@ public class RecordTimelineView extends View {
 
     }
 
+    /**
+     * 获取时长控件显示的时间
+     * @return duration ms
+     */
+    public int getTimelineDuration(){
+        int duration = 0;
+        for (DrawInfo drawInfo : clipDurationList) {
+            if (drawInfo.drawType == DrawType.DURATION){
+                duration += drawInfo.length;
+            }
+        }
+        return duration;
+    }
+
     class DrawInfo{
         int length;
         DrawType drawType = DrawType.DURATION;
     }
     enum  DrawType{
+        /**
+         * 边界
+         */
         OFFSET,
+        /**
+         * 时长
+         */
         DURATION,
+        /**
+         * 当前
+         */
         SELECT
     }
 }

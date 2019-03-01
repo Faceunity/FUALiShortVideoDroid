@@ -11,7 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.aliyun.demo.recorder.view.effects.otherfilter.Effect;
-import com.faceunity.wrapper.faceunity;
+import com.faceunity.FURenderer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,32 +97,7 @@ public class FaceUnityManager {
      * @param context
      */
     public boolean setUp(Context context) {
-        InputStream inputStream = null;
-        try {
-            //获取faceunity SDK版本信息
-            Log.e(TAG, "fu sdk version " + faceunity.fuGetVersion());
-
-            inputStream = context.getAssets().open("v3.bundle");
-            byte[] v3data = new byte[inputStream.available()];
-            int len = inputStream.read(v3data);
-            inputStream.close();
-
-            /**
-             * SDK初始化
-             */
-            faceunity.fuSetup(v3data, null, authpack.A());
-            Log.e(TAG, "fuSetup v3 len " + len);
-
-            InputStream tongue = context.getAssets().open("tongue.bundle");
-            byte[] tongueDate = new byte[tongue.available()];
-            tongue.read(tongueDate);
-            tongue.close();
-            faceunity.fuLoadTongueModel(tongueDate);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return FURenderer.initFURenderer(context);
     }
 
     /**
@@ -142,7 +117,7 @@ public class FaceUnityManager {
             int len = inputStream.read(itemData);
             Log.e(TAG, "beautification len " + len);
             inputStream.close();
-            mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX] = faceunity.fuCreateItemFromPackage(itemData);
+            mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX] = FURenderer.fuCreateItemFromPackage(itemData);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,7 +125,7 @@ public class FaceUnityManager {
         return false;
     }
 
-    public boolean createBeautyItem(Context context, boolean isDongmLvj, Effect effect) {
+    public boolean createBeautyItem(Context context, final boolean isDongmLvj, Effect effect) {
         InputStream inputStream = null;
         if (effect == null || effect.effectType() == Effect.EFFECT_TYPE_NONE)
             return false;
@@ -163,11 +138,29 @@ public class FaceUnityManager {
             int len = inputStream.read(itemData);
             Log.e(TAG, "len " + len);
             inputStream.close();
-            if (isDongmLvj) {
-                isOpenAnimoji = isDongmLvj;
-                mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] = faceunity.fuCreateItemFromPackage(itemData);
-            } else
-                mItemsArray[ITEM_ARRAYS_EFFECT] = faceunity.fuCreateItemFromPackage(itemData);
+
+            final int newEffectItem = loadItem(effect);
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    if (isDongmLvj) {
+                        isOpenAnimoji = isDongmLvj;
+                        if (mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] > 0) {
+                            FURenderer.fuDestroyItem(mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER]);
+                        }
+                        mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] = newEffectItem;
+                    } else {
+                        if (mItemsArray[ITEM_ARRAYS_EFFECT] > 0) {
+                            FURenderer.fuDestroyItem(mItemsArray[ITEM_ARRAYS_EFFECT]);
+                        }
+                        mItemsArray[ITEM_ARRAYS_EFFECT] = newEffectItem;
+                    }
+                }
+            });
+            //queueEvent的Runnable在此处被调用
+            while (!mEventQueue.isEmpty()) {
+                mEventQueue.remove(0).run();
+            }
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -185,21 +178,22 @@ public class FaceUnityManager {
      * @param currentCameraType
      */
     public int draw(byte[] cameraNV21Byte, byte[] fuImgNV21Bytes, int cameraTextureId, int cameraWidth, int cameraHeight, int frameId, int currentCameraType
-            , int mInputImageOrientation, boolean isNormal, boolean isAnimoji, boolean isGesture) {
-        final int isTracking = faceunity.fuIsTracking();
-        faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "color_level", mFaceBeautyColorLevel);
-        faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "blur_level", mFaceBeautyBlurLevel);
-        faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "skin_detect", mFaceBeautyALLBlurLevel);
-        faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "cheek_thinning", mFaceBeautyCheekThin);
-        faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "eye_enlarging", mFaceBeautyEnlargeEye);
-        faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "face_shape", mFaceShape);
-        faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "face_shape_level", mFaceShapeLevel);
-        faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "red_level", mFaceBeautyRedLevel);
+            , int mInputImageOrientation, boolean isNormal, boolean isAnimoji, boolean isGesture, boolean isMusic, long time) {
+        final int isTracking = FURenderer.fuIsTracking();
+        Log.d("draw", "isTracking=" + isTracking);
+        FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "color_level", mFaceBeautyColorLevel);
+        FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "blur_level", mFaceBeautyBlurLevel);
+        FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "skin_detect", mFaceBeautyALLBlurLevel);
+        FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "cheek_thinning", mFaceBeautyCheekThin);
+        FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "eye_enlarging", mFaceBeautyEnlargeEye);
+        FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "face_shape", mFaceShape);
+        FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "face_shape_level", mFaceShapeLevel);
+        FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_FACE_BEAUTY_INDEX], "red_level", mFaceBeautyRedLevel);
 
         boolean isOESTexture = true; //Tip: camera texture类型是默认的是OES的，和texture 2D不同
-        int flags = isOESTexture ? faceunity.FU_ADM_FLAG_EXTERNAL_OES_TEXTURE : 0;
+        int flags = isOESTexture ? FURenderer.FU_ADM_FLAG_EXTERNAL_OES_TEXTURE : 0;
         boolean isNeedReadBack = false; //是否需要写回，如果是，则入参的byte[]会被修改为带有fu特效的；支持写回自定义大小的内存数组中，即readback custom img
-        flags = isNeedReadBack ? flags | faceunity.FU_ADM_FLAG_ENABLE_READBACK : flags;
+        flags = isNeedReadBack ? flags | FURenderer.FU_ADM_FLAG_ENABLE_READBACK : flags;
         if (isNeedReadBack) {
             if (fuImgNV21Bytes == null) {
                 fuImgNV21Bytes = new byte[cameraNV21Byte.length];
@@ -208,14 +202,14 @@ public class FaceUnityManager {
         } else {
             fuImgNV21Bytes = cameraNV21Byte;
         }
-        flags |= currentCameraType == Camera.CameraInfo.CAMERA_FACING_FRONT ? 0 : faceunity.FU_ADM_FLAG_FLIP_X;
+        flags |= currentCameraType == Camera.CameraInfo.CAMERA_FACING_FRONT ? 0 : FURenderer.FU_ADM_FLAG_FLIP_X;
 
         updateEffectItemParams(isNormal, isAnimoji, isGesture
-                , currentCameraType == Camera.CameraInfo.CAMERA_FACING_FRONT ? 0 : 1, mInputImageOrientation);
+                , currentCameraType == Camera.CameraInfo.CAMERA_FACING_FRONT ? 0 : 1, mInputImageOrientation, isMusic, time);
             /*
              * 这里拿到fu处理过后的texture，可以对这个texture做后续操作，如硬编、预览。
              */
-        return faceunity.fuDualInputToTexture(fuImgNV21Bytes, cameraTextureId, flags,
+        return FURenderer.fuDualInputToTexture(fuImgNV21Bytes, cameraTextureId, flags,
                 cameraWidth, cameraHeight, frameId, mItemsArray);
     }
 
@@ -341,7 +335,7 @@ public class FaceUnityManager {
                         @Override
                         public void run() {
                             if (mItemsArray[ITEM_ARRAYS_EFFECT] > 0) {
-                                faceunity.fuDestroyItem(mItemsArray[ITEM_ARRAYS_EFFECT]);
+                                FURenderer.fuDestroyItem(mItemsArray[ITEM_ARRAYS_EFFECT]);
                             }
                             mItemsArray[ITEM_ARRAYS_EFFECT] = newEffectItem;
                         }
@@ -364,7 +358,7 @@ public class FaceUnityManager {
                         queueEvent(new Runnable() {
                             @Override
                             public void run() {
-                                faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_EFFECT], "{\"thing\":\"<global>\",\"param\":\"follow\"}", 1);
+                                FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_EFFECT], "{\"thing\":\"<global>\",\"param\":\"follow\"}", 1);
 //                                int supportGLVersion = GlUtil.getSupportGLVersion(mContext);
 //                                faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER], "glVer", supportGLVersion);
                             }
@@ -374,8 +368,8 @@ public class FaceUnityManager {
                             queueEvent(new Runnable() {
                                 @Override
                                 public void run() {
-                                    faceunity.fuDestroyItem(mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER]);
-                                    faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_EFFECT], "{\"thing\":\"<global>\",\"param\":\"follow\"}", 0);
+                                    FURenderer.fuDestroyItem(mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER]);
+                                    FURenderer.fuItemSetParam(mItemsArray[ITEM_ARRAYS_EFFECT], "{\"thing\":\"<global>\",\"param\":\"follow\"}", 0);
                                     mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] = 0;
                                 }
                             });
@@ -394,39 +388,50 @@ public class FaceUnityManager {
      * 设置对道具设置相应的参数
      */
     private void updateEffectItemParams(boolean isNORMAL, boolean isANIMOJI, boolean isGESTURE
-            , int mCurrentCameraType, int mInputImageOrientation) {
+            , int mCurrentCameraType, int mInputImageOrientation, boolean isMusic, final long time) {
         final int itemHandle = mItemsArray[ITEM_ARRAYS_EFFECT];
         if (itemHandle <= 0)
             return;
-        faceunity.fuItemSetParam(itemHandle, "isAndroid", 1.0);
+        FURenderer.fuItemSetParam(itemHandle, "isAndroid", 1.0);
         if (mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] > 0) {
-            faceunity.fuItemSetParam(itemHandle, "{\"thing\":\"<global>\",\"param\":\"follow\"}", 1);
+            FURenderer.fuItemSetParam(itemHandle, "{\"thing\":\"<global>\",\"param\":\"follow\"}", 1);
         }
 
         if (isNORMAL) {
             //rotationAngle 参数是用于旋转普通道具
-            faceunity.fuItemSetParam(itemHandle, "rotationAngle", 360 - mInputImageOrientation);
+            FURenderer.fuItemSetParam(itemHandle, "rotationAngle", 360 - mInputImageOrientation);
         }
         if (isANIMOJI) {
             //is3DFlipH 参数是用于对3D道具的镜像
-            faceunity.fuItemSetParam(itemHandle, "is3DFlipH", mCurrentCameraType);
+            FURenderer.fuItemSetParam(itemHandle, "is3DFlipH", mCurrentCameraType);
             //isFlipExpr 参数是用于对人像驱动道具的镜像
-            faceunity.fuItemSetParam(itemHandle, "isFlipExpr", mCurrentCameraType);
+            FURenderer.fuItemSetParam(itemHandle, "isFlipExpr", mCurrentCameraType);
             //这两句代码用于识别人脸默认方向的修改，主要针对animoji道具的切换摄像头倒置问题
-            faceunity.fuItemSetParam(itemHandle, "camera_change", 1.0);
-            faceunity.fuSetDefaultRotationMode((360 - mInputImageOrientation) / 90);
+            FURenderer.fuItemSetParam(itemHandle, "camera_change", 1.0);
+            FURenderer.fuSetDefaultRotationMode((360 - mInputImageOrientation) / 90);
 
             // 设置人转向的方向
-            faceunity.fuItemSetParam(itemHandle, "isFlipTrack", mCurrentCameraType);
+            FURenderer.fuItemSetParam(itemHandle, "isFlipTrack", mCurrentCameraType);
             // 设置 Animoji 跟随人脸
-            faceunity.fuItemSetParam(itemHandle, "{\"thing\":\"<global>\",\"param\":\"follow\"}", 1);
+            FURenderer.fuItemSetParam(itemHandle, "{\"thing\":\"<global>\",\"param\":\"follow\"}", 1);
         }
         if (isGESTURE) {
             //loc_y_flip与loc_x_flip 参数是用于对手势识别道具的镜像
-            faceunity.fuItemSetParam(itemHandle, "is3DFlipH", mCurrentCameraType);
-            faceunity.fuItemSetParam(itemHandle, "loc_y_flip", mCurrentCameraType);
-            faceunity.fuItemSetParam(itemHandle, "loc_x_flip", mCurrentCameraType);
+            FURenderer.fuItemSetParam(itemHandle, "is3DFlipH", mCurrentCameraType);
+            FURenderer.fuItemSetParam(itemHandle, "loc_y_flip", mCurrentCameraType);
+            FURenderer.fuItemSetParam(itemHandle, "loc_x_flip", mCurrentCameraType);
             setRotMode(itemHandle, mInputImageOrientation, mCurrentCameraType == 0);
+        }
+        if (isMusic) {
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    FURenderer.setMusicTime(itemHandle, time);
+                }
+            });
+            while (!mEventQueue.isEmpty()) {
+                mEventQueue.remove(0).run();
+            }
         }
     }
 
@@ -475,7 +480,7 @@ public class FaceUnityManager {
         }
         Log.d(TAG, "setTrackOrientation: rot:" + mDefaultOrientation + ", mode:" + mode);
 //        faceunity.fuSetDefaultOrientation(mDefaultOrientation / 90);//设置识别人脸默认方向，能够提高首次识别的速度
-        faceunity.fuItemSetParam(item, "rotMode", mode);
+        FURenderer.fuItemSetParam(item, "rotMode", mode);
     }
 
 
@@ -505,7 +510,7 @@ public class FaceUnityManager {
                 int len = is.read(itemData);
                 Log.e(TAG, bundle.path() + " len " + len);
                 is.close();
-                item = faceunity.fuCreateItemFromPackage(itemData);
+                item = FURenderer.fuCreateItemFromPackage(itemData);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -529,8 +534,6 @@ public class FaceUnityManager {
         Arrays.fill(mItemsArray, 0);
 
         mContext = null;
-        faceunity.fuDestroyAllItems();
-        faceunity.fuDone();
-        faceunity.fuOnDeviceLost();
+        FURenderer.relase();
     }
 }

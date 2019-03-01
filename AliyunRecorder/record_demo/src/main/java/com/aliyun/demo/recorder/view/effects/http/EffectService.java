@@ -35,7 +35,9 @@ public class EffectService {
     public static final int EFFECT_CAPTION = 6;     //字幕
     public static final int EFFECT_FACE_PASTER = 7; //人脸动图
     public static final int EFFECT_IMG = 8;         //静态贴纸
-
+    /**
+     * 素材分发服务为官方demo演示使用，无法达到商业化使用程度。请自行搭建相关的服务
+     */
     public void loadEffectPaster(String signature,
                                  String packageName,
                                  final HttpCallback<List<PreviewPasterForm>> callback) {
@@ -84,7 +86,9 @@ public class EffectService {
         });
 
     }
-
+    /**
+     * 素材分发服务为官方demo演示使用，无法达到商业化使用程度。请自行搭建相关的服务
+     */
     public void loadEffectMv(
             String signature,
             String packageName,
@@ -125,7 +129,9 @@ public class EffectService {
         });
 
     }
-
+    /**
+     * 素材分发服务为官方demo演示使用，无法达到商业化使用程度。请自行搭建相关的服务
+     */
     public void loadEffectCaption(int type,
                                   String signature,
                                   String packageName,

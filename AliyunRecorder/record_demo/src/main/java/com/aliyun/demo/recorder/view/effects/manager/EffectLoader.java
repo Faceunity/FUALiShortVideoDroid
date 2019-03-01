@@ -6,15 +6,11 @@ package com.aliyun.demo.recorder.view.effects.manager;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.widget.Toast;
 
-import com.aliyun.common.utils.CommonUtil;
 import com.aliyun.common.utils.ToastUtil;
 import com.aliyun.demo.R;
-import com.aliyun.demo.recorder.util.FixedToastUtils;
 import com.aliyun.demo.recorder.view.effects.http.EffectService;
 import com.aliyun.demo.recorder.view.effects.http.HttpCallback;
-import com.aliyun.demo.recorder.view.effects.mv.MVDownloadListener;
 import com.aliyun.downloader.DownloaderManager;
 import com.aliyun.downloader.FileDownloaderCallback;
 import com.aliyun.downloader.FileDownloaderModel;
@@ -31,13 +27,9 @@ import java.util.List;
 
 public class EffectLoader {
 
-    public static final int ASPECT_1_1 = 1;
-    public static final int ASPECT_4_3 = 2;
-    public static final int ASPECT_9_16 = 3;
     public EffectService mService = new EffectService();
     private String mPackageName;
     private Context mContext;
-    private ArrayList<IMVForm> mLoadingMv;
     private ArrayList<PreviewPasterForm> mLoadingPaster;
     public interface LoadCallback<T> {
         void onLoadCompleted(List<T> localInfos, List<T> remoteInfos, Throwable e);
@@ -46,7 +38,6 @@ public class EffectLoader {
     public EffectLoader(Context mContext) {
         this.mContext = mContext;
         mPackageName = mContext.getApplicationInfo().packageName;
-        mLoadingMv = new ArrayList<>();
         mLoadingPaster = new ArrayList<>();
     }
     public List<FileDownloaderModel> loadLocalEffect(int effectType) {
@@ -167,162 +158,6 @@ public class EffectLoader {
         }
         cursor.close();
         return localPasters;
-    }
-
-    /**
-     * 加载所有的mv，先网络请求mv列表，再加载本地缓存，并通过id进行匹配
-     * @param signature
-     * @param callback
-     * @return
-     */
-    public int loadAllMV(String signature, final LoadCallback<IMVForm> callback) {
-
-        mService.loadEffectMv(signature
-                , mPackageName, new HttpCallback<List<IMVForm>>() {
-                    @Override
-                    public void onSuccess(List<IMVForm> result) {
-                        if (callback != null) {
-
-                            List<IMVForm> localMvs = loadLocalMV();
-                            List<Integer> localIds = null;
-                            if (localMvs != null && localMvs.size() > 0) {
-                                localIds = new ArrayList<Integer>(localMvs.size());
-                                for (IMVForm mv : localMvs) {
-                                    localIds.add(mv.getId());
-                                }
-                            }
-                            if(localIds != null && localIds.size() > 0) {
-                                for (int i = 0; i < result.size(); i++) {
-                                    if (localIds.contains(result.get(i).getId())) {
-                                        result.remove(i);
-                                        i--;
-                                    }
-                                }
-                            }
-
-                            callback.onLoadCompleted(localMvs, result, null);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable e) {
-                        List<IMVForm> localMvs = loadLocalMV();
-                        if (callback != null) {
-                            callback.onLoadCompleted(localMvs, null, e);
-                        }
-                    }
-                });
-        return 0;
-    }
-
-
-    private int downloadSize;
-    /**
-     * 下载mv
-     * @param mvData
-     * @param mvDownloadListener
-     */
-    public void downloadMV(final IMVForm mvData, final MVDownloadListener mvDownloadListener){
-        if (!CommonUtil.hasNetwork((mContext))) {
-            ToastUtil.showToast(mContext, R.string.aliyun_network_not_connect);
-            return;
-        }
-        if (CommonUtil.SDFreeSize() < 10 * 1000 * 1000) {
-            Toast.makeText(mContext, R.string.aliyun_no_free_memory, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (mLoadingMv.contains(mvData)) {//如果已经在下载中了，则不能重复下载
-            return;
-        }
-
-        final List<AspectForm> aspects = mvData.getAspectList();
-        final List<FileDownloaderModel> tasks = new ArrayList<>();
-        final int size = aspects.size();
-        downloadSize += size;
-        if (downloadSize >= 50) {
-            downloadSize-=size;
-            FixedToastUtils.show(mContext, "当前下载任务过多, 请稍后~~!");
-            return;
-        }
-        mLoadingMv.add(mvData);
-
-        TasksManager tasksManager = new TasksManager();
-        if (aspects != null) {
-            FileDownloaderModel model;
-            List<FileDownloaderModel> list = new ArrayList<>();
-            for (final AspectForm aspect : aspects) {
-                model = new FileDownloaderModel();
-                model.setEffectType(EffectService.EFFECT_MV);
-                model.setTag(mvData.getTag());
-                model.setKey(mvData.getKey());
-                model.setName(mvData.getName());
-                model.setId(mvData.getId());
-                model.setCat(mvData.getCat());
-                model.setLevel(mvData.getLevel());
-                model.setPreviewpic(mvData.getPreviewPic());
-                model.setIcon(mvData.getIcon());
-                model.setPreviewmp4(mvData.getPreviewMp4());
-                model.setSort(mvData.getSort());
-                model.setSubtype(mvData.getType());
-                model.setMd5(aspect.getMd5());
-                model.setDownload(aspect.getDownload());
-                model.setUrl(aspect.getDownload());
-                model.setAspect(aspect.getAspect());
-                model.setDuration(mvData.getDuration());
-                model.setIsunzip(1);
-                final FileDownloaderModel task = DownloaderManager.getInstance().addTask(model, model.getDownload());
-                tasksManager.addTask(task.getTaskId(), new MVDownloadListener() {
-                    @Override
-                    public void onStart(int downloadId, long soFarBytes, long totalBytes, int preProgress) {
-                        super.onStart(downloadId, soFarBytes, totalBytes, preProgress);
-                        if (mvDownloadListener!=null){
-                            mvDownloadListener.onStart(downloadId, soFarBytes, totalBytes, preProgress);
-                        }
-                    }
-                    @Override
-                    public void onFinish(int downloadId, String path,boolean allFinish) {
-                        aspect.setPath(path);
-                        downloadSize -= size;
-                        if (allFinish){
-                            mLoadingMv.remove(mvData);
-                        }
-                        if (mvDownloadListener!=null) {
-                            mvDownloadListener.onFinish(downloadId, path, allFinish);
-                        }
-
-                    }
-
-                    @Override
-                    public void onProgress(int downloadId, long soFarBytes, long totalBytes, long speed, int progress) {
-                        super.onProgress(downloadId, soFarBytes, totalBytes, speed, progress);
-                        if (mvDownloadListener!=null) {
-                            mvDownloadListener.onProgress(downloadId, soFarBytes, totalBytes, speed, progress);
-                        }
-                    }
-
-                    @Override
-                    public void onError(BaseDownloadTask task1, Throwable e) {
-                        super.onError(task1, e);
-                        mLoadingMv.remove(mvData);
-                        if (mvDownloadListener!=null){
-                            mvDownloadListener.onError(task1, e);
-                        }
-                        ToastUtil.showToast(mContext, R.string.aliyun_download_failed);
-                        synchronized (tasks) {
-                            for (FileDownloaderModel t : tasks) {
-                                //删除该套MV的所有Task
-                                DownloaderManager.getInstance().deleteTaskByTaskId(t.getTaskId());
-                            }
-                            tasks.clear();
-                        }
-                        //清空已插入到数据库中的该套MV的信息
-                        DownloaderManager.getInstance().getDbController().deleteTaskById(mvData.getId());
-                    }
-                });
-            }
-            tasksManager.startTask();
-        }
-
     }
 
     /**

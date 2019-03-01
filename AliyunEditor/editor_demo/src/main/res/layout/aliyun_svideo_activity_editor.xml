@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/alivc_svideo_title_height" />
 
-        <com.aliyun.demo.editor.thumblinebar.OverlayThumbLineBar
+        <com.aliyun.svideo.editor.editor.thumblinebar.OverlayThumbLineBar
             android:id="@+id/simplethumblinebar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

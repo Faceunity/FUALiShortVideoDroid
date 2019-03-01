@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="start"
-                android:textColor="@color/qupai_white_opacity_50pct"
+                android:textColor="@color/aliyun_white_opacity_50pct"
                 android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
@@ -81,26 +81,26 @@
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
                 android:layout_toLeftOf="@id/aliyun_music_selcet_bg"
-                android:src="@color/qupai_black_opacity_30pct" />
+                android:src="@color/aliyun_black_opacity_30pct" />
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
                 android:layout_toRightOf="@id/aliyun_music_selcet_bg"
-                android:src="@color/qupai_black_opacity_30pct" />
+                android:src="@color/aliyun_black_opacity_30pct" />
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
                 android:layout_alignParentTop="true"
-                android:src="@color/qupai_black_opacity_30pct" />
+                android:src="@color/aliyun_black_opacity_30pct" />
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
                 android:layout_alignParentBottom="true"
-                android:src="@color/qupai_black_opacity_30pct" />
+                android:src="@color/aliyun_black_opacity_30pct" />
 
             <TextView
                 android:id="@+id/aliyun_music_start_txt"
@@ -125,12 +125,12 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"
-            android:background="@color/qupai_black_opacity_30pct" />
+            android:background="@color/aliyun_black_opacity_30pct" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="48dp"
-        android:background="@color/qupai_white_opacity_30pct" />
+        android:background="@color/aliyun_white_opacity_30pct" />
 </LinearLayout>

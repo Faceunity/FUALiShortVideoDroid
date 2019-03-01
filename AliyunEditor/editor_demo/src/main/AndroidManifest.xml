@@ -1,58 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aliyun.demo.editor">
+    package="com.aliyun.svideo.editor">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application>
         <activity
-            android:name=".EditorActivity"
+            android:name="com.aliyun.svideo.editor.editor.EditorActivity"
             android:launchMode="singleTask"
-            android:exported="true"
-            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AlivcEditUIStyle">
 
-            <intent-filter>
-                <action android:name="com.duanqu.qupai.action.editor" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
-            android:name="com.aliyun.demo.effectmanager.EffectManagerActivity"
+            android:name="com.aliyun.svideo.editor.EditorSettingActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name="com.aliyun.svideo.editor.MediaActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.aliyun.svideo.editor.effectmanager.EffectManagerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
-            android:name="com.aliyun.demo.effectmanager.MorePasterActivity"
+            android:name="com.aliyun.svideo.editor.effectmanager.MorePasterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
-            android:name="com.aliyun.demo.effectmanager.MoreCaptionActivity"
+            android:name="com.aliyun.svideo.editor.effectmanager.MoreCaptionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
-            android:name="com.aliyun.demo.effectmanager.MoreMVActivity"
+            android:name="com.aliyun.svideo.editor.effectmanager.MoreMVActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
-            android:name="com.aliyun.demo.publish.PublishActivity"
+            android:name="com.aliyun.svideo.editor.publish.PublishActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
-            android:name="com.aliyun.demo.publish.CoverEditActivity"
+            android:name="com.aliyun.svideo.editor.publish.CoverEditActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
-            android:name="com.aliyun.demo.publish.UploadActivity"
+            android:name="com.aliyun.svideo.editor.publish.UploadActivity"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

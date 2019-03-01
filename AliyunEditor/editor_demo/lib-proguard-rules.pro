@@ -59,7 +59,7 @@
 
 ##---------------End: proguard configuration for Gson  ----------
 
--keepclasseswithmembers class com.aliyun.demo.editor.EditorActivity{ *; }
+-keepclasseswithmembers class com.aliyun.svideo.editor.editor.EditorActivity{ *; }
 
 
 

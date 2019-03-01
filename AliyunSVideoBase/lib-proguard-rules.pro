@@ -67,16 +67,16 @@
 -keep class com.aliyun.leaktracer.** { *;}
 -keep class com.duanqu.qupai.adaptive.** { *; }
 -keep class com.aliyun.thumbnail.** { *;}
--keep class com.aliyun.demo.importer.media.MediaCache { *;}
--keep class com.aliyun.demo.importer.media.MediaDir { *;}
--keep class com.aliyun.demo.importer.media.MediaInfo { *;}
+-keep class com.aliyun.svideo.media.MediaCache { *;}
+-keep class com.aliyun.svideo.media.MediaDir { *;}
+-keep class com.aliyun.svideo.media.MediaInfo { *;}
 -keep class com.alivc.component.encoder.**{ *;}
 -keep class com.aliyun.log.core.AliyunLogCommon { *;}
 -keep class com.aliyun.log.core.AliyunLogger { *;}
 -keep class com.aliyun.log.core.AliyunLogParam { *;}
 -keep class com.aliyun.log.core.LogService { *;}
 -keep class com.aliyun.log.struct.** { *;}
--keep class com.aliyun.demo.publish.SecurityTokenInfo { *; }
+-keep class com.aliyun.svideo.editor.publish.SecurityTokenInfo { *; }
 
 -keep class com.aliyun.vod.common.** { *; }
 -keep class com.aliyun.vod.jasonparse.** { *; }

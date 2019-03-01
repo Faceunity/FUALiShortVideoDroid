@@ -11,11 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-
-import com.bumptech.glide.Glide;
 import com.aliyun.demo.crop.R;
-
+import com.aliyun.video.common.utils.image.ImageLoaderImpl;
 
 import java.io.File;
 
@@ -50,8 +47,7 @@ public class GalleryItemViewHolder extends RecyclerView.ViewHolder {
         if(info.thumbnailPath != null
                 && onCheckFileExsitence(info.thumbnailPath)) {
             String uri = "file://" + info.thumbnailPath;
-            Glide.with(thumbImage.getContext()).load(uri).into(thumbImage);
-//            ImageLoader.getInstance().displayImage(uri, thumbImage, UILOptions.LOCAL);
+            new ImageLoaderImpl().loadImage(thumbImage.getContext(),uri).into(thumbImage);
         }else {
             thumbImage.setImageDrawable(new ColorDrawable(Color.GRAY));
             thumbnailGenerator.generateThumbnail(info.type, info.id,0,
