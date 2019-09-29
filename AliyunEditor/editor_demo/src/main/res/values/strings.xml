@@ -106,5 +106,8 @@
     <string name="alivc_svideo_play_film">play</string>
     <string name="alivc_svideo_pause_film">pause</string>
     <string name="alivc_svideo_tip_transcode_no_operate">正在转码，请勿操作</string>
+
+    <string name="qupai_effect_text_color">颜色</string>
+    <string name="qupai_effect_text_stroke">颜色</string>
 </resources>
 

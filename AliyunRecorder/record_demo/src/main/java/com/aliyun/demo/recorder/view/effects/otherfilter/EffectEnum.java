@@ -23,7 +23,6 @@ public enum EffectEnum {
 
     Effect_hez_ztt_fu("hez_ztt_fu", R.mipmap.hez_ztt_fu, "background/hez_ztt_fu.bundle", 1, Effect.EFFECT_TYPE_BACKGROUND, R.string.hez_ztt_fu + 0),
     Effect_gufeng_zh_fu("gufeng_zh_fu", R.mipmap.gufeng_zh_fu, "background/gufeng_zh_fu.bundle", 1, Effect.EFFECT_TYPE_BACKGROUND, 0),
-    Effect_men_ztt_fu("men_ztt_fu", R.mipmap.men_ztt_fu, "background/men_ztt_fu.bundle", 1, Effect.EFFECT_TYPE_BACKGROUND, 0),
     Effect_xiandai_ztt_fu("xiandai_ztt_fu", R.mipmap.xiandai_ztt_fu, "background/xiandai_ztt_fu.bundle", 1, Effect.EFFECT_TYPE_BACKGROUND, 0),
     Effect_sea_lm_fu("sea_lm_fu", R.mipmap.sea_lm_fu, "background/sea_lm_fu.bundle", 1, Effect.EFFECT_TYPE_BACKGROUND, 0),
     Effect_ice_lm_fu("ice_lm_fu", R.mipmap.ice_lm_fu, "background/ice_lm_fu.bundle", 1, Effect.EFFECT_TYPE_BACKGROUND, 0),
@@ -32,7 +31,6 @@ public enum EffectEnum {
     Effect_ctrl_snow("ctrl_snow", R.mipmap.ctrl_snow, "gesture/ctrl_snow.bundle", 4, Effect.EFFECT_TYPE_GESTURE, R.string.ctrl_snow + 0),
     Effect_ctrl_flower("ctrl_flower", R.mipmap.ctrl_flower, "gesture/ctrl_flower.bundle", 4, Effect.EFFECT_TYPE_GESTURE, R.string.ctrl_flower + 0),
     Effect_fu_lm_koreaheart("fu_lm_koreaheart", R.mipmap.fu_lm_koreaheart, "gesture/ssd_thread_korheart.bundle", 4, Effect.EFFECT_TYPE_GESTURE, R.string.fu_lm_koreaheart + 0),
-    Effect_fu_ztt_live520("fu_ztt_live520", R.mipmap.fu_ztt_live520, "gesture/fu_ztt_live520.bundle", 4, Effect.EFFECT_TYPE_GESTURE, 0),
     Effect_ssd_thread_cute("ssd_thread_cute", R.mipmap.ssd_thread_cute, "gesture/ssd_thread_cute.bundle", 4, Effect.EFFECT_TYPE_GESTURE, R.string.ssd_thread_cute + 0),
     Effect_ssd_thread_six("ssd_thread_six", R.mipmap.ssd_thread_six, "gesture/ssd_thread_six.bundle", 4, Effect.EFFECT_TYPE_GESTURE, R.string.ssd_thread_six + 0),
     Effect_ssd_thread_thumb("ssd_thread_thumb", R.mipmap.ssd_thread_thumb, "gesture/ssd_thread_thumb.bundle", 4, Effect.EFFECT_TYPE_GESTURE, R.string.ssd_thread_thumb + 0),
