@@ -1,80 +1,48 @@
-#  FUAliyunShortVideoDemo（android）
-## 概述
+# FUALiShortVideoDroid 快速接入文档
 
-FUAliyunShortVideoDemo 是集成了 Faceunity 的2d/3d贴纸、animoji、哈哈镜、背景分割、动漫滤镜和手势识别和阿里云短视频（专业版） SDK 的 Demo 。 本文是 FaceUnity SDK 快速对接**[阿里云短视频](https://help.aliyun.com/document_detail/94329.html?spm=a2c4g.11186623.6.778.76b454bf0a4gyb)** SDK 的导读说明，关于 FaceUnity SDK 的更多详细说明，请参看 [FULiveDemo](https://github.com/Faceunity/FULiveDemoDroid/tree/dev).
+FUALiShortVideoDroid 是集成了 FaceUnity 美颜道具贴纸功能和 **[阿里云短视频](https://help.aliyun.com/document_detail/94329.html?spm=a2c4g.11186623.6.778.76b454bf0a4gyb)** 的 Demo。
 
-## 快速集成
-### 在点击3d贴纸等道具时，使用Faceunity创建对应的道具，示例代码如下：
-```
-public void createItem(Effect item) {
-    if (item == null) return;
-    mFuItemHandler.removeMessages(FUItemHandler.HANDLE_CREATE_ITEM);
-    mFuItemHandler.sendMessage(Message.obtain(mFuItemHandler, FUItemHandler.HANDLE_CREATE_ITEM, item));
-}
-```
-```
-final Effect effect = (Effect) msg.obj;
-final int newEffectItem = loadItem(effect);
-queueEvent(new Runnable() {
-    @Override
-    public void run() {
-        if (mItemsArray[ITEM_ARRAYS_EFFECT] > 0) {
-            faceunity.fuDestroyItem(mItemsArray[ITEM_ARRAYS_EFFECT]);
-        }
-        mItemsArray[ITEM_ARRAYS_EFFECT] = newEffectItem;
-    }
-});
-//queueEvent的Runnable在此处被调用
-while (!mEventQueue.isEmpty()) {
-    mEventQueue.remove(0).run();
-}
-```
-### 动漫滤镜的使用与其他道具有些区别，其示例代码如下：
-```
-//动漫滤镜
-public void onLoadAnimFilter(final boolean enable, Effect effect) {
-    if (isOpenAnimoji == enable) {
-        return;
-    }
-    isOpenAnimoji = enable;
-    mFuItemHandler.removeMessages(ITEM_ARRAYS_ANIMOJI_FILTER);
-    mFuItemHandler.sendMessage(Message.obtain(mFuItemHandler, ITEM_ARRAYS_ANIMOJI_FILTER, effect));
-}
-```
-```
-final Effect item = (Effect) msg.obj;
-if (isOpenAnimoji) {
-    if (mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] <= 0) {
-        mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] = loadItem(item);
-    }
-    queueEvent(new Runnable() {
-        @Override
-        public void run() {
-            faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_EFFECT], "{\"thing\":\"<global>\",\"param\":\"follow\"}", 1);
-//          int supportGLVersion = GlUtil.getSupportGLVersion(mContext);
-//          faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER], "glVer", supportGLVersion);
-        }
-    });
-} else {
-    if (mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] > 0) {
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                faceunity.fuDestroyItem(mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER]);
-                faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_EFFECT], "{\"thing\":\"<global>\",\"param\":\"follow\"}", 0);
-                mItemsArray[ITEM_ARRAYS_ANIMOJI_FILTER] = 0;
-            }
-        });
-    }
-}
-//queueEvent的Runnable在此处被调用
-while (!mEventQueue.isEmpty()) {
-    mEventQueue.remove(0).run();
-}
-```
+本文是 FaceUnity SDK 快速对接阿里云短视频的导读说明，关于 `FaceUnity SDK` 的详细说明，请参看 **[FULiveDemoDroid](https://github.com/Faceunity/FULiveDemoDroid/)**
 
-### 具体代码参考AliyunRecorder中view下的otherfilter文件、AliyunSVideoRecordView和FaceUnityManager中的代码
+## 快速集成方法
 
-阿里云短视频 SDK： https://help.aliyun.com/document_detail/51992.html?spm=a2c4g.11186623.6.746.4f105e5eCtOtbS
+### 一、导入 SDK
 
-阿里短视频产品：https://promotion.aliyun.com/ntms/act/shortvideo.html?spm=5176.10695662.777961.1.7bf9260dQz2qnP
+将 faceunity  模块添加到工程中，下面是一些对文件的说明。
+
+- jniLibs 文件夹下 libnama.so 和 libfuai.so 是人脸跟踪和道具绘制的静态库
+- libs 文件夹下 nama.jar 是供应用层调用的 JNI 接口
+- assets 文件夹下 AI_model/ai_face_processor.bundle 是人脸识别数据包（自 6.6.0 版本起，v3.bundle 不再使用）
+- assets 文件夹下 face_beautification.bundle 是美颜功能数据包
+- assets 文件夹下 normal 中的 \*.bundle 文件是特效贴纸文件，自定义特效贴纸制作的文档和工具，请联系技术支持获取。
+
+### 二、使用 SDK
+
+#### 1. 初始化
+
+在 `FURenderer` 类 的  `initFURenderer` 静态方法是对 FaceUnity SDK 一些全局数据初始化的封装，可以在 Application 中调用，也可以在工作线程调用，仅需初始化一次即可。
+
+#### 2.创建
+
+在 `FURenderer` 类 的  `onSurfaceCreated` 方法是对 FaceUnity SDK 每次使用前数据初始化的封装。
+
+#### 3. 图像处理
+
+在 `FURenderer` 类 的  `onDrawFrame` 方法是对 FaceUnity SDK 图像处理方法的封装，该方法有许多重载方法适用于不同的数据类型需求。
+
+#### 4. 销毁
+
+在 `FURenderer` 类 的  `onSurfaceDestroyed` 方法是对 FaceUnity SDK 数据销毁的封装。
+
+#### 5. 切换相机
+
+调用 `FURenderer` 类 的  `onCameraChange` 方法，用于重新为 SDK 设置参数。
+
+上面一系列方法的使用，具体在 demo 中的 `AliyunSVideoRecordView` 类 `initRecorder` 方法，请参考该代码示例接入。
+
+### 三、切换道具及调整美颜参数
+
+`FURenderer` 类实现了 `OnFaceUnityControlListener` 接口，而 `OnFaceUnityControlListener` 接口是对切换贴纸道具及调整美颜参数等一系列操作的封装。在 demo 中，`BeautyControlView` 用于实现用户交互，调用了 `OnFaceUnityControlListener` 的方法实现功能。
+
+
+**至此快速集成完毕，关于 FaceUnity SDK 的更多详细说明，请参看 [FULiveDemoDroid](https://github.com/Faceunity/FULiveDemoDroid/)**

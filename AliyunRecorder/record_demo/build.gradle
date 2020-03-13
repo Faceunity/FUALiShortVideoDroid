@@ -20,5 +20,5 @@ dependencies {
     api project(path: ':AliyunFileDownLoader:downloadermanager')
     implementation externalGSON
     implementation project(':faceunity')
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 }
