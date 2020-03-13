@@ -2,15 +2,11 @@ package com.aliyun.demo.recorder.view;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
@@ -36,12 +32,12 @@ import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.OpenGLTest;
 import com.aliyun.demo.recorder.activity.AlivcSvideoRecordActivity;
 import com.aliyun.demo.recorder.bean.RememberBeautyBean;
-import com.aliyun.demo.recorder.faceunity.FaceUnityManager;
 import com.aliyun.demo.recorder.util.Common;
 import com.aliyun.demo.recorder.util.DensityUtil;
 import com.aliyun.demo.recorder.util.FixedToastUtils;
 import com.aliyun.demo.recorder.util.OrientationDetector;
 import com.aliyun.demo.recorder.util.PermissionUtils;
+import com.aliyun.demo.recorder.util.PreferenceUtil;
 import com.aliyun.demo.recorder.util.SharedPreferenceUtils;
 import com.aliyun.demo.recorder.util.TimeFormatterUtils;
 import com.aliyun.demo.recorder.view.control.CameraType;
@@ -56,7 +52,6 @@ import com.aliyun.demo.recorder.view.dialog.GIfEffectChooser;
 import com.aliyun.demo.recorder.view.effects.face.BeautyFaceDetailChooser;
 import com.aliyun.demo.recorder.view.effects.filter.EffectInfo;
 import com.aliyun.demo.recorder.view.effects.filter.interfaces.OnFilterItemClickListener;
-import com.aliyun.demo.recorder.view.effects.otherfilter.DistortingMirrorAdapter;
 import com.aliyun.demo.recorder.view.effects.otherfilter.Effect;
 import com.aliyun.demo.recorder.view.effects.paster.PasterSelectListener;
 import com.aliyun.demo.recorder.view.effects.skin.BeautySkinDetailChooser;
@@ -91,12 +86,13 @@ import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
 import com.aliyun.svideo.sdk.external.struct.recorder.MediaInfo;
 import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
 import com.aliyun.video.common.utils.ThreadUtils;
+import com.faceunity.nama.FURenderer;
+import com.faceunity.nama.ui.BeautyControlView;
 import com.google.gson.Gson;
 import com.qu.preview.callback.OnFrameCallBack;
 import com.qu.preview.callback.OnTextureIdCallBack;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -169,28 +165,11 @@ public class AliyunSVideoRecordView extends RelativeLayout
     private OrientationDetector orientationDetector;
     private int rotation;
     private MusicChooser musicChooseView;
-    /**
-     * 第三方高级美颜支持库faceUnity管理类
-     */
-    private FaceUnityManager faceUnityManager;
     private TextView textView;//表情识别提示文本
     /**
      * 相机的原始NV21数据
      */
     private byte[] frameBytes;
-    private byte[] mFuImgNV21Bytes;
-    /**
-     * 原始数据宽
-     */
-    private int frameWidth;
-    /**
-     * 原始数据高
-     */
-    private int frameHeight;
-    /**
-     * faceUnity相关
-     */
-    private int mFrameId = 0;
     private BeautyParams beautyParams;
     private BeautyFaceDetailChooser beautyFaceDetailChooser;
     private BeautySkinDetailChooser beautySkinDetailChooser;
@@ -211,6 +190,8 @@ public class AliyunSVideoRecordView extends RelativeLayout
     private BeautyLevel defaultBeautyLevel = BeautyLevel.BEAUTY_LEVEL_THREE;
     /**
      * 是否需要使用faceUnity false : 如果当前是普通美颜, 则不需要使用 true: 如果当前是高级美颜, 或者使用了美肌效果, 需要使用
+     *
+     * @deprecated 不再使用这些变量
      */
     private boolean isUseHAHAJING = false;//是否使用哈哈镜
     private boolean isUseAnimoji = false;//是否使用Animoji
@@ -266,13 +247,15 @@ public class AliyunSVideoRecordView extends RelativeLayout
     private boolean isMusicViewShowing;
 
     /**
-     * faceUnity的初始化结果 true: 初始化成功 false: 初始化失败
-     */
-    private static boolean faceInitResult;
-    /**
      * 是否处于后台
      */
     private boolean mIsBackground;
+    /**
+     * faceunity 美颜贴纸
+     */
+    private FURenderer mFURenderer;
+    private boolean mIsFuBeautyOpen;
+    private int mSkippedFrames;
 
     /**
      * 恢复冲突的特效，这些特效都是会彼此冲突的，比如滤镜和MV，因为MV中也有滤镜效果，所以MV和滤镜的添加顺序 会影响最终产生视频的效果，在恢复时必须严格按照用户的操作顺序来恢复，
@@ -330,7 +313,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
     private void initVideoView() {
         //初始化surfaceView
-
         initSurfaceView();
         initControlView();
         initCountDownView();
@@ -339,7 +321,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
         initRecordTimeView();
         initText();
         copyAssets();
-        initFaceUnity(getContext());
+        initFuBeautyView();
     }
 
     private void initBeautyParam() {
@@ -379,12 +361,10 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
     public void onPause() {
         mIsBackground = true;
-        stopMusic();
     }
 
     public void onResume() {
         mIsBackground = false;
-        playMusic(effect);
     }
 
     private static class BeautyParamCopyTask extends AsyncTask<Void, Void, Void> {
@@ -404,32 +384,24 @@ public class AliyunSVideoRecordView extends RelativeLayout
         }
     }
 
-    private void initFaceUnity(Context context) {
-        if (!faceInitResult) {
-            mFaceUnityTask = new FaceUnityTask(this).executeOnExecutor(
-                    AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-    }
+    private void initFuBeautyView() {
+        Context context = getContext();
+        mIsFuBeautyOpen = TextUtils.equals(PreferenceUtil.VALUE_ON, PreferenceUtil.getString(context, PreferenceUtil.KEY_FACEUNITY_IS_ON));
+        if (mIsFuBeautyOpen) {
+            FURenderer.initFURenderer(context);
+            mFURenderer = new FURenderer.Builder(context)
+                    .setInputTextureType(FURenderer.INPUT_EXTERNAL_OES_TEXTURE)
+                    .setCameraType(cameraType.getType())
+                    .setInputImageOrientation(FURenderer.getCameraOrientation(cameraType.getType()))
+                    .build();
 
-    private static class FaceUnityTask extends AsyncTask<Void, Void, Void> {
-
-        private WeakReference<AliyunSVideoRecordView> weakReference;
-
-        FaceUnityTask(AliyunSVideoRecordView recordView) {
-            weakReference = new WeakReference<>(recordView);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            AliyunSVideoRecordView recordView = weakReference.get();
-            if (recordView != null) {
-                recordView.faceUnityManager = FaceUnityManager.getInstance(weakReference.get().getContext());
-                faceInitResult = recordView.faceUnityManager.createBeautyItem(recordView.getContext());
-                recordView.faceunityDefaultParam();
-
-                recordView.faceUnityManager.createBeautyItem(recordView.getContext(), recordView.isUseDongMLvj, recordView.effect);
-            }
-            return null;
+            BeautyControlView beautyControlView = new BeautyControlView(context);
+            beautyControlView.setOnFaceUnityControlListener(mFURenderer);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            params.addRule(CENTER_HORIZONTAL);
+            params.addRule(ALIGN_PARENT_BOTTOM);
+            params.bottomMargin = DensityUtil.dip2px(context, 160);
+            addView(beautyControlView, params);
         }
     }
 
@@ -454,7 +426,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
         mRecordTimeView.setMaxDuration(clipManager.getMaxDuration());
         mRecordTimeView.setMinDuration(clipManager.getMinDuration());
         addView(mRecordTimeView, params);
-
     }
 
     private void initText() {
@@ -520,7 +491,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
             @Override
             public void onBeautyFaceClick() {
-                showBeautyFaceView();
+//                showBeautyFaceView();
             }
 
             @Override
@@ -538,6 +509,11 @@ public class AliyunSVideoRecordView extends RelativeLayout
                         if (type.getType() == cameraId) {
                             cameraType = type;
                         }
+                    }
+                    mSkippedFrames = 3;
+                    if (mFURenderer != null) {
+                        int type = cameraType.getType();
+                        mFURenderer.onCameraChange(type, FURenderer.getCameraOrientation(type));
                     }
                     if (mControlView != null) {
                         for (CameraType type : CameraType.values()) {
@@ -572,7 +548,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
             @Override
             public void onGifEffectClick() {
-                showGifEffectView();
+//                showGifEffectView();
             }
 
             @Override
@@ -826,163 +802,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
                     currPasterPath = path;
                 }
             });
-
-            //3D贴纸
-            gifEffectChooser.setThreeDItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseThreeD = false;
-                        } else {
-                            clearOtherFilter(3, effect);
-                        }
-                        faceUnityManager.createItem(effect);
-                    }
-                }
-            });
-            //Animoji
-            gifEffectChooser.setAnimojiItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseAnimoji = false;
-                        } else {
-                            clearOtherFilter(4, effect);
-                        }
-                        faceUnityManager.createItem(effect);
-                    }
-                }
-            });
-            //哈哈镜
-            gifEffectChooser.setOnItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseHAHAJING = false;
-                        } else {
-                            clearOtherFilter(5, effect);
-                        }
-                        faceUnityManager.createItem(effect);
-                    }
-                }
-            });
-            //背景分割
-            gifEffectChooser.setBackgroundItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseBackground = false;
-                        } else {
-                            clearOtherFilter(6, effect);
-                        }
-                        faceUnityManager.createItem(effect);
-                    }
-                }
-            });
-            //动漫滤镜
-            gifEffectChooser.setDongMLvjItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseDongMLvj = false;
-                        } else {
-                            clearOtherFilter(7, effect);
-                        }
-                        faceUnityManager.onLoadAnimFilter(isUseDongMLvj, effect);
-                    }
-                }
-            });
-            //手势识别
-            gifEffectChooser.setGestureItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseGesture = false;
-                        } else {
-                            clearOtherFilter(8, effect);
-                        }
-                        faceUnityManager.createItem(effect);
-                    }
-                }
-            });
-            //音乐滤镜
-            gifEffectChooser.setMusicItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseMusic = false;
-                            stopMusic();
-                            AliyunSVideoRecordView.this.effect = effect;
-                        } else {
-                            clearOtherFilter(9, effect);
-                            playMusic(effect);
-                        }
-                        faceUnityManager.createItem(effect);
-                    }
-                }
-            });
-            gifEffectChooser.setMusicTimeListener(new DistortingMirrorAdapter.OnMusicListener() {
-                @Override
-                public void onMusic(long time) {
-                    musicTime = time;
-                }
-            });
-            //表情识别
-            gifEffectChooser.setExpressionItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseExpression = false;
-                        } else {
-                            clearOtherFilter(10, effect);
-                        }
-                        faceUnityManager.createItem(effect);
-                    }
-                }
-            });
-            gifEffectChooser.setExpressionDesListener(new DistortingMirrorAdapter.OnDescriptionChangeListener() {
-                @Override
-                public void onDescriptionChangeListener(int description) {
-                    showDescription(description, 1500);
-                }
-            });
-            //ar面具
-            gifEffectChooser.setArItemListener(new DistortingMirrorAdapter.OnItemListener() {
-                @Override
-                public void onPosition(int position, Effect effect) {
-                    if (faceUnityManager != null) {
-                        if (effect.effectType() == Effect.EFFECT_TYPE_NONE) {
-                            isUseAr = false;
-                        } else {
-                            clearOtherFilter(11, effect);
-                        }
-                        faceUnityManager.createItem(effect);
-                    }
-                }
-            });
-
-//            gifEffectChooser.setDismissListener(new DialogVisibleListener() {
-//                @Override
-//                public void onDialogDismiss() {
-//
-//                }
-//
-//                @Override
-//                public void onDialogShow() {
-//                    if (!TextUtils.isEmpty(currPasterPath)) {
-//                        // dialog显示后,如果记录的paster不为空, 使用该paster
-//                        addEffectToRecord(currPasterPath);
-//                    }
-//                }
-//            });
         }
         gifEffectChooser.show(getFragmentManager(), TAG_GIF_CHOOSER);
     }
@@ -994,17 +813,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
             textView.setVisibility(View.INVISIBLE);
         }
     };
-
-    protected void showDescription(int str, int time) {
-        if (str == 0) {
-            return;
-        }
-        textView.removeCallbacks(effectDescriptionHide);
-        textView.setVisibility(View.VISIBLE);
-        textView.setText(str);
-        textView.postDelayed(effectDescriptionHide, time);
-    }
-
 
     //type:1.gif；2.MV；3. 2d/3d贴纸；4.animoji；5.哈哈镜
     // 6.背景分割；7.动漫滤镜；8.手势识别; 9.音乐滤镜；10.表情识别
@@ -1247,13 +1055,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 beautyColorLevel = (float) beautyParams.beautyWhite / 100;
                 beautyRedLevel = (float) beautyParams.beautyRuddy / 100;
                 beautyBlurLevel = (float) beautyParams.beautyBuffing / 10;
-                // 美白和红润faceUnity的值范围 0~1.0f
-                if (faceUnityManager != null) {
-                    faceUnityManager.setFaceBeautyColorLevel(beautyColorLevel);
-                    faceUnityManager.setFaceBeautyRedLevel(beautyRedLevel);
-                    // 磨皮faceUnity的值范围0~10.0f
-                    faceUnityManager.setFaceBeautyBlurLevel(beautyBlurLevel);
-                }
             }
 
         });
@@ -1264,10 +1065,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
             public void onItemSelected(int postion) {
                 currentBeautySkinPosition = postion;
                 BeautyParams beautyParams = rememberParamList.get(postion);
-                if (faceUnityManager != null) {
-                    faceUnityManager.setFaceBeautyEnlargeEye((float) beautyParams.beautyBigEye / 100);
-                    faceUnityManager.setFaceBeautyCheekThin((float) beautyParams.beautySlimFace / 100 * 1.5f);
-                }
 
             }
         });
@@ -1312,12 +1109,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
                     tempColorLevel = 0;
                     tempRedLevel = 0;
                     tempBlurLevel = 0;
-                }
-                if (faceUnityManager != null) {
-                    faceUnityManager.setFaceBeautyColorLevel(tempColorLevel);
-                    faceUnityManager.setFaceBeautyRedLevel(tempRedLevel);
-                    // 磨皮faceUnity的值范围0~10.0f
-                    faceUnityManager.setFaceBeautyBlurLevel(tempBlurLevel);
                 }
 
             }
@@ -1365,14 +1156,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
                             beautyParams.beautyWhite = param.beautyWhite;
                             beautyParams.beautyBuffing = param.beautyBuffing;
                             beautyParams.beautyRuddy = param.beautyRuddy;
-                            if (faceUnityManager != null) {
-                                // 美白
-                                faceUnityManager.setFaceBeautyColorLevel((float) param.beautyWhite / 100);
-                                // 红润
-                                faceUnityManager.setFaceBeautyRedLevel((float) param.beautyRuddy / 100);
-                                // 磨皮
-                                faceUnityManager.setFaceBeautyBlurLevel((float) param.beautyBuffing / 10);
-                            }
                         }
                     }
                 });
@@ -1435,12 +1218,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
 
                             beautyParams.beautyBigEye = param.beautyBigEye;
                             beautyParams.beautySlimFace = param.beautySlimFace;
-                            if (faceUnityManager != null) {
-                                //大眼
-                                faceUnityManager.setFaceBeautyEnlargeEye((float) param.beautyBigEye / 100);
-                                //瘦脸
-                                faceUnityManager.setFaceBeautyCheekThin((float) param.beautySlimFace / 100 * 1.5f);
-                            }
                             saveBeautyParams(currentBeautySkinPosition, beautyParams);
 
                         }
@@ -1511,14 +1288,11 @@ public class AliyunSVideoRecordView extends RelativeLayout
             public void onFrameBack(byte[] bytes, int width, int height, Camera.CameraInfo info) {
                 //原始数据回调 NV21,这里获取原始数据主要是为了faceUnity高级美颜使用
                 frameBytes = bytes;
-                frameWidth = width;
-                frameHeight = height;
             }
 
             @Override
             public Camera.Size onChoosePreviewSize(List<Camera.Size> supportedPreviewSizes,
                                                    Camera.Size preferredPreviewSizeForVideo) {
-
                 return null;
             }
 
@@ -1682,25 +1456,39 @@ public class AliyunSVideoRecordView extends RelativeLayout
             }
 
         });
+
+        /**
+         * 自定义渲染，使用 faceunity 美颜
+         */
         recorder.setOnTextureIdCallback(new OnTextureIdCallBack() {
+            private boolean mIsFirstFrame = true;
+
             @Override
             public int onTextureIdBack(int textureId, int textureWidth, int textureHeight, float[] matrix) {
-
-                //******************************** start ******************************************
-                //这块代码会影响到标准版的faceUnity功能 改动的时候要关联app gradle 一起改动
-                if (faceInitResult && currentBeautyFaceMode == BeautyMode.Advanced && faceUnityManager != null) {
-                    /**
-                     * faceInitResult fix bug:反复退出进入会出现黑屏情况,原因是因为release之后还在调用渲染的接口,必须要保证release了之后不能再调用渲染接口
-                     */
-                    return faceUnityManager.draw(frameBytes, mFuImgNV21Bytes, textureId, frameWidth, frameHeight, mFrameId++, mControlView.getCameraType().getType()
-                            , getPictureRotation(), isUseThreeD, isUseAnimoji, isUseGesture, isUseMusic, musicTime);
-
+                if (!mIsFuBeautyOpen) {
+                    return textureId;
                 }
-                //******************************** end ********************************************
-                return textureId;
+                if (mIsFirstFrame) {
+                    mIsFirstFrame = false;
+                    Log.d(TAG, "onTextureDestroyed thread:" + Thread.currentThread().getName()
+                            + ", texId:" + textureId + ", width:" + textureWidth + ", height:" + textureHeight);
+                    mFURenderer.onSurfaceCreated();
+                }
+                int texId = 0;
+                if (currentBeautyFaceMode == BeautyMode.Advanced) {
+                    texId = mFURenderer.onDrawFrameDualInput(frameBytes, textureId, textureWidth, textureHeight);
+                    if (mSkippedFrames > 0) {
+                        mSkippedFrames--;
+                        texId = textureId;
+                    }
+                }
+                if (texId <= 0) {
+                    texId = textureId;
+                }
+                return texId;
             }
 
-            OpenGLTest test;
+            private OpenGLTest test;
 
             @Override
             public int onScaledIdBack(int scaledId, int textureWidth, int textureHeight, float[] matrix) {
@@ -1715,9 +1503,8 @@ public class AliyunSVideoRecordView extends RelativeLayout
             public void onTextureDestroyed() {
                 // sdk3.7.8改动, 自定义渲染（第三方渲染）销毁gl资源，以前GLSurfaceView时可以通过GLSurfaceView.queueEvent来做，
                 // 现在增加了一个gl资源销毁的回调，需要统一在这里面做。
-                if (faceUnityManager != null && faceInitResult) {
-                    faceUnityManager.release();
-                    faceInitResult = false;
+                if (mFURenderer != null) {
+                    mFURenderer.onSurfaceDestroyed();
                 }
             }
         });
@@ -1728,24 +1515,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
             }
         });
         recorder.setFaceTrackInternalMaxFaceCount(2);
-    }
-
-    /**
-     * 美颜默认选中高级, 3档 美白: 0.6 红润: 0.6 磨皮: 6 大眼: 0.6 瘦脸: 0.6 * 1.5 (总范围0~1.5)
-     */
-    private void faceunityDefaultParam() {
-        float defaultValue = (float) defaultBeautyLevel.getValue() / 100;
-
-        beautyColorLevel = defaultValue;
-        beautyRedLevel = defaultValue;
-        beautyBlurLevel = defaultValue * 10;
-        if (faceUnityManager != null) {
-            faceUnityManager.setFaceBeautyColorLevel(defaultValue);
-            faceUnityManager.setFaceBeautyRedLevel(defaultValue);
-            faceUnityManager.setFaceBeautyEnlargeEye(defaultValue);
-            faceUnityManager.setFaceBeautyBlurLevel(beautyBlurLevel);
-            faceUnityManager.setFaceBeautyCheekThin(defaultValue * 1.5f);
-        }
     }
 
     private void copyAssets() {
@@ -1869,22 +1638,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
      * 销毁录制，在activity或者fragment被销毁时调用此方法
      */
     public void destroyRecorder() {
-        //mGLSurfaceView.queueEvent(new Runnable() {
-        //    @Override
-        //    public void run() {
-        ///**
-        // * 释放faceUnity相关，因为faceUnity的销毁必须要再渲染线程中做.我们使用queueEvent来保证release方法在渲染线程中使用
-        // * 目前放在stopPreview中调用release,主要是保证存在mGLSurfaceView没有销毁GL线程还存在
-        // */
-        //        if (faceUnityManager != null && faceInitResult) {
-        //            faceUnityManager.release();
-        //            faceInitResult = false;
-        //        }
-        //
-        //        Log.e(TAG, "run");
-        //    }
-        //});
-
         if (finishRecodingTask != null) {
             finishRecodingTask.cancel(true);
             finishRecodingTask = null;
@@ -1911,7 +1664,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
     }
 
     /**
-     * 结束录制，并且将录制片段视频拼接成一个视频 跳转editorActivity在合成完成的回调的方法中，{@link AlivcSvideoRecordActivity#onResume()}
+     * 结束录制，并且将录制片段视频拼接成一个视频 跳转editorActivity在合成完成的回调的方法中
      */
     private void finishRecording() {
         //弹窗提示
@@ -2356,86 +2109,6 @@ public class AliyunSVideoRecordView extends RelativeLayout
                 break;
         }
         return height;
-    }
-
-    //************音乐滤镜的播放*******//
-    private MediaPlayer mediaPlayer;
-    private Handler mMusicHandler;
-    private static final int MUSIC_TIME = 50;
-    Runnable mMusicRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                musicTime = mediaPlayer.getCurrentPosition();
-                Log.d("ssss", "time=" + musicTime);
-            }
-//                mOnMusicListener.onMusic(mediaPlayer.getCurrentPosition());
-            mMusicHandler.postDelayed(mMusicRunnable, MUSIC_TIME);
-        }
-    };
-
-    public void stopMusic() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-            mMusicHandler.removeCallbacks(mMusicRunnable);
-        }
-    }
-
-    public void playMusic(Effect effect) {
-        if (effect == null)
-            return;
-        if (effect.effectType() != Effect.EFFECT_TYPE_MUSIC_FILTER) {
-            return;
-        }
-        stopMusic();
-
-        if (effect.effectType() != Effect.EFFECT_TYPE_MUSIC_FILTER) {
-            return;
-        }
-        mediaPlayer = new MediaPlayer();
-        mMusicHandler = new Handler();
-
-        /**
-         * mp3
-         */
-        try {
-            AssetFileDescriptor descriptor = getContext().getAssets().openFd("musicfilter/" + effect.bundleName() + ".mp3");
-            mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
-            descriptor.close();
-
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
-                @Override
-                public void onBufferingUpdate(MediaPlayer mp, int percent) {
-
-                }
-            });
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    // 装载完毕回调
-                    //mediaPlayer.setVolume(1f, 1f);
-                    mediaPlayer.setLooping(false);
-                    mediaPlayer.seekTo(0);
-                    mediaPlayer.start();
-
-                    mMusicHandler.postDelayed(mMusicRunnable, MUSIC_TIME);
-                }
-            });
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    mediaPlayer.seekTo(0);
-                    mediaPlayer.start();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-            mediaPlayer = null;
-        }
     }
 
 }

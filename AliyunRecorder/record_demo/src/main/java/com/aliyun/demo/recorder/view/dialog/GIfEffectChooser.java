@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.aliyun.demo.R;
 import com.aliyun.demo.recorder.view.effects.otherfilter.ARView;
@@ -21,7 +20,6 @@ import com.aliyun.demo.recorder.view.effects.otherfilter.ThreeDStickerView;
 import com.aliyun.demo.recorder.view.effects.paster.AlivcPasterChooseView;
 import com.aliyun.demo.recorder.view.effects.paster.PasterSelectListener;
 import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
-import com.faceunity.OnFUControlListener;
 
 import java.util.ArrayList;
 import java.util.List;

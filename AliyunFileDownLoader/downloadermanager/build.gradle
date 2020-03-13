@@ -14,9 +14,9 @@ android {
 }
 
 dependencies {
-    api 'com.liulishuo.filedownloader:library:1.4.1'
+    api 'com.liulishuo.filedownloader:library:1.7.6'
     api externalOKHTTP
-    api group: 'org.apache.ant', name: 'ant', version: '1.7.1'
+    api group: 'org.apache.ant', name: 'ant', version: '1.8.0'
     api (project(':AliyunVideoSdk')) {
         transitive = false
     }
