@@ -2,7 +2,7 @@
 
 FUALiShortVideoDroid 是集成了 FaceUnity 美颜道具贴纸功能和 **[阿里云短视频](https://help.aliyun.com/document_detail/94329.html?spm=a2c4g.11186623.6.778.76b454bf0a4gyb)** 的 Demo。
 
-本文是 FaceUnity SDK 快速对接阿里云短视频的导读说明，关于 `FaceUnity SDK` 的详细说明，请参看 **[FULiveDemoDroid](https://github.com/Faceunity/FULiveDemoDroid/)**
+本文是 FaceUnity Nama SDK 快速对接阿里云短视频的导读说明，SDK 版本为 **6.7.0**。关于 SDK 的详细说明，请参看 **[FULiveDemoDroid](https://github.com/Faceunity/FULiveDemoDroid/)**。
 
 ## 快速集成方法
 
@@ -14,7 +14,7 @@ FUALiShortVideoDroid 是集成了 FaceUnity 美颜道具贴纸功能和 **[阿�
 - libs 文件夹下 nama.jar 是供应用层调用的 JNI 接口
 - assets 文件夹下 AI_model/ai_face_processor.bundle 是人脸识别数据包（自 6.6.0 版本起，v3.bundle 不再使用）
 - assets 文件夹下 face_beautification.bundle 是美颜功能数据包
-- assets 文件夹下 normal 中的 \*.bundle 文件是特效贴纸文件，自定义特效贴纸制作的文档和工具，请联系技术支持获取。
+- assets 文件夹下 effect 中的 \*.bundle 文件是特效贴纸文件，自定义特效贴纸制作的文档和工具，请联系技术支持获取。
 
 ### 二、使用 SDK
 
@@ -36,7 +36,7 @@ FUALiShortVideoDroid 是集成了 FaceUnity 美颜道具贴纸功能和 **[阿�
 
 #### 5. 切换相机
 
-调用 `FURenderer` 类 的  `onCameraChange` 方法，用于重新为 SDK 设置参数。
+调用 `FURenderer` 类 的  `onCameraChanged` 方法，用于重新为 SDK 设置参数。
 
 上面一系列方法的使用，具体在 demo 中的 `AliyunSVideoRecordView` 类 `initRecorder` 方法，请参考该代码示例接入。
 
@@ -44,5 +44,4 @@ FUALiShortVideoDroid 是集成了 FaceUnity 美颜道具贴纸功能和 **[阿�
 
 `FURenderer` 类实现了 `OnFaceUnityControlListener` 接口，而 `OnFaceUnityControlListener` 接口是对切换贴纸道具及调整美颜参数等一系列操作的封装。在 demo 中，`BeautyControlView` 用于实现用户交互，调用了 `OnFaceUnityControlListener` 的方法实现功能。
 
-
-**至此快速集成完毕，关于 FaceUnity SDK 的更多详细说明，请参看 [FULiveDemoDroid](https://github.com/Faceunity/FULiveDemoDroid/)**
+**至此快速集成完毕，关于 FaceUnity SDK 的更多详细说明，请参看 [FULiveDemoDroid](https://github.com/Faceunity/FULiveDemoDroid/)**。
