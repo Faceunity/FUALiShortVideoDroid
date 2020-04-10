@@ -513,7 +513,7 @@ public class AliyunSVideoRecordView extends RelativeLayout
                     mSkippedFrames = 3;
                     if (mFURenderer != null) {
                         int type = cameraType.getType();
-                        mFURenderer.onCameraChange(type, FURenderer.getCameraOrientation(type));
+                        mFURenderer.onCameraChanged(type, FURenderer.getCameraOrientation(type));
                     }
                     if (mControlView != null) {
                         for (CameraType type : CameraType.values()) {
