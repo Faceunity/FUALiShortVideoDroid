@@ -16,11 +16,14 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar','*.aar'], dir: 'libs')
-    api externalAndroidAppCompatV7
-    api externalAndroidRecyclerView
-    api project(':AliyunVideoSdk')
-    api project(':AlivcCore')
-    api project(':AliyunVideoCommon')
+    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+    implementation externalAndroidAppCompatV7
+    implementation externalAndroidRecyclerView
+    implementation project(':AliyunVideoCommon')
+    implementation project(':AlivcMedia')
     implementation externalAlivcConan
+    implementation externalGSON
+    implementation externalAlivcCore
+    implementation externalAlivcFFmpeg
+    api externalSvideopro
 }

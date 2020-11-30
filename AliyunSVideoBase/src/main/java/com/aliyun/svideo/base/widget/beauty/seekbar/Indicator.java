@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 
 /**
  * created by ZhuangGuangquan on 2017/9/9

@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.aliyun.common.global.AliyunTag;
+import com.aliyun.svideo.media.MediaInfo;
 import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoParam;
 import com.aliyun.svideo.sdk.external.struct.common.CropKey;
 import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
@@ -14,7 +15,7 @@ import com.duanqu.transcode.NativeParser;
 /**
  * @author zsy_18 data:2018/10/10
  */
-    public class AlivcSvideoEditParam {
+public class AlivcSvideoEditParam {
 
     /**
      *  判断是编辑模块进入还是通过社区模块的编辑功能进入
@@ -22,10 +23,9 @@ import com.duanqu.transcode.NativeParser;
     public static final String INTENT_PARAM_KEY_ENTRANCE = "entrance";
     public static final String VIDEO_FRAMERATE = "video_framerate";
     public static final String VIDEO_GOP = "video_gop";
-    public static final String VIDEO_BITRATE = "video_bitrate";
     public static final String VIDEO_RATIO = "video_ratio";
     public static final String VIDEO_QUALITY = "video_quality";
-    public static final String VIDEO_RESOLUTION= "video_RESOLUTION";
+    public static final String VIDEO_RESOLUTION = "video_RESOLUTION";
     public static final String VIDEO_CROP_MODE = "crop_mode";
     public static final String TAIL_ANIMATION = "tail_animation";
     public static final String VIDEO_PATH = "video_path";
@@ -61,10 +61,7 @@ import com.duanqu.transcode.NativeParser;
      * 视频GOP
      */
     private int mGop;
-    /**
-     * 视频码率
-     */
-    private int mBitrate;
+
     /**
      * 视频比例
      */
@@ -123,18 +120,17 @@ import com.duanqu.transcode.NativeParser;
         entrance = "svideo";
         mCropAction = ACTION_SELECT_TIME;
     }
-    public AliyunVideoParam generateVideoParam(){
+    public AliyunVideoParam generateVideoParam() {
         AliyunVideoParam param = new AliyunVideoParam.Builder()
-            .frameRate(mFrameRate)
-            .gop(mGop)
-            .crf(0)
-            .bitrate(mBitrate)
-            .videoQuality(mVideoQuality)
-            .scaleMode(mCropMode)
-            .outputWidth(getVideoWidth())
-            .outputHeight(getVideoHeight(this.mediaInfo))
-            .videoCodec(mVideoCodec)
-            .build();
+        .frameRate(mFrameRate)
+        .gop(mGop)
+        .crf(0)
+        .videoQuality(mVideoQuality)
+        .scaleMode(mCropMode)
+        .outputWidth(getVideoWidth())
+        .outputHeight(getVideoHeight(this.mediaInfo))
+        .videoCodec(mVideoCodec)
+        .build();
         return param;
     }
 
@@ -176,14 +172,6 @@ import com.duanqu.transcode.NativeParser;
 
     public void setGop(int mGop) {
         this.mGop = mGop;
-    }
-
-    public int getBitrate() {
-        return mBitrate;
-    }
-
-    public void setBitrate(int mBitrate) {
-        this.mBitrate = mBitrate;
     }
 
     public int getRatio() {
@@ -234,7 +222,7 @@ import com.duanqu.transcode.NativeParser;
         return mVideoCodec;
     }
 
-    public static class Build{
+    public static class Build {
         private AlivcSvideoEditParam param = new AlivcSvideoEditParam();
         public Build setFrameRate(int mFrameRate) {
             this.param.mFrameRate = mFrameRate;
@@ -242,10 +230,6 @@ import com.duanqu.transcode.NativeParser;
         }
         public Build setGop(int mGop) {
             this.param.mGop = mGop;
-            return this;
-        }
-        public Build setBitrate(int mBitrate) {
-            this.param.mBitrate = mBitrate;
             return this;
         }
 
@@ -265,7 +249,7 @@ import com.duanqu.transcode.NativeParser;
             this.param.mCropMode = mScaleMode;
             return this;
         }
-        public Build setMediaInfo(MediaInfo info){
+        public Build setMediaInfo(MediaInfo info) {
             this.param.mediaInfo = info;
             return this;
         }
@@ -273,7 +257,7 @@ import com.duanqu.transcode.NativeParser;
             this.param.hasTailAnimation = hasTailAnimation;
             return this;
         }
-        public Build setEntrance(String entrance){
+        public Build setEntrance(String entrance) {
             this.param.entrance = entrance;
             return this;
         }
@@ -287,7 +271,7 @@ import com.duanqu.transcode.NativeParser;
             return this;
         }
 
-        public AlivcSvideoEditParam build(){
+        public AlivcSvideoEditParam build() {
             return this.param;
         }
 
@@ -296,21 +280,21 @@ import com.duanqu.transcode.NativeParser;
     public int getVideoWidth() {
         int width = 0;
         switch (mResolutionMode) {
-            case RESOLUTION_360P:
-                width = 360;
-                break;
-            case RESOLUTION_480P:
-                width = 480;
-                break;
-            case RESOLUTION_540P:
-                width = 540;
-                break;
-            case RESOLUTION_720P:
-                width = 720;
-                break;
-            default:
-                width = 540;
-                break;
+        case RESOLUTION_360P:
+            width = 360;
+            break;
+        case RESOLUTION_480P:
+            width = 480;
+            break;
+        case RESOLUTION_540P:
+            width = 540;
+            break;
+        case RESOLUTION_720P:
+            width = 720;
+            break;
+        default:
+            width = 540;
+            break;
         }
         return width;
     }
@@ -319,50 +303,57 @@ import com.duanqu.transcode.NativeParser;
         int height = 0;
         int width = getVideoWidth();
         switch (mRatio) {
-            case RATIO_MODE_1_1:
-                height = width;
-                break;
-            case RATIO_MODE_3_4:
-                height = width * 4 / 3;
-                break;
-            case RATIO_MODE_9_16:
+        case RATIO_MODE_1_1:
+            height = width;
+            break;
+        case RATIO_MODE_3_4:
+            height = width * 4 / 3;
+            break;
+        case RATIO_MODE_9_16:
+            height = width * 16 / 9;
+            break;
+        case RATIO_MODE_ORIGINAL:
+            if (mediaInfo != null) {
+                height = (int)(width / getMediaRatio(mediaInfo));
+            } else {
                 height = width * 16 / 9;
-                break;
-            case RATIO_MODE_ORIGINAL:
-                if (mediaInfo!=null){
-                    height = (int)(width/getMediaRation(mediaInfo));
-                }else {
-                    height = width * 16 / 9;
-                }
-                break;
-            default:
-                height = width * 16 / 9;
-                break;
+            }
+            break;
+        default:
+            height = width * 16 / 9;
+            break;
         }
         return height;
     }
-    private float getMediaRation(MediaInfo mediaInfo){
+    private float getMediaRatio(MediaInfo mediaInfo) {
         float videoWidth = 9;
         float videoHeight = 16;
-        if (mediaInfo.mimeType.startsWith("video")||mediaInfo.filePath.endsWith("gif")||mediaInfo.filePath.endsWith("GIF")){
+        int videoRotation = 0;
+        if (mediaInfo.mimeType.startsWith("video") || mediaInfo.filePath.endsWith("gif") || mediaInfo.filePath.endsWith("GIF")) {
             NativeParser parser = new NativeParser();
             parser.init(mediaInfo.filePath);
             try {
-                videoWidth = Float.parseFloat(parser.getValue(NativeParser.VIDEO_CODEC_WIDTH));
-                videoHeight = Integer.parseInt(parser.getValue(NativeParser.VIDEO_CODEC_HEIGHT));
-
-            } catch (Exception e) {
+                videoWidth = Float.parseFloat(parser.getValue(NativeParser.VIDEO_WIDTH));
+                videoHeight = Integer.parseInt(parser.getValue(NativeParser.VIDEO_HEIGHT));
+                videoRotation = Integer.parseInt(parser.getValue(NativeParser.VIDEO_ROTATION));
+            }  catch (Exception e) {
                 Log.e(AliyunTag.TAG, "parse rotation failed");
             }
+            parser.release();
+            parser.dispose();
 
-        }else {
+        } else {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(mediaInfo.filePath, options);
             videoWidth = options.outWidth;
             videoHeight = options.outHeight;
         }
-        return videoWidth / videoHeight;
+
+
+        float ratio = videoWidth / videoHeight;
+
+        return videoRotation == 90 || videoRotation == 270 ? 1 / ratio : ratio;
 
     }
 }

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="aliyun_video_bottom_dialog_animation">
+        <item name="android:windowEnterAnimation">@anim/aliyun_video_anim_trans_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/aliyun_video_anim_layout_bottom_out</item>
+    </style>
+
+    <style name="QUDemoDialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+    <style name="QUDemoFullStyle" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    <style name="QUDemoFullFitStyle" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="record_bottom_dialog_animation">
+        <item name="android:windowEnterAnimation">@anim/aliyun_video_anim_trans_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/aliyun_video_anim_layout_bottom_out</item>
+    </style>
+
+
+    <style name="CustomTheme_Dialog" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/notAnimation</item>
+    </style>
+    <style name="notAnimation">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
+    </style>
+
+    <!--录制模块的UI配置（专业版）-->
+    <style name="AlivcRecordUIStyle" parent="Theme.AppCompat.NoActionBar">
+        <!--音乐按钮图片-->
+        <item name="recordMusicImage">@mipmap/alivc_svideo_icon_magic_music</item>
+        <!--闪光灯按钮图片 - 开启-->
+        <item name="lightImageOpen">@mipmap/aliyun_svideo_icon_magic_light</item>
+        <!--闪光灯按钮图片 - 自动-->
+        <item name="lightImageAuto">@mipmap/aliyun_svideo_icon_magic_light_auto</item>
+        <!--闪光灯按钮图片 - 关闭-->
+        <item name="lightImageClose">@mipmap/aliyun_svideo_icon_magic_light_off</item>
+        <!--闪光灯按钮图片 - 不可用/与关闭的图标相同自动加color过滤-->
+        <item name="lightImageUnable">@mipmap/aliyun_svideo_icon_magic_light_off</item>
+        <!--倒计时图片-->
+        <item name="countdownImage">@mipmap/alivc_svideo_icon_magic</item>
+        <!--切换摄像头的图片-->
+        <item name="switchCameraImage">@mipmap/alivc_svideo_icon_magic_turn</item>
+        <!--完成的按钮图片 - 不可用-->
+        <item name="finishImageUnable">@mipmap/alivc_svideo_icon_next_not_ready</item>
+        <!--完成的按钮图片 - 可用-->
+        <item name="finishImageAble">@mipmap/alivc_svideo_icon_next_complete</item>
+        <!--底部滤镜，美颜，美肌对应的按钮图片-->
+        <item name="faceImage">@mipmap/alivc_svideo_icon_beauty_face</item>
+        <!--底部动图mv对应的按钮图片-->
+        <item name="magicImage">@mipmap/alivc_svideo_icon_gif_effect</item>
+        <!--拍摄按钮图片 - 未开始拍摄-->
+        <item name="videoShootImageNormal">@mipmap/alivc_svideo_bg_record_storp</item>
+        <!--拍摄按钮图片 - 拍摄中-->
+        <item name="videoShootImageShooting">@mipmap/alivc_svideo_bg_record_pause</item>
+        <!--拍摄按钮图片 - 长按中-->
+        <item name="videoShootImageLongPressing">@mipmap/alivc_svideo_bg_record_start</item>
+        <!--回删对应的图片-->
+        <item name="deleteImage">@mipmap/alivc_svideo_icon_delete</item>
+        <!--拍摄中红点对应的图片-->
+        <item name="dotImage">@mipmap/alivc_svideo_record_time_tip</item>
+        <!--向上的三角形对应的图片-->
+        <item name="triangleImage">@mipmap/alivc_svideo_icon_selected_indicator</item>
+
+    </style>
+
+    <style name="NoBackgroundDlgStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+</resources>

@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion externalCompileSdkVersion
+    buildToolsVersion externalBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion externalMinSdkVersion
+        targetSdkVersion externalTargetSdkVersion
+    }
+    lintOptions {
+        warning 'InvalidPackage'
+    }
+}
+
+dependencies {
+    api 'com.liulishuo.filedownloader:library:1.4.1'
+    implementation externalOKHTTP
+    implementation group: 'org.apache.ant', name: 'ant', version: '1.7.1'
+    implementation project(':AliyunSVideoBase')
+}

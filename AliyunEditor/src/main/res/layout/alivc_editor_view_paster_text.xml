@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.aliyun.svideo.editor.widget.AliyunPasterWithTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:duanqu="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.aliyun.svideo.editor.widget.AutoResizingTextView
+        android:id="@android:id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:contentDescription="@null"
+        android:duplicateParentState="true"
+        android:minWidth="30dp"
+        android:minHeight="30dp"
+        duanqu:strokeColor="#FFff0000"
+        duanqu:strokeJoinStyle="miter"
+        duanqu:strokeWidth="1dp"
+        android:background="@drawable/aliyun_svideo_theme_default_edit_diy_overlay_content_frame_selector"
+        />
+
+    <ImageView
+        android:id="@id/qupai_btn_edit_overlay_cancel"
+        android:layout_width="@dimen/alivc_common_size_icon_44"
+        android:layout_height="@dimen/alivc_common_size_icon_44"
+        android:contentDescription="@null"
+        android:duplicateParentState="true"
+        android:layout_gravity="left|top"
+        android:padding="@dimen/alivc_common_padding_10"
+        android:src="@drawable/aliyun_svideo_theme_default_btn_edit_overlay_cancel_selector"/>
+
+    <ImageView
+        android:id="@id/qupai_btn_edit_overlay_transform"
+        android:layout_width="@dimen/alivc_common_size_icon_44"
+        android:layout_height="@dimen/alivc_common_size_icon_44"
+        android:contentDescription="@null"
+        android:duplicateParentState="true"
+        android:layout_gravity="right|bottom"
+        android:padding="@dimen/alivc_common_padding_10"
+        android:src="@drawable/aliyun_svideo_theme_default_btn_edit_overlay_transform_selector"/>
+
+</com.aliyun.svideo.editor.widget.AliyunPasterWithTextView>

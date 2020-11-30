@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <include layout="@layout/alivc_recorder_include_action_bar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="5dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_min_record_duration"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <EditText
+                android:id="@+id/aliyun_min_duration_edit"
+                style="@style/alivc_record_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/alivc_recorder_setting_min_record_duration_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_max_record_duration"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <EditText
+                android:id="@+id/aliyun_max_duration_edit"
+                style="@style/alivc_record_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/alivc_recorder_setting_max_record_duration_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_gop"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <EditText
+                android:id="@+id/aliyun_gop_edit"
+                style="@style/alivc_record_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/alivc_recorder_setting_gop_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_quality"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_video_quality_super"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/alivc_recorder_setting_quality_super" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_video_quality_high"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/alivc_recorder_setting_quality_high" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_video_quality_normal"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/alivc_recorder_setting_quality_meidan" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/alivc_video_quality_low"
+                style="@style/alivc_record_btn_style"
+                android:layout_marginTop="15dp"
+                android:text="@string/alivc_recorder_setting_quality_low" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_ratio"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_video_ratio_9_16"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/alivc_recorder_setting_ratio_9_16" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_video_ratio_3_4"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/alivc_recorder_setting_ratio_3_4" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_video_ratio_1_1"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/alivc_recorder_setting_ratio_1_1" />
+
+            </LinearLayout>
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_resolution"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_record_resolution_360p"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/alivc_recorder_setting_resolution_360p" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_record_resolution_480p"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/alivc_recorder_setting_resolution_480p" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_record_resolution_540p"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/alivc_recorder_setting_resolution_540p" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/alivc_record_resolution_720p"
+                style="@style/alivc_record_btn_style"
+                android:layout_marginTop="10dp"
+                android:text="@string/alivc_recorder_setting_resolution_720p" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_codec"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/alivc_record_encoder_hardware"
+                    style="@style/alivc_record_btn_style"
+                    android:layout_gravity="center"
+                    android:text="@string/alivc_recorder_setting_encoder_hardware"/>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_record_encoder_openh264"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/alivc_recorder_setting_encoder_openh264" />
+                </FrameLayout>
+
+                <Button
+                    android:layout_gravity="center"
+                    android:id="@+id/alivc_record_encoder_ffmpeg"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/alivc_recorder_setting_encoder_ffmpeg"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_video_style"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_video_record_general"
+                    style="@style/alivc_record_btn_style"
+                    android:text="@string/alivc_recorder_setting_general_text" />
+
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_video_record_mix"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/alivc_recorder_setting_mix_text" />
+                </FrameLayout>
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="36dp"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_recorder_setting_rendering_mode"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_video_record_race"
+                    style="@style/alivc_record_btn_style"
+
+                    android:text="@string/alivc_recorder_setting_rendering_race" />
+
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <Button
+                        android:id="@+id/alivc_video_record_faceunity"
+                        style="@style/alivc_record_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/alivc_recorder_setting_rendering_faceunity" />
+
+                </FrameLayout>
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="36dp"
+                    android:visibility="invisible" />
+            </LinearLayout>
+            <Switch
+                android:id="@+id/alivc_record_switch_flip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="15dp"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:switchPadding="40dp"
+                android:text="镜像输出" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/aliyun_start_record"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/alivc_bg_start_record"
+        android:text="@string/alivc_recorder_setting_start_record"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/alivc_common_font_16" />
+
+
+</LinearLayout>

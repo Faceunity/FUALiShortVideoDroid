@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.aliyun.race.sample.cameraView.CameraBeautifyView
+        android:id="@+id/camera_textureview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.aliyun.race.sample.cameraView.CameraBeautifyView>
+
+    <ImageView
+        android:id="@+id/switch_camera"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="@dimen/alivc_common_margin_10"
+        android:layout_marginTop="@dimen/alivc_common_margin_10"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@mipmap/alivc_svideo_icon_magic_turn"
+        >
+    </ImageView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="@dimen/alivc_common_margin_40"
+        android:orientation="vertical">
+        <Switch
+            android:id="@+id/open_race"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:id="@+id/open_race_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alivc_recorder_setting_open_face"
+            android:layout_marginTop="@dimen/alivc_common_margin_3"
+            android:textColor="@color/alivc_common_font_white"
+            android:shadowColor="@color/alivc_common_bg_black_alpha_40"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
+            android:shadowRadius="3.0"
+            android:textSize="@dimen/alivc_common_font_10"/>
+        <Switch
+            android:checked="true"
+            android:id="@+id/open_face_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:id="@+id/open_face_point_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alivc_recorder_setting_open_face_point"
+            android:layout_marginTop="@dimen/alivc_common_margin_3"
+            android:textColor="@color/alivc_common_font_white"
+            android:shadowColor="@color/alivc_common_bg_black_alpha_40"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
+            android:shadowRadius="3.0"
+            android:textSize="@dimen/alivc_common_font_10"/>
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/camera_radio"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/alivc_common_margin_20"
+        android:layout_marginRight="@dimen/alivc_common_margin_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <RadioButton
+            android:id="@+id/camera_process"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alivc_base_beauty_mode_mix"
+            >
+        </RadioButton>
+        <RadioButton
+            android:id="@+id/camera_bufffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alivc_base_beauty_mode_buffer"
+            >
+        </RadioButton>
+        <RadioButton
+            android:id="@+id/camera_texture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alivc_base_beauty_mode_texture"
+            >
+        </RadioButton>
+
+    </RadioGroup>
+    <ImageView
+        android:id="@+id/camera_race_param"
+        android:layout_gravity="left|bottom"
+        android:layout_marginBottom="@dimen/alivc_common_margin_20"
+        android:layout_marginLeft="@dimen/alivc_common_margin_20"
+        android:layout_width="@dimen/alivc_common_height_icon_40"
+        android:layout_height="@dimen/alivc_common_height_icon_40"
+        android:src="@mipmap/alivc_svideo_icon_beauty_face">
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/camera_fps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:layout_marginRight="@dimen/alivc_common_margin_40"
+        android:layout_marginTop="@dimen/alivc_common_margin_40"
+        android:textColor="@color/alivc_common_font_red"
+        android:textSize="@dimen/alivc_common_font_12"/>
+
+</FrameLayout>

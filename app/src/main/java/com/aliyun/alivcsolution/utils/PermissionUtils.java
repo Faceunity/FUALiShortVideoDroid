@@ -22,8 +22,10 @@ public class PermissionUtils {
     private static final String BRAND_XIAOMI = "xiaomi";
     private static final String BRAND_HUAWEI = "HUAWEI";
     private static final String BRAND_GOOGLE = "google";
+
     /**
      * 申请权限
+     *
      * @param activity
      * @param permissions
      * @param requestCode
@@ -41,6 +43,7 @@ public class PermissionUtils {
 
     /**
      * 检查单个权限
+     *
      * @param context
      * @param permission
      * @return
@@ -59,28 +62,29 @@ public class PermissionUtils {
 
     /**
      * 检查多个权限
+     *
      * @param context
      * @param permissions
      * @return
      */
     public static boolean checkPermissionsGroup(Context context, String[] permissions) {
-        boolean result = false;
         for (String permission : permissions) {
-            result = checkPersmission(context, permission);
-            Log.e("PermissionUtils","result"+result);
+            if (!checkPersmission(context, permission)) {
+                return false;
+            }
         }
-        return result;
+        return true;
     }
 
 
     /**
-     *
      * 通过AppOpsManager判断小米手机授权情况
+     *
      * @return
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static boolean checkXiaomi(Context context, String[] opstrArrays) {
-        AppOpsManager appOpsManager = (AppOpsManager)context.getSystemService(Context.APP_OPS_SERVICE);
+        AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
         String packageName = context.getPackageName();
         for (String opstr : opstrArrays) {
             int locationOp = appOpsManager.checkOp(opstr, Binder.getCallingUid(), packageName);
@@ -91,18 +95,20 @@ public class PermissionUtils {
 
         return true;
     }
+
     public static boolean checkIsOppoRom() {
         //https://github.com/zhaozepeng/FloatWindowPermission/pull/26
         return Build.MANUFACTURER.contains("OPPO") || Build.MANUFACTURER.contains("oppo");
     }
+
     public static boolean checkIsMeizuRom() {
         //return Build.MANUFACTURER.contains("Meizu");
-        String meizuFlymeOSFlag  = getSystemProperty("ro.build.display.id");
-        if (TextUtils.isEmpty(meizuFlymeOSFlag)){
+        String meizuFlymeOSFlag = getSystemProperty("ro.build.display.id");
+        if (TextUtils.isEmpty(meizuFlymeOSFlag)) {
             return false;
-        }else if (meizuFlymeOSFlag.contains("flyme") || meizuFlymeOSFlag.toLowerCase().contains("flyme")){
-            return  true;
-        }else {
+        } else if (meizuFlymeOSFlag.contains("flyme") || meizuFlymeOSFlag.toLowerCase().contains("flyme")) {
+            return true;
+        } else {
             return false;
         }
     }

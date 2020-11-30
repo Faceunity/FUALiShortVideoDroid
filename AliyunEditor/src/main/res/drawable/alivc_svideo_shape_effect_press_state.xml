@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <size
+        android:width="@dimen/alivc_common_size_icon_40"
+        android:height="@dimen/alivc_common_size_icon_40" />
+    <solid android:color="@color/alivc_common_bg_cyan_light" />
+</shape>

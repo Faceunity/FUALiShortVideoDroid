@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_activated="true">
+    <color android:color="@color/alivc_common_bg_transparent"/>
+  </item>
+  <item android:state_checked="true">
+    <layer-list>
+      <item>
+        <shape android:shape="oval">
+          <size android:height="@dimen/alivc_common_size_icon_37" android:width="@dimen/alivc_common_size_icon_37"/>
+          <solid android:color="@color/alivc_edit_defalut_primary_color_alpha30"/>
+        </shape>
+      </item>
+      <item android:drawable="@mipmap/aliyun_svideo_qupai_edit_overlay_text"/>
+    </layer-list>
+  </item>
+  <item>
+    <layer-list>
+      <item>
+        <shape android:shape="oval">
+          <size android:height="@dimen/alivc_common_size_icon_37" android:width="@dimen/alivc_common_size_icon_37"/>
+          <solid android:color="@color/alivc_edit_defalut_primary_color"/>
+        </shape>
+      </item>
+      <item android:drawable="@mipmap/aliyun_svideo_qupai_edit_overlay_text"/>
+    </layer-list>
+  </item>
+</selector>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="filter_order">
+        <item>优雅</item>
+        <item>光圈</item>
+        <item>思念</item>
+        <item>朝阳</item>
+        <item>柔柔</item>
+        <item>模糊</item>
+        <item>波普</item>
+        <item>浓烈</item>
+        <item>海盐</item>
+        <item>海蓝</item>
+        <item>灰白</item>
+        <item>炽黄</item>
+        <item>焦黄</item>
+        <item>粉桃</item>
+        <item>素描</item>
+        <item>红润</item>
+        <item>经典</item>
+        <item>胶片</item>
+        <item>蓝调</item>
+        <item>迷糊</item>
+        <item>闪耀</item>
+        <item>阳光</item>
+        <item>雪梨</item>
+        <item>马赛克</item>
+        <item>鱼眼</item>
+        <item>鲜果</item>
+        <item>麦茶</item>
+        <item>黑白</item>
+    </array>
+    <!--编辑模块的主题UI配置-->
+    <style name="AlivcEditUIStyle" parent="Theme.AppCompat.NoActionBar">
+        <!--滤镜item对应的图片-->
+        <item name="filterImage">@mipmap/aliyun_svideo_filter</item>
+        <!--音乐图标-->
+        <item name="musicImage">@mipmap/aliyun_svideo_music</item>
+        <!--动图图标-->
+        <item name="pasterImage">@mipmap/aliyun_svideo_overlay</item>
+        <!--字幕图标-->
+        <item name="captionImage">@mipmap/aliyun_svideo_caption</item>
+        <!--MV图标-->
+        <item name="mvImage">@mipmap/aliyun_svideo_mv</item>
+        <!--特效图标-->
+        <item name="effectImage">@mipmap/alivc_svideo_effect</item>
+        <!--时间特效图标-->
+        <item name="timeImage">@mipmap/aliyun_svideo_time</item>
+        <!--转场图标-->
+        <item name="translationImage">@mipmap/aliyun_svideo_transition</item>
+        <!--涂鸦图标-->
+        <item name="paintImage">@mipmap/aliyun_svideo_paint</item>
+        <!--封面选择图标-->
+        <item name="coverImage">@mipmap/aliyun_svideo_cover</item>
+        <!--播放对应图标-->
+        <item name="playImage">@mipmap/aliyun_svideo_play</item>
+        <!--暂停对应图标-->
+        <item name="pauseImage">@mipmap/aliyun_svideo_pause</item>
+        <!--编辑完成对应图标-->
+        <item name="finishImage">@mipmap/aliyun_svideo_complete_red</item>
+    </style>
+    <!--用于控制编辑页面底部菜单显示内容，1显示0不显示-->
+    <array name="bottomItemMenuVisibleTags">
+        <!--滤镜是否显示-->
+        <item>1</item>
+        <!--音乐是否显示-->
+        <item>1</item>
+        <!--动图是否显示-->
+        <item>1</item>
+        <!--字幕是否显示-->
+        <item>1</item>
+        <!--MV是否显示-->
+        <item>1</item>
+        <!--音效是否显示-->
+        <item>1</item>
+        <!--特效是否显示-->
+        <item>1</item>
+        <!--变速是否显示-->
+        <item>1</item>
+        <!--转场是否显示-->
+        <item>1</item>
+        <!--涂鸦是否显示-->
+        <item>1</item>
+        <!--封面是否显示-->
+        <item>0</item>
+    </array>
+</resources>

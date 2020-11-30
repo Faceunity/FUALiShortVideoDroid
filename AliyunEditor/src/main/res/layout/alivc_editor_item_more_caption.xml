@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/alivc_common_padding_20"
+    android:gravity="center_vertical"
+    android:background="@color/alivc_common_theme_primary"
+
+    >
+
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="@dimen/alivc_common_size_icon_70"
+        android:layout_height="@dimen/alivc_common_size_icon_70"
+        android:layout_marginLeft="@dimen/alivc_common_margin_10"
+        android:background="@drawable/alivc_svideo_shape_effect_icon_frame"
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop"
+        android:layout_marginStart="10dp" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/alivc_common_margin_4"
+        android:layout_marginTop="@dimen/alivc_common_margin_8"
+        android:layout_toRightOf="@id/iv_icon"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="@dimen/alivc_common_font_14"
+        />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tv_name"
+        android:layout_below="@id/tv_name"
+        android:layout_marginTop="@dimen/alivc_common_margin_3"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="@dimen/alivc_common_font_12"
+        />
+
+
+    <ProgressBar
+        android:id="@+id/download_progress"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/alivc_style_download_progress"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp" />
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="@dimen/alivc_common_font_12"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:id="@+id/tv_right_button"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/aliyun_svideo_shape_caption_manager_bg"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentEnd="true" />
+
+
+
+    <ImageView
+        android:id="@+id/iv_download_finish"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:background="@drawable/alivc_svideo_shape_effect_download_finish"
+        android:src="@mipmap/alivc_icon_download_finish"
+        android:visibility="gone"
+        android:scaleType="center"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp" />
+</RelativeLayout>

@@ -20,7 +20,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <solid android:color="@color/aliyun_tint_color" />
+                <solid android:color="@color/alivc_common_bg_pink" />
             </shape>
         </clip>
     </item>

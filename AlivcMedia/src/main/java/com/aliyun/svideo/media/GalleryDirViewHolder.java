@@ -12,9 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.aliyun.video.common.utils.image.ImageLoaderImpl;
-
-import com.aliyun.demo.importer.R;
+import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 
 public class GalleryDirViewHolder extends RecyclerView.ViewHolder {
 
@@ -36,11 +34,11 @@ public class GalleryDirViewHolder extends RecyclerView.ViewHolder {
         itemView.setTag(this);
     }
 
-    public void setData(final MediaDir dir){
+    public void setData(final MediaDir dir) {
         String dirName;
-        if(dir.id == -1){
-            dirName = sortDirTxt.getResources().getString(R.string.gallery_all_media);
-        }else{
+        if (dir.id == -1) {
+            dirName = sortDirTxt.getResources().getString(R.string.alivc_media_gallery_all_media);
+        } else {
             dirName = dir.dirName;
         }
 
@@ -49,21 +47,23 @@ public class GalleryDirViewHolder extends RecyclerView.ViewHolder {
         final int videoNum = dir.fileCount;
         sortFileNum.setText(String.valueOf(videoNum));
 
-        if(dir.thumbnailUrl != null){
+        if (dir.thumbnailUrl != null) {
             String uri = "file://" + dir.thumbnailUrl;
-            new ImageLoaderImpl().loadImage(thumbImage.getContext(),uri).into(thumbImage);
-        }else{
+            if(thumbImage != null){
+                new ImageLoaderImpl().loadImage(thumbImage.getContext(), uri).into(thumbImage);
+            }
+        } else {
             thumbImage.setImageDrawable(new ColorDrawable(Color.GRAY));
-            thumbnailGenerator.generateThumbnail(dir.type, dir.id,dir.resId,
-                    new ThumbnailGenerator.OnThumbnailGenerateListener() {
-                        @Override
-                        public void onThumbnailGenerate(int key, Bitmap thumbnail) {
-                            int currentKey = ThumbnailGenerator.generateKey(dir.type, dir.id );
-                            if(key == currentKey){
-                                thumbImage.setImageBitmap(thumbnail);
-                            }
-                        }
-                    });
+            thumbnailGenerator.generateThumbnail(dir.type, dir.id, dir.resId,
+            new ThumbnailGenerator.OnThumbnailGenerateListener() {
+                @Override
+                public void onThumbnailGenerate(int key, Bitmap thumbnail) {
+                    int currentKey = ThumbnailGenerator.generateKey(dir.type, dir.id );
+                    if (key == currentKey) {
+                        thumbImage.setImageBitmap(thumbnail);
+                    }
+                }
+            });
 
 //            BitmapFactory.Options options = new BitmapFactory.Options();
 //            options.inDither = false;
@@ -81,7 +81,7 @@ public class GalleryDirViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void setFileCountWhenCompletion(int count){
+    public void setFileCountWhenCompletion(int count) {
         sortFileNum.setText(String.valueOf(count));
     }
 

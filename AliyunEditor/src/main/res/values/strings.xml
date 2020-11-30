@@ -1,0 +1,187 @@
+<resources>
+    <string name="edit_nav_edit">Edit</string>
+    <string name="edit_nav_save_and_share">Local／Share To></string>
+    <string name="music_origin">Original</string>
+    <string name="my_music">Music</string>
+    <string name="local_music">Local Music</string>
+    <string name="timeline_curr_time">%1$02d:%2$02d</string>
+    <string name="empty_music">Original</string>
+    <string name="alivc_mix_record_waring_content">Mix record video cannot add background music</string>
+    <!--effect menu-->
+    <string name="alivc_editor_effect_filter">Filter</string>
+    <string name="alivc_editor_effect_music">Music</string>
+    <string name="alivc_editor_effect_sticker">Sticker</string>
+    <string name="alivc_editor_effect_caption">Caption</string>
+    <string name="alivc_editor_effect_mv">MV</string>
+    <string name="alivc_editor_effect_sound">Sound Effect</string>
+    <string name="alivc_editor_effect_effect">Effect</string>
+    <string name="alivc_editor_effect_time">Speed Control</string>
+    <string name="alivc_editor_effect_transition">Transition</string>
+    <string name="alivc_editor_effect_paint">Painting</string>
+    <string name="alivc_editor_effect_cover">Album Art</string>
+    <!--end-->
+
+    <!--effect manager page-->
+    <string name="alivc_editor_mananger_tittle">Effects</string>
+    <string name="alivc_editor_manager_font">Font</string>
+    <string name="alivc_editor_manager_delete">delete</string>
+    <!--end-->
+
+    <!--effect dialog-->
+    <string name="alivc_editor_dialog_transition_tittle">Transition</string>
+    <string name="alivc_editor_dialog_transition_tip_limit">You must select at least two videos to add a transition</string>
+    <string name="alivc_editor_dialog_transition_star">Star</string>
+
+    <string name="alivc_editor_dialog_caption_tip_text_limit">No more than 10 characters</string>
+    <string name="alivc_editor_dialog_caption_system_font">System Font</string>
+    <string name="alivc_editor_dialog_caption_font">Font</string>
+    <string name="alivc_editor_dialog_caption_font_system">System Font</string>
+
+    <string name="alivc_editor_dialog_caption_keyboard">Keyboard</string>
+    <string name="alivc_editor_dialog_caption_color">Color</string>
+    <string name="alivc_editor_dialog_caption_tip_not_support">Reverse playback does not support captions</string>
+
+    <string name="alivc_editor_dialog_caption_effect">Effect</string>
+    <string name="alivc_editor_dialog_none_effect">Original</string>
+    <string name="alivc_editor_dialog_mv_more">More</string>
+
+    <string name="alivc_editor_dialog_time_tittle">speed control</string>
+    <string name="alivc_editor_dialog_time_tip_not_support">Images and multiple videos do not support speed control</string>
+    <string name="alivc_editor_dialog_time_tip_apply">Click to apply</string>
+    <string name="alivc_editor_dialog_time_no_effect">Original</string>
+    <string name="alivc_editor_dialog_time_slow">Slower</string>
+    <string name="alivc_editor_dialog_time_fast">Faster</string>
+    <string name="alivc_editor_dialog_time_invert">Reverse</string>
+    <string name="alivc_editor_dialog_time_repeat">Loop</string>
+
+    <string name="alivc_editor_dialog_sound_tittle">Sound Effect</string>
+    <string name="alivc_editor_dialog_sound_not_support">Can’t add sound effect. No original sound is found in the video.</string>
+    <string name="alivc_editor_dialog_sound_default">Original</string>
+    <string name="alivc_editor_dialog_sound_loli">Child</string>
+    <string name="alivc_editor_dialog_sound_uncle">Adult</string>
+    <string name="alivc_editor_dialog_sound_echo">Echo</string>
+    <string name="alivc_editor_dialog_sound_reverb">KTV</string>
+    <string name="alivc_editor_dialog_sound_robot">Robot</string>
+    <string name="alivc_editor_dialog_sound_devil">Devil</string>
+    <string name="alivc_editor_dialog_sound_minions">Minions</string>
+
+    <string name="alivc_editor_dialog_animate_tittle">Filter</string>
+    <string name="alivc_editor_dialog_animate_revoke">Revoke</string>
+    <string name="alivc_editor_dialog_animate_phantom">幻影</string>
+    <string name="alivc_editor_dialog_animate_ghosting">重影</string>
+    <string name="alivc_editor_dialog_animate_science_fiction">科幻</string>
+    <string name="alivc_editor_dialog_animate_jitter">抖动</string>
+    <string name="alivc_editor_dialog_animate_blur">朦胧</string>
+    <string name="alivc_editor_dialog_animate_tip_applay">Hold down to add effect</string>
+
+    <string name="alivc_editor_dialog_cover_tip_applay">Select Album Art</string>
+
+    <string name="alivc_editor_dialog_none">Original</string>
+
+    <string name="alivc_editor_dialog_effect_translate_up">Push Up</string>
+    <string name="alivc_editor_dialog_effect_translate_left">Push Left</string>
+    <string name="alivc_editor_dialog_effect_translate_down">Push Down</string>
+    <string name="alivc_editor_dialog_effect_translate_right">Push Right</string>
+    <string name="alivc_editor_dialog_effect_translate_effect_scale">Scale</string>
+    <string name="alivc_editor_dialog_effect_translate_linearwipe">Linear wipe</string>
+    <string name="alivc_editor_dialog_effect_shutter">Horizontal Bars</string>
+    <string name="alivc_editor_dialog_effect_fade">Fade</string>
+    <string name="alivc_editor_dialog_effect_circle">Circle</string>
+
+
+    <!--end-->
+
+    <!--more effect page-->
+    <string name="alivc_editor_more_downloading">downloading</string>
+    <string name="alivc_editor_more_title_sticker">More Stickers</string>
+    <string name="alivc_editor_more_title_caption">More Captions</string>
+    <string name="alivc_editor_more_title_mv">More MVs</string>
+    <string name="alivc_editor_more_no_network">Poor network conditions</string>
+    <string name="alivc_editor_more_tip_task">You cannot create more downloads</string>
+    <string name="alivc_editor_more_title_animation_effect">More Animation Effect</string>
+    <string name="alivc_editor_more_title_transition_effect">More Transition Effect</string>
+
+    <!--end-->
+
+    <!--publish page-->
+    <string name="alivc_editor_publish_tittle">Publish</string>
+    <string name="alivc_editor_publish_goback">Go back</string>
+    <string name="alivc_editor_publish_continue">Creating</string>
+    <string name="alivc_editor_publish_select_cover">Select Album Art</string>
+    <string name="alivc_editor_publish_composing">Creating video</string>
+    <string name="alivc_editor_publish_dialog_cancel_content_tip">Creating video，If you quit this page, the video creation task will be stopped？</string>
+    <string name="alivc_editor_publish_not_shutdown_app">Do not close the app</string>
+    <string name="alivc_editor_publish_uploading">Uploading %1$d%%</string>
+    <string name="alivc_editor_publish_start">Uploading 0%</string>
+    <string name="alivc_editor_publish_countoflimit">No more than 20 characters</string>
+    <string name="alivc_editor_publish_compose_success">The video is created</string>
+    <string name="alivc_editor_publish_compose_failed">Video creation failed</string>
+    <string name="alivc_editor_publish_upload_success">Uploaded successfully</string>
+    <string name="alivc_editor_publish_upload_failed">Uploading failed</string>
+    <string name="alivc_editor_publish_tip_retry">Go back and try again later</string>
+    <string name="alivc_editor_publish_tip_add_desc">Add a description here</string>
+    <string name="alivc_editor_publish_my_video">My Videos</string>
+    <string name="alivc_editor_publish_upload_param_error">Parameter missing</string>
+
+    <!--end-->
+    <!--cover selected page-->
+    <string name="alivc_editor_cover_tittle">Select Album Art</string>
+    <string name="alivc_editor_cover_fetch_cover_error">Select Album Art</string>
+
+    <!--end-->
+    <!--error tip-->
+    <string name="alivc_editor_error_tip_play_video_error">The video format is invalid</string>
+    <string name="alivc_editor_error_tip_not_supported_audio">The audio format is invalid</string>
+    <string name="alivc_editor_error_tip_not_supported_video">The video format is invalid</string>
+    <string name="alivc_editor_error_tip_not_supported_pixel_format">The file is damaged</string>
+    <!--end-->
+    <!--edit page-->
+    <string name="alivc_editor_edit_tip_init_failed">init error</string>
+    <string name="alivc_editor_edit_play_start">Play</string>
+    <string name="alivc_editor_edit_play_pause">Pause</string>
+    <string name="alivc_editor_edit_tip_captions_fail">Failed to add Captions</string>
+    <string name="alivc_editor_edit_tip_gif_fail">Failed to add Sticker</string>
+    <string name="alivc_editor_edit_tip_word_fail">Failed to add Font</string>
+    <string name="alivc_editor_edit_tip_decoder_error_interrupt">Failed to Decoding</string>
+    <string name="alivc_editor_edit_tip_transcode_no_operate">Transcoding</string>
+    <string name="alivc_editor_effect_text_stroke">Stroke</string>
+    <string name="alivc_editor_effect_text_color">Fill</string>
+    <!--end-->
+    <!--media select-->
+    <string name="alivc_editor_media_tip_no_permission">No permission</string>
+
+    <!--end-->
+
+
+    <string name="alivc_svideo_grace">Grace</string>
+    <string name="alivc_svideo_halo">Halo</string>
+    <string name="alivc_svideo_memory">Memory</string>
+    <string name="alivc_svideo_sunday">Sunday</string>
+    <string name="alivc_svideo_bright">Bright</string>
+
+    <string name="alivc_svideo_pop">Pop</string>
+    <string name="alivc_svideo_hot_desert">Hot Desert</string>
+    <string name="alivc_svideo_beach">Beach</string>
+    <string name="alivc_svideo_ocean">Ocean</string>
+    <string name="alivc_svideo_gray">Gray</string>
+    <string name="alivc_svideo_yellow">Yellow</string>
+    <string name="alivc_svideo_brown">Brown</string>
+    <string name="alivc_svideo_pink">Pink</string>
+    <string name="alivc_svideo_sketch">Sketch</string>
+    <string name="alivc_svideo_ruby">Ruby</string>
+    <string name="alivc_svideo_classic">Classic</string>
+    <string name="alivc_svideo_film">Film</string>
+    <string name="alivc_svideo_blues">Blues</string>
+    <string name="alivc_svideo_haze">Haze</string>
+    <string name="alivc_svideo_charming">Charming</string>
+    <string name="alivc_svideo_summertime">Summertime</string>
+    <string name="alivc_svideo_pear">Pear</string>
+    <string name="alivc_svideo_mosaic">Mosaic</string>
+    <string name="alivc_svideo_fisheye">Fisheye</string>
+    <string name="alivc_svideo_fresh">Fresh</string>
+    <string name="alivc_svideo_wheat">Wheat</string>
+    <string name="alivc_svideo_black_white">Black &amp; White</string>
+    <string name="alivc_svideo_blurry">Blurry</string>
+
+</resources>
+

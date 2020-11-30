@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">阿里云视频云</string>
+    <string name="app_name">阿里短视频</string>
     <string name="solution_apsarav">ApsaraV</string>
     <string name="solution_push">直播推流</string>
     <string name="solution_live_room">互动直播</string>
@@ -11,6 +11,7 @@
     <string name="solution_camera">魔法相机</string>
     <string name="solution_crop">视频裁剪</string>
     <string name="solution_edit">视频编辑</string>
+    <string name="solution_race_beauty">美颜美型</string>
     <string name="solution_community">趣视频</string>
     <string name="solution_videocall">视频通话</string>
     <string name="solution_audiocall">语音通话</string>
@@ -30,6 +31,15 @@
     <string name="solution_unable_merge_remind">上传和短视频存在冲突,协调解决中..</string>
     <string name="resetstr">切换成功，正在重新加载数据...</string>
 
+    <string name="aliyun_min_record_duration_more_than">最小时长必须大于0秒</string>
+    <string name="aliyun_min_record_duration_less_than">最小时长必须小于300秒</string>
+
+    <string name="aliyun_max_record_duration_more_than">最大时长必须大于0秒</string>
+    <string name="aliyun_max_record_duration_less_than">最大时长必须小于300秒</string>
+
     <string name="alivc_apsara_video_regist">© 2009&#8211;2018 Copyright by Alibaba Cloud All rights reserved</string>
-    <string name="alivc_apsara_video_title">阿里云视频云</string>
+    <string name="alivc_apsara_video_title">阿里视频云</string>
+    <string name="alivc_videocall_permisson_text"><![CDATA[需要访问 \"录音\"、\"摄像头\" 和 \"外部存储器\",否则会影响绝大部分功能使用, 请到 \"应用信息 -> 权限\" 中设置！]]></string>
+    <string name="alivc_videocall_go_setting">去设置</string>
+    <string name="alivc_videocall_not_setting">暂不设置</string>
 </resources>

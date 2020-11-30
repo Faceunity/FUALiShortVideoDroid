@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/alivc_editor_effect_height"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/alivc_editor_include_effect_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_45" />
+
+    <ImageView
+        android:id="@+id/undo"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@mipmap/aliyun_svideo_undo"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/alivc_common_margin_30"
+        android:gravity="center">
+
+        <FrameLayout
+            android:id="@+id/paint_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="23dp">
+            <ImageView
+                android:layout_width="@dimen/alivc_common_size_icon_14"
+                android:layout_height="@dimen/alivc_common_size_icon_14"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/aliyun_svideo_shape_paint_selector" />
+        </FrameLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/alivc_common_line_1px"
+            android:layout_weight="1"
+            android:background="@color/alivc_common_line_gray_bright"/>
+        <FrameLayout
+            android:id="@+id/paint_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/alivc_common_size_icon_20"
+                android:layout_height="@dimen/alivc_common_size_icon_20"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/aliyun_svideo_shape_paint_selector" />
+        </FrameLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/alivc_common_line_1px"
+            android:layout_weight="1"
+            android:background="@color/alivc_common_line_gray_bright"/>
+        <FrameLayout
+            android:id="@+id/paint_three"
+            android:layout_width="wrap_content"
+            android:layout_marginRight="@dimen/alivc_common_margin_18"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/alivc_common_size_icon_24"
+                android:layout_height="@dimen/alivc_common_size_icon_24"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/aliyun_svideo_shape_paint_selector" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/paint_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/alivc_common_padding_10"
+        android:layout_marginBottom="@dimen/alivc_common_margin_10"
+        android:paddingRight="@dimen/alivc_common_padding_10"
+        android:visibility="visible">
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/cancel"
+            android:layout_width="@dimen/alivc_common_size_icon_24"
+            android:layout_height="@dimen/alivc_common_size_icon_24"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/aliyun_svideo_cancel" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/color_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/complete"
+            android:layout_toRightOf="@+id/cancel"
+            android:overScrollMode="never" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/complete"
+            android:layout_width="@dimen/alivc_common_size_icon_24"
+            android:layout_height="@dimen/alivc_common_size_icon_24"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/aliyun_svideo_check" />
+    </RelativeLayout>
+</LinearLayout>

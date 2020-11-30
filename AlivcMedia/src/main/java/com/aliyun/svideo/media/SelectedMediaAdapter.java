@@ -10,10 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.aliyun.svideo.base.MediaInfo;
-import com.aliyun.demo.importer.R;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +21,7 @@ public class SelectedMediaAdapter extends RecyclerView.Adapter<SelectedMediaView
     private OnItemViewCallback mItemViewCallback;
     private long mMaxDuration;
     private long mCurrDuration;
+
     public SelectedMediaAdapter(MediaImageLoader imageLoader, long maxDuration) {
         this.mImageLoader = imageLoader;
         this.mMaxDuration = maxDuration;
@@ -32,7 +29,7 @@ public class SelectedMediaAdapter extends RecyclerView.Adapter<SelectedMediaView
 
     @Override
     public SelectedMediaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.alivc_svideo_import_layout_selected_video_item
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.alivc_media_item_video_selected
                         , parent, false);
         ImageView ivPhoto = (ImageView) itemView.findViewById(R.id.iv_photo);
         ImageView ivDelete = (ImageView) itemView.findViewById(R.id.iv_delete);
@@ -45,6 +42,9 @@ public class SelectedMediaAdapter extends RecyclerView.Adapter<SelectedMediaView
         holder.setCallback(new SelectedMediaViewHolder.OnItemCallback() {
             @Override
             public void onPhotoClick(SelectedMediaViewHolder holder, int position) {
+                if (position >= mDataList.size() || position < 0) {
+                    return;
+                }
                 if (mItemViewCallback != null) {
                     mItemViewCallback.onItemPhotoClick(mDataList.get(position), position);
                 }
@@ -53,7 +53,7 @@ public class SelectedMediaAdapter extends RecyclerView.Adapter<SelectedMediaView
             @Override
             public void onItemDelete(SelectedMediaViewHolder holder, int position) {
                 if (position >= mDataList.size() || position < 0) {
-                    return ;
+                    return;
                 }
                 if (mItemViewCallback != null) {
                     mItemViewCallback.onItemDeleteClick(mDataList.get(position));
@@ -94,7 +94,56 @@ public class SelectedMediaAdapter extends RecyclerView.Adapter<SelectedMediaView
         }
     }
 
+    /**
+    * 只能添加一个元素，如果也只需要获取一个元素，请使用getOnlyOneMedia使用
+    */
+    public void addOnlyFirstMedia(MediaInfo info) {
+        mCurrDuration = info.duration;
+        if (mItemViewCallback != null) {
+            if (mCurrDuration > mMaxDuration) {
+                mItemViewCallback.onDurationChange(mCurrDuration, true);
+            } else {
+                mItemViewCallback.onDurationChange(mCurrDuration, false);
+            }
+        }
+        if (mDataList.size() > 0) {
+            mDataList.clear();
+            mDataList.add(info);
+        } else {
+            mDataList.add(info);
+        }
+        notifyDataSetChanged();
+
+    }
+
+    public List<MediaInfo> getAdapterData() {
+        List<MediaInfo> infos = new ArrayList<>();
+        if (mDataList != null && mDataList.size() > 0) {
+            infos.addAll(mDataList);
+        }
+        return infos;
+    }
+
+    /**
+     * 如果使用addOnlyFirstMedia添加数据，保证数据里只有一个元素，也只会获得一个元素
+     */
+    public MediaInfo getOnlyOneMedia() {
+        MediaInfo mediaInfo = null;
+        if (mDataList != null && mDataList.size() > 0) {
+            for (MediaInfo media : mDataList) {
+                mediaInfo = media;
+                if (mediaInfo != null) {
+                    break;
+                }
+            }
+        }
+        return mediaInfo;
+    }
+
     private void removeIndex(int position) {
+        if (position >= mDataList.size() || position < 0) {
+            return;
+        }
         MediaInfo info = mDataList.get(position);
         if (info != null) {
             mCurrDuration -= info.duration;
@@ -125,6 +174,9 @@ public class SelectedMediaAdapter extends RecyclerView.Adapter<SelectedMediaView
     }
 
     public void changeDurationPosition(int position, long duration) {
+        if (position >= mDataList.size() || position < 0) {
+            return;
+        }
         MediaInfo mediaInfo = mDataList.get(position);
         if (mediaInfo != null) {
             mCurrDuration -= mediaInfo.duration;
@@ -150,7 +202,9 @@ public class SelectedMediaAdapter extends RecyclerView.Adapter<SelectedMediaView
 
     public interface OnItemViewCallback {
         void onItemPhotoClick(MediaInfo info, int position);
+
         void onItemDeleteClick(MediaInfo info);
+
         void onDurationChange(long currDuration, boolean isReachedMaxDuration);
     }
 }

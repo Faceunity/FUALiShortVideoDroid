@@ -3,8 +3,8 @@
 
 
     <style name="MySwitchTheme">
-        <item name="colorControlActivated">@color/media_control_activated_color</item>
-        <item name="colorSwitchThumbNormal">#FFF1F1F1</item>
-        <item name="android:colorForeground">@color/comoon_colorPrimary_alpha_five</item>
+        <item name="colorControlActivated">@color/alivc_common_cyan_light</item>
+        <item name="colorSwitchThumbNormal">@color/alivc_media_switch_thumble_normal</item>
+        <item name="android:colorForeground">@color/alivc_common_bg_white_alpha_10</item>
     </style>
 </resources>

@@ -30,7 +30,8 @@ public class AliyunSvideoActionConfig {
     }
 
     /**
-     * 注册一个录制后跳转的页面
+     * 注册一个编辑合成后跳转的页面
+     * @param className 合成之后跳转的actvity
      */
     public void registerRecordFinishActivity(String className){
         mAction.setTagClassName(ActionInfo.SVideoAction.RECORD_TARGET_CLASSNAME,className);
@@ -42,7 +43,12 @@ public class AliyunSvideoActionConfig {
     public void registerCropFinishActivity(String className){
         mAction.setTagClassName(ActionInfo.SVideoAction.CROP_TARGET_CLASSNAME,className);
     }
-
+    /**
+     * 注册一个发布界面的className，需要是个activity的全类名
+     */
+    public void registerPublishActivity(String className){
+        mAction.setTagClassName(ActionInfo.SVideoAction.PUBLISH_TARGET_CLASSNAME,className);
+    }
     /**
      * 获取action对象
      * @return ActionInfo

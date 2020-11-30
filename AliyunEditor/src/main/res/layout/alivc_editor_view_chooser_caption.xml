@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/alivc_common_bg_black_alpha_70"
+              android:orientation="vertical">
+
+    <include layout="@layout/alivc_editor_include_effect_title1"/>
+
+    <FrameLayout
+        android:id="@+id/fl_thumblinebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/effect_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_80"
+        android:overScrollMode="never"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/category_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/alivc_common_height_group_38"
+            android:overScrollMode="never"
+            android:background="@color/alivc_common_bg_white_alpha_10"
+            />
+</LinearLayout>

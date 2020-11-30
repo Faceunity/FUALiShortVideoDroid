@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/alivc_common_theme_primary">
+    <include
+        android:id="@+id/action_bar"
+        layout="@layout/alivc_editor_include_action_bar_profile"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/upload_progress"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/alivc_common_height_progress_2"
+                android:progress="0"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/aliyun_svideo_publish_progress_drawable" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextureView
+                    android:layout_width="match_parent"
+                    android:layout_height="1sp"
+                    android:id="@+id/texture"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/alivc_common_margin_12"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:id="@+id/progress_text"
+                    android:text="@string/alivc_editor_publish_start"
+                    android:background="@drawable/aliyun_svideo_shape_border_rect"
+                    android:paddingLeft="@dimen/alivc_common_padding_15"
+                    android:paddingRight="@dimen/alivc_common_padding_15"
+                    android:paddingTop="@dimen/alivc_common_padding_5"
+                    android:paddingBottom="@dimen/alivc_common_padding_5"
+                    android:textSize="@dimen/alivc_common_font_12"
+                    android:textColor="@color/alivc_common_font_white"/>
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/alivc_common_height_group_100"
+                android:background="@color/alivc_common_theme_primary"
+                android:paddingLeft="@dimen/alivc_common_padding_10"
+                android:paddingRight="@dimen/alivc_common_padding_10"
+                android:paddingTop="@dimen/alivc_common_padding_12"
+                android:paddingBottom="@dimen/alivc_common_padding_12">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/alivc_common_font_white"
+                    android:textSize="@dimen/alivc_common_font_14"
+                    android:id="@+id/video_desc"/>
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@color/comoon_colorPrimary_alpha_five" />
+    <solid android:color="@color/alivc_common_bg_white_alpha_10" />
     <stroke
-        android:width="0.8dp"
-        android:color="@color/comoon_colorPrimary_alpha_five" />
+        android:width="@dimen/alivc_common_line_1dp"
+        android:color="@color/alivc_common_bg_white_alpha_10" />
     <!-- 圆角 -->
-    <corners android:radius="6dp" />
+    <corners android:radius="@dimen/alivc_common_radius_6" />
 
 </shape>

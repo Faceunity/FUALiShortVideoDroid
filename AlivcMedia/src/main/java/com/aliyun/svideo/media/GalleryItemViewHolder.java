@@ -7,15 +7,14 @@ package com.aliyun.svideo.media;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.aliyun.svideo.base.MediaInfo;
-import com.aliyun.demo.importer.R;
-import com.aliyun.video.common.utils.image.ImageLoaderImpl;
-import com.aliyun.video.common.utils.image.ImageLoaderOptions;
+import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
+import com.aliyun.svideo.common.utils.image.ImageLoaderOptions;
 
 import java.io.File;
 
@@ -42,16 +41,38 @@ public class GalleryItemViewHolder extends RecyclerView.ViewHolder {
         itemView.setTag(this);
     }
 
+
     public void setData(final MediaInfo info) {
         if (info == null) {
             return;
         }
+        //每一个imageView都需要设置tag，video异步生成缩略图，需要对应最后设置给imageView的info key
+        thumbImage.setTag(R.id.tag_first, ThumbnailGenerator.generateKey(info.type, info.id));
         if (info.thumbnailPath != null
-                && onCheckFileExsitence(info.thumbnailPath)) {
-            String uri = "file://" + info.thumbnailPath;
+                && onCheckFileExists(info.thumbnailPath)) {
+            String uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                uri = info.fileUri;
+            } else {
+                uri = "file://" + info.thumbnailPath;
+            }
             new ImageLoaderImpl().loadImage(thumbImage.getContext(), uri,
                                             new ImageLoaderOptions.Builder().override(mScreenWidth / 5, mScreenWidth / 5)
                                             .skipMemoryCache()
+                                            .placeholder(new ColorDrawable(Color.GRAY))
+                                            .build()
+                                           ).into(thumbImage);
+        } else if (info.type == MediaStorage.TYPE_PHOTO) {
+            String uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                uri = info.fileUri;
+            } else {
+                uri = "file://" + info.filePath;
+            }
+            new ImageLoaderImpl().loadImage(thumbImage.getContext(), uri,
+                                            new ImageLoaderOptions.Builder().override(mScreenWidth / 5, mScreenWidth / 5)
+                                            .skipMemoryCache()
+                                            .placeholder(new ColorDrawable(Color.GRAY))
                                             .build()
                                            ).into(thumbImage);
         } else {
@@ -60,8 +81,7 @@ public class GalleryItemViewHolder extends RecyclerView.ViewHolder {
             new ThumbnailGenerator.OnThumbnailGenerateListener() {
                 @Override
                 public void onThumbnailGenerate(int key, Bitmap thumbnail) {
-                    int currentKey = ThumbnailGenerator.generateKey(info.type, info.id);
-                    if (key == currentKey) {
+                    if (key == (Integer)(thumbImage.getTag(R.id.tag_first))) {
                         thumbImage.setImageBitmap(thumbnail);
                     }
                 }
@@ -83,10 +103,10 @@ public class GalleryItemViewHolder extends RecyclerView.ViewHolder {
         itemView.setActivated(actived);
     }
 
-    private boolean onCheckFileExsitence(String path) {
+    private boolean onCheckFileExists(String path) {
         boolean res = false;
         if (path == null) {
-            return res;
+            return false;
         }
 
         File file = new File(path);

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval"> />
+                    <solid android:color="@color/alivc_common_bg_white" />
+                </shape>
+            </item>
+            <item
+                android:top="@dimen/alivc_common_padding_16_5"
+                android:bottom="@dimen/alivc_common_padding_16_5"
+                android:left="@dimen/alivc_common_padding_16_5"
+                android:right="@dimen/alivc_common_padding_16_5">
+                <bitmap android:src="@mipmap/aliyun_svideo_parser_preview_cancel_pressed"/>
+            </item>
+        </layer-list>
+    </item>
+    <item android:state_pressed="false">
+        <layer-list>
+            <item>
+                <shape android:shape="oval"> />
+                    <solid android:color="@color/alivc_common_bg_white_alpha_30" />
+                </shape>
+            </item>
+            <item
+                android:top="@dimen/alivc_common_padding_16_5"
+                android:bottom="@dimen/alivc_common_padding_16_5"
+                android:left="@dimen/alivc_common_padding_16_5"
+                android:right="@dimen/alivc_common_padding_16_5">
+                <bitmap android:src="@mipmap/aliyun_svideo_parser_preview_cancel"/>
+            </item>
+        </layer-list>
+    </item>
+</selector>

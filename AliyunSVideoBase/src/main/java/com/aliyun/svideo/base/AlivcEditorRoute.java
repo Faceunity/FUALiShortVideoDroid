@@ -2,6 +2,8 @@ package com.aliyun.svideo.base;
 
 import android.app.Activity;
 import android.content.Intent;
+
+import com.aliyun.svideo.media.MediaInfo;
 import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoParam;
 import java.util.ArrayList;
 
@@ -42,11 +44,10 @@ public class AlivcEditorRoute {
     public static void startMediaActivity(Activity activity, AlivcSvideoEditParam param) {
 
         Intent intent = new Intent();
-        intent.setClassName(activity, "com.aliyun.demo.importer.MediaActivity");
+        intent.setClassName(activity, "com.aliyun.svideo.media.MediaActivity");
         boolean isOpenCrop = param.isOpenCrop();
         intent.putExtra(KEY_INTENT_ISOPENCROP, isOpenCrop);
         if (isOpenCrop) {
-            intent.putExtra(AlivcSvideoEditParam.VIDEO_BITRATE, param.getBitrate());
             intent.putExtra(AlivcSvideoEditParam.VIDEO_FRAMERATE, param.getFrameRate());
             intent.putExtra(AlivcSvideoEditParam.VIDEO_GOP, param.getGop());
             intent.putExtra(AlivcSvideoEditParam.VIDEO_RATIO, param.getRatio());

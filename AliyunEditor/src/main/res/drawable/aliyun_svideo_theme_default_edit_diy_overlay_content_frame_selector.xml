@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_activated="true">
+    <color android:color="@android:color/transparent"/>
+  </item>
+  <item>
+    <shape android:shape="rectangle">
+      <stroke android:width="@dimen/alivc_common_line_1_5" android:color="@color/alivc_edit_defalut_primary_color"/>
+      <solid android:color="#00000000"/>
+      <corners android:radius="@dimen/alivc_common_radius_4"/>
+    </shape>
+  </item>
+</selector>

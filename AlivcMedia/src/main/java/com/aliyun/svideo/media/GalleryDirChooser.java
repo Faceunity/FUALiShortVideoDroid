@@ -7,16 +7,14 @@ package com.aliyun.svideo.media;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
-
-import com.aliyun.demo.importer.R;
 
 
 public class GalleryDirChooser {
@@ -29,45 +27,45 @@ public class GalleryDirChooser {
 
     public GalleryDirChooser(Context context, View anchor,
                              ThumbnailGenerator thumbnailGenerator,
-                             final MediaStorage storage){
+                             final MediaStorage storage) {
         this.anchor = anchor;
         this.mActivity = (Activity) context;
         RecyclerView recyclerView = (RecyclerView)View.inflate(context,
-                R.layout.aliyun_svideo_import_layout_qupai_effect_container_normal, null);
+                                    R.layout.alivc_meida_ppw_container_gallery_dir, null);
         adapter = new GalleryDirAdapter(thumbnailGenerator);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
         adapter.setData(storage.getDirs());
         popupWindow = new PopupWindow(recyclerView,
-                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                                      WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setBackgroundDrawable(new ColorDrawable(
-                context.getResources().getColor(android.R.color.white)));
+                                              context.getResources().getColor(R.color.alivc_common_bg_white)));
         popupWindow.setOutsideTouchable(true);
 
         anchor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(storage.isActive()){
+                if (storage.isActive()) {
                     showOrHideGalleryDir();
                 }
             }
         });
 
         storage.setOnMediaDirUpdateListener(
-                new MediaStorage.OnMediaDirUpdate() {
+        new MediaStorage.OnMediaDirUpdate() {
+            @Override
+            public void onDirUpdate(MediaDir dir) {
+                GalleryDirChooser.this.anchor.post(
+                new Runnable() {
                     @Override
-                    public void onDirUpdate(MediaDir dir) {
-                        GalleryDirChooser.this.anchor.post(
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-                        );
-
+                    public void run() {
+                        adapter.notifyDataSetChanged();
                     }
                 }
+                );
+
+            }
+        }
         );
 
         adapter.setOnItemClickListener(new GalleryDirAdapter.OnItemClickListener() {
@@ -81,28 +79,28 @@ public class GalleryDirChooser {
         });
     }
 
-    public void setAllGalleryCount(int count){
+    public void setAllGalleryCount(int count) {
         adapter.setAllFileCount(count);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void showOrHideGalleryDir(){
-        if(mActivity.isDestroyed()){
+    public void showOrHideGalleryDir() {
+        if (mActivity.isDestroyed()) {
             return;
         }
-        if(isShowGalleryDir){
+        if (isShowGalleryDir) {
             popupWindow.dismiss();
-        }else{
+        } else {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 popupWindow.showAsDropDown(anchor);
-            }
-            else {
+            } else {
                 // 适配 android 7.0
-                int[] location = new int[2];
-                anchor.getLocationOnScreen(location);
-                int x = location[0];
-                int y = location[1];
-                popupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, 0, y + anchor.getHeight());
+                Rect visibleFrame = new Rect();
+                anchor.getGlobalVisibleRect(visibleFrame);
+                int height = anchor.getResources().getDisplayMetrics().heightPixels - visibleFrame.bottom;
+                popupWindow.setHeight(height);
+                popupWindow.showAsDropDown(anchor, 0, 0);
+
             }
         }
         isShowGalleryDir = !isShowGalleryDir;

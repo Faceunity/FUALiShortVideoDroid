@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 /**
  * @author Mulberry
  */
-public class SplashActivity extends Activity{
+public class SplashActivity extends Activity {
     /**
      * 动画时间 2000ms
      */
@@ -77,10 +77,10 @@ public class SplashActivity extends Activity{
         if (isStrangeErrorBrand()) {
             Intent intent = getIntent();
             if (!isTaskRoot()
-                && intent != null
-                && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
-                && intent.getAction() != null
-                && intent.getAction().equals(Intent.ACTION_MAIN)) {
+                    && intent != null
+                    && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                    && intent.getAction() != null
+                    && intent.getAction().equals(Intent.ACTION_MAIN)) {
                 finish();
                 return true;
             }
@@ -98,13 +98,14 @@ public class SplashActivity extends Activity{
      */
     private boolean isStrangeErrorBrand() {
         return "GIONEE".equalsIgnoreCase(Build.BRAND)
-            || "OPPO".equalsIgnoreCase(Build.BRAND)
-            || "samsung".equalsIgnoreCase(Build.BRAND)
-            || "LeEco".equalsIgnoreCase(Build.BRAND);
+               || "OPPO".equalsIgnoreCase(Build.BRAND)
+               || "samsung".equalsIgnoreCase(Build.BRAND)
+               || "Meitu".equalsIgnoreCase(Build.BRAND)
+               || "LeEco".equalsIgnoreCase(Build.BRAND);
     }
 
-    private void setJumpToMain(){
-        Intent intent = new Intent(this,MainActivity.class);
+    private void setJumpToMain() {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
         overridePendingTransition(R.anim.splash_fade_in, R.anim.splash_fade_out);

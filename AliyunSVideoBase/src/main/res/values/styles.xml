@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AliyunVideoUIStytle" >
-        <item name="qusnap_background_color">@color/aliyun_base_color_bg</item>
-        <item name="qusnap_tint_color">@color/aliyun_tint_color</item>
-        <item name="qusnap_timeline_backgound_color">@color/aliyun_timeline_backgound_color</item>
-        <item name="qusnap_timeline_del_backgound_color">@color/aliyun_timeline_background_del_color</item>
+    <style name="AliyunVideoUIStytle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="qusnap_background_color">@color/alivc_common_theme_primary</item>
+        <item name="qusnap_tint_color">@color/alivc_common_bg_pink</item>
+        <item name="qusnap_timeline_backgound_color">@color/alivc_common_bg_gray_bright</item>
+        <item name="qusnap_timeline_del_backgound_color">@color/alivc_svideo_bg_timeline_del_color</item>
         <item name="qusnap_back_icon">@mipmap/aliyun_svideo_icon_back</item>
         <item name="qusnap_switch_light_icon">@drawable/aliyun_svideo_snap_switch_light_selector</item>
         <item name="qusnap_switch_light_icon_disable">@mipmap/aliyun_svideo_icon_light_dis</item>
@@ -40,7 +40,7 @@
         <item name="android:button">@null</item>
         <item name="android:drawableBottom">@drawable/alivc_beauty_level_tab_checked</item>
         <item name="android:drawablePadding">6dp</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/alivc_common_font_14</item>
         <item name="android:textColor">@color/alivc_beauty_level_text_selector</item>
     </style>
 
@@ -53,7 +53,7 @@
         <item name="android:gravity">center</item>
         <item name="android:padding">10.5dp</item>
         <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">@dimen/alivc_common_font_14</item>
     </style>
 
     <!-- 美颜美肌微调按钮文字 style-->
@@ -65,7 +65,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:padding">10.5dp</item>
         <item name="android:textColor">#c3c5c6</item>
-        <item name="android:textSize">12dp</item>
+        <item name="android:textSize">@dimen/alivc_common_font_12</item>
 
     </style>
 
@@ -87,6 +87,15 @@
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">@dimen/alivc_common_font_14</item>
+    </style>
+    <style name="NextBtnStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">@dimen/alivc_common_font_12</item>
+        <item name="android:background">@drawable/alivc_svideo_bg_next</item>
+        <item name="android:layout_height">27dp</item>
+        <item name="android:layout_width">@dimen/alivc_common_width_tv_60</item>
+        <item name="android:text">@string/alivc_base_svideo_next</item>
     </style>
 </resources>

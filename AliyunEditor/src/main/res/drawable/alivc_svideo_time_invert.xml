@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/alivc_svideo_shap_circle_white_light"/>
+    <item
+        android:top="@dimen/alivc_common_padding_12"
+        android:bottom="@dimen/alivc_common_padding_12"
+        android:left="@dimen/alivc_common_padding_12"
+        android:right="@dimen/alivc_common_padding_12"
+        android:gravity="center"
+        android:drawable="@mipmap/alivc_svideo_effect_time_invert"/>
+
+</layer-list>

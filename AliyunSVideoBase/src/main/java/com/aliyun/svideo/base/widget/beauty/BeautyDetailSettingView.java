@@ -1,6 +1,8 @@
 package com.aliyun.svideo.base.widget.beauty;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyParamsChangeListener;
 import com.aliyun.svideo.base.widget.beauty.listener.OnProgresschangeListener;
 import com.aliyun.svideo.base.widget.beauty.listener.OnViewClickListener;
@@ -34,6 +36,7 @@ public class BeautyDetailSettingView extends LinearLayout {
     private BeautySeekBar mSeekBar;
     private LinearLayout llBeautyFaceGroup;
     private LinearLayout llBeautySkinGroup;
+    private  boolean isRaceMode = false;
 
     /**
      * back按钮点击listener
@@ -58,6 +61,12 @@ public class BeautyDetailSettingView extends LinearLayout {
      */
     private BeautyParams defaultParams;
     private int beautyLevel = 3;
+    private Context context;
+
+    /**
+     * 红润/锐化
+     */
+    private TextView blushTv;
 
     public BeautyDetailSettingView(Context context) {
         this(context, null);
@@ -70,6 +79,7 @@ public class BeautyDetailSettingView extends LinearLayout {
 
     public BeautyDetailSettingView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.context = context;
         initView();
     }
 
@@ -77,6 +87,8 @@ public class BeautyDetailSettingView extends LinearLayout {
         LayoutInflater.from(getContext()).inflate(R.layout.alivc_beauty_detail, this);
         mTvBack = findViewById(R.id.tv_back);
         mSeekBar = findViewById(R.id.beauty_seekbar);
+        blushTv = findViewById(R.id.alivc_base_beauty_blush_textview);
+        initBlushTv();
         View blankView = findViewById(R.id.blank_view);
         ImageView mIvReset = findViewById(R.id.iv_reset);
         llBeautyFaceGroup = findViewById(R.id.alivc_beauty_face);
@@ -154,42 +166,42 @@ public class BeautyDetailSettingView extends LinearLayout {
 
                 if (mParams != null) {
                     switch (mCheckedPosition) {
-                        case BeautyConstants.BUFFING:
-                            if (mParams.beautyBuffing == progress) {
-                                return;
-                            }
-                            mParams.beautyBuffing = progress;
-                            break;
+                    case BeautyConstants.BUFFING:
+                        if (mParams.beautyBuffing == progress) {
+                            return;
+                        }
+                        mParams.beautyBuffing = progress;
+                        break;
 
-                        case BeautyConstants.WHITENING:
-                            if (mParams.beautyWhite == progress) {
-                                return;
-                            }
-                            mParams.beautyWhite = progress;
-                            break;
+                    case BeautyConstants.WHITENING:
+                        if (mParams.beautyWhite == progress) {
+                            return;
+                        }
+                        mParams.beautyWhite = progress;
+                        break;
 
-                        case BeautyConstants.RUDDY:
-                            if (mParams.beautyRuddy == progress) {
-                                return;
-                            }
-                            mParams.beautyRuddy = progress;
-                            break;
+                    case BeautyConstants.RUDDY:
+                        if (mParams.beautyRuddy == progress) {
+                            return;
+                        }
+                        mParams.beautyRuddy = progress;
+                        break;
 
-                        case BeautyConstants.BIG_EYE:
-                            if (mParams.beautyBigEye == progress) {
-                                return;
-                            }
-                            mParams.beautyBigEye = progress;
-                            break;
+                    case BeautyConstants.BIG_EYE:
+                        if (mParams.beautyBigEye == progress) {
+                            return;
+                        }
+                        mParams.beautyBigEye = progress;
+                        break;
 
-                        case BeautyConstants.THIN_FACE:
-                            if (mParams.beautySlimFace == progress) {
-                                return;
-                            }
-                            mParams.beautySlimFace = progress;
-                            break;
-                        default:
-                            break;
+                    case BeautyConstants.THIN_FACE:
+                        if (mParams.beautySlimFace == progress) {
+                            return;
+                        }
+                        mParams.beautySlimFace = progress;
+                        break;
+                    default:
+                        break;
                     }
                 }
 
@@ -216,6 +228,16 @@ public class BeautyDetailSettingView extends LinearLayout {
             }
         });
     }
+    private void initBlushTv() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("svideo",
+                                              Activity.MODE_PRIVATE);
+        isRaceMode = sharedPreferences.getBoolean("is_race_mode", false);
+        if (isRaceMode) {
+            blushTv.setText(R.string.alivc_base_beauty_sharpen);
+        } else {
+            blushTv.setText(R.string.alivc_base_beauty_blush);
+        }
+    }
 
     public void setParams(BeautyParams params) {
         mParams = params;
@@ -225,23 +247,23 @@ public class BeautyDetailSettingView extends LinearLayout {
     public void saveProgress() {
 
         switch (mCheckedPosition) {
-            case BeautyConstants.BUFFING:
-                mSeekBar.setLastProgress(mParams.beautyBuffing);
-                break;
-            case BeautyConstants.WHITENING:
-                mSeekBar.setLastProgress(mParams.beautyWhite);
-                break;
-            case BeautyConstants.RUDDY:
-                mSeekBar.setLastProgress(mParams.beautyRuddy);
-                break;
-            case BeautyConstants.BIG_EYE:
-                mSeekBar.setLastProgress(mParams.beautyBigEye);
-                break;
-            case BeautyConstants.THIN_FACE:
-                mSeekBar.setLastProgress(mParams.beautySlimFace);
-                break;
-            default:
-                break;
+        case BeautyConstants.BUFFING:
+            mSeekBar.setLastProgress(mParams.beautyBuffing);
+            break;
+        case BeautyConstants.WHITENING:
+            mSeekBar.setLastProgress(mParams.beautyWhite);
+            break;
+        case BeautyConstants.RUDDY:
+            mSeekBar.setLastProgress(mParams.beautyRuddy);
+            break;
+        case BeautyConstants.BIG_EYE:
+            mSeekBar.setLastProgress(mParams.beautyBigEye);
+            break;
+        case BeautyConstants.THIN_FACE:
+            mSeekBar.setLastProgress(mParams.beautySlimFace);
+            break;
+        default:
+            break;
         }
     }
 
@@ -263,11 +285,11 @@ public class BeautyDetailSettingView extends LinearLayout {
         if (TAB_BEAUTY_FACE_INDEX == position) {
             llBeautyFaceGroup.setVisibility(VISIBLE);
             llBeautySkinGroup.setVisibility(GONE);
-            mTvBack.setText("美颜");
+            mTvBack.setText(getResources().getString(R.string.alivc_base_beauty));
         } else if (TAB_BEAUTY_SKIN_INDEX == position) {
             llBeautyFaceGroup.setVisibility(GONE);
             llBeautySkinGroup.setVisibility(VISIBLE);
-            mTvBack.setText("美肌");
+            mTvBack.setText(getResources().getString(R.string.alivc_base_beauty_shape));
         }
     }
 
@@ -277,29 +299,33 @@ public class BeautyDetailSettingView extends LinearLayout {
 
     public void setBeautyLevel(int beautyLevel) {
         this.beautyLevel = beautyLevel;
-        defaultParams = BeautyConstants.BEAUTY_MAP.get(beautyLevel);
+        if (isRaceMode) {
+            defaultParams = BeautyRaceConstants.BEAUTY_MAP.get(beautyLevel);
+        } else {
+            defaultParams = BeautyConstants.BEAUTY_MAP.get(beautyLevel);
+        }
         switch (mCheckedPosition) {
-            case BeautyConstants.BUFFING:
-                mSeekBar.setSeekIndicator(defaultParams.beautyBuffing);
-                break;
+        case BeautyConstants.BUFFING:
+            mSeekBar.setSeekIndicator(defaultParams.beautyBuffing);
+            break;
 
-            case BeautyConstants.WHITENING:
-                mSeekBar.setSeekIndicator(defaultParams.beautyWhite);
-                break;
+        case BeautyConstants.WHITENING:
+            mSeekBar.setSeekIndicator(defaultParams.beautyWhite);
+            break;
 
-            case BeautyConstants.RUDDY:
-                mSeekBar.setSeekIndicator(defaultParams.beautyRuddy);
-                break;
+        case BeautyConstants.RUDDY:
+            mSeekBar.setSeekIndicator(defaultParams.beautyRuddy);
+            break;
 
-            case BeautyConstants.BIG_EYE:
-                mSeekBar.setSeekIndicator(defaultParams.beautyBigEye);
-                break;
+        case BeautyConstants.BIG_EYE:
+            mSeekBar.setSeekIndicator(defaultParams.beautyBigEye);
+            break;
 
-            case BeautyConstants.THIN_FACE:
-                mSeekBar.setSeekIndicator(defaultParams.beautySlimFace);
-                break;
-            default:
-                break;
+        case BeautyConstants.THIN_FACE:
+            mSeekBar.setSeekIndicator(defaultParams.beautySlimFace);
+            break;
+        default:
+            break;
         }
     }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+
+    >
+
+    <FrameLayout
+        android:id="@+id/resource_image"
+        android:layout_width="@dimen/alivc_common_size_group_60"
+        android:layout_height="@dimen/alivc_common_size_group_60">
+
+        <com.aliyun.svideo.base.widget.CircularImageView
+            android:id="@+id/resource_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/alivc_common_margin_10"
+            android:layout_marginTop="@dimen/alivc_common_margin_10"
+            android:scaleType="centerInside"/>
+    </FrameLayout>
+</LinearLayout>

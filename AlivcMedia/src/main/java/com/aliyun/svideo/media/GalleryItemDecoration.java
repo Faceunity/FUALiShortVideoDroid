@@ -9,16 +9,11 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.aliyun.common.utils.DensityUtil;
-
+import com.aliyun.svideo.common.utils.DensityUtils;
 
 public class GalleryItemDecoration extends RecyclerView.ItemDecoration {
-    private int mLineSpace = DensityUtil.dip2px(1.0f);
-    private int offset = DensityUtil.dip2px(1.0f);
-
-
-
-
+    private int mLineSpace = -1;
+    private int offset = -1;
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDraw(c, parent, state);
@@ -26,21 +21,23 @@ public class GalleryItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        super.getItemOffsets(outRect,view,parent,state);
+        super.getItemOffsets(outRect, view, parent, state);
 
-
-
+        if (mLineSpace == -1) {
+            mLineSpace = DensityUtils.dip2px(view.getContext(), 1.0f);
+            offset = DensityUtils.dip2px(view.getContext(), 1.0f);
+        }
 
         int position = parent.getChildLayoutPosition(view);
 
 
         outRect.bottom = mLineSpace;
-        if(position%4 == 0){
+        if (position % 4 == 0) {
             outRect.right = offset;
-        }else if(position%4 == 1 || position % 4 == 2){
-            outRect.left = offset/2;
-            outRect.right = offset/2;
-        }else{
+        } else if (position % 4 == 1 || position % 4 == 2) {
+            outRect.left = offset / 2;
+            outRect.right = offset / 2;
+        } else {
             outRect.left = offset;
         }
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+    android:layout_height="@dimen/alivc_editor_effect_height">
+    <include
+        layout="@layout/alivc_editor_include_effect_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_editor_dialog_effect_tittle_height"/>
+    <FrameLayout
+        android:id="@+id/fl_thumblinebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/alivc_common_margin_40"
+        android:layout_marginBottom="@dimen/alivc_common_margin_60"/>
+</LinearLayout>

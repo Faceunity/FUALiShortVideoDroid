@@ -14,7 +14,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 
 public class CircularImageView extends View {
 
@@ -59,7 +59,7 @@ public class CircularImageView extends View {
             setImageBitmap(null);
         } else {
             if (drawable instanceof LayerDrawable) {
-               bitmap = drawable2Bitmap(drawable);
+                bitmap = drawable2Bitmap(drawable);
             } else {
                 bitmap = ((BitmapDrawable)drawable).getBitmap();
             }
@@ -77,7 +77,7 @@ public class CircularImageView extends View {
         super.onLayout(changed, left, top, right, bottom);
 
         _Drawable.setBounds(left + getPaddingLeft(), top + getPaddingTop(), right - getPaddingRight(),
-            bottom - getPaddingBottom());
+                            bottom - getPaddingBottom());
     }
 
     @Override

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EditOverlay_Layout">
+        <attr name="android:layout_gravity" />
+        <attr name="android:layout_width" />
+        <attr name="android:layout_height" />
+    </declare-styleable>
+    <declare-styleable name="AutoResizingTextView">
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="strokeMiter" format="dimension" />
+        <attr name="strokeColor" format="color" />
+        <attr name="strokeJoinStyle">
+            <enum name="miter" value="0" />
+            <enum name="bevel" value="1" />
+            <enum name="round" value="2" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="AlivcEditUIStyle">
+        <attr name="filterImage" format="reference"/>
+        <attr name="musicImage" format="reference"/>
+        <attr name="pasterImage" format="reference"/>
+        <attr name="captionImage" format="reference"/>
+        <attr name="mvImage" format="reference"/>
+        <attr name="sound" format="reference"/>
+        <attr name="effectImage" format="reference"/>
+        <attr name="timeImage" format="reference"/>
+        <attr name="translationImage" format="reference"/>
+        <attr name="paintImage" format="reference"/>
+        <attr name="playImage" format="reference"/>
+        <attr name="pauseImage" format="reference"/>
+        <attr name="finishImage" format="reference"/>
+        <attr name="coverImage" format="reference"/>
+    </declare-styleable>
+</resources>

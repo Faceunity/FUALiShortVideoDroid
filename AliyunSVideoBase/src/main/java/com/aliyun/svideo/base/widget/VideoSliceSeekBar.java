@@ -16,7 +16,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
+import com.aliyun.svideo.common.utils.DensityUtils;
 
 public class VideoSliceSeekBar extends View {
     private static String TAG = "VideoSliceSeekBar";
@@ -57,17 +58,17 @@ public class VideoSliceSeekBar extends View {
     private float maxValue = 100f;
 
     private int progressMinDiffPixels;
-    private int thumbSliceLeftX, thumbSliceRightX,  thumbMaxSliceRightx;
+    private int thumbSliceLeftX, thumbSliceRightX, thumbMaxSliceRightx;
     private float thumbSliceLeftValue, thumbSliceRightValue;
     private Paint paintThumb = new Paint();
     private SelectThumb selectedThumb;
     private SelectThumb lastSelectedThumb = SelectThumb.SELECT_THUMB_NONE;
     private int thumbSliceHalfWidth;
     private SeekBarChangeListener scl;
-    private int resSweepLeft = R.mipmap.aliyun_svideo_icon_sweep_left,resSweepRight = R.mipmap.aliyun_svideo_icon_sweep_right;
+    private int resSweepLeft = R.mipmap.aliyun_svideo_icon_sweep_left, resSweepRight = R.mipmap.aliyun_svideo_icon_sweep_right;
     private int resFrame = R.mipmap.aliyun_svideo_icon_frame;
-    private int resBackground = R.color.aliyun_base_color_bg;
-    private int resPaddingColor  =  android.R.color.holo_red_dark;
+    private int resBackground = R.color.alivc_common_theme_primary;
+    private int resPaddingColor = android.R.color.holo_red_dark;
 
 
     private boolean blocked;
@@ -91,16 +92,17 @@ public class VideoSliceSeekBar extends View {
     private static final int PADDING_LEFT_RIGHT = 5;
 
 
-    private void getStyleParam(){
-        TypedArray a = getContext().obtainStyledAttributes(new int[]{
-                R.attr.qusnap_crop_sweep_left, R.attr.qusnap_crop_sweep_right,
-                R.attr.qusnap_crop_seek_frame, R.attr.qusnap_background_color,
-                R.attr.qusnap_crop_seek_padding_color});
-        resSweepLeft = a.getResourceId(0,  R.mipmap.aliyun_svideo_icon_sweep_left);
+    private void getStyleParam() {
+        TypedArray a = getContext().obtainStyledAttributes(new int[] {
+                           R.attr.qusnap_crop_sweep_left, R.attr.qusnap_crop_sweep_right,
+                           R.attr.qusnap_crop_seek_frame, R.attr.qusnap_background_color,
+                           R.attr.qusnap_crop_seek_padding_color
+                       });
+        resSweepLeft = a.getResourceId(0, R.mipmap.aliyun_svideo_icon_sweep_left);
         resSweepRight = a.getResourceId(1, R.mipmap.aliyun_svideo_icon_sweep_right);
         resFrame = a.getResourceId(2, R.mipmap.aliyun_svideo_icon_frame);
-        resBackground =  a.getResourceId(3,0);
-        resPaddingColor = a.getResourceId(4,android.R.color.holo_red_dark);
+        resBackground = a.getResourceId(3, 0);
+        resPaddingColor = a.getResourceId(4, android.R.color.holo_red_dark);
 
     }
 
@@ -123,7 +125,7 @@ public class VideoSliceSeekBar extends View {
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
-        if(!isInited){
+        if (!isInited) {
             isInited = true;
             init();
         }
@@ -136,16 +138,18 @@ public class VideoSliceSeekBar extends View {
         thumbSliceRight = BitmapFactory.decodeResource(getResources(), resSweepRight);
         thumbFrame = BitmapFactory.decodeResource(getResources(), resFrame);
         screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        int itemWidth = screenWidth / 8;
+
+        int itemWidth = (screenWidth - DensityUtils.dip2px(getContext(), 40)) / 10;
         float ratio = (float)itemWidth / (float) thumbSlice.getHeight();
         Matrix matrix = new Matrix();
-        matrix.postScale(ratio,ratio);
+        matrix.postScale(ratio, ratio);
         float frameRatio = (float)itemWidth / (float) thumbFrame.getHeight();
+
         Matrix frameMatrix = new Matrix();
-        frameMatrix.postScale(frameRatio,frameRatio);
-        thumbSlice = Bitmap.createBitmap(thumbSlice,0,0,thumbSlice.getWidth(),thumbSlice.getHeight(),matrix,false);
-        thumbSliceRight = Bitmap.createBitmap(thumbSliceRight,0,0,thumbSliceRight.getWidth(),thumbSliceRight.getHeight(),matrix,false);
-        thumbFrame = Bitmap.createBitmap(thumbFrame,0,0,thumbFrame.getWidth(),thumbFrame.getHeight(),frameMatrix,false);
+        frameMatrix.postScale(frameRatio, frameRatio);
+        thumbSlice = Bitmap.createBitmap(thumbSlice, 0, 0, thumbSlice.getWidth(), thumbSlice.getHeight(), matrix, false);
+        thumbSliceRight = Bitmap.createBitmap(thumbSliceRight, 0, 0, thumbSliceRight.getWidth(), thumbSliceRight.getHeight(), matrix, false);
+        thumbFrame = Bitmap.createBitmap(thumbFrame, 0, 0, thumbFrame.getWidth(), thumbFrame.getHeight(), frameMatrix, false);
         invalidate();
     }
 
@@ -169,19 +173,19 @@ public class VideoSliceSeekBar extends View {
         this.scl = scl;
     }
 
-    public void setFrameProgress(float percent){
+    public void setFrameProgress(float percent) {
         frameProgress = percent;
         invalidate();
     }
 
-    public void showFrameProgress(boolean isShow){
+    public void showFrameProgress(boolean isShow) {
         needFrameProgress = isShow;
     }
 
     private boolean adjustSliceXY(int mx) {
 
         boolean isNoneArea = false;
-        int thumbSliceDistance = thumbSliceRightX - thumbSliceLeftX ;
+        int thumbSliceDistance = thumbSliceRightX - thumbSliceLeftX;
         if (thumbSliceDistance <= progressMinDiffPixels
                 && selectedThumb == SelectThumb.SELECT_THUMB_MORE_RIGHT
                 && mx <= downX || thumbSliceDistance <= progressMinDiffPixels
@@ -201,9 +205,9 @@ public class VideoSliceSeekBar extends View {
 
         if (isNoneArea) {
             if (selectedThumb == SelectThumb.SELECT_THUMB_RIGHT || selectedThumb == SelectThumb.SELECT_THUMB_MORE_RIGHT) {
-                thumbSliceRightX = thumbSliceLeftX +  progressMinDiffPixels;
+                thumbSliceRightX = thumbSliceLeftX + progressMinDiffPixels;
             } else if (selectedThumb == SelectThumb.SELECT_THUMB_LEFT || selectedThumb == SelectThumb.SELECT_THUMB_MORE_LEFT) {
-                thumbSliceLeftX = thumbSliceRightX -  progressMinDiffPixels;
+                thumbSliceLeftX = thumbSliceRightX - progressMinDiffPixels;
             }
             return true;
         }
@@ -230,66 +234,21 @@ public class VideoSliceSeekBar extends View {
         super.onDraw(canvas);
         int drawLeft = thumbSliceLeftX;
         int drawRight = thumbSliceRightX;
-//        if(selectedThumb == SelectThumb.SELECT_THUMB_LEFT || selectedThumb == SelectThumb.SELECT_THUMB_MORE_LEFT){
-//            if(drawLeft + thumbSliceHalfWidth * 2 + 5 > drawRight){
-//                if(lastDrawRight != 0){
-//                    drawRight = lastDrawRight;
-//                }
-//                drawLeft = drawRight - thumbSliceHalfWidth * 2 - 5;
-//                lastDrawLeft = drawLeft;
-//            }else{
-//                lastDrawLeft = 0;
-//            }
-//            lastSelectedThumb = SelectThumb.SELECT_THUMB_LEFT;
-//        }else if(selectedThumb == SelectThumb.SELECT_THUMB_RIGHT || selectedThumb == SelectThumb.SELECT_THUMB_MORE_RIGHT){
-//            if(drawRight < drawLeft + thumbSliceHalfWidth * 2 + 5){
-//                if(lastDrawLeft != 0){
-//                    drawLeft = lastDrawLeft;
-//                }
-//                drawRight = drawLeft + thumbSliceHalfWidth * 2 + 5;
-//                lastDrawRight = drawRight;
-//            }else{
-//                lastDrawRight = 0;
-//            }
-//            lastSelectedThumb = SelectThumb.SELECT_THUMB_RIGHT;
-//        }else if(selectedThumb == SelectThumb.SELECT_THUMB_NONE){
-//            if(lastSelectedThumb == SelectThumb.SELECT_THUMB_RIGHT){
-//                if(drawRight < drawLeft + thumbSliceHalfWidth * 2 + 5){
-//                    if(lastDrawLeft != 0){
-//                        drawLeft = lastDrawLeft;
-//                    }
-//                    drawRight = drawLeft + thumbSliceHalfWidth * 2 + 5;
-//                    lastDrawRight = drawRight;
-//                }else{
-//                    lastDrawRight = 0;
-//                }
-//            }else if(lastSelectedThumb == SelectThumb.SELECT_THUMB_LEFT){
-//                if(drawLeft + thumbSliceHalfWidth * 2 + 5 > drawRight){
-//                    if(lastDrawRight != 0){
-//                        drawRight = lastDrawRight;
-//                    }
-//                    drawLeft = drawRight - thumbSliceHalfWidth * 2 - 5;
-//                    lastDrawLeft = drawLeft;
-//                }else{
-//                    lastDrawLeft = 0;
-//                }
-//            }
-//        }
         paintThumb.setColor(getResources().getColor(resPaddingColor));
-        canvas.drawRect(drawLeft + thumbSlice.getWidth() - PADDING_LEFT_RIGHT, 0f ,drawRight + PADDING_LEFT_RIGHT,PADDING_BOTTOM_TOP ,paintThumb);
-        canvas.drawRect( drawLeft + thumbSlice.getWidth() - PADDING_LEFT_RIGHT, thumbSlice.getHeight() - PADDING_BOTTOM_TOP ,drawRight + PADDING_LEFT_RIGHT,thumbSlice.getHeight() ,paintThumb);
+        canvas.drawRect(drawLeft + thumbSlice.getWidth() - PADDING_LEFT_RIGHT, 0f, drawRight + PADDING_LEFT_RIGHT, PADDING_BOTTOM_TOP, paintThumb);
+        canvas.drawRect(drawLeft + thumbSlice.getWidth() - PADDING_LEFT_RIGHT, thumbSlice.getHeight() - PADDING_BOTTOM_TOP, drawRight + PADDING_LEFT_RIGHT, thumbSlice.getHeight(), paintThumb);
         paintThumb.setColor(getResources().getColor(resBackground));
         paintThumb.setAlpha((int) (255 * 0.9));
-        canvas.drawRect(0,0,drawLeft + PADDING_LEFT_RIGHT,getHeight(),paintThumb);
-        canvas.drawRect(drawRight + thumbSliceRight.getWidth() - PADDING_LEFT_RIGHT,0,getWidth(),getHeight(),paintThumb);
+        canvas.drawRect(0, 0, drawLeft + PADDING_LEFT_RIGHT, thumbSlice.getHeight(), paintThumb);
+        canvas.drawRect(drawRight + thumbSliceRight.getWidth() - PADDING_LEFT_RIGHT, 0, getWidth(), thumbSlice.getHeight(), paintThumb);
         canvas.drawBitmap(thumbSlice, drawLeft, 0, paintThumb);
         canvas.drawBitmap(thumbSliceRight, drawRight, 0, paintThumb);
-        if(needFrameProgress){
-            float progress = frameProgress * (getWidth() - thumbSliceHalfWidth * 2) - thumbFrame.getWidth()/2;
-            if(progress > drawRight + thumbSliceHalfWidth * 2){
+        if (needFrameProgress) {
+            float progress = frameProgress * (getWidth() - thumbSliceHalfWidth * 2) - thumbFrame.getWidth() / 2;
+            if (progress > drawRight + thumbSliceHalfWidth * 2) {
                 progress = drawRight + thumbSliceHalfWidth * 2;
             }
-            canvas.drawBitmap(thumbFrame,progress ,0,paintThumb);
+            canvas.drawBitmap(thumbFrame, progress, 0, paintThumb);
         }
     }
 
@@ -300,57 +259,57 @@ public class VideoSliceSeekBar extends View {
             int mx = (int) event.getX();
 
             switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (mx <= thumbSliceLeftX + thumbSliceHalfWidth * 2 + DRAG_OFFSET) {
-                        if (mx >= thumbSliceLeftX) {
-                            selectedThumb = SelectThumb.SELECT_THUMB_LEFT;
-                        } else {
-                            selectedThumb = SelectThumb.SELECT_THUMB_MORE_LEFT;
-                        }
-                    } else if (mx >= thumbSliceRightX - thumbSliceHalfWidth * 2 - DRAG_OFFSET) {
-                        if (mx <= thumbSliceRightX) {
-                            selectedThumb = SelectThumb.SELECT_THUMB_RIGHT;
-                        } else {
-                            selectedThumb = SelectThumb.SELECT_THUMB_MORE_RIGHT;
-                        }
-
+            case MotionEvent.ACTION_DOWN:
+                if (mx <= thumbSliceLeftX + thumbSliceHalfWidth * 2 + DRAG_OFFSET) {
+                    if (mx >= thumbSliceLeftX) {
+                        selectedThumb = SelectThumb.SELECT_THUMB_LEFT;
+                    } else {
+                        selectedThumb = SelectThumb.SELECT_THUMB_MORE_LEFT;
                     }
-                    downX = mx;
-                    prevX = mx;
-                    if(scl != null){
-                        scl.onSeekStart();
-                    }
-                    break;
-                case MotionEvent.ACTION_MOVE:
-
-                    if (selectedThumb == SelectThumb.SELECT_THUMB_LEFT) {
-                        thumbSliceLeftX = mx;
-                    } else if (selectedThumb == SelectThumb.SELECT_THUMB_RIGHT) {
-                        thumbSliceRightX = mx;
-                    } else if (selectedThumb == SelectThumb.SELECT_THUMB_MORE_RIGHT) {
-                        int distance = mx - prevX;
-                        thumbSliceRightX += distance;
-                    } else if (selectedThumb == SelectThumb.SELECT_THUMB_MORE_LEFT) {
-                        int distance = mx - prevX;
-                        thumbSliceLeftX += distance;
+                } else if (mx >= thumbSliceRightX - thumbSliceHalfWidth * 2 - DRAG_OFFSET) {
+                    if (mx <= thumbSliceRightX) {
+                        selectedThumb = SelectThumb.SELECT_THUMB_RIGHT;
+                    } else {
+                        selectedThumb = SelectThumb.SELECT_THUMB_MORE_RIGHT;
                     }
 
-                    if (adjustSliceXY(mx)) {
-                        break;
-                    }
-                    prevX = mx;
+                }
+                downX = mx;
+                prevX = mx;
+                if (scl != null) {
+                    scl.onSeekStart();
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+
+                if (selectedThumb == SelectThumb.SELECT_THUMB_LEFT) {
+                    thumbSliceLeftX = mx;
+                } else if (selectedThumb == SelectThumb.SELECT_THUMB_RIGHT) {
+                    thumbSliceRightX = mx;
+                } else if (selectedThumb == SelectThumb.SELECT_THUMB_MORE_RIGHT) {
+                    int distance = mx - prevX;
+                    thumbSliceRightX += distance;
+                } else if (selectedThumb == SelectThumb.SELECT_THUMB_MORE_LEFT) {
+                    int distance = mx - prevX;
+                    thumbSliceLeftX += distance;
+                }
+
+                if (adjustSliceXY(mx)) {
                     break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    downX = mx;
-                    adjustSliceXY(mx);
-                    selectedThumb = SelectThumb.SELECT_THUMB_NONE;
-                    if(scl != null){
-                        scl.onSeekEnd();
-                    }
-                    break;
-                default:
-                    break;
+                }
+                prevX = mx;
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                downX = mx;
+                adjustSliceXY(mx);
+                selectedThumb = SelectThumb.SELECT_THUMB_NONE;
+                if (scl != null) {
+                    scl.onSeekEnd();
+                }
+                break;
+            default:
+                break;
             }
 
             if (mx != downX) {
@@ -362,19 +321,19 @@ public class VideoSliceSeekBar extends View {
     }
 
     private void notifySeekBarValueChanged() {
-        if (thumbSliceLeftX < thumbPadding){
+        if (thumbSliceLeftX < thumbPadding) {
             thumbSliceLeftX = thumbPadding;
         }
 
-        if (thumbSliceRightX < thumbPadding){
+        if (thumbSliceRightX < thumbPadding) {
             thumbSliceRightX = thumbPadding;
         }
 
-        if (thumbSliceLeftX > getWidth() - thumbPadding){
+        if (thumbSliceLeftX > getWidth() - thumbPadding) {
             thumbSliceLeftX = getWidth() - thumbPadding;
         }
 
-        if (thumbSliceRightX > getWidth() - thumbPadding){
+        if (thumbSliceRightX > getWidth() - thumbPadding) {
             thumbSliceRightX = getWidth() - thumbPadding;
         }
 
@@ -401,7 +360,7 @@ public class VideoSliceSeekBar extends View {
             return;
         }
         thumbSliceLeftValue = maxValue * thumbSliceLeftX / (getWidth() - thumbSliceHalfWidth * 2);
-        thumbSliceRightValue = maxValue * thumbSliceRightX  / (getWidth() - thumbSliceHalfWidth * 2);
+        thumbSliceRightValue = maxValue * thumbSliceRightX / (getWidth() - thumbSliceHalfWidth * 2);
     }
 
 
@@ -419,7 +378,7 @@ public class VideoSliceSeekBar extends View {
     public void setRightProgress(int progress) {
         if (progress >= thumbSliceLeftValue + progressMinDiff) {
             thumbSliceRightX = calculateCorrds(progress);
-            if(!isDefaultSeekTotal){
+            if (!isDefaultSeekTotal) {
                 isDefaultSeekTotal = true;
             }
         }
@@ -441,9 +400,6 @@ public class VideoSliceSeekBar extends View {
         }
         notifySeekBarValueChanged();
     }
-
-
-
 
 
     public void setSliceBlocked(boolean isBLock) {
@@ -482,7 +438,9 @@ public class VideoSliceSeekBar extends View {
 
     public interface SeekBarChangeListener {
         void seekBarValueChanged(float leftThumb, float rightThumb, int whitchSide);
+
         void onSeekStart();
+
         void onSeekEnd();
     }
 

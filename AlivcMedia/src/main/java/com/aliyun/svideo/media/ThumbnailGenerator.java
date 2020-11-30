@@ -10,7 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.provider.MediaStore;
-
+import android.support.annotation.NonNull;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
@@ -20,7 +20,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aliyun.svideo.media.MediaStorage.TYPE_PHOTO;
 
@@ -39,28 +44,45 @@ public class ThumbnailGenerator {
     private Handler handler = new Handler();
 //    private MemoryCache cache;
 
-    public ThumbnailGenerator(Context context){
-        executor = Executors.newFixedThreadPool(3);
-        resolver = context.getContentResolver();
-//        cache = new MemoryCache();
+    public ThumbnailGenerator(Context context) {
+        executor = new ThreadPoolExecutor(3, 3,
+                                          0L, TimeUnit.MILLISECONDS,
+                                          new LruLinkedBlockingDeque<Runnable>(), new ThumbnailGeneratorFactory());
+        resolver = context.getApplicationContext().getContentResolver();
+
     }
 
-    public void generateThumbnail(int type, int id, int resId ,OnThumbnailGenerateListener listener){
-        int key = generateKey(type,id);
-//        String memoryKey = generateKey(String.valueOf(key), 120, 120);
-//        Bitmap bmp = cache.get(memoryKey);
-//        if(bmp != null){
-//            listener.onThumbnailGenerate(key, bmp);
-//            return ;
-//        }
-        ThumbnailTask task = new ThumbnailTask(type, id,resId,listener);
-//        listeners.put(key, listener);
+    public static class LruLinkedBlockingDeque<E> extends LinkedBlockingDeque<E> {
+        @NonNull
+        @Override
+        public E take() throws InterruptedException {
+            return super.takeLast();
+        }
+
+        @Override
+        public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+            return super.pollLast(timeout, unit);
+        }
+    }
+
+    public static class ThumbnailGeneratorFactory implements ThreadFactory {
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName("ThumbnailGenerator #");
+            return thread;
+        }
+    }
+
+    public void generateThumbnail(int type, int id, int resId, OnThumbnailGenerateListener listener) {
+
+        ThumbnailTask task = new ThumbnailTask(type, id, resId, listener);
+
         executor.execute(task);
     }
 
-    public void cancelAllTask(){
+    public void cancelAllTask() {
         ((ExecutorService)executor).shutdown();
-//        cache.clear();
     }
 
     private class ThumbnailTask implements Runnable {
@@ -70,7 +92,7 @@ public class ThumbnailGenerator {
         private int resId;
         private OnThumbnailGenerateListener listener;
 
-        public ThumbnailTask(int type, int id,int resId,OnThumbnailGenerateListener listener){
+        public ThumbnailTask(int type, int id, int resId, OnThumbnailGenerateListener listener) {
             this.type = type;
             this.id = id;
             this.resId = resId;
@@ -85,25 +107,22 @@ public class ThumbnailGenerator {
             final Bitmap bitmap ;
             if (type == TYPE_PHOTO) {
                 bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver,
-                        id == -1?resId:id, MediaStore.Images.Thumbnails.MICRO_KIND, options);
+                         id == -1 ? resId : id, MediaStore.Images.Thumbnails.MINI_KIND, options);
             } else {
                 bitmap = MediaStore.Video.Thumbnails.getThumbnail(resolver,
-                        id == -1?resId:id, MediaStore.Video.Thumbnails.MICRO_KIND, options);
+                         id == -1 ? resId : id, MediaStore.Video.Thumbnails.MINI_KIND, options);
             }
             final int key = generateKey(type, id);
-            if(bitmap == null){
-//                if(listeners.containsKey(key)){
-//                    listeners.remove(key);
-//                }
+            if (bitmap == null) {
+
                 return ;
             }
-//            String memoryKey = MemoryCacheUtils.generateKey(String.valueOf(key), new ImageSize(120, 120));
-//            cache.put(memoryKey, bitmap);
+
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(listener != null){
-                        listener.onThumbnailGenerate(key,bitmap);
+                    if (listener != null) {
+                        listener.onThumbnailGenerate(key, bitmap);
                         listener = null;
                     }
                 }
@@ -116,7 +135,7 @@ public class ThumbnailGenerator {
         return imageUri + "_" + width + "x" + height;
     }
 
-    public static int generateKey(int type, int id){
+    public static int generateKey(int type, int id) {
         return type << 16 | id;
     }
 
@@ -126,7 +145,7 @@ public class ThumbnailGenerator {
         public Bitmap get(String key) {
             Bitmap result = null;
             Reference reference = (Reference)this.softMap.get(key);
-            if(reference != null) {
+            if (reference != null) {
                 result = (Bitmap)reference.get();
             }
 
@@ -140,27 +159,27 @@ public class ThumbnailGenerator {
 
         public Bitmap remove(String key) {
             Reference bmpRef = (Reference)this.softMap.remove(key);
-            return bmpRef == null?null:(Bitmap)bmpRef.get();
+            return bmpRef == null ? null : (Bitmap)bmpRef.get();
         }
 
         public Collection<String> keys() {
             Map var1 = this.softMap;
-            synchronized(this.softMap) {
+            synchronized (this.softMap) {
                 return new HashSet(this.softMap.keySet());
             }
         }
 
         public void clear() {
-            for(Reference<Bitmap> ref : softMap.values()){
+            for (Reference<Bitmap> ref : softMap.values()) {
                 Bitmap bmp = ref.get();
-                if(bmp != null){
+                if (bmp != null) {
                     bmp.recycle();
                 }
             }
             this.softMap.clear();
         }
 
-        protected Reference<Bitmap> createReference(Bitmap var1){
+        protected Reference<Bitmap> createReference(Bitmap var1) {
             return new SoftReference<>(var1);
         }
 

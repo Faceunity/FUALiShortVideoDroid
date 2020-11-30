@@ -5,6 +5,7 @@
 package com.aliyun.svideo.media;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,11 +16,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.aliyun.svideo.base.MediaInfo;
-import com.aliyun.common.utils.FileUtils;
-import com.aliyun.common.utils.ToastUtil;
-import com.aliyun.demo.importer.R;
-import com.aliyun.jasonparse.JSONSupport;
+import com.aliyun.svideo.common.utils.FileUtils;
+import com.aliyun.svideo.common.utils.ToastUtils;
+import com.aliyun.svideo.media.JsonExtend.JSONSupport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,9 +45,10 @@ public class MediaStorage {
     public static final int SORT_MODE_PHOTO = 1;
     public static final int SORT_MODE_MERGE = 2;
 
-    private long mMinDuration = 2000;
+    private long mMinVideoDuration = 2000;
+    private long mMaxVideoDuration = Integer.MAX_VALUE;
 
-    private int sortMode;
+    private int sortMode = SORT_MODE_MERGE;//默认加载全部media
 
     private HashMap<MediaDir, List<MediaInfo>> mediaByDir = new HashMap<>();
     private List<MediaInfo> medias = new ArrayList<>();
@@ -77,15 +77,14 @@ public class MediaStorage {
             cacheSavePath = mediaFile.getPath();
         } else {
             cacheSavePath = null;
-            ToastUtil.showToast(context, R.string.sdcard_not_ready);
+            ToastUtils.show(context, R.string.alivc_media_sdcard_not_ready);
         }
     }
-
     public void setSortMode(int sortMode) {
         this.sortMode = sortMode;
     }
 
-    public void startFetchmedias() {
+    public void startFetchMedias() {
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -136,7 +135,7 @@ public class MediaStorage {
         if (cache != null) {
             MediaDir dir = cache.dir;
             if (dir == null) {
-                return ;
+                return;
             }
             cacheDirName = dir.dirName;
             mediaByDir.put(dir, cache.list);
@@ -317,7 +316,7 @@ public class MediaStorage {
         private ContentResolver mResolver;
 
         public SortMergedTask(Context context) {
-            mResolver = context.getContentResolver();
+            mResolver = context.getApplicationContext().getContentResolver();
         }
 
         @Override
@@ -357,8 +356,6 @@ public class MediaStorage {
 
         @Override
         protected Void doInBackground(Void... params) {
-//            if (Environment.getExternalStorageState().equals(
-//                    Environment.MEDIA_MOUNTED)) {
             Cursor videoCursor = null;
             if (sortMode == SORT_MODE_MERGE || sortMode == SORT_MODE_VIDEO) {
                 videoCursor = mResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, new String[] {
@@ -368,12 +365,14 @@ public class MediaStorage {
                                                   MediaStore.Video.Media.MIME_TYPE,
                                                   MediaStore.Video.Media.DURATION,
                                                   MediaStore.Video.Media.DATE_ADDED,
-                                              }, String.format("%1$s IN (?, ?, ? ,?) AND %2$s > %3$d",
+                                              }, String.format("%1$s IN (?, ?, ? ,?,?,?,?) AND %2$s > %3$d AND %2$s < %4$d",
                                                       MediaStore.Video.Media.MIME_TYPE,
-                                                      MediaStore.Video.Media.DURATION, mMinDuration), new String[] {
+                                                      MediaStore.Video.Media.DURATION, mMinVideoDuration, mMaxVideoDuration), new String[] {
                                                   "video/mp4",
                                                   "video/ext-mp4",
-                                                  /* MEIZU 5.0 */
+                                                  "video/quicktime",//部分oppo手机会记录这个mp4的格式
+                                                  "video/x-flv",
+                                                  "video/flv",
                                                   "video/3gpp",
                                                   "video/mov"
                                               }, MediaStore.Video.Media.DATE_ADDED + " DESC");
@@ -407,6 +406,7 @@ public class MediaStorage {
                 colDurationVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
                 colMineTypeVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE);
                 colDataVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                colDataVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
                 colTitleVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
                 colIdVideo = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
                 colDateAddedVideo = videoCursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED);
@@ -415,6 +415,7 @@ public class MediaStorage {
                 colMineTypeImage = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
                 colDataImage = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 colTitleImage = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
+
                 colIdImage = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
                 colDateAddedImage = imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
             }
@@ -427,6 +428,12 @@ public class MediaStorage {
             int notifySize = FIRST_NOTIFY_SIZE;
             for (int i = 0; i < totalCount; i++) {
                 if (isCancelled()) {
+                    if (videoCursor != null) {
+                        videoCursor.close();
+                    }
+                    if (imageCursor != null) {
+                        imageCursor.close();
+                    }
                     return null;
                 }
                 if (videoCursor != null) {
@@ -511,21 +518,32 @@ public class MediaStorage {
         videoInfo.mimeType = mimeType;
         videoInfo.duration = duration;
         videoInfo.title = title;
-
         videoInfo.id = cursor.getInt(colId);
-
         videoInfo.addTime = cursor.getLong(colDateAdded);
+        videoInfo.fileUri = ContentUris.withAppendedId(
+                                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                videoInfo.id).toString();
+
         Cursor thumbCursor = resolver.query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
                                             new String[] {
                                                 MediaStore.Video.Thumbnails.DATA,
-                                                MediaStore.Video.Thumbnails.VIDEO_ID
+                                                MediaStore.Video.Thumbnails.VIDEO_ID,
+                                                MediaStore.Video.Thumbnails._ID
                                             },
                                             MediaStore.Video.Thumbnails.VIDEO_ID + "=?",
                                             new String[] {String.valueOf(videoInfo.id)}, null);
 
+        if (thumbCursor == null) {
+            return videoInfo;
+        }
+
         if (thumbCursor.moveToFirst()) {
             videoInfo.thumbnailPath = thumbCursor.getString(
                                           thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA));
+            int id = thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails._ID);
+            videoInfo.thumbnailUri = ContentUris.withAppendedId(
+                                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                         thumbCursor.getInt(id)).toString();
         }
         thumbCursor.close();
 
@@ -545,8 +563,8 @@ public class MediaStorage {
         mediaInfo.filePath = filePath;
         mediaInfo.mimeType = mimeType;
         mediaInfo.title = title;
-
         mediaInfo.id = cursor.getInt(colId);
+        mediaInfo.fileUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, mediaInfo.id).toString();
 
         mediaInfo.addTime = cursor.getLong(colDateAdded);
         Cursor thumbCursor = resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
@@ -556,16 +574,24 @@ public class MediaStorage {
                                             },
                                             MediaStore.Images.Thumbnails.IMAGE_ID + "=?",
                                             new String[] {String.valueOf(mediaInfo.id)}, null);
-        if (thumbCursor.getCount() == 0) {
-            thumbCursor.close();
+        if (thumbCursor == null || thumbCursor.getCount() == 0) {
+            if (thumbCursor != null) {
+                thumbCursor.close();
+            }
             thumbCursor = createThumbnailAndRequery(mediaInfo, resolver);
         }
-        if (thumbCursor.moveToFirst()) {
-            String thumbPath = thumbCursor.getString(
-                                   thumbCursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA));
-            mediaInfo.thumbnailPath = thumbPath;
-            checkIfNeedToRotateThumbnail(mediaInfo.filePath, thumbPath);
+        if (thumbCursor == null) {
+            return mediaInfo;
         }
+        if (thumbCursor.moveToFirst()) {
+            mediaInfo.thumbnailPath = thumbCursor.getString(
+                                          thumbCursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA));
+            int id = thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID);
+
+            mediaInfo.thumbnailUri =  ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, thumbCursor.getInt(id)).toString();
+            checkIfNeedToRotateThumbnail(mediaInfo.filePath, mediaInfo.thumbnailPath);
+        }
+
         thumbCursor.close();
 
         return mediaInfo;
@@ -582,8 +608,8 @@ public class MediaStorage {
                 thumbnailEi.saveAttributes();
             }
 
-        } catch (IOException e) {
-//            e.printStackTrace();
+        } catch (Exception e) {
+
         }
     }
 
@@ -616,7 +642,7 @@ public class MediaStorage {
             dirInfo.type = info.type;
             dirInfo.dirName = dirName;
             dirInfo.thumbnailUrl = info.thumbnailPath;
-            dirInfo.VideoDirPath = info.filePath.substring(0,
+            dirInfo.videoDirPath = info.filePath.substring(0,
                                    info.filePath.lastIndexOf("/"));
             if (dirs.size() == 0) {
                 MediaDir all = new MediaDir();
@@ -657,10 +683,16 @@ public class MediaStorage {
 
 
     public long getMinDuration() {
-        return mMinDuration;
+        return mMinVideoDuration;
     }
 
     public void setMinDuration(long minDuration) {
-        mMinDuration = minDuration;
+        mMinVideoDuration = minDuration;
+    }
+
+    public void setVideoDurationRange(int min, int max) {
+        this.mMinVideoDuration = min;
+        this.mMaxVideoDuration = max;
+
     }
 }

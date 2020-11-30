@@ -3,9 +3,10 @@
 buildscript {
 
     repositories {
-        google()
-        jcenter()
         maven { url "http://maven.aliyun.com/nexus/content/repositories/releases" }
+//        maven { url 'http://mvnrepo.alibaba-inc.com/mvn/repository' }
+        maven { url "https://maven.aliyun.com/repository/google" } //替换 google()
+        maven { url "https://maven.aliyun.com/repository/public" } //替换 jcenter()
     }
     apply from: 'thirdparty-lib/config.gradle'
     dependencies {
@@ -18,20 +19,18 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        jcenter()
         maven { url "http://maven.aliyun.com/nexus/content/repositories/releases" }
-        //阿里云的镜像服务器
+//        maven { url 'http://mvnrepo.alibaba-inc.com/mvn/repository' }
+        maven { url 'https://dl.bintray.com/umsdk/release' }
+        maven { url 'http://4thline.org/m2' }
+        maven { url "https://maven.aliyun.com/repository/google" } //替换 google()
+        maven { url "https://maven.aliyun.com/repository/public" } //替换 jcenter()
         flatDir { dirs 'src/main/libs' }
     }
 
-    apply plugin: 'idea'
-    buildDir = new File(rootDir, "gradle-build/${path.replaceAll(':', '/')}")
+//    buildDir = new File(rootDir, "gradle-build/${path.replaceAll(':', '/')}")
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
-}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/alivc_svideo_shape_effect_press_state"/>
+    <item
+        android:bottom="@dimen/alivc_common_padding_12"
+        android:drawable="@mipmap/aliyun_svideo_icon_effect_confirm"
+        android:left="@dimen/alivc_common_padding_12"
+        android:right="@dimen/alivc_common_padding_12"
+        android:top="@dimen/alivc_common_padding_12" />
+
+</layer-list>
