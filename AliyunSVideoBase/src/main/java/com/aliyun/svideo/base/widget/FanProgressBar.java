@@ -13,7 +13,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 
 public class FanProgressBar extends View {
     private static final float DEFAULT_MAX_PROGRESS = 100f;
@@ -45,7 +45,7 @@ public class FanProgressBar extends View {
     private int mOutDirection = DIRECTION_CLOCKWISE;
     private int mInternalDirection = DIRECTION_CLOCKWISE;
     private int mInitStyle;
-    private int offsetX,offsetY;
+    private int offsetX, offsetY;
 
 
     public FanProgressBar(Context context) {
@@ -81,15 +81,15 @@ public class FanProgressBar extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (mInternalRadius == MATCH_PARENT) {
-            mInternalRadius = getMeasuredWidth()/2;
+            mInternalRadius = getMeasuredWidth() / 2;
         }
         if (mOutRadius == MATCH_PARENT) {
-            mOutRadius = getMeasuredWidth()/2;
+            mOutRadius = getMeasuredWidth() / 2;
         }
-        if(mCenterX == Integer.MAX_VALUE) {
+        if (mCenterX == Integer.MAX_VALUE) {
             mCenterX = mOutRadius;
         }
-        if(mCenterY == Integer.MAX_VALUE) {
+        if (mCenterY == Integer.MAX_VALUE) {
             mCenterY = mOutRadius;
         }
     }
@@ -132,7 +132,7 @@ public class FanProgressBar extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        float progress = mInitStyle == EMPTY_INIT ? mProgress:(mMaxProgress - mProgress);
+        float progress = mInitStyle == EMPTY_INIT ? mProgress : (mMaxProgress - mProgress);
         if (progress == mMaxProgress) {
             if (mOutRadius > 0) {
                 canvas.drawCircle(mCenterX, mCenterY, mOutRadius, mOutPaint);
@@ -147,17 +147,17 @@ public class FanProgressBar extends View {
             float sweepAngle = -(360.0f * progress / mMaxProgress);
 
             if (sweepAngle != 0) {
-                float outSweepAngle = (mOutDirection == DIRECTION_CLOCKWISE ? sweepAngle:-sweepAngle);
+                float outSweepAngle = (mOutDirection == DIRECTION_CLOCKWISE ? sweepAngle : -sweepAngle);
                 if (mOutRadius > 0) {
                     RectF ovalOut = new RectF();
                     ovalOut.left = mCenterX + offsetX - mOutRadius ;
-                    ovalOut.right = mCenterX + offsetX+ mOutRadius ;
+                    ovalOut.right = mCenterX + offsetX + mOutRadius ;
                     ovalOut.top = mCenterY + offsetY - mOutRadius ;
                     ovalOut.bottom = mCenterY + offsetY + mOutRadius ;
                     canvas.drawArc(ovalOut, mStartAngle, outSweepAngle, false, mOutPaint);
                 }
 
-                float internalSweepAngle = (mInternalDirection == DIRECTION_CLOCKWISE ? sweepAngle:-sweepAngle);
+                float internalSweepAngle = (mInternalDirection == DIRECTION_CLOCKWISE ? sweepAngle : -sweepAngle);
                 if (mInternalRadius > 0) {
                     RectF ovalInternal = new RectF();
                     ovalInternal.left = mCenterX - mInternalRadius;
@@ -169,13 +169,13 @@ public class FanProgressBar extends View {
             }
         }
     }
-    public void setOffset(int x,int y){
+    public void setOffset(int x, int y) {
         offsetX = x;
         offsetY = y;
     }
 
-    public void setOutStrokeWidth(int outStrokeWidth){
-        if(mOutPaint != null){
+    public void setOutStrokeWidth(int outStrokeWidth) {
+        if (mOutPaint != null) {
             mOutPaint.setStrokeWidth(outStrokeWidth);
         }
     }

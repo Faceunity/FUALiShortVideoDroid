@@ -9,14 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.aliyun.svideo.base.MediaInfo;
-import com.aliyun.demo.importer.R;
-
 import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-                            implements View.OnClickListener{
+    implements View.OnClickListener {
 
     public interface OnItemClickListener {
         /**
@@ -36,11 +32,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ThumbnailGenerator thumbnailGenerator;
     private OnItemClickListener onItemClickListener;
 
-    public GalleryAdapter(ThumbnailGenerator thumbnailGenerator){
+    public GalleryAdapter(ThumbnailGenerator thumbnailGenerator) {
         this.thumbnailGenerator = thumbnailGenerator;
     }
 
-    public void setData(List<MediaInfo> list){
+    public void setData(List<MediaInfo> list) {
         medias = list;
         notifyDataSetChanged();
     }
@@ -70,8 +66,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         RecyclerView.ViewHolder holder;
 
         holder = new GalleryItemViewHolder(
-                    LayoutInflater.from(parent.getContext()).inflate(
-                            R.layout.aliyun_svideo_import_item_qupai_gallery_media, parent, false), thumbnailGenerator);
+            LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.alivc_media_item_gallery_media, parent, false), thumbnailGenerator);
 
         holder.itemView.setOnClickListener(this);
         return holder;
@@ -85,12 +81,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    public MediaInfo getItem(int position){
-//        if(medias.size() > 0){
-        return medias.get(position);
-//        }else {
-//            return null;
-//        }
+    public MediaInfo getItem(int position) {
+        if (medias.size() > 0 && position >= 0) {
+            return medias.get(position);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -101,11 +97,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return TYPE_ITEM_MEDIA;
     }
 
-    public int setActiveDataItem(MediaInfo info){
+    public int setActiveDataItem(MediaInfo info) {
         return setActiveDataItem(info == null ? -1 : info.id);
     }
 
-    public int setActiveDataItem(int id){
+    public int setActiveDataItem(int id) {
         int dataPos = findDataPosition(id);
         setActiveAdapterItem(dataPos);
         return dataPos;
@@ -123,14 +119,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 //        notifyItemChanged(old_adapter_pos);
     }
 
-    public int getActiveAdapterPosition(){
+    public int getActiveAdapterPosition() {
         return activeAdapterPosition;
     }
 
-    public int findDataPosition(int id){
-        for(int i = 0; i < medias.size(); i++){
+    public int findDataPosition(int id) {
+        for (int i = 0; i < medias.size(); i++) {
             MediaInfo info = medias.get(i);
-            if(info.id == id){
+            if (info.id == id) {
                 return i;
             }
         }
@@ -139,7 +135,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-         return medias.size();
+        return medias.size();
     }
 
     @Override
@@ -150,7 +146,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (onItemClickListener != null) {
             Log.d("active", "onItemClick");
             if (!onItemClickListener.onItemClick(this, adapterPos)) {
-                Log.d("active","onItemClick1");
+                Log.d("active", "onItemClick1");
                 return;
             }
         }

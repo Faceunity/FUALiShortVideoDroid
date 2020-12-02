@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/alivc_apsara_video_title"
                 android:textColor="@color/white"
-                android:textSize="22sp" />
+                android:textSize="@dimen/alivc_common_font_22" />
 
             <TextView
                 android:id="@+id/tv_welcom"
@@ -35,7 +35,7 @@
                 android:layout_marginTop="20dp"
                 android:text="@string/solution_home_welcome_hint"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/alivc_common_font_14" />
 
         </LinearLayout>
     </RelativeLayout>
@@ -46,5 +46,5 @@
         android:textColor="@color/white"
         android:layout_gravity="center"
         android:singleLine="true"
-        android:textSize="10sp" />
+        android:textSize="@dimen/alivc_common_font_10" />
 </LinearLayout>

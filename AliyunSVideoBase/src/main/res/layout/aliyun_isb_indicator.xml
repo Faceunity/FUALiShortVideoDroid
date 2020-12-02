@@ -22,7 +22,7 @@
             android:paddingRight="8dp"
             android:paddingTop="4dp"
             android:text="Indicator"
-            android:textSize="13sp" />
+            android:textSize="@dimen/alivc_common_font_13" />
 
     </LinearLayout>
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/resource_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:src="@drawable/alivc_svideo_shape_effect_foreground_selector"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_select_state"/>
+        <com.aliyun.svideo.base.widget.CircularImageView
+            android:id="@+id/resource_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="1dp"
+            android:scaleType="centerInside" />
+    </FrameLayout>
+    <TextView
+        android:id="@+id/resource_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/alivc_common_font_10"
+        android:textColor="@color/alivc_common_font_white"
+        android:text="@string/alivc_editor_dialog_none_effect"/>
+</LinearLayout>

@@ -56,41 +56,41 @@ public class BeautyConstants {
         beautyParams0.beautyBigEye = 0;
         beautyParams0.beautySlimFace = 0;
 
-        // 1级: 磨皮 = 10, 美白 = 20, 红润 = 20, 大眼 = 20, 瘦脸 = 20
+        // 1级: 磨皮 = 12, 美白 = 20, 红润 = 20, 大眼 = 20, 瘦脸 = 20
         final BeautyParams beautyParams1 = new BeautyParams();
-        beautyParams1.beautyBuffing = 10;
+        beautyParams1.beautyBuffing = 12;
         beautyParams1.beautyWhite = 20;
         beautyParams1.beautyRuddy = 20;
         beautyParams1.beautyBigEye = 20;
         beautyParams1.beautySlimFace = 20;
 
-        // 2级: 磨皮 = 30, 美白 = 40, 红润 = 40, 大眼 = 40, 瘦脸 = 40
+        // 2级: 磨皮 = 24, 美白 = 40, 红润 = 40, 大眼 = 40, 瘦脸 = 40
         final BeautyParams beautyParams2 = new BeautyParams();
-        beautyParams2.beautyBuffing = 30;
+        beautyParams2.beautyBuffing = 24;
         beautyParams2.beautyWhite = 40;
         beautyParams2.beautyRuddy = 40;
         beautyParams2.beautyBigEye = 40;
         beautyParams2.beautySlimFace = 40;
 
-        // 3级: 磨皮 = 60, 美白 = 60, 红润 = 60, 大眼 = 40, 瘦脸 = 40
+        // 3级: 磨皮 = 36, 美白 = 60, 红润 = 60, 大眼 = 40, 瘦脸 = 40
         final BeautyParams beautyParams3 = new BeautyParams();
-        beautyParams3.beautyBuffing = 60;
+        beautyParams3.beautyBuffing = 36;
         beautyParams3.beautyWhite = 60;
         beautyParams3.beautyRuddy = 60;
         beautyParams3.beautyBigEye = 60;
         beautyParams3.beautySlimFace = 60;
 
-        // 4级: 磨皮 = 85, 美白 = 80, 红润 = 80, 大眼 = 40, 瘦脸 = 40
+        // 4级: 磨皮 = 48, 美白 = 80, 红润 = 80, 大眼 = 40, 瘦脸 = 40
         final BeautyParams beautyParams4 = new BeautyParams();
-        beautyParams4.beautyBuffing = 85;
+        beautyParams4.beautyBuffing = 48;
         beautyParams4.beautyWhite = 80;
         beautyParams4.beautyRuddy = 80;
         beautyParams4.beautyBigEye = 80;
         beautyParams4.beautySlimFace = 80;
 
-        // 5级: 磨皮 = 100, 美白 = 100, 红润 = 100, 大眼 = 40, 瘦脸 = 40
+        // 5级: 磨皮 = 60, 美白 = 100, 红润 = 100, 大眼 = 40, 瘦脸 = 40
         final BeautyParams beautyParams5 = new BeautyParams();
-        beautyParams5.beautyBuffing = 100;
+        beautyParams5.beautyBuffing = 60;
         beautyParams5.beautyWhite = 100;
         beautyParams5.beautyRuddy = 100;
         beautyParams5.beautyBigEye = 100;

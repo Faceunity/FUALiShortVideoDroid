@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_theme_primary"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/action_bar"
+        layout="@layout/alivc_editor_include_action_bar_profile"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextureView
+            android:id="@+id/ttv_editor_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            />
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_120"
+        android:paddingLeft="@dimen/alivc_common_padding_14"
+        android:paddingRight="@dimen/alivc_common_padding_14"
+        android:background="@color/alivc_common_theme_primary"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:id="@+id/cover_thumbnail_list"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/alivc_common_padding_5"
+            android:paddingRight="@dimen/alivc_common_padding_5"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/indiator"
+            android:src="@mipmap/aliyun_svideo_icon_cover_slide"/>
+    </FrameLayout>
+
+</LinearLayout>

@@ -11,7 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +42,10 @@ public class PageIndicatorView extends LinearLayout {
             mSelectedResID = ta.getResourceId(R.styleable.PageIndicatorView_pi_SelectedBackground, android.R.drawable.presence_online);
             mNormalResID = ta.getResourceId(R.styleable.PageIndicatorView_pi_NormalBackground, android.R.drawable.presence_invisible);
             margins = ta.getDimensionPixelSize(
-                R.styleable.PageIndicatorView_pi_Margin, DimensionConvert.dip2px(context, 5));
+                          R.styleable.PageIndicatorView_pi_Margin, DimensionConvert.dip2px(context, 5));
             dotSize = ta.getDimensionPixelSize(
-                R.styleable.PageIndicatorView_pi_DotSize, DimensionConvert.dip2px(context, 6));
-        }finally {
+                          R.styleable.PageIndicatorView_pi_DotSize, DimensionConvert.dip2px(context, 6));
+        } finally {
             ta.recycle();
         }
     }
@@ -57,10 +57,10 @@ public class PageIndicatorView extends LinearLayout {
             mSelectedResID = ta.getResourceId(R.styleable.PageIndicatorView_pi_SelectedBackground, android.R.drawable.presence_online);
             mNormalResID = ta.getResourceId(R.styleable.PageIndicatorView_pi_NormalBackground, android.R.drawable.presence_invisible);
             margins = ta.getDimensionPixelSize(
-                R.styleable.PageIndicatorView_pi_Margin, DimensionConvert.dip2px(context, 5));
+                          R.styleable.PageIndicatorView_pi_Margin, DimensionConvert.dip2px(context, 5));
             dotSize = ta.getDimensionPixelSize(
-                R.styleable.PageIndicatorView_pi_DotSize, DimensionConvert.dip2px(context, 4));
-        }finally {
+                          R.styleable.PageIndicatorView_pi_DotSize, DimensionConvert.dip2px(context, 4));
+        } finally {
             ta.recycle();
         }
         init(context);
@@ -83,24 +83,24 @@ public class PageIndicatorView extends LinearLayout {
      */
     public void initIndicator(int count) {
 //        if(count > 1) {
-            if (indicatorViews == null) {
-                indicatorViews = new ArrayList<>();
-            } else {
-                indicatorViews.clear();
-                removeAllViews();
-            }
-            View view;
-            LayoutParams params = new LayoutParams(dotSize, dotSize);
-            params.setMargins(margins, margins, margins, margins);
-            for (int i = 0; i < count; i++) {
-                view = new View(mContext);
-                view.setBackgroundResource(mNormalResID);
-                addView(view, params);
-                indicatorViews.add(view);
-            }
-            if (indicatorViews.size() > 0) {
-                indicatorViews.get(0).setBackgroundResource(mSelectedResID);
-            }
+        if (indicatorViews == null) {
+            indicatorViews = new ArrayList<>();
+        } else {
+            indicatorViews.clear();
+            removeAllViews();
+        }
+        View view;
+        LayoutParams params = new LayoutParams(dotSize, dotSize);
+        params.setMargins(margins, margins, margins, margins);
+        for (int i = 0; i < count; i++) {
+            view = new View(mContext);
+            view.setBackgroundResource(mNormalResID);
+            addView(view, params);
+            indicatorViews.add(view);
+        }
+        if (indicatorViews.size() > 0) {
+            indicatorViews.get(0).setBackgroundResource(mSelectedResID);
+        }
 //        }else if(count == 1) {
 //            indicatorViews.get(0).setBackgroundColor(Color.TRANSPARENT);
 //        }
@@ -112,7 +112,7 @@ public class PageIndicatorView extends LinearLayout {
      * @param selected 页下标，从0开始
      */
     public void setSelectedPage(int selected) {
-        if(indicatorViews != null) {
+        if (indicatorViews != null) {
             for (int i = 0; i < indicatorViews.size(); i++) {
                 if (i == selected) {
                     indicatorViews.get(i).setBackgroundResource(mSelectedResID);

@@ -3,17 +3,17 @@ ext {
     //==Android Third party,include Application Layer,SDK Layer==
 
     //Build Gradle Plugin
-    externalAndroidBuildGradlePlugin = 'com.android.tools.build:gradle:3.2.1'
+    externalAndroidBuildGradlePlugin = 'com.android.tools.build:gradle:3.1.0'
 
     //Android support Libraries
     externalAndroidAppCompatV7 = 'com.android.support:appcompat-v7:28.0.0'
     externalAndroidAppCompatV7ToSnapSvideo = 'com.android.support:appcompat-v7:28.0.0'
 
-    externalAndroidCardView = 'com.android.support:cardview-v7:28.0.0'
-    externalAndroidMultiDex = 'com.android.support:multidex:1.0.3'
+    externalAndroidCardView = 'com.android.support:cardview-v7:21.0.+'
+    externalAndroidMultiDex = 'com.android.support:multidex:1.0.2'
     externalAndroidRecyclerView = 'com.android.support:recyclerview-v7:28.0.0'
     externalAndroidSupportV13 = 'com.android.support:support-v13:23.4.0'
-    externalAndroidSupportV4 = 'com.android.support:support-v4:28.0.0'
+    externalAndroidSupportV4 = 'com.android.support:support-v4:26.1.0'
     externalAndroidDesign = 'com.android.support:design:28.0.0'
 
     //Test related third party libraries
@@ -49,18 +49,26 @@ ext {
     externalGSON = 'com.google.code.gson:gson:2.8.0'
     externalMqtt = 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     externalHttpCore = 'org.apache.httpcomponents:httpcore:4.4.1'
-    //externalFaceUnity = 'com.faceunity:nama:5.3.0-lite'
+    externalFaceUnity = 'com.faceunity:nama:6.0.0-lite'
+    externalAliyunRace = 'com.aliyun.race:AliyunRace:1.2.0'
 
     //Aliyun SDK
-    externalAliyunVodUpload = 'com.aliyun.video.android:upload:1.5.2'
-    externalAlivcConan = 'com.alivc.conan:AlivcConan:0.9.5.1'
+    externalAliyunVodUpload = 'com.aliyun.video.android:upload:1.6.0'
+    externalAlivcConan = 'com.alivc.conan:AlivcConan:1.0.3'
 
+    externalAlivcFFmpeg =  'com.aliyun.video.android:AlivcFFmpeg:2.0.0'
+    externalAlivcCore = 'com.aliyun.video.android:core:1.2.2'
+    externalSvideopro = 'com.aliyun.video.android:svideopro:3.16.2'
+    externalSvideostandard = 'com.aliyun.video.android:svideostandard:3.16.2'
+    externalSvideosnap = 'com.aliyun.video.android:svideosnap:3.16.2'
+    externalPlayerFull = 'com.aliyun.sdk.android:AliyunPlayer:4.7.3-full'
+    externalPlayerPart = 'com.aliyun.sdk.android:AliyunPlayer:4.7.3-part'
     //Android SDK/Tools Version
-    externalCompileSdkVersion = 28
-    externalBuildToolsVersion = '28.0.3'
+    externalCompileSdkVersion = 29
+    externalBuildToolsVersion = '29.0.0'
     //The MinSdkVersion of the product you can add like this: externalSVideoMinSdkVersion 15
-    externalMinSdkVersion = 18
-    externalPlayerMinSdkVersion = 18
+    externalMinSdkVersion = 16
+    externalPlayerMinSdkVersion = 16
     externalLiveMinSdkVersion = 18
-    externalTargetSdkVersion = 28
+    externalTargetSdkVersion = 29
 }

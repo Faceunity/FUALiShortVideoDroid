@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/alivc_common_padding_20"
+    android:gravity="center_vertical"
+    android:background="@color/alivc_common_theme_primary">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="@dimen/alivc_common_size_icon_70"
+        android:layout_height="@dimen/alivc_common_size_icon_70"
+        android:layout_marginLeft="@dimen/alivc_common_padding_10"
+        android:background="@drawable/alivc_svideo_shape_effect_icon_frame"
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/alivc_common_margin_12"
+        android:layout_marginTop="@dimen/alivc_common_margin_8"
+        android:layout_toRightOf="@id/iv_icon"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="@dimen/alivc_common_font_14"
+        android:layout_marginStart="@dimen/alivc_common_margin_12"
+        android:layout_toEndOf="@id/iv_icon" />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tv_name"
+        android:layout_below="@id/tv_name"
+        android:layout_marginTop="@dimen/alivc_common_margin_3"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="@dimen/alivc_common_font_12"
+        android:layout_alignStart="@id/tv_name" />
+
+    <ProgressBar
+        android:id="@+id/download_progress"
+        android:layout_width="@dimen/alivc_editor_more_effect_item_download_btn_width"
+        android:layout_height="@dimen/alivc_editor_more_effect_item_download_btn_height"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/alivc_common_margin_10"
+        android:layout_centerVertical="true"
+        android:background="@color/alivc_common_bg_transparent"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/alivc_style_download_progress"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/alivc_common_margin_10" />
+
+    <TextView
+        android:layout_width="@dimen/alivc_editor_more_effect_item_download_btn_width"
+        android:layout_height="@dimen/alivc_editor_more_effect_item_download_btn_height"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="@dimen/alivc_common_font_12"
+        android:layout_marginRight="@dimen/alivc_common_margin_10"
+        android:layout_centerVertical="true"
+        android:id="@+id/tv_right_button"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/aliyun_svideo_shape_caption_manager_bg"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/alivc_common_margin_10"
+        android:layout_alignParentEnd="true" />
+
+
+
+    <ImageView
+        android:id="@+id/iv_download_finish"
+        android:layout_width="@dimen/alivc_editor_more_effect_item_download_btn_width"
+        android:layout_height="@dimen/alivc_editor_more_effect_item_download_btn_height"
+        android:background="@drawable/alivc_svideo_shape_effect_download_finish"
+        android:src="@mipmap/alivc_icon_download_finish"
+        android:visibility="gone"
+        android:scaleType="center"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/alivc_common_margin_10"
+        android:layout_marginEnd="@dimen/alivc_common_margin_10" />
+</RelativeLayout>

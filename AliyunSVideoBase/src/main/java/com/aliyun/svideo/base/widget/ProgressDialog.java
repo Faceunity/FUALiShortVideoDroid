@@ -32,7 +32,7 @@ import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 
 import java.text.NumberFormat;
 
@@ -125,7 +125,7 @@ public class ProgressDialog extends Dialog {
         Context context = getContext();
         LayoutInflater inflater = LayoutInflater.from(getContext());
         TypedArray a = context.obtainStyledAttributes(null,
-                R.styleable.QuViewAlertDialog);
+                       R.styleable.QuViewAlertDialog);
 
         /* Use a separate handler to update the text views as they
          * must be updated on the same thread that created them.
@@ -157,7 +157,7 @@ public class ProgressDialog extends Dialog {
                         double percent = progress / (double) max;
                         SpannableString tmp = new SpannableString(mProgressPercentFormat.format(percent));
                         tmp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
-                                0, tmp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    0, tmp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         mProgressPercent.setText(tmp);
                     } else {
                         mProgressPercent.setText("");
@@ -169,12 +169,12 @@ public class ProgressDialog extends Dialog {
         View view;
         if (mProgressStyle == STYLE_HORIZONTAL) {
             view = inflater.inflate(a.getResourceId(
-                    R.styleable.QuViewAlertDialog_horizontalProgressLayout,
-                    R.layout.aliyun_video_alert_dialog_progress), null);
+                                        R.styleable.QuViewAlertDialog_horizontalProgressLayout,
+                                        R.layout.aliyun_video_alert_dialog_progress), null);
         } else {
             view = inflater.inflate(a.getResourceId(
-                    R.styleable.QuViewAlertDialog_progressLayout,
-                    R.layout.aliyun_svideo_progress_dialog), null);
+                                        R.styleable.QuViewAlertDialog_progressLayout,
+                                        R.layout.aliyun_svideo_progress_dialog), null);
         }
 
         mProgressNumber = (TextView) view.findViewById(R.id.aliyun_progress_number);

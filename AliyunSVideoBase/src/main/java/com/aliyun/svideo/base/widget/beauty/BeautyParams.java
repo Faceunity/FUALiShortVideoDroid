@@ -3,27 +3,27 @@ package com.aliyun.svideo.base.widget.beauty;
 /**
  * Created by Akira on 2018/6/20.
  */
-public class BeautyParams {
+public class BeautyParams implements Cloneable {
     /**
      * 美白
      */
-    public int beautyWhite = 60;
+    public float beautyWhite = 60;
     /**
      * 磨皮
      */
-    public int beautyBuffing = 60;
+    public float beautyBuffing = 60;
     /**
      * 红润
      */
-    public int beautyRuddy = 60;
+    public float beautyRuddy = 60;
     /**
      * 瘦脸
      */
-    public int beautySlimFace = 60;
+    public float beautySlimFace = 60;
     /**
      * 大眼
      */
-    public int beautyBigEye = 60;
+    public float beautyBigEye = 60;
 
     public BeautyParams() {
     }
@@ -37,5 +37,23 @@ public class BeautyParams {
             ", beautySlimFace=" + beautySlimFace +
             ", beautyBigEye=" + beautyBigEye +
             '}';
+    }
+
+    @Override
+    public BeautyParams clone(){
+        BeautyParams beautyParams = null;
+        try {
+            beautyParams = (BeautyParams)super.clone();
+            beautyParams.beautyWhite = this.beautyWhite;
+            beautyParams.beautyBuffing = this.beautyBuffing;
+            beautyParams.beautyRuddy = this.beautyRuddy;
+            beautyParams.beautySlimFace = this.beautySlimFace;
+            beautyParams.beautyBigEye = this.beautyBigEye;
+            return beautyParams;
+
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+       return null;
     }
 }

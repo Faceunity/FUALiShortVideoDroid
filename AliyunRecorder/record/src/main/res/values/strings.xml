@@ -1,0 +1,101 @@
+<resources>
+    <!--setting page-->
+    <string name="alivc_recorder_setting_min_record_duration">Minimum Length</string>
+    <string name="alivc_recorder_setting_max_record_duration">Maximum Length</string>
+    <string name="alivc_recorder_setting_bit_rate">Bit Rate(kbps)</string>
+    <string name="alivc_recorder_setting_frame_rate">FPS</string>
+    <string name="alivc_recorder_setting_quality">Quality</string>
+    <string name="alivc_recorder_setting_gop">Keyframe Interval</string>
+    <string name="alivc_recorder_setting_resolution">Resolution</string>
+    <string name="alivc_recorder_setting_ratio">Aspect Ratio</string>
+    <string name="alivc_recorder_setting_min_record_duration_hint">Default: 2 seconds. The minimum length must be greater than 0.</string>
+    <string name="alivc_recorder_setting_max_record_duration_hint">Default: 15 seconds, Maximum: 300 seconds</string>
+    <string name="alivc_recorder_setting_gop_hint">Default: 30, Recommended: 1 to 300</string>
+    <string name="alivc_recorder_setting_start_record">Record</string>
+    <string name="alivc_recorder_setting_tittle">Record Settings</string>
+    <string name="alivc_recorder_setting_resolution_360p">360p</string>
+    <string name="alivc_recorder_setting_resolution_480p">480p</string>
+    <string name="alivc_recorder_setting_resolution_540p">540p</string>
+    <string name="alivc_recorder_setting_resolution_720p">720p</string>
+    <string name="alivc_recorder_setting_ratio_1_1">1:1</string>
+    <string name="alivc_recorder_setting_ratio_9_16">9:16</string>
+    <string name="alivc_recorder_setting_ratio_3_4">3:4</string>
+    <string name="alivc_recorder_setting_quality_low">Low</string>
+    <string name="alivc_recorder_setting_quality_meidan">Medium</string>
+    <string name="alivc_recorder_setting_quality_high">High</string>
+    <string name="alivc_recorder_setting_quality_super">Ultra High</string>
+    <string name="alivc_recorder_setting_codec">Encoding</string>
+    <string name="alivc_recorder_setting_encoder_hardware">Hardware</string>
+    <string name="alivc_recorder_setting_encoder_openh264">OpenH264 Software</string>
+    <string name="alivc_recorder_setting_encoder_ffmpeg">FFmpeg Software</string>
+    <string name="alivc_recorder_setting_tip_duration_error">The minimum length cannot be greater than the maximum length</string>
+    <string name="alivc_recorder_setting_close_skin_filter">Skin Filter Open</string>
+    <string name="alivc_recorder_setting_open_skin_filter">Skin Filter Close</string>
+    <string name="alivc_recorder_setting_close_face_detection">Face Detection Close</string>
+    <string name="alivc_recorder_setting_open_face_detection">Face Detection Open</string>
+    <string name="alivc_recorder_setting_start">Start</string>
+    <string name="alivc_recorder_setting_width">Width</string>
+    <string name="alivc_recorder_setting_height">Height</string>
+    <!--control view-->
+    <string name="alivc_recorder_control_rate_slow">Slow</string>
+    <string name="alivc_recorder_control_rate_standard">Normal</string>
+    <string name="alivc_recorder_control_rate_fast">Fast</string>
+    <string name="alivc_recorder_control_rate_very_fast">Faster</string>
+    <string name="alivc_recorder_control_delete">Delete</string>
+    <string name="alivc_recorder_control_music">Music</string>
+    <string name="alivc_recorder_record_anim_filter">effect filter</string>
+    <string name="alivc_recorder_record_take_photo">take photo</string>
+
+    <string name="alivc_recorder_control_filter">Filter</string>
+    <string name="alivc_recorder_control_click">Tap to record</string>
+    <string name="alivc_recorder_control_long_press">Hold down to record</string>
+    <string name="alivc_recorder_control_press">Hold down to record</string>
+    <!--record page-->
+    <string name="alivc_recorder_record_compose">Creating video</string>
+    <string name="alivc_recorder_record_filter_null">Original</string>
+    <string name="alivc_recorder_record_camera_permission_tip">No permission to access the camera</string>
+    <string name="alivc_recorder_record_dialog_permission_remind">Please allow ApsaraVideo to access Photos/camera/sdcard first</string>
+    <string name="alivc_recorder_record_dialog_not_setting">Cancel</string>
+    <string name="alivc_recorder_record_start_recorder">Record</string>
+    <string name="alivc_recorder_record_tip_phone_state_calling">Calling, Recording will be muted</string>
+    <string name="alivc_recorder_record_create_video">Creating video</string>
+    <string name="alivc_recorder_record_aspect_ratio_content">Change</string>
+
+
+
+
+
+    <string name="alivc_recorder_menu_action_settings">Settings</string>
+    <string name="alivc_recorder_play_tip_video_save">The video is saved to Photos</string>
+    <string name="aliyun_rate_very_slow">Slower</string>
+    <string name="aliyun_beauty_face">Skin Filter</string>
+    <string name="aliyun_face_sticker">Stickers</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="alivc_recorder_dialog_filter_none">Original</string>
+
+
+    <!--error tip-->
+    <string name="alivc_record_error_tip_play_video_error">The video format is invalid</string>
+    <string name="alivc_record_not_supported_audio">The audio format is invalid</string>
+    <string name="alivc_record_video_crop_failed">Failed to crop the video</string>
+    <string name="alivc_record_request_permission_negative_btn_text">Cancel</string>
+    <string name="alivc_record_request_permission_positive_btn_text">Setting</string>
+    <string name="alivc_record_request_permission_content_text"><![CDATA[Please allow ApsaraVideo to access Photos/camera/sdcard first，]]></string>
+    <string name="alivc_record_request_no_permission_content_text">no permission</string>
+    <string name="alivc_record_mix_compose_failure">Video creation failed</string>
+    <!--end-->
+
+    <string name="alivc_recorder_setting_video_style">Record Mode</string>
+    <string name="alivc_recorder_setting_general_text">Normal</string>
+    <string name="alivc_recorder_setting_mix_text">Duet</string>
+    <string name="alivc_mix_record_continue">"Your video is too short.</string>
+    <string name="alivc_progress_content_text">Copying resources…</string>
+    <string name="aliyun_start_mix_record">Select a video to create a duet</string>
+
+    <string name="alivc_recorder_setting_rendering_mode">Rendering Mode"</string>
+    <string name="alivc_recorder_setting_rendering_faceunity">FaceUnity</string>
+    <string name="alivc_recorder_setting_rendering_race">Race</string>
+
+
+</resources>

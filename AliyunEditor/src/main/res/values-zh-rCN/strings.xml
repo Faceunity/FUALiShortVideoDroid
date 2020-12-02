@@ -1,0 +1,190 @@
+<resources>
+    <string name="edit_nav_edit">编辑</string>
+    <string name="edit_nav_save_and_share">保存／分享></string>
+    <string name="music_origin">原音</string>
+    <string name="my_music">我的音乐</string>
+    <string name="local_music">本地音乐</string>
+    <string name="timeline_curr_time">%1$02d:%2$02d</string>
+    <string name="empty_music">无音乐</string>
+
+    <!--特效菜单栏-->
+    <string name="alivc_editor_effect_filter">滤镜</string>
+    <string name="alivc_editor_effect_music">音乐</string>
+    <string name="alivc_editor_effect_sticker">动图</string>
+    <string name="alivc_editor_effect_caption">字幕</string>
+    <string name="alivc_editor_effect_mv">MV</string>
+    <string name="alivc_editor_effect_sound">音效</string>
+    <string name="alivc_editor_effect_effect">特效</string>
+    <string name="alivc_editor_effect_time">变速</string>
+    <string name="alivc_editor_effect_transition">转场</string>
+    <string name="alivc_editor_effect_paint">涂鸦</string>
+    <string name="alivc_editor_effect_cover">封面</string>
+    <!--end-->
+
+    <!--特效管理页面-->
+    <string name="alivc_editor_mananger_tittle">特效管理</string>
+    <string name="alivc_editor_manager_font">字体</string>
+    <string name="alivc_editor_manager_delete">删除</string>
+    <!--end-->
+
+    <!--特效弹窗-->
+    <string name="alivc_editor_dialog_transition_tittle">转场</string>
+    <string name="alivc_editor_dialog_transition_tip_limit">一段视频无法添加转场</string>
+    <string name="alivc_editor_dialog_transition_star">五角星</string>
+
+    <string name="alivc_editor_dialog_caption_tip_text_limit">字数超出限制</string>
+    <string name="alivc_editor_dialog_caption_system_font">纯文字</string>
+    <string name="alivc_editor_dialog_caption_font">字体</string>
+    <string name="alivc_editor_dialog_caption_font_system">系统字体</string>
+
+    <string name="alivc_editor_dialog_caption_keyboard">键盘</string>
+    <string name="alivc_editor_dialog_caption_color">颜色</string>
+    <string name="alivc_editor_dialog_caption_effect">特效</string>
+    <string name="alivc_editor_dialog_caption_tip_not_support">倒播时不支持添加字幕动画效果</string>
+
+    <string name="alivc_editor_dialog_none_effect">原片</string>
+    <string name="alivc_editor_dialog_mv_more">更多</string>
+
+    <string name="alivc_editor_dialog_time_tittle">时间特效</string>
+    <string name="alivc_editor_dialog_time_tip_not_support">时间特效不支持多段视频</string>
+    <string name="alivc_editor_dialog_time_tip_apply">点击添加效果</string>
+    <string name="alivc_editor_dialog_time_repeat">反复</string>
+    <string name="alivc_editor_dialog_time_no_effect">无效果</string>
+    <string name="alivc_editor_dialog_time_fast">加速</string>
+    <string name="alivc_editor_dialog_time_invert">倒放</string>
+    <string name="alivc_editor_dialog_time_slow">慢速</string>
+
+    <string name="alivc_editor_dialog_sound_tittle">音效</string>
+    <string name="alivc_editor_dialog_sound_not_support">没有原音，无法添加音效</string>
+    <string name="alivc_editor_dialog_sound_default">原音</string>
+    <string name="alivc_editor_dialog_sound_loli">萝莉</string>
+    <string name="alivc_editor_dialog_sound_uncle">大叔</string>
+    <string name="alivc_editor_dialog_sound_echo">回音</string>
+    <string name="alivc_editor_dialog_sound_reverb">KTV</string>
+    <string name="alivc_editor_dialog_sound_robot">机器人</string>
+    <string name="alivc_editor_dialog_sound_devil">大魔王</string>
+    <string name="alivc_editor_dialog_sound_minions">小黄人</string>
+
+    <string name="alivc_editor_dialog_animate_tittle">滤镜特效</string>
+    <string name="alivc_editor_dialog_animate_revoke">撤销</string>
+    <string name="alivc_editor_dialog_animate_phantom">幻影</string>
+    <string name="alivc_editor_dialog_animate_ghosting">重影</string>
+    <string name="alivc_editor_dialog_animate_science_fiction">科幻</string>
+    <string name="alivc_editor_dialog_animate_jitter">抖动</string>
+    <string name="alivc_editor_dialog_animate_blur">朦胧</string>
+    <string name="alivc_editor_dialog_animate_tip_applay">长按添加特效</string>
+
+    <string name="alivc_editor_dialog_cover_tip_applay">滑动选择封面</string>
+
+    <string name="alivc_editor_dialog_none">无</string>
+
+    <string name="alivc_editor_dialog_effect_translate_up">向上移动</string>
+    <string name="alivc_editor_dialog_effect_translate_left">向左移动</string>
+    <string name="alivc_editor_dialog_effect_translate_down">向下移动</string>
+    <string name="alivc_editor_dialog_effect_translate_right">向右移动</string>
+    <string name="alivc_editor_dialog_effect_translate_linearwipe">线性擦除</string>
+    <string name="alivc_editor_dialog_effect_translate_effect_scale">缩放</string>
+
+    <string name="alivc_editor_dialog_effect_shutter">百叶窗</string>
+    <string name="alivc_editor_dialog_effect_fade">淡入淡出</string>
+    <string name="alivc_editor_dialog_effect_circle">圆形</string>
+
+    <!--end-->
+
+    <!--更多特效界面-->
+    <string name="alivc_editor_more_downloading">下载中</string>
+    <string name="alivc_editor_more_title_sticker">更多动图</string>
+    <string name="alivc_editor_more_title_caption">更多字幕</string>
+    <string name="alivc_editor_more_title_mv">更多MV</string>
+    <string name="alivc_editor_more_no_network">网络不给力，请检查网络</string>
+    <string name="alivc_editor_more_tip_task">当前下载任务太多, 请稍等片刻~~!</string>
+    <string name="alivc_editor_more_title_animation_effect">更多滤镜特效</string>
+    <string name="alivc_editor_more_title_transition_effect">更多转场特效</string>
+
+    <!--end-->
+
+    <!--发布界面-->
+    <string name="alivc_editor_publish_tittle">发布</string>
+    <string name="alivc_editor_publish_goback">返回编辑</string>
+    <string name="alivc_editor_publish_continue">继续合成</string>
+    <string name="alivc_editor_publish_select_cover">选择封面</string>
+    <string name="alivc_editor_publish_composing">视频合成中</string>
+    <string name="alivc_editor_publish_not_shutdown_app">请不要关闭应用</string>
+    <string name="alivc_editor_publish_dialog_cancel_content_tip">正在进行视频合成，确定要放弃合成吗？</string>
+    <string name="alivc_editor_publish_uploading">正在上传 %1$d%%</string>
+    <string name="alivc_editor_publish_start">正在上传 0%</string>
+    <string name="alivc_editor_publish_countoflimit">最多不超过20个字</string>
+    <string name="alivc_editor_publish_compose_success">合成成功</string>
+    <string name="alivc_editor_publish_compose_failed">合成失败</string>
+    <string name="alivc_editor_publish_upload_success">上传成功</string>
+    <string name="alivc_editor_publish_upload_failed">上传失败</string>
+    <string name="alivc_editor_publish_tip_retry">请返回编辑稍后再试</string>
+    <string name="alivc_editor_publish_tip_add_desc">你可以在合成中添加视频描述...</string>
+    <string name="alivc_editor_publish_my_video">我的视频</string>
+    <string name="alivc_editor_publish_upload_param_error">上传参数错误</string>
+
+
+
+    <!--end-->
+    <!--封面选择页面-->
+    <string name="alivc_editor_cover_tittle">选择封面</string>
+    <string name="alivc_editor_cover_fetch_cover_error">获取封面图失败，请重新选择</string>
+
+    <!--end-->
+    <!--错误提示-->
+    <string name="alivc_editor_error_tip_play_video_error">该视频为错误视频</string>
+    <string name="alivc_editor_error_tip_not_supported_audio">不支持的音频格式</string>
+    <string name="alivc_editor_error_tip_not_supported_video">不支持的视频格式</string>
+    <string name="alivc_editor_error_tip_not_supported_pixel_format">不支持的文件</string>
+    <!--end-->
+
+    <!--编辑页面-->
+    <string name="alivc_editor_edit_tip_init_failed">编辑器初始化失败</string>
+    <string name="alivc_editor_edit_play_start">播放全片</string>
+    <string name="alivc_editor_edit_play_pause">暂停播放</string>
+    <string name="alivc_editor_edit_tip_captions_fail">添加字幕失败</string>
+    <string name="alivc_mix_record_waring_content">合拍视频无法添加背景音乐</string>
+    <string name="alivc_editor_edit_tip_gif_fail">添加动图失败</string>
+    <string name="alivc_editor_edit_tip_word_fail">添加文字失败</string>
+    <string name="alivc_editor_edit_tip_decoder_error_interrupt">解码失败</string>
+    <string name="alivc_editor_edit_tip_transcode_no_operate">正在转码，请勿操作</string>
+    <string name="alivc_editor_effect_text_stroke">描边</string>
+    <string name="alivc_editor_effect_text_color">填充</string>
+    <!--end-->
+
+    <!--媒体选择页面-->
+    <string name="alivc_editor_media_tip_no_permission">没有权限</string>
+    <!--end-->
+
+    <string name="alivc_svideo_grace">优雅</string>
+    <string name="alivc_svideo_halo">光圈</string>
+    <string name="alivc_svideo_memory">思念</string>
+    <string name="alivc_svideo_sunday">朝阳</string>
+    <string name="alivc_svideo_bright">柔柔</string>
+    <string name="alivc_svideo_pop">波普</string>
+    <string name="alivc_svideo_hot_desert">浓烈</string>
+    <string name="alivc_svideo_beach">海盐</string>
+    <string name="alivc_svideo_ocean">海蓝</string>
+    <string name="alivc_svideo_gray">灰白</string>
+    <string name="alivc_svideo_yellow">炽黄</string>
+    <string name="alivc_svideo_brown">焦黄</string>
+    <string name="alivc_svideo_pink">粉桃</string>
+    <string name="alivc_svideo_sketch">素描</string>
+    <string name="alivc_svideo_ruby">红润</string>
+    <string name="alivc_svideo_classic">经典</string>
+    <string name="alivc_svideo_film">胶片</string>
+    <string name="alivc_svideo_blues">蓝调</string>
+    <string name="alivc_svideo_haze">迷糊</string>
+    <string name="alivc_svideo_charming">闪耀</string>
+    <string name="alivc_svideo_summertime">阳光</string>
+    <string name="alivc_svideo_pear">雪梨</string>
+    <string name="alivc_svideo_mosaic">马赛克</string>
+    <string name="alivc_svideo_fisheye">鱼眼</string>
+    <string name="alivc_svideo_fresh">鲜果</string>
+    <string name="alivc_svideo_wheat">麦茶</string>
+    <string name="alivc_svideo_black_white">黑白</string>
+    <string name="alivc_svideo_blurry">模糊</string>
+
+
+</resources>
+

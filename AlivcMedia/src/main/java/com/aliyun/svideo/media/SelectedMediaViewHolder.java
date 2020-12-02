@@ -9,10 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.aliyun.svideo.base.MediaInfo;
-import com.aliyun.demo.importer.R;
 
-public class SelectedMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class SelectedMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private static String sDurationFormat = null;
 
     private ImageView mIvPhoto;
@@ -35,24 +33,24 @@ public class SelectedMediaViewHolder extends RecyclerView.ViewHolder implements 
         ivPhoto.setOnClickListener(this);
         ivDelete.setOnClickListener(this);
         this.mMediaImageLoader = imageLoader;
-        if(sDurationFormat == null) {
-            sDurationFormat = itemView.getResources().getString(R.string.video_duration);
+        if (sDurationFormat == null) {
+            sDurationFormat = itemView.getResources().getString(R.string.alivc_media_video_duration);
         }
     }
 
 
-    public void updateData(int position, MediaInfo info){
+    public void updateData(int position, MediaInfo info) {
         this.mPosition = position;
-        if(info != null) {
+        if (info != null) {
             mMediaImageLoader.displayImage(info, mIvPhoto);
-            int sec = Math.round(((float) info.duration)/1000);
-            int hour = sec/3600;
+            int sec = Math.round(((float) info.duration) / 1000);
+            int hour = sec / 3600;
             int min = (sec % 3600) / 60;
-            sec = (sec%60);
+            sec = (sec % 60);
             mTvDuration.setText(String.format(sDurationFormat,
-                    hour,
-                    min,
-                    sec));
+                                              hour,
+                                              min,
+                                              sec));
         }
     }
 
@@ -75,7 +73,7 @@ public class SelectedMediaViewHolder extends RecyclerView.ViewHolder implements 
         mCallback = callback;
     }
 
-    interface OnItemCallback{
+    interface OnItemCallback {
         void onPhotoClick(SelectedMediaViewHolder holder, int position);
 
         void onItemDelete(SelectedMediaViewHolder holder, int position);

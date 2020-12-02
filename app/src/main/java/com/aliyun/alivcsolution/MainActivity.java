@@ -1,6 +1,5 @@
 package com.aliyun.alivcsolution;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +22,15 @@ import android.widget.LinearLayout;
 import com.aliyun.alivcsolution.adapter.HomeViewPagerAdapter;
 import com.aliyun.alivcsolution.adapter.MultilayerGridAdapter;
 import com.aliyun.alivcsolution.model.ScenesModel;
-import com.aliyun.alivcsolution.utils.PermissionUtils;
+import com.aliyun.alivcsolution.setting.AlivcRecordSettingActivity;
+import com.aliyun.alivcsolution.setting.AlivcCropSettingActivity;
+import com.aliyun.alivcsolution.setting.AlivcEditorSettingActivity;
+import com.aliyun.race.sample.activity.AliyunBeautifyActivity;
+import com.aliyun.race.sample.activity.RaceMainActivity;
+import com.aliyun.svideo.base.ui.SdkVersionActivity;
 import com.aliyun.svideo.base.utils.FastClickUtil;
-import com.aliyun.video.common.SdcardUtils;
-import com.aliyun.video.common.utils.FileUtils;
+import com.aliyun.svideo.common.SdcardUtils;
+import com.aliyun.svideo.common.utils.PermissionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,33 +74,25 @@ public class MainActivity extends AppCompatActivity {
      */
     private int[] modules = new int[] {
         R.string.solution_recorder,
-        R.string.solution_edit, R.string.solution_crop
+        R.string.solution_edit, R.string.solution_crop, R.string.solution_race_beauty
     };
     private int[] homeicon = {
         R.mipmap.icon_home_svideo_record,
-        R.mipmap.icon_home_svideo_edit, R.mipmap.icon_home_svideo_crop
+        R.mipmap.icon_home_svideo_edit, R.mipmap.icon_home_svideo_crop, R.mipmap.icon_home_svideo_race_beauty,
 
-    };
-    /**
-     * 权限申请
-     */
-    String[] permission = {
-        Manifest.permission.CAMERA,
-        Manifest.permission.RECORD_AUDIO,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
     private static final int PERMISSION_REQUEST_CODE = 1000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_solution_main);
-        boolean checkResult = PermissionUtils.checkPermissionsGroup(this, permission);
+        boolean checkResult = PermissionUtils.checkPermissionsGroup(this, PermissionUtils.PERMISSION_CAMERA);
         if (!checkResult) {
-            PermissionUtils.requestPermissions(this, permission, PERMISSION_REQUEST_CODE);
+            PermissionUtils.requestPermissions(this, PermissionUtils.PERMISSION_CAMERA, PERMISSION_REQUEST_CODE);
         }
-        iniViews();
+        initViews();
         setDatas();
 
         buildHomeItem();
@@ -175,9 +170,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void iniViews() {
+    private void initViews() {
         viewPager = (ViewPager) findViewById(R.id.home_viewPager);
         points = (ViewGroup) findViewById(R.id.points);
+
+        ImageView ivVersion = findViewById(R.id.iv_version);
+        ivVersion.setImageResource(R.mipmap.alivc_svideo_icon_version);
+        ivVersion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, SdkVersionActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setDatas() {
@@ -208,19 +214,17 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
 
                         // 视频拍摄
-                        Intent record = new Intent();
+                        Intent record = new Intent(MainActivity.this, AlivcRecordSettingActivity.class);
                         //判断是编辑模块进入还是通过社区模块的编辑功能进入
                         //svideo: 短视频
                         //community: 社区
-                        record.setClassName(MainActivity.this, "com.aliyun.demo.recorder.activity.AlivcParamSettingActivity");
                         record.putExtra(INTENT_PARAM_KEY_ENTRANCE, INTENT_PARAM_KEY_VALUE);
                         startActivity(record);
 
                         break;
                     case 1:
                         // 视频编辑
-                        Intent edit = new Intent();
-                        edit.setClassName(MainActivity.this, "com.aliyun.svideo.editor.EditorSettingActivity");
+                        Intent edit = new Intent(MainActivity.this, AlivcEditorSettingActivity.class);
                         //判断是编辑模块进入还是通过社区模块的编辑功能进入
                         //svideo: 短视频
                         //community: 社区
@@ -229,9 +233,14 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         // 视频裁剪
-                        Intent crop = new Intent();
-                        crop.setClassName(MainActivity.this, "com.aliyun.demo.crop.CropSettingActivity");
+                        Intent crop = new Intent(MainActivity.this, AlivcCropSettingActivity.class);
                         startActivity(crop);
+
+                        break;
+                    case 3:
+                        // race美颜
+                        Intent raceBeauty = new Intent(MainActivity.this, AliyunBeautifyActivity.class);
+                        startActivity(raceBeauty);
 
                         break;
 

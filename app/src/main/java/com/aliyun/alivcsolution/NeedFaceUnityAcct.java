@@ -1,17 +1,17 @@
 package com.aliyun.alivcsolution;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
-import com.aliyun.demo.R;
-import com.aliyun.demo.recorder.util.PreferenceUtil;
+import com.aliyun.svideo.recorder.util.PreferenceUtil;
 
-public class NeedFaceUnityAcct extends AppCompatActivity {
+
+public class NeedFaceUnityAcct extends Activity {
     // 是否使用 FaceUnity 美颜
     private boolean isOn;
 

@@ -1,12 +1,13 @@
 <resources>
-    <string name="alivc_load_fail">加载失败</string>
-    <string name="aliyun_download_failed">下载失败</string>
-    <string name="aliyun_network_not_connect">网络没有连接，请检查网络</string>
-    <string name="aliyun_no_free_memory">剩余磁盘空间不足</string>
-    <string name="aliyun_empty_music">无音乐</string>
-    <string name="aliyun_select_music">选择音乐</string>
-    <string name="aliyun_online_music">在线音乐</string>
-    <string name="aliyun_local_music">本地音乐</string>
-    <string name="alivc_music_copyright">由虾米音乐提供服务</string>
-    <string name="aliyun_complete">完成</string>
+    <string name="alivc_music_network_not_connect">No network is found. Check your network and try again</string>
+    <string name="alivc_music_no_free_memory">Insufficient memory. Please clear memory cache</string>
+    <string name="alivc_music_empty_music">Original</string>
+    <string name="alivc_music_select_music">Music</string>
+    <string name="alivc_music_online_music">Online Music</string>
+    <string name="alivc_music_local_music">Local Music</string>
+    <string name="alivc_music_copyright">Provided by Taihe Music DMH</string>
+    <string name="alivc_music_copyright_link">How to get</string>
+    <string name="alivc_music_complete">OK</string>
+
+    <string name="alivc_music_play_url_null">Url is empty</string>
 </resources>

@@ -15,7 +15,9 @@ public enum BeautyLevel {
     // level4
     BEAUTY_LEVEL_FOUR(80),
     // level5
-    BEAUTY_LEVEL_FIVE(100);
+    BEAUTY_LEVEL_FIVE(100),
+    // level6
+    BEAUTY_LEVEL_CUSTOM(70);
 
     private int value;
 

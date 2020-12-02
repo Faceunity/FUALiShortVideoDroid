@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <dimen name="alivc_editor_dialog_effect_tittle_height">40dp</dimen>
+    <dimen name="alivc_editor_bottom_editor_effect_category_tab_height">38dp</dimen>
+    <dimen name="alivc_editor_bottom_editor_effect_category_tab_width">56dp</dimen>
+
+    <dimen name="alivc_editor_size_effect_list_view">100dp</dimen>
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+
+    <dimen name="aliyun_editor_size_square_thumbnail">32dp</dimen>
+    <dimen name="alivc_editor_effect_title_height">45dp</dimen>
+    <dimen name="alivc_editor_effect_height">265dp</dimen>
+    <dimen name="alivc_editor_effect_tip_height">30dp</dimen>
+    <dimen name="alivc_svideo_effect_transition_thumb_height">32dp</dimen>
+    <dimen name="alivc_svideo_effect_transition_thumb_width">64dp</dimen>
+
+
+    <dimen name="alivc_svideo_tab_tv_iv_distance">10dp</dimen>
+    <dimen name="alivc_svideo_btn_player_margin_b">115.5dp</dimen>
+    <dimen name="alivc_svideo_btn_player_height">33dp</dimen>
+    <dimen name="alivc_svideo_btn_player_width">100dp</dimen>
+    <dimen name="alivc_svideo_btn_radius">16.5dp</dimen>
+    <dimen name="alivc_svideo_title_height">64dp</dimen>
+
+    <dimen name="alivc_editor_more_effect_item_download_btn_height">25dp</dimen>
+    <dimen name="alivc_editor_more_effect_item_download_btn_width">70dp</dimen>
+</resources>

@@ -3,9 +3,12 @@ package com.aliyun.svideo.base;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Arrays;
 
 /**
  * @author cross_ly
@@ -14,6 +17,7 @@ import android.widget.TextView;
  */
 public class UIConfigManager {
 
+    public static final String TAG = UIConfigManager.class.getSimpleName();
     /**
      * 获取uiStyleConfig里图片资源的drawable
      * @param context context
@@ -21,10 +25,10 @@ public class UIConfigManager {
      * @param defaultResourceId 默认的图片id
      * @return Drawable
      */
-    public static Drawable getDrawableResources(Context context, int attrId, int defaultResourceId){
+    public static Drawable getDrawableResources(Context context, int attrId, int defaultResourceId) {
 
-        TypedArray a = context.obtainStyledAttributes(new int[]{attrId});
-        int resourceId = a.getResourceId(0,defaultResourceId);
+        TypedArray a = context.obtainStyledAttributes(new int[] {attrId});
+        int resourceId = a.getResourceId(0, defaultResourceId);
         Drawable drawable = context.getResources().getDrawable(resourceId);
         a.recycle();
         return drawable;
@@ -36,10 +40,10 @@ public class UIConfigManager {
      * @param attrId style-attr对应的id
      * @param defaultResourceId 默认的图片id
      */
-    public static void setImageResourceConfig(ImageView view, int attrId, int defaultResourceId){
+    public static void setImageResourceConfig(ImageView view, int attrId, int defaultResourceId) {
 
-        TypedArray a = view.getContext().obtainStyledAttributes(new int[]{attrId});
-        int resourceId = a.getResourceId(0,defaultResourceId);
+        TypedArray a = view.getContext().obtainStyledAttributes(new int[] {attrId});
+        int resourceId = a.getResourceId(0, defaultResourceId);
         view.setImageResource(resourceId);
         a.recycle();
     }
@@ -51,14 +55,14 @@ public class UIConfigManager {
      * @param attrId style-attr对应的id
      * @param defaultResourceId 默认的图片id
      */
-    public static void setImageResourceConfig(ImageView[] view, int[] attrId, int[] defaultResourceId){
-        if (view.length <= 0){
+    public static void setImageResourceConfig(ImageView[] view, int[] attrId, int[] defaultResourceId) {
+        if (view.length <= 0) {
             return;
         }
         TypedArray a = view[0].getContext().obtainStyledAttributes(attrId);
 
         for (int i = 0; i < view.length; i++) {
-            int resourceId = a.getResourceId(i,defaultResourceId[i]);
+            int resourceId = a.getResourceId(i, defaultResourceId[i]);
             view[i].setImageResource(resourceId);
         }
         a.recycle();
@@ -71,12 +75,12 @@ public class UIConfigManager {
      * @param attrId style-attr对应的id
      * @param defaultResourceId 默认的图片id
      */
-    public static void setImageResourceConfig(TextView view,int index, int attrId, int defaultResourceId){
-        int[] resourceId = new int[]{0,0,0,0};
+    public static void setImageResourceConfig(TextView view, int index, int attrId, int defaultResourceId) {
+        int[] resourceId = new int[] {0, 0, 0, 0};
 
-        TypedArray a = view.getContext().obtainStyledAttributes(new int[]{attrId});
-        resourceId[index] = a.getResourceId(0,defaultResourceId);
-        view.setCompoundDrawablesWithIntrinsicBounds(resourceId[0],resourceId[1],resourceId[2],resourceId[3]);
+        TypedArray a = view.getContext().obtainStyledAttributes(new int[] {attrId});
+        resourceId[index] = a.getResourceId(0, defaultResourceId);
+        view.setCompoundDrawablesWithIntrinsicBounds(resourceId[0], resourceId[1], resourceId[2], resourceId[3]);
         a.recycle();
     }
 
@@ -88,18 +92,20 @@ public class UIConfigManager {
      * @param attrId style-attr对应的id
      * @param defaultResourceId 默认的图片id
      */
-    public static void setImageResourceConfig(TextView[] view,int[] index, int[] attrId, int[] defaultResourceId){
+    public static void setImageResourceConfig(TextView[] view, int[] index, int[] attrId, int[] defaultResourceId) {
 
-        if (view.length <= 0){
+        if (view.length <= 0) {
             return;
         }
         TypedArray a = view[0].getContext().obtainStyledAttributes(attrId);
 
         for (int i = 0; i < view.length; i++) {
-            int[] resourceId = new int[]{0,0,0,0};
-            resourceId[index[i]] = a.getResourceId(i,defaultResourceId[i]);
-            view[i].setCompoundDrawablesWithIntrinsicBounds(resourceId[0],resourceId[1],resourceId[2],resourceId[3]);
+            int[] resourceId = new int[] {0, 0, 0, 0};
+            resourceId[index[i]] = a.getResourceId(i, defaultResourceId[i]);
+            view[i].setCompoundDrawablesWithIntrinsicBounds(resourceId[0], resourceId[1], resourceId[2], resourceId[3]);
+            Log.d(TAG, "textView : " + view[i].getText() + " ,drawable : " + Arrays.toString(resourceId));
         }
+        Log.i(TAG, "TypedArray.recycle , count : " + view.length);
         a.recycle();
     }
 
@@ -109,10 +115,10 @@ public class UIConfigManager {
      * @param attrId style-attr对应的id
      * @param defaultResourceId 默认的图片id
      */
-    public static void setImageBackgroundConfig(View view, int attrId, int defaultResourceId){
+    public static void setImageBackgroundConfig(View view, int attrId, int defaultResourceId) {
 
-        TypedArray a = view.getContext().obtainStyledAttributes(new int[]{attrId});
-        int resourceId = a.getResourceId(0,defaultResourceId);
+        TypedArray a = view.getContext().obtainStyledAttributes(new int[] {attrId});
+        int resourceId = a.getResourceId(0, defaultResourceId);
         view.setBackgroundResource(resourceId);
         a.recycle();
     }

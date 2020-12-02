@@ -26,7 +26,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -121,36 +121,36 @@ public class IndicatorSeekBar extends View
         p.mTouchToSeek = ta.getBoolean(R.styleable.IndicatorSeekBar_isb_touch_to_seek, p.mTouchToSeek);
         //track
         p.mBackgroundTrackSize = ta.getDimensionPixelSize(R.styleable.IndicatorSeekBar_isb_track_background_bar_size,
-            p.mBackgroundTrackSize);
+                                 p.mBackgroundTrackSize);
         p.mProgressTrackSize = ta.getDimensionPixelSize(R.styleable.IndicatorSeekBar_isb_track_progress_bar_size,
-            p.mProgressTrackSize);
+                               p.mProgressTrackSize);
         p.mBackgroundTrackColor = ta.getColor(R.styleable.IndicatorSeekBar_isb_track_background_bar_color,
-            p.mBackgroundTrackColor);
+                                              p.mBackgroundTrackColor);
         p.mProgressTrackColor = ta.getColor(R.styleable.IndicatorSeekBar_isb_track_progress_bar_color,
-            p.mProgressTrackColor);
+                                            p.mProgressTrackColor);
         p.mTrackRoundedCorners = ta.getBoolean(R.styleable.IndicatorSeekBar_isb_track_rounded_corners,
-            p.mTrackRoundedCorners);
+                                               p.mTrackRoundedCorners);
         //thumb
         p.mThumbColor = ta.getColor(R.styleable.IndicatorSeekBar_isb_thumb_color, p.mThumbColor);
         p.mThumbSize = ta.getDimensionPixelSize(R.styleable.IndicatorSeekBar_isb_thumb_width, p.mThumbSize);
         p.mThumbProgressStay = ta.getBoolean(R.styleable.IndicatorSeekBar_isb_thumb_progress_stay,
-            p.mThumbProgressStay);
+                                             p.mThumbProgressStay);
         p.mThumbDrawable = ta.getDrawable(R.styleable.IndicatorSeekBar_isb_thumb_drawable);
         //indicator
         p.mIndicatorType = ta.getInt(R.styleable.IndicatorSeekBar_isb_indicator_type, p.mIndicatorType);
         p.mIndicatorColor = ta.getColor(R.styleable.IndicatorSeekBar_isb_indicator_color, p.mIndicatorColor);
         p.mIndicatorTextColor = ta.getColor(R.styleable.IndicatorSeekBar_isb_indicator_text_color,
-            p.mIndicatorTextColor);
+                                            p.mIndicatorTextColor);
         p.mShowIndicator = ta.getBoolean(R.styleable.IndicatorSeekBar_isb_show_indicator, p.mShowIndicator);
         p.mIndicatorStay = ta.getBoolean(R.styleable.IndicatorSeekBar_isb_indicator_stay, p.mIndicatorStay);
         p.mIndicatorTextSize = ta.getDimensionPixelSize(R.styleable.IndicatorSeekBar_isb_indicator_text_size,
-            p.mIndicatorTextSize);
+                               p.mIndicatorTextSize);
         int indicatorCustomViewId = ta.getResourceId(R.styleable.IndicatorSeekBar_isb_indicator_custom_layout, 0);
         if (indicatorCustomViewId > 0) {
             p.mIndicatorCustomView = View.inflate(mContext, indicatorCustomViewId, null);
         }
         int indicatorCustomTopContentLayoutId = ta.getResourceId(
-            R.styleable.IndicatorSeekBar_isb_indicator_custom_top_content_layout, 0);
+                R.styleable.IndicatorSeekBar_isb_indicator_custom_top_content_layout, 0);
         if (indicatorCustomTopContentLayoutId > 0) {
             p.mIndicatorCustomTopContentView = View.inflate(mContext, indicatorCustomTopContentLayoutId, null);
         }
@@ -161,7 +161,7 @@ public class IndicatorSeekBar extends View
         p.mTickType = ta.getInt(R.styleable.IndicatorSeekBar_isb_tick_type, p.mTickType);
         p.mTickHideBothEnds = ta.getBoolean(R.styleable.IndicatorSeekBar_isb_tick_both_end_hide, p.mTickHideBothEnds);
         p.mTickOnThumbLeftHide = ta.getBoolean(R.styleable.IndicatorSeekBar_isb_tick_on_thumb_left_hide,
-            p.mTickOnThumbLeftHide);
+                                               p.mTickOnThumbLeftHide);
         p.mTickSize = ta.getDimensionPixelSize(R.styleable.IndicatorSeekBar_isb_tick_size, p.mTickSize);
         //text
         p.mTextArray = ta.getTextArray(R.styleable.IndicatorSeekBar_isb_text_array);
@@ -298,7 +298,7 @@ public class IndicatorSeekBar extends View
 
     private boolean noTick() {
         return p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS
-            || p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS_TEXTS_ENDS;
+               || p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS_TEXTS_ENDS;
     }
 
     private void initEndTexts() {
@@ -370,8 +370,8 @@ public class IndicatorSeekBar extends View
 
     private boolean needDrawText() {
         return p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS_TEXTS_ENDS
-            || p.mSeekBarType == IndicatorSeekBarType.DISCRETE_TICKS_TEXTS
-            || p.mSeekBarType == IndicatorSeekBarType.DISCRETE_TICKS_TEXTS_ENDS || p.mThumbProgressStay;
+               || p.mSeekBarType == IndicatorSeekBarType.DISCRETE_TICKS_TEXTS
+               || p.mSeekBarType == IndicatorSeekBarType.DISCRETE_TICKS_TEXTS_ENDS || p.mThumbProgressStay;
     }
 
     public void setIndicatorGap(int gap) {
@@ -484,21 +484,21 @@ public class IndicatorSeekBar extends View
                 mThumbDraw = getBitmapDraw(p.mThumbDrawable, true);
             }
             canvas.drawBitmap(mThumbDraw, thumbX - mThumbDraw.getWidth() / 2.0f,
-                mTrackY - mThumbDraw.getHeight() / 2.0f, mStockPaint);
+                              mTrackY - mThumbDraw.getHeight() / 2.0f, mStockPaint);
         } else {
             canvas.drawCircle(thumbX + p.mBackgroundTrackSize / 2.0f, mTrackY,
-                mIsTouching ? mThumbTouchRadius : mThumbRadius, mStockPaint);
+                              mIsTouching ? mThumbTouchRadius : mThumbRadius, mStockPaint);
         }
     }
 
     private void drawThumbText(Canvas canvas, float thumbX) {
         if (p.mSeekBarType != IndicatorSeekBarType.CONTINUOUS
-            && p.mSeekBarType != IndicatorSeekBarType.DISCRETE_TICKS) {
+                && p.mSeekBarType != IndicatorSeekBarType.DISCRETE_TICKS) {
             return;
         }
         if (p.mThumbProgressStay) {
             canvas.drawText(getProgressString(p.mProgress), thumbX + p.mBackgroundTrackSize / 2.0f,
-                mPaddingTop + mThumbTouchHeight + mRect.height() + IndicatorUtils.dp2px(mContext, 2), mTextPaint);
+                            mPaddingTop + mThumbTouchHeight + mRect.height() + IndicatorUtils.dp2px(mContext, 2), mTextPaint);
         }
     }
 
@@ -521,7 +521,7 @@ public class IndicatorSeekBar extends View
 
     private void drawTicks(Canvas canvas, float thumbX) {
         if (p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS
-            || p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS_TEXTS_ENDS || p.mTickType == TickType.NONE) {
+                || p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS_TEXTS_ENDS || p.mTickType == TickType.NONE) {
             return;
         }
         if (mTextLocationList.size() == 0) {
@@ -550,10 +550,10 @@ public class IndicatorSeekBar extends View
                 }
                 if (p.mTickType == TickType.REC) {
                     canvas.drawBitmap(mTickDraw, locationX - mTickDraw.getWidth() / 2.0f + rectWidth,
-                        mTrackY - mTickDraw.getHeight() / 2.0f, mStockPaint);
+                                      mTrackY - mTickDraw.getHeight() / 2.0f, mStockPaint);
                 } else {
                     canvas.drawBitmap(mTickDraw, locationX - mTickDraw.getWidth() / 2.0f,
-                        mTrackY - mTickDraw.getHeight() / 2.0f, mStockPaint);
+                                      mTrackY - mTickDraw.getHeight() / 2.0f, mStockPaint);
                 }
             } else {
                 if (p.mTickType == TickType.OVAL) {
@@ -566,7 +566,7 @@ public class IndicatorSeekBar extends View
                         rectTickHeightRange = p.mBackgroundTrackSize;
                     }
                     canvas.drawRect(locationX - rectWidth, mTrackY - rectTickHeightRange / 2.0f - .5f,
-                        locationX + rectWidth, mTrackY + rectTickHeightRange / 2.0f + .5f, mStockPaint);
+                                    locationX + rectWidth, mTrackY + rectTickHeightRange / 2.0f + .5f, mStockPaint);
                 }
             }
         }
@@ -613,7 +613,7 @@ public class IndicatorSeekBar extends View
 
     private void drawText(Canvas canvas) {
         if (p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS
-            || p.mSeekBarType == IndicatorSeekBarType.DISCRETE_TICKS) {
+                || p.mSeekBarType == IndicatorSeekBarType.DISCRETE_TICKS) {
             return;
         }
         if (mTextList.size() == 0) {
@@ -629,17 +629,17 @@ public class IndicatorSeekBar extends View
             mTextPaint.getTextBounds(text, 0, text.length(), mRect);
             if (i == 0) {
                 canvas.drawText(text, mTextLocationList.get(i) + mRect.width() / 2.0f,
-                    mPaddingTop + mCustomDrawableMaxHeight + textHeight + gap, mTextPaint);
+                                mPaddingTop + mCustomDrawableMaxHeight + textHeight + gap, mTextPaint);
             } else if (i == mTextList.size() - 1) {
                 canvas.drawText(text, mTextLocationList.get(i) - mRect.width() / 2.0f,
-                    mPaddingTop + mCustomDrawableMaxHeight + textHeight + gap, mTextPaint);
+                                mPaddingTop + mCustomDrawableMaxHeight + textHeight + gap, mTextPaint);
             } else {
                 if (p.mSeekBarType == IndicatorSeekBarType.CONTINUOUS_TEXTS_ENDS
-                    || p.mSeekBarType == IndicatorSeekBarType.DISCRETE_TICKS_TEXTS_ENDS) {
+                        || p.mSeekBarType == IndicatorSeekBarType.DISCRETE_TICKS_TEXTS_ENDS) {
                     continue;
                 }
                 canvas.drawText(text, mTextLocationList.get(i),
-                    mPaddingTop + mCustomDrawableMaxHeight + textHeight + gap, mTextPaint);
+                                mPaddingTop + mCustomDrawableMaxHeight + textHeight + gap, mTextPaint);
             }
         }
     }
@@ -733,37 +733,37 @@ public class IndicatorSeekBar extends View
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                performClick();
-                float mX = event.getX();
-                float mY = event.getY();
-                if (isTouchSeekBar(mX, mY) && !p.mForbidUserSeek && isEnabled()) {
-                    if (p.mTouchToSeek || isTouchThumb(mX)) {
-                        if (mListener != null) {
-                            mListener.onStartTrackingTouch(this, getThumbPosOnTick());
-                        }
-                        refreshSeekBar(event, true);
-                        return true;
+        case MotionEvent.ACTION_DOWN:
+            performClick();
+            float mX = event.getX();
+            float mY = event.getY();
+            if (isTouchSeekBar(mX, mY) && !p.mForbidUserSeek && isEnabled()) {
+                if (p.mTouchToSeek || isTouchThumb(mX)) {
+                    if (mListener != null) {
+                        mListener.onStartTrackingTouch(this, getThumbPosOnTick());
                     }
+                    refreshSeekBar(event, true);
+                    return true;
                 }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                refreshSeekBar(event, false);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if (mListener != null) {
-                    mListener.onStopTrackingTouch(this);
-                }
-                mIsTouching = false;
-                invalidate();
-                if (p.mShowIndicator) {
-                    mIndicator.hide();
-                }
-                break;
+            }
+            break;
+        case MotionEvent.ACTION_MOVE:
+            refreshSeekBar(event, false);
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
+            if (mListener != null) {
+                mListener.onStopTrackingTouch(this);
+            }
+            mIsTouching = false;
+            invalidate();
+            if (p.mShowIndicator) {
+                mIndicator.hide();
+            }
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
         return super.onTouchEvent(event);
     }
@@ -780,7 +780,7 @@ public class IndicatorSeekBar extends View
                 int thumbPosOnTick = getThumbPosOnTick();
                 if (p.mTextArray != null && thumbPosOnTick < (p.mTextArray.length)) {
                     mListener.onSectionChanged(this, thumbPosOnTick, String.valueOf(p.mTextArray[thumbPosOnTick]),
-                        formUserTouch);
+                                               formUserTouch);
                 } else {
                     mListener.onSectionChanged(this, thumbPosOnTick, "", formUserTouch);
                 }
@@ -791,16 +791,16 @@ public class IndicatorSeekBar extends View
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                getParent().requestDisallowInterceptTouchEvent(true);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                getParent().requestDisallowInterceptTouchEvent(false);
-                break;
+        case MotionEvent.ACTION_DOWN:
+            getParent().requestDisallowInterceptTouchEvent(true);
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
+            getParent().requestDisallowInterceptTouchEvent(false);
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
         return super.dispatchTouchEvent(event);
     }
@@ -956,9 +956,9 @@ public class IndicatorSeekBar extends View
             mFaultTolerance = IndicatorUtils.dp2px(mContext, 5);
         }
         boolean inWidthRange = mX >= (mPaddingLeft - 2 * mFaultTolerance) && mX <= (mMeasuredWidth - mPaddingRight
-            + 2 * mFaultTolerance);
+                               + 2 * mFaultTolerance);
         boolean inHeightRange = mY >= mTrackY - mThumbTouchRadius - mFaultTolerance
-            && mY <= mTrackY + mThumbTouchRadius + mFaultTolerance;
+                                && mY <= mTrackY + mThumbTouchRadius + mFaultTolerance;
         return inWidthRange && inHeightRange;
     }
 
@@ -969,7 +969,8 @@ public class IndicatorSeekBar extends View
 
     private float getProgressFloat(int newScale, float progress) {
         BigDecimal bigDecimal = BigDecimal.valueOf(progress);
-        return bigDecimal.setScale(newScale, BigDecimal.ROUND_HALF_UP).floatValue();
+        float v = bigDecimal.setScale(newScale, BigDecimal.ROUND_HALF_UP).floatValue();
+        return v;
     }
 
     private int getProgress(float progress) {
@@ -979,7 +980,7 @@ public class IndicatorSeekBar extends View
     private String getProgressString(float progress) {
         String progressString;
         if (p.mIsFloatProgress) {
-            progressString = String.valueOf(getProgressFloat(1, progress));
+            progressString = String.valueOf(getProgressFloat(2, progress));
         } else {
             progressString = String.valueOf(getProgress(progress));
         }
@@ -1011,11 +1012,11 @@ public class IndicatorSeekBar extends View
     /**
      * set the max value for SeekBar
      *
-     * @param max the max value , if is less than min, will set to min.
+     * @param max the max value , if min is larger than it, min will set to it.
      */
     public synchronized void setMax(float max) {
         if (max < mRawParams.mMin) {
-            max = mRawParams.mMin;
+            mRawParams.mMin = max;
         }
         this.mRawParams.mMax = max;
         this.p.copy(mRawParams);
@@ -1030,11 +1031,11 @@ public class IndicatorSeekBar extends View
     /**
      * set the min value for SeekBar
      *
-     * @param min the min value , if is larger than max, will set to max.
+     * @param min the min value , if max is less than it, max will set to min.
      */
     public synchronized void setMin(float min) {
         if (min > mRawParams.mMax) {
-            min = mRawParams.mMax;
+            mRawParams.mMax = min;
         }
         this.mRawParams.mMin = min;
         this.p.copy(mRawParams);
@@ -1283,6 +1284,13 @@ public class IndicatorSeekBar extends View
          * @param seekBar The SeekBar in which the touch gesture began
          */
         void onStopTrackingTouch(IndicatorSeekBar seekBar);
+    }
+
+    public void setFloatProgress(boolean floatProgress) {
+        if (mRawParams != null) {
+            mRawParams.mIsFloatProgress = floatProgress;
+            this.p.copy(mRawParams);
+        }
     }
 
     public static class Builder {

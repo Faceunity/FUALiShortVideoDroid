@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/effect_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/alivc_common_height_tv_45"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="@color/alivc_common_font_white"
+        android:drawablePadding="7dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_line_1px"
+        android:background="@color/alivc_common_line_gray_light"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/effect_list_filter"
+        android:layout_width="match_parent"
+        android:overScrollMode="never"
+        android:layout_height="@dimen/alivc_common_height_group_100"/>
+    <RelativeLayout
+        android:id="@+id/effect_list_dismiss"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_40"
+        android:background="@color/alivc_common_theme_primary_dark"
+        android:paddingLeft="@dimen/alivc_common_padding_10"
+        android:paddingRight="@dimen/alivc_common_padding_10"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        >
+    </RelativeLayout>
+</LinearLayout>

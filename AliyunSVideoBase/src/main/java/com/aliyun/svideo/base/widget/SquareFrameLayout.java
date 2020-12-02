@@ -53,19 +53,19 @@ public class SquareFrameLayout extends FrameLayout implements SizeChangedNotifie
         super.onMeasure(newMeasureSpec, newMeasureSpec);
     }
 
-    private SizeChangedNotifier.Listener _OnSizeChangedListener;
+    private SizeChangedNotifier.Listener mOnSizeChangedListener;
 
     @Override
     public void setOnSizeChangedListener(SizeChangedNotifier.Listener listener) {
-        _OnSizeChangedListener = listener;
+        mOnSizeChangedListener = listener;
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        if (_OnSizeChangedListener != null) {
-            _OnSizeChangedListener.onSizeChanged(this, w, h, oldw, oldh);
+        if (mOnSizeChangedListener != null) {
+            mOnSizeChangedListener.onSizeChanged(this, w, h, oldw, oldh);
         }
     }
 }

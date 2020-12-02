@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:width="@dimen/alivc_common_size_icon_40"
+                android:height="@dimen/alivc_common_size_icon_40" />
+            <solid android:color="#33FFFFFF" />
+        </shape>
+    </item>
+    <item
+        android:top="@dimen/alivc_common_padding_13"
+        android:bottom="@dimen/alivc_common_padding_13"
+        android:left="@dimen/alivc_common_padding_10"
+        android:right="@dimen/alivc_common_padding_10"
+        android:gravity="center"
+        android:drawable="@mipmap/alivc_svideo_effect_time_fast"/>
+</layer-list>

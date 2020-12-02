@@ -4,8 +4,6 @@
 
 package com.aliyun.svideo.media;
 
-import com.aliyun.svideo.base.MediaInfo;
-
 import java.util.List;
 
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="qupai_text_edit_colors">
+        <item>#FFF8AA99</item>
+        <item>#FFFFC580</item>
+        <item>#FFFFEA8A</item>
+        <item>#FFBBE5B3</item>
+        <item>#FFB6ECEB</item>
+        <item>#FFB4E0FA</item>
+        <item>#FFB3BCF5</item>
+        <item>#FFE3D0FF</item>
+        <item>#FFF9FAFB</item>
+        <item>#FFF4775C</item>
+        <item>#FFFFA133</item>
+        <item>#FFEDC200</item>
+        <item>#FF50B83C</item>
+        <item>#FF47C1BF</item>
+        <item>#FF007ACE</item>
+        <item>#FF5C6AC4</item>
+        <item>#FF9C6ADE</item>
+        <item>#FF637381</item>
+        <item>#FFF15533</item>
+        <item>#FFFF8A00</item>
+        <item>#FF9C6F19</item>
+        <item>#FF108043</item>
+        <item>#FF00848E</item>
+        <item>#FF084E8A</item>
+        <item>#FF202E78</item>
+        <item>#FF50248F</item>
+        <item>#FF212B36</item>
+        <item>#FFE55130</item>
+        <item>#FFF28300</item>
+        <item>#FF573B00</item>
+        <item>#FF173630</item>
+        <item>#FF003136</item>
+        <item>#FF00152A</item>
+        <item>#FF000639</item>
+        <item>#FF230051</item>
+    </array>
+
+    <array name="paint_colors">
+        <item>#F9FAFB</item>
+        <item>#F4775C</item>
+        <item>#FFA133</item>
+        <item>#EDC200</item>
+        <item>#50B83C</item>
+        <item>#47C1BF</item>
+        <item>#007ACE</item>
+        <item>#5C6AC4</item>
+        <item>#9C6ADE</item>
+    </array>
+
+
+
+    <color name="alivc_edit_font_compose_edit_hint">#bcbec5</color>
+
+    <color name="alivc_edit_defalut_primary_color">#ed4e82</color>
+    <color name="alivc_edit_defalut_primary_color_alpha30">#4dff5454</color>
+    <color name="alivc_edit_download_progress">#80ff5454</color>
+
+    <color name="alivc_edit_font_tab_color">#6E768B</color>
+
+    <color name="alivc_edit_red">#ff5151</color>
+    <color name="alivc_edit_timeline_bar_active_overlay">#66EF4B81</color>
+    
+
+    <color name="alivc_edit_animation_filter_color1">#E6FBDE38</color>
+    <color name="alivc_edit_animation_filter_color2">#E662B6FE</color>
+    <color name="alivc_edit_animation_filter_color3">#E6FEA933</color>
+    <color name="alivc_edit_animation_filter_color4">#E6F35C4B</color>
+    <color name="alivc_edit_animation_filter_color5">#E6798ECD</color>
+
+    <color name="alivc_edit_font_gray_unselected">#606E7C</color>
+</resources>

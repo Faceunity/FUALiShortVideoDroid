@@ -12,7 +12,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 
 public class CircleProgressBar extends View {
 
@@ -82,7 +82,7 @@ public class CircleProgressBar extends View {
     @Override
     protected void onDraw(Canvas paramCanvas) {
         super.onDraw(paramCanvas);
-        if(progressThicknessColor == 0){
+        if (progressThicknessColor == 0) {
             this.mPaint.setColor(getResources().getColor(android.R.color.transparent));
             this.mFillPaint.setColor(getResources().getColor(android.R.color.transparent));
         } else {
@@ -90,13 +90,13 @@ public class CircleProgressBar extends View {
             this.mFillPaint.setColor(progressThicknessColor);
         }
 
-        if(isFilled) {
+        if (isFilled) {
             paramCanvas.drawArc(this.mOval, 270.0F, 360.0F, true, this.mFillPaint);
-        }else {
+        } else {
             paramCanvas.drawArc(this.mOval, 270.0F, 360.0F, false, this.mPaint);
         }
 
-        if(hasBgColor) {
+        if (hasBgColor) {
             if (mBackgroundColor == 0) {
                 this.mBgPaint.setColor(getResources().getColor(android.R.color.transparent));
             } else {
@@ -108,17 +108,17 @@ public class CircleProgressBar extends View {
 
         if (this.mProgress > 0) {
             this.mPaint.setAlpha(0);
-            if(mProgressColor == 0) {
+            if (mProgressColor == 0) {
                 this.mPaint.setColor(getResources().getColor(android.R.color.white));
                 this.mFillPaint.setColor(getResources().getColor(android.R.color.white));
-            }else {
+            } else {
                 this.mPaint.setColor(mProgressColor);
                 this.mFillPaint.setColor(mProgressColor);
             }
 
-            if(isFilled) {
+            if (isFilled) {
                 paramCanvas.drawArc(this.mOval, 270.0F, 360 * this.mProgress / 100, true, this.mFillPaint);
-            }else {
+            } else {
                 paramCanvas.drawArc(this.mOval, 270.0F, 360 * this.mProgress / 100, false, this.mPaint);
             }
         }
@@ -133,6 +133,7 @@ public class CircleProgressBar extends View {
         invalidate();
     }
 
+    @Override
     public void setBackgroundColor(int color) {
         mBackgroundColor = color;
     }

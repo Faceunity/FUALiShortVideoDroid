@@ -8,9 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.aliyun.svideo.base.MediaInfo;
-
 import java.util.List;
 
 /**
@@ -24,28 +21,28 @@ public class GalleryMediaChooser {
 
     public GalleryMediaChooser(RecyclerView gallery,
                                final GalleryDirChooser dirChooser,
-                               MediaStorage storage, ThumbnailGenerator thumbnailGenerator){
+                               MediaStorage storage, ThumbnailGenerator thumbnailGenerator) {
         this.mGallery = gallery;
         mGallery.addItemDecoration(new GalleryItemDecoration());
         this.mStorage = storage;
         adapter = new GalleryAdapter(thumbnailGenerator);
         gallery.setLayoutManager(new WrapContentGridLayoutManager(gallery.getContext(),
-                4, GridLayoutManager.VERTICAL, false));
+                                 4, GridLayoutManager.VERTICAL, false));
         gallery.setAdapter(adapter);
 //        adapter.addDraftItem();
         adapter.setData(storage.getMedias());
         storage.setOnMediaDataUpdateListener(new MediaStorage.OnMediaDataUpdate() {
             @Override
             public void onDataUpdate(List<MediaInfo> list) {
-                    int count = adapter.getItemCount();
-                    int size = list.size();
-                    int insert = count - size;
-                    adapter.notifyItemRangeInserted(insert, size);
+                int count = adapter.getItemCount();
+                int size = list.size();
+                int insert = count - size;
+                adapter.notifyItemRangeInserted(insert, size);
 
-                    if (size == MediaStorage.FIRST_NOTIFY_SIZE
-                            || mStorage.getMedias().size() < MediaStorage.FIRST_NOTIFY_SIZE) {
-                        selectedFirstMediaOnAll(list);
-                    }
+                if (size == MediaStorage.FIRST_NOTIFY_SIZE
+                        || mStorage.getMedias().size() < MediaStorage.FIRST_NOTIFY_SIZE) {
+                    selectedFirstMediaOnAll(list);
+                }
                 dirChooser.setAllGalleryCount(mStorage.getMedias().size());
 
             }
@@ -87,18 +84,18 @@ public class GalleryMediaChooser {
         });
     }
 
-    public void setCurrentMediaInfoActived(){
+    public void setCurrentMediaInfoActived() {
         int pos = adapter.setActiveDataItem(mStorage.getCurrentMedia());
         mGallery.smoothScrollToPosition(pos);
     }
 
-    public void setDraftCount(int draftCount){
+    public void setDraftCount(int draftCount) {
         adapter.setDraftCount(draftCount);
         adapter.notifyItemChanged(0);
     }
 
-    private void selectedFirstMediaOnAll(List<MediaInfo> list){
-        if(list.size() == 0){
+    private void selectedFirstMediaOnAll(List<MediaInfo> list) {
+        if (list.size() == 0) {
             return ;
         }
         MediaInfo info = list.get(0);
@@ -106,19 +103,19 @@ public class GalleryMediaChooser {
         adapter.setActiveDataItem(info);
     }
 
-    public void changeMediaDir(MediaDir dir){
-        if(dir.id == -1){
+    public void changeMediaDir(MediaDir dir) {
+        if (dir.id == -1) {
             //adapter.addDraftItem();
             adapter.setData(mStorage.getMedias());
             selectedFirstMediaOnAll(mStorage.getMedias());
-        }else{
+        } else {
             //adapter.removeDraftItem();
             adapter.setData(mStorage.findMediaByDir(dir));
             selectedFirstMediaOnAll(mStorage.findMediaByDir(dir));
         }
     }
 
-    public RecyclerView getGallery(){
+    public RecyclerView getGallery() {
         return mGallery;
     }
 

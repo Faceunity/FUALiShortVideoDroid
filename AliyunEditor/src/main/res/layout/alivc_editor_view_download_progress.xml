@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_gravity="center"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/download_progress_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/alivc_style_download_progress"
+        />
+
+    <TextView
+        android:id="@+id/tv_download_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="@dimen/alivc_common_font_12"
+        android:gravity="center"
+        android:paddingTop="@dimen/alivc_common_padding_4"
+        android:paddingBottom="@dimen/alivc_common_padding_4"
+        android:paddingLeft="@dimen/alivc_common_padding_16"
+        android:paddingRight="@dimen/alivc_common_padding_16"
+        />
+    <ImageView
+        android:id="@+id/iv_download_finish"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/alivc_svideo_shape_effect_download_finish"
+        android:layout_gravity="center"
+        android:src="@mipmap/alivc_icon_download_finish"
+        android:visibility="gone"
+        android:scaleType="center"
+        />
+</merge>

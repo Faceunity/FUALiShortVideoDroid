@@ -1,22 +1,23 @@
 apply plugin: 'com.android.application'
 
         android {
-            compileSdkVersion 28
-            buildToolsVersion '28.0.3'
+            compileSdkVersion 29
+            buildToolsVersion '29.0.0'
             packagingOptions {
                 exclude('META-INF/LICENSE')
+                exclude('META-INF/beans.xml')
             }
         
             defaultConfig {
                 applicationId "com.aliyun.apsaravideo"
-                minSdkVersion 18
-                targetSdkVersion 28
-                versionCode 151
-                versionName "1.5.1"
+                minSdkVersion 19
+                targetSdkVersion 29
+                versionCode 31600
+                versionName "3.16.0"
         
                 testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
                 ndk {
-                   abiFilters "armeabi-v7a"
+                   abiFilters "armeabi-v7a","arm64-v8a"
                 }
             }
         
@@ -64,21 +65,22 @@ apply plugin: 'com.android.application'
         
         }
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':AliyunEditor:editor_demo')
-    compile project(':AliyunRecorder:record_demo')
-    compile project(':AliyunResample')
-    compile project(':faceunity')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project (':AliyunEditor')
+    implementation project (':AliyunRecorder:record')
+    implementation project (':AliyunCrop:crop')
+    implementation project (':AliyunVideoCommon')
+    implementation project (':AliyunFileDownLoader')
+    implementation project (':AliyunResample')
+    implementation project (':AliyunSVideoBase')
+    implementation project (':RaceSample.Android:AliyunRaceSample')
     implementation externalAndroidAppCompatV7
     implementation externalAndroidSupportV4
     implementation externalAndroidRecyclerView
     implementation externalGSON
     implementation externalOKHTTP
     implementation externalAndroidMultiDex
-    implementation('com.aliyun.ams:alicloud-android-ha-adapter:1.1.0.6.2-open@aar') {
-        transitive=true
-    }
-    implementation('com.aliyun.ams:alicloud-android-ha-ut-analytics:1.1.0.1-open@aar') {
-        transitive=true
-    }
+    implementation  'com.umeng.umsdk:analytics:8.0.0'
+    implementation  'com.umeng.umsdk:common:2.0.0'
+
 }

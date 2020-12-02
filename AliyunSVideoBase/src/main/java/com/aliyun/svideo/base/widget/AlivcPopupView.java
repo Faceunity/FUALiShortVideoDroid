@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
-import com.aliyun.svideo.R;
+import com.aliyun.svideo.base.R;
 import com.aliyun.common.global.AliyunTag;
 
 /**
@@ -30,7 +30,6 @@ import com.aliyun.common.global.AliyunTag;
  *         create on 2018/7/24.
  */
 public class AlivcPopupView {
-    private String TAG = AlivcPopupView.class.getName();
     private Context context;
     protected PopupWindow popupWindow;
     protected ContentView contentView;
@@ -42,7 +41,7 @@ public class AlivcPopupView {
     protected int mY = -1;
     protected int mArrowCenter;
     protected WindowManager mWindowManager;
-    protected Point mScreenSize =new Point();
+    protected Point mScreenSize = new Point();
 
     public AlivcPopupView(Context  mContext) {
         context = mContext;
@@ -56,9 +55,9 @@ public class AlivcPopupView {
         show(view, view);
     }
 
-    public final void show(View parent,View anchorView) {
-        Log.d(AliyunTag.TAG,"yds-----show");
-        if(!ViewCompat.isAttachedToWindow(anchorView)){
+    public final void show(View parent, View anchorView) {
+        Log.d(AliyunTag.TAG, "yds-----show");
+        if (!ViewCompat.isAttachedToWindow(anchorView)) {
             return;
         }
         onShowConfig();
@@ -77,14 +76,14 @@ public class AlivcPopupView {
         parent.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                Log.d(AliyunTag.TAG,"yds--------onViewAttachedToWindow");
+                Log.d(AliyunTag.TAG, "yds--------onViewAttachedToWindow");
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                Log.d(AliyunTag.TAG,"yds--------onViewDetachedFromWindow");
-                if (popupWindow!= null && popupWindow.isShowing()) {
-                    Log.d(AliyunTag.TAG,"yds--------onViewDetachedFromWindow-----dismiss");
+                Log.d(AliyunTag.TAG, "yds--------onViewDetachedFromWindow");
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    Log.d(AliyunTag.TAG, "yds--------onViewDetachedFromWindow-----dismiss");
                     popupWindow.dismiss();
                 }
             }
@@ -92,7 +91,7 @@ public class AlivcPopupView {
     }
 
     protected void onShowConfig() {
-        if (contentView == null){
+        if (contentView == null) {
             throw new IllegalStateException("setContentView was not called with a view to display.");
         }
 
@@ -135,7 +134,7 @@ public class AlivcPopupView {
     public static int getWidth(Context mContext) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((WindowManager) mContext.getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
-            .getDefaultDisplay().getMetrics(displayMetrics);
+        .getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
     }
 
@@ -148,11 +147,11 @@ public class AlivcPopupView {
     public static int getHeight(Context mContext) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((WindowManager) mContext.getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
-            .getDefaultDisplay().getMetrics(displayMetrics);
+        .getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
     }
 
-    public Point onShowBegin(View attachedView){
+    public Point onShowBegin(View attachedView) {
         //计算位置
         calculatePosition(attachedView);
 
@@ -165,7 +164,7 @@ public class AlivcPopupView {
      * @param anchorView
      */
     private void calculatePosition(View anchorView) {
-        if (anchorView == null){
+        if (anchorView == null) {
             throw new IllegalStateException("setContentView was not called with a view to display.");
         }
 
@@ -195,12 +194,12 @@ public class AlivcPopupView {
 
     public void setContentView(View root) {
         LinearLayout layout = (LinearLayout) LayoutInflater.from(context)
-            .inflate(getRootLayout(), null, false);
+                              .inflate(getRootLayout(), null, false);
         mArrowDown = (ImageView) layout.findViewById(R.id.arrow_down);
         FrameLayout content = (FrameLayout) layout.findViewById(R.id.content_layout);
         content.addView(root);
 
-        if (root == null){
+        if (root == null) {
             throw new IllegalStateException("call setContentView view can not be null");
         }
 

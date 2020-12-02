@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+    android:layout_height="wrap_content">
+    <com.aliyun.svideo.base.EffectParamsAdjustView
+        android:id="@+id/params_effect_view"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        layout="@layout/alivc_editor_include_effect_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_editor_dialog_effect_tittle_height"/>
+    <FrameLayout
+        android:id="@+id/fl_thumblinebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/alivc_common_margin_10"/>
+
+    <TextView
+        android:id="@+id/alivc_svideo_tip"
+        android:layout_width="match_parent"
+        android:text="@string/alivc_editor_dialog_animate_tip_applay"
+        android:textColor="@color/alivc_common_font_white"
+        android:gravity="center_vertical"
+        android:visibility="visible"
+        android:layout_marginLeft="@dimen/alivc_common_margin_10"
+        android:textSize="@dimen/alivc_common_font_11"
+        android:layout_height="@dimen/alivc_editor_effect_tip_height" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/effect_list_filter"
+        android:layout_width="match_parent"
+        android:overScrollMode="never"
+        android:layout_height="@dimen/alivc_common_height_group_100"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/effect_category_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_38"
+        android:overScrollMode="never"
+        android:background="@color/alivc_common_bg_white_alpha_10"
+        />
+
+</LinearLayout>

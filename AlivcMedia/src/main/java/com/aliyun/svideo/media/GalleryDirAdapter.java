@@ -13,9 +13,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import com.aliyun.demo.importer.R;
 public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-                                implements View.OnClickListener{
+    implements View.OnClickListener {
 
     public interface OnItemClickListener {
         /**
@@ -29,7 +28,7 @@ public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private ThumbnailGenerator thumbnailGenerator;
 
-    public GalleryDirAdapter(ThumbnailGenerator thumbnailGenerator){
+    public GalleryDirAdapter(ThumbnailGenerator thumbnailGenerator) {
         this.thumbnailGenerator = thumbnailGenerator;
     }
 
@@ -37,7 +36,7 @@ public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int allFileCount;
     private OnItemClickListener onItemClickListener;
 
-    public void setData(List<MediaDir> mediaDirs){
+    public void setData(List<MediaDir> mediaDirs) {
         this.mediaDirs = mediaDirs;
         notifyDataSetChanged();
     }
@@ -54,8 +53,8 @@ public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = new GalleryDirViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.aliyun_svideo_import_item_qupai_gallery_dir, null, false), thumbnailGenerator);
+            LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.alivc_media_item_gallery_dir, null, false), thumbnailGenerator);
 
         holder.itemView.setOnClickListener(this);
         return holder;
@@ -64,7 +63,7 @@ public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ((GalleryDirViewHolder)holder).setData(getItem(position));
-        if(position == 0){
+        if (position == 0) {
             ((GalleryDirViewHolder)holder).setFileCountWhenCompletion(allFileCount);
         }
     }
@@ -74,7 +73,7 @@ public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return mediaDirs.size();
     }
 
-    public MediaDir getItem(int position){
+    public MediaDir getItem(int position) {
 
         return mediaDirs.get(position);
     }
@@ -86,11 +85,11 @@ public class GalleryDirAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (onItemClickListener != null) {
             Log.d("active", "onItemClick");
-            if(adapterPos == -1){
+            if (adapterPos == -1) {
                 return ;
             }
             if (!onItemClickListener.onItemClick(this, adapterPos)) {
-                Log.d("active","onItemClick1");
+                Log.d("active", "onItemClick1");
             }
         }
     }

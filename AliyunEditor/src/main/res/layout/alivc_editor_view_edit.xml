@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_editor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_theme_primary">
+    <LinearLayout
+        android:id="@+id/bar_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/action_bar"
+            layout="@layout/alivc_editor_include_action_bar_profile"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/alivc_common_height_tittle_64" />
+
+        <com.aliyun.svideo.editor.editor.thumblinebar.OverlayThumbLineBar
+            android:id="@+id/simplethumblinebar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/glsurface_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <SurfaceView
+            android:id="@+id/play_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal" />
+
+        <FrameLayout
+            android:id="@+id/pasterView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/play_button"
+        android:layout_width="@dimen/alivc_svideo_btn_player_width"
+        android:layout_height="@dimen/alivc_svideo_btn_player_height"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="@dimen/alivc_svideo_btn_radius"
+        android:layout_marginBottom="@dimen/alivc_svideo_btn_player_margin_b"
+        android:background="@drawable/alivc_svideo_shap_player_bg"
+        android:text="@string/alivc_editor_edit_play_pause"
+        android:textSize="@dimen/alivc_common_font_11"
+        android:textColor="@color/alivc_common_font_white"
+        android:gravity="center"/>
+
+    <include
+        android:id="@+id/edit_bottom_tab"
+        layout="@layout/alivc_editor_include_edit_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+    <TextView
+        android:id="@+id/tv_curr_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bar_linear"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:alpha="0.8"
+        android:background="@drawable/aliyun_svideo_shape_timeline_duration_bg"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:text="00:00"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="8sp" />
+
+    <FrameLayout
+        android:id="@+id/copy_res_tip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:clickable="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <ProgressBar
+            android:layout_width="@dimen/alivc_common_size_progress_40"
+            android:layout_height="@dimen/alivc_common_size_progress_40"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/transcode_tip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center" />
+
+        <ProgressBar
+            android:id="@+id/transcode_progress"
+            style="?android:progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/alivc_common_margin_20"
+            android:layout_marginRight="@dimen/alivc_common_margin_20"
+            android:max="100"
+            android:progress="0" />
+    </FrameLayout>
+</RelativeLayout>

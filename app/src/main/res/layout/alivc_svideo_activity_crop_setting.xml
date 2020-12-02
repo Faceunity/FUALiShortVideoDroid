@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/alivc_crop_include_action_bar"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_crop_setting_frame_rate"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <EditText
+                android:id="@+id/alivc_crop_frame_rate_edit"
+                style="@style/alivc_crop_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:hint="@string/alivc_crop_setting_frame_rate_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_crop_setting_gop"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <EditText
+                android:id="@+id/alivc_crop_gop_edit"
+                style="@style/alivc_crop_line_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/alivc_crop_setting_gop_hint"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_crop_setting_quality"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_video_quality_super"
+                    style="@style/alivc_crop_btn_style"
+                    android:text="@string/alivc_crop_setting_quality_super" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_video_quality_high"
+                        style="@style/alivc_crop_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/alivc_crop_setting_quality_high" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_video_quality_normal"
+                    style="@style/alivc_crop_btn_style"
+                    android:text="@string/alivc_crop_setting_quality_meidan" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/alivc_video_quality_low"
+                style="@style/alivc_crop_btn_style"
+                android:layout_marginTop="15dp"
+                android:text="@string/alivc_crop_setting_quality_low" />
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_crop_setting_ratio"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_video_ratio_9_16"
+                    style="@style/alivc_crop_btn_style"
+                    android:text="@string/alivc_crop_setting_ratio_9_16" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_video_ratio_3_4"
+                        style="@style/alivc_crop_btn_style"
+                        android:layout_gravity="center"
+                        android:text="@string/alivc_crop_setting_ratio_3_4" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_video_ratio_1_1"
+                    style="@style/alivc_crop_btn_style"
+                    android:text="@string/alivc_crop_setting_ratio_1_1" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/alivc_video_ratio_original"
+                style="@style/alivc_crop_btn_style"
+                android:layout_marginTop="10dp"
+                android:text="@string/alivc_crop_setting_ratio_original" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_crop_setting_resolution"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/alivc_record_resolution_360p"
+                    style="@style/alivc_crop_btn_style"
+                    android:textAllCaps="false"
+
+                    android:text="@string/alivc_crop_setting_resolution_360p" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_record_resolution_480p"
+                        style="@style/alivc_crop_btn_style"
+                        android:layout_gravity="center"
+                        android:textAllCaps="false"
+
+                        android:text="@string/alivc_crop_setting_resolution_480p" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/alivc_record_resolution_540p"
+                    style="@style/alivc_crop_btn_style"
+                    android:textAllCaps="false"
+
+                    android:text="@string/alivc_crop_setting_resolution_540p" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/alivc_record_resolution_720p"
+                style="@style/alivc_crop_btn_style"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"
+
+                android:text="@string/alivc_crop_setting_resolution_720p" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_crop_setting_crop_mode"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <Button
+                    android:id="@+id/radio_fill"
+                    style="@style/alivc_crop_btn_style"
+                    android:text="@string/alivc_crop_setting_mode_fill" />
+                <Button
+                    android:id="@+id/radio_crop"
+                    style="@style/alivc_crop_btn_style"
+                    android:layout_gravity="center"
+                    android:text="@string/alivc_crop_setting_mode_crop" />
+            </FrameLayout>
+
+            <TextView
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
+                android:paddingLeft="15dp"
+                android:text="@string/alivc_crop_setting_codec"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/alivc_common_font_14" />
+            <LinearLayout
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_gravity="center"
+                    android:id="@+id/alivc_crop_encoder_hardware"
+                    style="@style/alivc_crop_btn_style"
+                    android:text="@string/alivc_crop_setting_encoder_hardware" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/alivc_crop_encoder_openh264"
+                        style="@style/alivc_crop_btn_style"
+                        android:layout_gravity="center"
+                        android:textAllCaps="false"
+                        android:text="@string/alivc_crop_setting_encoder_openh264" />
+                </FrameLayout>
+
+                <Button
+                    android:layout_gravity="center"
+                    android:id="@+id/alivc_crop_encoder_ffmpeg"
+                    style="@style/alivc_crop_btn_style"
+                    android:textAllCaps="false"
+                    android:text="@string/alivc_crop_setting_encoder_ffmpeg" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+    <Button
+        android:id="@+id/alivc_crop_start_import"
+        android:layout_width="match_parent"
+        android:text="@string/alivc_crop_setting_start_import"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/alivc_common_font_16"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/alivc_bg_start_crop"
+        android:layout_height="44dp" />
+
+
+</LinearLayout>

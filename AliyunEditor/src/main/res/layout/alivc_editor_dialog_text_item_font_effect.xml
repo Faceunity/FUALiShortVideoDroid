@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/alivc_common_height_group_85">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_icon_85"
+        android:scaleType="fitXY"
+        android:id="@+id/font_item_image"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/alivc_common_font_11"
+        android:textColor="@color/alivc_common_font_white"
+        android:layout_gravity="bottom|left"
+        android:layout_marginBottom="@dimen/alivc_common_margin_5"
+        android:layout_marginLeft="@dimen/alivc_common_margin_5"
+        android:id="@+id/item_name"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|top"
+        android:id="@+id/indiator"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/alivc_common_bg_white_alpha_40"
+        android:id="@+id/selected"/>
+</FrameLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/alivc_common_bg_black_alpha_70"
+    >
+
+    <GridView
+        android:id="@+id/grid_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:cacheColorHint="@color/alivc_common_bg_transparent"
+        android:choiceMode="singleChoice"
+        android:listSelector="@color/alivc_edit_red"
+        android:numColumns="9"
+        android:scrollbars="none"
+        android:stretchMode="spacingWidth"
+        android:horizontalSpacing="7dp"
+        android:columnWidth="28dp"
+        android:verticalSpacing="7dp"
+        android:layout_marginLeft="@dimen/alivc_common_margin_20"
+        android:layout_marginRight="@dimen/alivc_common_margin_20"
+        />
+
+</RelativeLayout>
