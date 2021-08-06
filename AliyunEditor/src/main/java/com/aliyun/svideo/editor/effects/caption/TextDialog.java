@@ -52,12 +52,12 @@ import com.aliyun.svideo.editor.widget.WheelView;
 import com.aliyun.svideo.downloader.DownloaderManager;
 import com.aliyun.svideo.downloader.FileDownloaderModel;
 import com.aliyun.svideo.base.widget.control.ViewStack;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionBase;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionFade;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionScale;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionTranslate;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionWipe;
-import com.aliyun.svideo.sdk.external.struct.form.FontForm;
+import com.aliyun.svideosdk.common.struct.effect.ActionBase;
+import com.aliyun.svideosdk.common.struct.effect.ActionFade;
+import com.aliyun.svideosdk.common.struct.effect.ActionScale;
+import com.aliyun.svideosdk.common.struct.effect.ActionTranslate;
+import com.aliyun.svideosdk.common.struct.effect.ActionWipe;
+import com.aliyun.svideosdk.common.struct.form.FontForm;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 
 import java.io.File;

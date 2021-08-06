@@ -7,8 +7,8 @@ package com.aliyun.svideo.editor.effects.control;
 import android.graphics.Paint;
 
 import com.aliyun.svideo.editor.effects.transition.TransitionEffectCache;
-import com.aliyun.editor.TimeEffectType;
-import com.aliyun.svideo.sdk.external.struct.AliyunIClipConstructor;
+import com.aliyun.svideosdk.editor.TimeEffectType;
+import com.aliyun.svideosdk.common.AliyunIClipConstructor;
 
 import java.util.HashMap;
 import java.util.Map;

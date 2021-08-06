@@ -4,7 +4,7 @@
 
 package com.aliyun.svideo.recorder.view.effects.filter.animfilter;
 
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
 
 /**
  * 特效滤镜item点击事件接口

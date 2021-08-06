@@ -31,6 +31,7 @@ public abstract class BaseChooser extends FrameLayout {
     public static final int PASTER_REQUEST_CODE = 1003;
     public static final int ANIMATION_FILTER_REQUEST_CODE = 1004;
     public static final int TRANSITION_EFFECT_REQUEST_CODE = 1005;
+    public static final int ROLL_CAPTION_REQUEST_CODE = 1006;
 
     public EditorService mEditorService;
     public OnEffectChangeListener mOnEffectChangeListener;

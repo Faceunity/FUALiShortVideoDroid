@@ -53,6 +53,14 @@ public enum UIEditorPage {
      */
     COVER,
     /**
+     * 视频增强
+     * */
+    VIDEOEQ,
+    /**
+     * 翻滚字幕
+     */
+    ROLL_CAPTION,
+    /**
      * 字体
      */
     FONT;

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/roll_caption_item"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/alivc_common_height_group_50"
+    android:gravity="center_vertical">
+
+    <CheckBox
+        android:id="@+id/roll_caption_subtitle_checkbox"
+        android:button="@drawable/alivc_svideo_roll_caption_subtitle_item_checkbox_selector"
+        android:background="@null"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp" />
+
+    <EditText
+        android:id="@+id/roll_caption_subtitle_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/alivc_common_margin_10"
+        android:layout_toRightOf="@id/roll_caption_subtitle_checkbox"
+        android:layout_weight="1"
+        android:background="@null"
+        android:clickable="false"
+        android:enabled="false"
+        android:maxLines="1"
+        android:textColor="@color/alivc_common_font_white" />
+
+    <TextView
+        android:id="@+id/roll_caption_edit_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:text="@string/alivc_editor_dialog_roll_caption_edit"
+        android:visibility="gone"/>
+
+
+</LinearLayout>

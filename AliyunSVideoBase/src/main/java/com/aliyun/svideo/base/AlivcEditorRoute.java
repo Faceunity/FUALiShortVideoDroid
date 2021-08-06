@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.aliyun.svideo.media.MediaInfo;
-import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoParam;
+import com.aliyun.svideosdk.common.struct.common.AliyunVideoParam;
 import java.util.ArrayList;
 
 /**

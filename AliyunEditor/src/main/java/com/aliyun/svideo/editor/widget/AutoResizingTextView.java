@@ -30,8 +30,8 @@ import com.aliyun.svideo.editor.effects.caption.TextDialog;
 import com.aliyun.svideo.editor.util.ChineseUtil;
 import com.aliyun.svideo.editor.util.CompatUtil;
 import com.aliyun.nativerender.BitmapGenerator;
-import com.aliyun.qupai.editor.impl.text.TextBitmap;
-import com.aliyun.qupai.editor.impl.text.TextBitmapGenerator;
+import com.aliyun.svideosdk.editor.impl.text.TextBitmap;
+import com.aliyun.svideosdk.editor.impl.text.TextBitmapGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;

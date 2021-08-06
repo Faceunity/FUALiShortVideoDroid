@@ -14,9 +14,9 @@ import com.aliyun.svideo.downloader.FileDownloaderModel;
 import com.aliyun.svideo.downloader.zipprocessor.DownloadFileUtils;
 import com.aliyun.svideo.base.http.EffectService;
 import com.aliyun.svideo.base.http.HttpCallback;
-import com.aliyun.svideo.sdk.external.struct.form.AspectForm;
-import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
-import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
+import com.aliyun.svideosdk.common.struct.form.AspectForm;
+import com.aliyun.svideosdk.common.struct.form.IMVForm;
+import com.aliyun.svideosdk.common.struct.form.PreviewPasterForm;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 
 import java.io.File;

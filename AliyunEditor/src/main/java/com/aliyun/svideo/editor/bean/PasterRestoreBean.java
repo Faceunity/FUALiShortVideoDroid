@@ -1,7 +1,7 @@
 package com.aliyun.svideo.editor.bean;
 
-import com.aliyun.svideo.sdk.external.struct.effect.ActionBase;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectBase;
+import com.aliyun.svideosdk.common.struct.effect.ActionBase;
+import com.aliyun.svideosdk.common.struct.effect.EffectBase;
 
 /**
  * 动图撤销恢复相关bean

@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.view.effects.paster.AlivcPasterChooseView;
 import com.aliyun.svideo.recorder.view.effects.paster.PasterSelectListener;
-import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
+import com.aliyun.svideosdk.common.struct.form.PreviewPasterForm;
 
 import java.util.ArrayList;
 import java.util.List;

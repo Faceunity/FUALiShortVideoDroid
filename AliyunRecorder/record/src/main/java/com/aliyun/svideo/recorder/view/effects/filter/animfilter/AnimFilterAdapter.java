@@ -25,7 +25,7 @@ import com.aliyun.svideo.recorder.util.RecordCommon;
 import com.aliyun.svideo.recorder.view.effects.filter.EffectInfo;
 import com.aliyun.svideo.recorder.view.effects.filter.UIEditorPage;
 import com.aliyun.svideo.recorder.view.effects.filter.OnFilterItemClickListener;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
 
 import org.json.JSONException;
 import org.json.JSONObject;

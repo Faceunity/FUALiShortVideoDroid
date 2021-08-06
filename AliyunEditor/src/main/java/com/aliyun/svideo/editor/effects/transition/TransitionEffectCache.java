@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
-import com.aliyun.svideo.sdk.external.struct.AliyunIClipConstructor;
-import com.aliyun.svideo.sdk.external.struct.effect.TransitionBase;
+import com.aliyun.svideosdk.common.AliyunIClipConstructor;
+import com.aliyun.svideosdk.common.struct.effect.TransitionBase;
 
 import java.io.File;
 import java.util.ArrayList;

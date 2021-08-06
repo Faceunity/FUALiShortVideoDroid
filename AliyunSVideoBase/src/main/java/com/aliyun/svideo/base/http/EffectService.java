@@ -15,7 +15,7 @@ import com.aliyun.svideo.base.Form.FontForm;
 import com.aliyun.svideo.base.Form.IMVForm;
 import com.aliyun.svideo.base.Form.PasterForm;
 import com.aliyun.svideo.base.Form.ResourceForm;
-import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
+import com.aliyun.svideosdk.common.struct.form.PreviewPasterForm;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

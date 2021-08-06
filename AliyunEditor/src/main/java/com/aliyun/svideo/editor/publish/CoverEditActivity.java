@@ -18,12 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.common.widget.AlivcCircleLoadingDialog;
-import com.aliyun.svideo.player.AliyunISVideoPlayer;
-import com.aliyun.svideo.player.AliyunSVideoPlayerCreator;
-import com.aliyun.svideo.player.PlayerCallback;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.thumbnail.AliyunIThumbnailFetcher;
-import com.aliyun.svideo.sdk.external.thumbnail.AliyunThumbnailFetcherFactory;
+import com.aliyun.svideosdk.player.impl.AliyunSVideoPlayerCreator;
+import com.aliyun.svideosdk.player.AliyunISVideoPlayer;
+import com.aliyun.svideosdk.player.PlayerCallback;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.AliyunIThumbnailFetcher;
+import com.aliyun.svideosdk.common.impl.AliyunThumbnailFetcherFactory;
 import com.aliyun.svideo.common.utils.ToastUtils;
 import com.duanqu.transcode.NativeParser;
 

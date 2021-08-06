@@ -7,11 +7,11 @@ package com.aliyun.svideo.editor.effects.control;
 
 import android.support.annotation.Nullable;
 
-import com.aliyun.editor.AudioEffectType;
-import com.aliyun.editor.TimeEffectType;
+import com.aliyun.svideosdk.editor.AudioEffectType;
+import com.aliyun.svideosdk.editor.TimeEffectType;
 import com.aliyun.svideo.base.Form.AspectForm;
 import com.aliyun.svideo.editor.effects.transition.TransitionChooserView;
-import com.aliyun.svideo.sdk.external.struct.effect.TransitionBase;
+import com.aliyun.svideosdk.common.struct.effect.TransitionBase;
 
 import java.io.Serializable;
 import java.util.List;

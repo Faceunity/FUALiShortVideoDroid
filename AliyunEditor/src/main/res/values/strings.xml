@@ -19,6 +19,8 @@
     <string name="alivc_editor_effect_transition">Transition</string>
     <string name="alivc_editor_effect_paint">Painting</string>
     <string name="alivc_editor_effect_cover">Album Art</string>
+    <string name="alivc_editor_effect_videoeq">Adjust</string>
+    <string name="alivc_editor_effect_roll_caption">Roll Caption</string>
     <!--end-->
 
     <!--effect manager page-->
@@ -27,7 +29,19 @@
     <string name="alivc_editor_manager_delete">delete</string>
     <!--end-->
 
+    <!-- RollCaption manager -->
+    <string name="alivc_editor_dialog_roll_caption_tittle">RollCaption</string>
+    <string name="alivc_editor_manager_roll_caption_subtitle_title">Edit Subtitle</string>
+    <!-- end -->
+
     <!--effect dialog-->
+    <string name="alivc_editor_dialog_roll_caption_subtitle">Subtitle</string>
+    <string name="alivc_editor_dialog_roll_caption_color">Color</string>
+    <string name="alivc_editor_dialog_roll_caption_font">Font</string>
+    <string name="alivc_editor_dialog_roll_caption_clear">Clear</string>
+    <string name="alivc_editor_dialog_roll_caption_edit">Edit</string>
+    <string name="alivc_editor_dialog_roll_caption_finish">Finish</string>
+
     <string name="alivc_editor_dialog_transition_tittle">Transition</string>
     <string name="alivc_editor_dialog_transition_tip_limit">You must select at least two videos to add a transition</string>
     <string name="alivc_editor_dialog_transition_star">Star</string>
@@ -44,6 +58,7 @@
     <string name="alivc_editor_dialog_caption_effect">Effect</string>
     <string name="alivc_editor_dialog_none_effect">Original</string>
     <string name="alivc_editor_dialog_mv_more">More</string>
+    <string name="alivc_editor_dialog_reset">Reset</string>
 
     <string name="alivc_editor_dialog_time_tittle">speed control</string>
     <string name="alivc_editor_dialog_time_tip_not_support">Images and multiple videos do not support speed control</string>
@@ -64,6 +79,11 @@
     <string name="alivc_editor_dialog_sound_robot">Robot</string>
     <string name="alivc_editor_dialog_sound_devil">Devil</string>
     <string name="alivc_editor_dialog_sound_minions">Minions</string>
+    <string name="alivc_editor_dialog_sound_new_robot">New Robot</string>
+    <string name="alivc_editor_dialog_sound_new_lolita">New Child</string>
+    <string name="alivc_editor_dialog_sound_new_uncle">New Adult</string>
+    <string name="alivc_editor_dialog_sound_howl">Howl</string>
+    <string name="alivc_editor_dialog_sound_dialect">Dialect</string>
 
     <string name="alivc_editor_dialog_animate_tittle">Filter</string>
     <string name="alivc_editor_dialog_animate_revoke">Revoke</string>

@@ -1,28 +1,31 @@
 package com.aliyun.svideo.recorder.mixrecorder;
 
 import android.content.Context;
-import android.view.Gravity;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
 
-import com.aliyun.mix.AliyunIMixRecorder;
-import com.aliyun.mix.AliyunMixMediaInfoParam;
-import com.aliyun.mix.AliyunMixRecorderCreator;
-import com.aliyun.recorder.supply.AliyunIClipManager;
-import com.aliyun.recorder.supply.RecordCallback;
 import com.aliyun.svideo.common.utils.ScreenUtils;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectBase;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectBean;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectImage;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectPaster;
-import com.aliyun.svideo.sdk.external.struct.recorder.CameraType;
-import com.aliyun.svideo.sdk.external.struct.recorder.FlashType;
-import com.aliyun.svideo.sdk.external.struct.recorder.MediaInfo;
-import com.duanqu.qupai.adaptive.NativeAdaptiveUtil;
-import com.qu.preview.callback.OnFrameCallBack;
-import com.qu.preview.callback.OnTextureIdCallBack;
+import com.aliyun.svideo.recorder.bean.AlivcMixBorderParam;
+import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
+import com.aliyun.svideosdk.common.NativeAdaptiveUtil;
+import com.aliyun.svideosdk.common.callback.recorder.OnFrameCallBack;
+import com.aliyun.svideosdk.common.callback.recorder.OnTextureIdCallBack;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.effect.EffectBase;
+import com.aliyun.svideosdk.common.struct.effect.EffectBean;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectImage;
+import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
+import com.aliyun.svideosdk.common.struct.recorder.CameraType;
+import com.aliyun.svideosdk.common.struct.recorder.FlashType;
+import com.aliyun.svideosdk.common.struct.recorder.MediaInfo;
+import com.aliyun.svideosdk.mixrecorder.AliyunIMixRecorder;
+import com.aliyun.svideosdk.mixrecorder.AliyunMixBorderParam;
+import com.aliyun.svideosdk.mixrecorder.AliyunMixMediaInfoParam;
+import com.aliyun.svideosdk.mixrecorder.MixAudioSourceType;
+import com.aliyun.svideosdk.mixrecorder.impl.AliyunMixRecorderCreator;
+import com.aliyun.svideosdk.recorder.AliyunIClipManager;
+import com.aliyun.svideosdk.recorder.RecordCallback;
 
 /**
  * 包含合拍功能
@@ -31,7 +34,8 @@ public class AlivcMixRecorder implements AlivcIMixRecorderInterface {
 
     private Context mContext;
     private AliyunIMixRecorder mRecorder;
-
+    private VideoDisplayParam mPlayDisplayParam;
+    private VideoDisplayParam mRecordDisplayParam;
 
     public AlivcMixRecorder(Context context) {
         this.mContext = context;
@@ -45,33 +49,6 @@ public class AlivcMixRecorder implements AlivcIMixRecorderInterface {
 
         mRecorder = AliyunMixRecorderCreator.createAlivcMixRecorderInstance(context);
 
-    }
-
-    /**
-     * 设置录制界面比例和位置
-     *
-     * @param surfaceView
-     */
-    @Override
-    public void setMixRecorderRatio(SurfaceView surfaceView) {
-        if (surfaceView != null) {
-            FrameLayout.LayoutParams params = this.getLayoutParams();
-            params.gravity = Gravity.CENTER | Gravity.START;
-
-            surfaceView.setLayoutParams(params);
-        }
-    }
-
-    /**
-     * 设置播放界面比例和位置
-     */
-    @Override
-    public void setMixPlayerRatio(SurfaceView surfaceView) {
-        if (surfaceView != null) {
-            FrameLayout.LayoutParams params = this.getLayoutParams();
-            params.gravity = Gravity.CENTER | Gravity.END;
-            surfaceView.setLayoutParams(params);
-        }
     }
 
     @Override
@@ -113,12 +90,20 @@ public class AlivcMixRecorder implements AlivcIMixRecorderInterface {
         params.width = width;
         return params;
     }
-
-    @Override
-    public void setMediaInfo(AliyunMixMediaInfoParam inputInfo, MediaInfo outputInfo) {
+    public void setMediaInfo(String videoPath,VideoDisplayParam playDisplayParam,VideoDisplayParam recordDisplayParam,MediaInfo outputInfo){
+        // mMixInputInfo只对合拍有效，普通录制情况下，该参数将被忽略
+        mPlayDisplayParam = playDisplayParam;
+        mRecordDisplayParam = recordDisplayParam;
+        AliyunMixMediaInfoParam inputInfo = new AliyunMixMediaInfoParam
+                .Builder()
+                .streamStartTimeMills(0L)
+                .streamEndTimeMills(0L)
+                .mixVideoFilePath(videoPath)
+                .mixDisplayParam(mPlayDisplayParam.getAliDisplayParam())
+                .recordDisplayParam(mRecordDisplayParam.getAliDisplayParam())
+                .build();
         mRecorder.setMixMediaInfo(inputInfo, outputInfo);
     }
-
     @Override
     public AliyunIClipManager getClipManager() {
         return mRecorder.getClipManager();
@@ -342,6 +327,36 @@ public class AlivcMixRecorder implements AlivcIMixRecorderInterface {
     }
 
     @Override
+    public VideoDisplayParam getPlayDisplayParams() {
+        return mPlayDisplayParam;
+    }
+
+    @Override
+    public VideoDisplayParam getRecordDisplayParam() {
+        return mRecordDisplayParam;
+    }
+
+    @Override
+    public AlivcMixBorderParam getMixBorderParam() {
+        return mMixBorderParam;
+    }
+
+    @Override
+    public void setMixBorderParam(AlivcMixBorderParam param) {
+        mMixBorderParam = param;
+        if(mMixBorderParam != null){
+            AliyunMixBorderParam mixBorderParam = new AliyunMixBorderParam.Builder()
+                    .borderColor(mMixBorderParam.getBorderColor())
+                    .cornerRadius(mMixBorderParam.getCornerRadius())
+                    .borderWidth(mMixBorderParam.getBorderWidth())
+                    .build();
+            mRecorder.setRecordBorderParam(mixBorderParam);
+        }else{
+            mRecorder.setRecordBorderParam(null);
+        }
+    }
+
+    @Override
     public void restartMv() {
 
     }
@@ -354,5 +369,48 @@ public class AlivcMixRecorder implements AlivcIMixRecorderInterface {
     @Override
     public void setMusic(String var1, long var2, long var4) {
 
+    }
+
+    public void setMixAudioSource(MixAudioSourceType mMixAudioSourceType) {
+        mRecorder.setMixAudioSource(mMixAudioSourceType);
+    }
+    private int mBackgroundColor;
+    /**
+     * 设置合成窗口非填充模式下的背景颜色
+     * v3.19.0 新增
+     * @param color
+     */
+    public void setBackgroundColor(int color){
+        mBackgroundColor = color;
+        mRecorder.setBackgroundColor(color);
+    }
+    private String mBackGroundImage;
+    private int mDisplayMode;
+    private AlivcMixBorderParam mMixBorderParam;
+    /**
+     * 设置合成窗口非填充模式下的背景图片路径
+     * v3.19.0 新增
+     * @param path
+     * @param displayMode 0：裁切 1：填充 2：拉伸
+     */
+    public void setBackgroundImage(String path, int displayMode){
+        mBackGroundImage = path;
+        mDisplayMode = displayMode;
+        mRecorder.setBackgroundImage(path,displayMode);
+    }
+
+    @Override
+    public int getBackgroundColor() {
+        return mBackgroundColor;
+    }
+
+    @Override
+    public String getBackgroundImage() {
+        return mBackGroundImage;
+    }
+
+    @Override
+    public int getBackgroundImageDisplayMode() {
+        return mDisplayMode;
     }
 }

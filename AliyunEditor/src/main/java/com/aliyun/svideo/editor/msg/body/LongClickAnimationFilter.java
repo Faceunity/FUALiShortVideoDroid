@@ -1,7 +1,7 @@
 package com.aliyun.svideo.editor.msg.body;
 
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectConfig;
+import com.aliyun.svideosdk.common.struct.effect.EffectConfig;
 
 public class LongClickAnimationFilter {
     private EffectInfo mEffectInfo;

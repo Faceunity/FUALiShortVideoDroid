@@ -3,28 +3,25 @@ package com.aliyun.svideo.recorder.mixrecorder;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
 
-import com.aliyun.mix.AliyunMixMediaInfoParam;
-import com.aliyun.recorder.supply.AliyunIClipManager;
-import com.aliyun.recorder.supply.RecordCallback;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectBase;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectBean;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectImage;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectPaster;
-import com.aliyun.svideo.sdk.external.struct.recorder.CameraType;
-import com.aliyun.svideo.sdk.external.struct.recorder.FlashType;
-import com.aliyun.svideo.sdk.external.struct.recorder.MediaInfo;
-import com.qu.preview.callback.OnFrameCallBack;
-import com.qu.preview.callback.OnTextureIdCallBack;
+import com.aliyun.svideo.recorder.bean.AlivcMixBorderParam;
+import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
+import com.aliyun.svideosdk.common.callback.recorder.OnFrameCallBack;
+import com.aliyun.svideosdk.common.callback.recorder.OnTextureIdCallBack;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.effect.EffectBase;
+import com.aliyun.svideosdk.common.struct.effect.EffectBean;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectImage;
+import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
+import com.aliyun.svideosdk.common.struct.recorder.CameraType;
+import com.aliyun.svideosdk.common.struct.recorder.FlashType;
+import com.aliyun.svideosdk.recorder.AliyunIClipManager;
+import com.aliyun.svideosdk.recorder.RecordCallback;
 
 /**
-*整合录制接口，包含录制，合拍，如果需要修改@AliyunSvideoRecordView的的recorder请先修改本接口
-*/
+ *整合录制接口，包含录制，合拍，如果需要修改@AliyunSvideoRecordView的的recorder请先修改本接口
+ */
 public interface AlivcIMixRecorderInterface {
-
-    void setMediaInfo(AliyunMixMediaInfoParam inputInfo, MediaInfo outputInfo);
-
     AliyunIClipManager getClipManager();
 
     void setOutputPath(String var1);
@@ -124,10 +121,6 @@ public interface AlivcIMixRecorderInterface {
      */
     FrameLayout.LayoutParams getLayoutParams();
 
-    void setMixRecorderRatio(SurfaceView surfaceView);
-
-    void setMixPlayerRatio(SurfaceView surfaceView);
-
     void takePhoto(boolean needBitmap);
 
     void applyAnimationFilter(EffectFilter effectFilter);
@@ -139,4 +132,11 @@ public interface AlivcIMixRecorderInterface {
     void useFlip(boolean isUseFlip);
 
     void release();
+    int getBackgroundColor();
+    String getBackgroundImage();
+    int getBackgroundImageDisplayMode();
+    VideoDisplayParam getPlayDisplayParams();
+    VideoDisplayParam getRecordDisplayParam();
+    AlivcMixBorderParam getMixBorderParam();
+    void setMixBorderParam(AlivcMixBorderParam param);
 }

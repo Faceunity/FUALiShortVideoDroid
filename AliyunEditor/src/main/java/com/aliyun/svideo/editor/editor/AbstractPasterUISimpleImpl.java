@@ -24,11 +24,11 @@ import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.editor.effects.overlay.AnimationDialog;
 import com.aliyun.svideo.editor.widget.AutoResizingTextView;
 import com.aliyun.svideo.editor.widget.BaseAliyunPasterView;
-import com.aliyun.qupai.editor.AliyunPasterBaseView;
-import com.aliyun.qupai.editor.AliyunPasterController;
-import com.aliyun.qupai.editor.pplayer.AnimPlayerView;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionBase;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectPaster;
+import com.aliyun.svideosdk.editor.AliyunPasterBaseView;
+import com.aliyun.svideosdk.editor.AliyunPasterController;
+import com.aliyun.svideosdk.editor.pplayer.AnimPlayerView;
+import com.aliyun.svideosdk.common.struct.effect.ActionBase;
+import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
 
 public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView {
 

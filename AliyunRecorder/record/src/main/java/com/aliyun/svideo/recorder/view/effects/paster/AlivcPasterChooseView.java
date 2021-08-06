@@ -16,7 +16,7 @@ import com.aliyun.svideo.recorder.view.dialog.OnClearEffectListener;
 import com.aliyun.svideo.recorder.view.effects.EffectBody;
 import com.aliyun.svideo.recorder.view.effects.manager.EffectLoader;
 import com.aliyun.svideo.downloader.FileDownloaderCallback;
-import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
+import com.aliyun.svideosdk.common.struct.form.PreviewPasterForm;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 
 import java.util.ArrayList;

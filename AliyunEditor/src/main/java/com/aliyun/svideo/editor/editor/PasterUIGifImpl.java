@@ -13,10 +13,10 @@ import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.editor.thumblinebar.OverlayThumbLineBar;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.editor.widget.BaseAliyunPasterView;
-import com.aliyun.qupai.editor.AliyunIEditor;
-import com.aliyun.qupai.editor.AliyunPasterController;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionBase;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionTranslate;
+import com.aliyun.svideosdk.editor.AliyunIEditor;
+import com.aliyun.svideosdk.editor.AliyunPasterController;
+import com.aliyun.svideosdk.common.struct.effect.ActionBase;
+import com.aliyun.svideosdk.common.struct.effect.ActionTranslate;
 
 public class PasterUIGifImpl extends AbstractPasterUISimpleImpl {
     protected AliyunIEditor mAliyunIEditor;

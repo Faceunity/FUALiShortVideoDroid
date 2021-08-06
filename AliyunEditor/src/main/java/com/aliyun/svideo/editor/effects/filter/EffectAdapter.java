@@ -25,7 +25,7 @@ import com.aliyun.svideo.editor.effects.control.OnItemTouchListener;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.base.widget.CircularImageView;
 import com.aliyun.svideo.editor.util.EditorCommon;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.common.utils.image.AbstractImageLoaderTarget;
 

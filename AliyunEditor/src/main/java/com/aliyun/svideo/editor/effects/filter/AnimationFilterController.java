@@ -23,9 +23,9 @@ import com.aliyun.svideo.editor.msg.body.ConfirmAnimationFilter;
 import com.aliyun.svideo.editor.msg.body.DeleteLastAnimationFilter;
 import com.aliyun.svideo.editor.msg.body.LongClickAnimationFilter;
 import com.aliyun.svideo.editor.msg.body.LongClickUpAnimationFilter;
-import com.aliyun.editor.TimeEffectType;
-import com.aliyun.qupai.editor.AliyunIEditor;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.editor.TimeEffectType;
+import com.aliyun.svideosdk.editor.AliyunIEditor;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

@@ -11,12 +11,11 @@ import android.widget.ImageView;
 import com.aliyun.common.utils.DensityUtil;
 import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.editor.EditorActivity;
-import com.aliyun.svideo.sdk.external.struct.MediaType;
-import com.aliyun.svideo.sdk.external.struct.common.AliyunClip;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.thumbnail.AliyunIThumbnailFetcher;
-import com.aliyun.svideo.sdk.external.thumbnail.AliyunThumbnailFetcherFactory;
-
+import com.aliyun.svideosdk.common.struct.common.MediaType;
+import com.aliyun.svideosdk.common.struct.common.AliyunClip;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.AliyunIThumbnailFetcher;
+import com.aliyun.svideosdk.common.impl.AliyunThumbnailFetcherFactory;
 import java.util.ArrayList;
 import java.util.List;
 

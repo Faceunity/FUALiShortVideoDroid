@@ -16,7 +16,7 @@ import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.OnItemClickListener;
 import com.aliyun.svideo.common.utils.FastClickUtil;
 import com.aliyun.svideo.editor.util.EditorCommon;
-import com.aliyun.svideo.sdk.external.struct.effect.TransitionBase;
+import com.aliyun.svideosdk.common.struct.effect.TransitionBase;
 
 import org.json.JSONException;
 import org.json.JSONObject;

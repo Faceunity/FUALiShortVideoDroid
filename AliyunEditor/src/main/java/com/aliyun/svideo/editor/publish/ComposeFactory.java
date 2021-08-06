@@ -1,7 +1,7 @@
 package com.aliyun.svideo.editor.publish;
 
-import com.aliyun.qupai.editor.impl.AliyunComposeFactory;
-import com.aliyun.qupai.editor.impl.AliyunVodCompose;
+import com.aliyun.svideosdk.editor.impl.AliyunComposeFactory;
+import com.aliyun.svideosdk.editor.impl.AliyunVodCompose;
 
 /**
  * Created by apple on 2017/11/14.

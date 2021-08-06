@@ -1,33 +1,34 @@
 package com.aliyun.svideo.recorder.mixrecorder;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
 
-import com.aliyun.svideo.record.R;
-import com.aliyun.mix.AliyunMixMediaInfoParam;
-import com.aliyun.recorder.AliyunRecorderCreator;
-import com.aliyun.recorder.supply.AliyunIClipManager;
-import com.aliyun.recorder.supply.AliyunIRecorder;
-import com.aliyun.recorder.supply.RecordCallback;
 import com.aliyun.svideo.common.utils.ScreenUtils;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectBase;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectBean;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectImage;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectPaster;
-import com.aliyun.svideo.sdk.external.struct.recorder.CameraType;
-import com.aliyun.svideo.sdk.external.struct.recorder.FlashType;
-import com.aliyun.svideo.sdk.external.struct.recorder.MediaInfo;
-import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
-import com.qu.preview.callback.OnFrameCallBack;
-import com.qu.preview.callback.OnTextureIdCallBack;
+import com.aliyun.svideo.record.R;
+import com.aliyun.svideo.recorder.bean.AlivcMixBorderParam;
+import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
+import com.aliyun.svideosdk.common.callback.recorder.OnFrameCallBack;
+import com.aliyun.svideosdk.common.callback.recorder.OnTextureIdCallBack;
+import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.effect.EffectBase;
+import com.aliyun.svideosdk.common.struct.effect.EffectBean;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectImage;
+import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
+import com.aliyun.svideosdk.common.struct.recorder.CameraType;
+import com.aliyun.svideosdk.common.struct.recorder.FlashType;
+import com.aliyun.svideosdk.common.struct.recorder.MediaInfo;
+import com.aliyun.svideosdk.recorder.AliyunIClipManager;
+import com.aliyun.svideosdk.recorder.AliyunIRecorder;
+import com.aliyun.svideosdk.recorder.RecordCallback;
+import com.aliyun.svideosdk.recorder.impl.AliyunRecorderCreator;
+
 /**
-*包含录制功能
-*/
+ *包含录制功能
+ */
 public class AlivcRecorder implements AlivcIMixRecorderInterface {
 
 
@@ -52,10 +53,7 @@ public class AlivcRecorder implements AlivcIMixRecorderInterface {
 
     }
 
-    @Override
-    public void setMediaInfo(AliyunMixMediaInfoParam mixInputInfo, MediaInfo outputInfo) {
-        mRecorder.setMediaInfo(outputInfo);
-    }
+
 
     @Override
     public AliyunIClipManager getClipManager() {
@@ -285,52 +283,45 @@ public class AlivcRecorder implements AlivcIMixRecorderInterface {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(screenWidth, height);
 
         switch (mRatioMode) {
-        case AliyunSnapVideoParam.RATIO_MODE_1_1:
-            //视频比例为1：1的时候，录制界面向下移动，移动位置为顶部菜单栏的高度
-            top = mContext.getResources().getDimensionPixelSize(R.dimen.alivc_record_title_height);
-            params.setMargins(0, top, 0, 0);
-            height = screenWidth;
-            break;
-        case AliyunSnapVideoParam.RATIO_MODE_3_4:
-            //视频比例为3：4的时候，录制界面向下移动，移动位置为顶部菜单栏的高度
-            top = mContext.getResources().getDimensionPixelSize(R.dimen.alivc_record_title_height);
-            params.setMargins(0, top, 0, 0);
-            height = screenWidth * 4 / 3;
-            break;
-        case AliyunSnapVideoParam.RATIO_MODE_9_16:
+            case AliyunSnapVideoParam.RATIO_MODE_1_1:
+                //视频比例为1：1的时候，录制界面向下移动，移动位置为顶部菜单栏的高度
+                top = mContext.getResources().getDimensionPixelSize(R.dimen.alivc_record_title_height);
+                params.setMargins(0, top, 0, 0);
+                height = screenWidth;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_3_4:
+                //视频比例为3：4的时候，录制界面向下移动，移动位置为顶部菜单栏的高度
+                top = mContext.getResources().getDimensionPixelSize(R.dimen.alivc_record_title_height);
+                params.setMargins(0, top, 0, 0);
+                height = screenWidth * 4 / 3;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_9_16:
 
-            int screenHeight = ScreenUtils.getRealHeight(mContext);
-            float screenRatio = screenWidth / (float) screenHeight;
-            if (screenRatio >= 9 / 16f) {
-                //胖手机宽高比小于9/16
                 params.width = screenWidth;
                 height = screenWidth * 16 / 9;
-            } else {
-                height = screenHeight;
-                params.width = screenHeight * 9 / 16;
-            }
-            Log.e("RealHeight", "height:" + screenHeight + "width:" + screenWidth);
-            params.gravity = Gravity.CENTER;
-            break;
-        default:
-            height = screenWidth * 16 / 9;
-            break;
+                /** 全屏幕录制，不带上下黑边，由于surface宽度超过屏幕宽度，导致切画幅切回9：16 的时候，会闪一下
+                 //int screenHeight = ScreenUtils.getRealHeight(mContext);
+                 //float screenRatio = screenWidth / (float) screenHeight;
+                 //if (screenRatio >= 9 / 16f) {
+                 //   //胖手机宽高比小于9/16
+                 //   params.width = screenWidth;
+                 //   height = screenWidth * 16 / 9;
+                 //} else {
+                 //   height = screenHeight;
+                 //   params.width = screenHeight * 9 / 16;
+                 //}
+                 //Log.e("RealHeight", "height:" + screenHeight + "width:" + screenWidth);
+                 */
+                params.gravity = Gravity.CENTER;
+                break;
+            default:
+                height = screenWidth * 16 / 9;
+                break;
         }
         params.height = height;
         mRecorder.resizePreviewSize(params.width, params.height);
         return params;
     }
-
-    @Override
-    public void setMixRecorderRatio(SurfaceView surfaceView) {
-
-    }
-
-    @Override
-    public void setMixPlayerRatio(SurfaceView surfaceView) {
-
-    }
-
     @Override
     public void takePhoto(boolean needBitmap) {
         mRecorder.takePhoto(needBitmap);
@@ -365,21 +356,21 @@ public class AlivcRecorder implements AlivcIMixRecorderInterface {
     public int getVideoWidth() {
         int width = 0;
         switch (mResolutionMode) {
-        case AliyunSnapVideoParam.RESOLUTION_360P:
-            width = 360;
-            break;
-        case AliyunSnapVideoParam.RESOLUTION_480P:
-            width = 480;
-            break;
-        case AliyunSnapVideoParam.RESOLUTION_540P:
-            width = 540;
-            break;
-        case AliyunSnapVideoParam.RESOLUTION_720P:
-            width = 720;
-            break;
-        default:
-            width = 540;
-            break;
+            case AliyunSnapVideoParam.RESOLUTION_360P:
+                width = 360;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_480P:
+                width = 480;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_540P:
+                width = 540;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_720P:
+                width = 720;
+                break;
+            default:
+                width = 540;
+                break;
         }
 
         return width;
@@ -390,21 +381,57 @@ public class AlivcRecorder implements AlivcIMixRecorderInterface {
         int width = getVideoWidth();
         int height = 0;
         switch (mRatioMode) {
-        case AliyunSnapVideoParam.RATIO_MODE_1_1:
-            height = width;
-            break;
-        case AliyunSnapVideoParam.RATIO_MODE_3_4:
-            height = width * 4 / 3;
-            break;
-        case AliyunSnapVideoParam.RATIO_MODE_9_16:
-            height = width * 16 / 9;
-            break;
-        default:
-            height = width;
-            break;
+            case AliyunSnapVideoParam.RATIO_MODE_1_1:
+                height = width;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_3_4:
+                height = width * 4 / 3;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_9_16:
+                height = width * 16 / 9;
+                break;
+            default:
+                height = width;
+                break;
         }
         return height;
     }
 
+    @Override
+    public VideoDisplayParam getPlayDisplayParams() {
+        return null;
+    }
 
+    @Override
+    public VideoDisplayParam getRecordDisplayParam() {
+        return new VideoDisplayParam.Builder().build();
+    }
+
+    @Override
+    public AlivcMixBorderParam getMixBorderParam() {
+        return null;
+    }
+
+    @Override
+    public void setMixBorderParam(AlivcMixBorderParam param) {
+
+    }
+
+    public void setMediaInfo( MediaInfo outputInfo) {
+        mRecorder.setMediaInfo(outputInfo);
+    }
+
+    @Override
+    public int getBackgroundColor() {
+        return 0;
+    }
+    @Override
+    public String getBackgroundImage() {
+        return null;
+    }
+
+    @Override
+    public int getBackgroundImageDisplayMode() {
+        return 0;
+    }
 }

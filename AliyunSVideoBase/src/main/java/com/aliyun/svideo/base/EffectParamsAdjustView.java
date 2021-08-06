@@ -11,7 +11,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.aliyun.svideo.base.widget.beauty.listener.AbstractOnProgressFloatChangeListener;
 import com.aliyun.svideo.base.widget.beauty.seekbar.BeautySeekBar;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectConfig;
+import com.aliyun.svideosdk.common.struct.effect.EffectConfig;
+
 
 import java.util.ArrayList;
 import java.util.List;

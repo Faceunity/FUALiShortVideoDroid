@@ -23,9 +23,10 @@ import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.util.RecordCommon;
 import com.aliyun.svideo.recorder.view.CategoryAdapter;
 import com.aliyun.svideo.recorder.view.effects.filter.EffectInfo;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectConfig;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
-import com.aliyun.svideo.sdk.external.struct.effect.ValueTypeEnum;
+import com.aliyun.svideosdk.common.struct.effect.EffectConfig;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.ValueTypeEnum;
+
 
 import java.io.File;
 import java.util.ArrayList;

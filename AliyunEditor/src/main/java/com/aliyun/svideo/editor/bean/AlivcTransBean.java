@@ -1,7 +1,7 @@
 package com.aliyun.svideo.editor.bean;
 
 
-import com.aliyun.svideo.sdk.external.struct.effect.ValueTypeEnum;
+import com.aliyun.svideosdk.common.struct.effect.ValueTypeEnum;
 
 
 /**
