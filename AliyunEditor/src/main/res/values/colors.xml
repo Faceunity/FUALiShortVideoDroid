@@ -72,4 +72,7 @@
     <color name="alivc_edit_animation_filter_color5">#E6798ECD</color>
 
     <color name="alivc_edit_font_gray_unselected">#606E7C</color>
+    
+    <color name="alivc_edit_roll_caption_checkbox_checked">#007ACE</color>
+    <color name="alivc_edit_roll_caption_checkbox_unchecked">#F9FAFB</color>
 </resources>

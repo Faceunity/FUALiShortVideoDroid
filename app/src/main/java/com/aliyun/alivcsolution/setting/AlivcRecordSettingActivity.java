@@ -30,9 +30,11 @@ import com.aliyun.svideo.recorder.activity.AlivcSvideoRecordActivity;
 import com.aliyun.svideo.recorder.bean.AlivcRecordInputParam;
 import com.aliyun.svideo.recorder.bean.RenderingMode;
 import com.aliyun.svideo.recorder.util.RecordCommon;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
-import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.mixrecorder.AliyunMixBorderParam;
+import com.aliyun.svideosdk.mixrecorder.MixAudioSourceType;
 
 import java.lang.ref.WeakReference;
 

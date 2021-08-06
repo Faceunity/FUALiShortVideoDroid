@@ -3,7 +3,7 @@ ext {
     //==Android Third party,include Application Layer,SDK Layer==
 
     //Build Gradle Plugin
-    externalAndroidBuildGradlePlugin = 'com.android.tools.build:gradle:3.1.0'
+    externalAndroidBuildGradlePlugin = 'com.android.tools.build:gradle:3.5.3'
 
     //Android support Libraries
     externalAndroidAppCompatV7 = 'com.android.support:appcompat-v7:28.0.0'
@@ -53,14 +53,14 @@ ext {
     externalAliyunRace = 'com.aliyun.race:AliyunRace:1.2.0'
 
     //Aliyun SDK
-    externalAliyunVodUpload = 'com.aliyun.video.android:upload:1.6.0'
-    externalAlivcConan = 'com.alivc.conan:AlivcConan:1.0.3'
+    externalAliyunVodUpload = 'com.aliyun.video.android:upload:1.6.1'
+    externalAlivcConan = 'com.alivc.conan:AlivcConan:1.0.5'
 
     externalAlivcFFmpeg =  'com.aliyun.video.android:AlivcFFmpeg:2.0.0'
     externalAlivcCore = 'com.aliyun.video.android:core:1.2.2'
-    externalSvideopro = 'com.aliyun.video.android:svideopro:3.16.2'
-    externalSvideostandard = 'com.aliyun.video.android:svideostandard:3.16.2'
-    externalSvideosnap = 'com.aliyun.video.android:svideosnap:3.16.2'
+    externalSvideopro = 'com.aliyun.video.android:svideopro:3.21.0'
+    externalSvideostandard = 'com.aliyun.video.android:svideostandard:3.21.0'
+    externalSvideosnap = 'com.aliyun.video.android:svideosnap:3.21.0'
     externalPlayerFull = 'com.aliyun.sdk.android:AliyunPlayer:4.7.3-full'
     externalPlayerPart = 'com.aliyun.sdk.android:AliyunPlayer:4.7.3-part'
     //Android SDK/Tools Version

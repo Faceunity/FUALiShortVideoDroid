@@ -1,6 +1,6 @@
 package com.aliyun.svideo.editor.effects.sound;
 
-import com.aliyun.editor.AudioEffectType;
+import com.aliyun.svideosdk.editor.AudioEffectType;
 import com.aliyun.svideo.editor.R;
 
 import java.util.ArrayList;

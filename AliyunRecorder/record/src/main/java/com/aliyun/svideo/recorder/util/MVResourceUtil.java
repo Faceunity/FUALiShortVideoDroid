@@ -2,8 +2,8 @@ package com.aliyun.svideo.recorder.util;
 
 import com.aliyun.svideo.downloader.DownloaderManager;
 import com.aliyun.svideo.downloader.FileDownloaderModel;
-import com.aliyun.svideo.sdk.external.struct.form.AspectForm;
-import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
+import com.aliyun.svideosdk.common.struct.form.AspectForm;
+import com.aliyun.svideosdk.common.struct.form.IMVForm;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.aliyun.svideo.editor.bean;
 
-import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoParam;
+import com.aliyun.svideosdk.common.struct.common.AliyunVideoParam;
 
 /**
  * data:2019/5/20

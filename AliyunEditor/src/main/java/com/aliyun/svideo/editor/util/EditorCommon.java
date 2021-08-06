@@ -35,7 +35,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -72,11 +75,11 @@ public class EditorCommon {
     private final static String MV16_9 = "folder16.9";
 
     public static String[] mv_dirs = {
-        MV1_1,
-        MV3_4,
-        MV4_3,
-        MV9_16,
-        MV16_9
+            MV1_1,
+            MV3_4,
+            MV4_3,
+            MV9_16,
+            MV16_9
     };
 
     public static String getMVPath(List<AspectForm> list, int w, int h) {
@@ -215,6 +218,7 @@ public class EditorCommon {
         QU_DIR = SD_DIR + QU_NAME + File.separator;
         mView = new WeakReference<>(view);
         File dir = new File(EditorCommon.QU_DIR);
+        copySelf(cxt,"font");
         copySelf(cxt, QU_NAME);
         dir.mkdirs();
         unZip();
@@ -243,6 +247,11 @@ public class EditorCommon {
             }
         }
         return list;
+    }
+
+    public static List<String> getVideoEqList(Context context) {
+        String[] arr = context.getResources().getStringArray(R.array.videoeq_order);
+        return Arrays.asList(arr);
     }
 
     public static List<String> getAnimationFilterList() {
@@ -292,7 +301,7 @@ public class EditorCommon {
         JsonElement parse;
         try {
             parse = new JsonParser().parse(
-                new InputStreamReader(new FileInputStream(i18nFile)));
+                    new InputStreamReader(new FileInputStream(i18nFile)));
         } catch (FileNotFoundException e) {
             Log.w(TAG, "getCurrentEffectI18n 解析json失败，msg = " + e.getMessage());
             return null;

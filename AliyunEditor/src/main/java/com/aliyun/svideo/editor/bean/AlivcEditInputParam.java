@@ -5,10 +5,10 @@ import android.util.Log;
 
 import com.aliyun.common.global.AliyunTag;
 import com.aliyun.svideo.media.MediaInfo;
-import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoParam;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.common.AliyunVideoParam;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 import com.duanqu.transcode.NativeParser;
 
 import java.util.ArrayList;

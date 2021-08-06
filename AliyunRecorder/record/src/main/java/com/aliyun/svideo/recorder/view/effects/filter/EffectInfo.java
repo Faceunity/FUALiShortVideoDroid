@@ -4,8 +4,8 @@
 
 package com.aliyun.svideo.recorder.view.effects.filter;
 
-import com.aliyun.editor.TimeEffectType;
-import com.aliyun.svideo.sdk.external.struct.form.AspectForm;
+import com.aliyun.svideosdk.editor.TimeEffectType;
+import com.aliyun.svideosdk.common.struct.form.AspectForm;
 
 import java.util.List;
 

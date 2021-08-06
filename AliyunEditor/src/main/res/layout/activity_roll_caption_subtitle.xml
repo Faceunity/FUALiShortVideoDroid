@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".effectmanager.RollCaptionSubtitleActivity">
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/alivc_common_bg_black"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/aliyun_back_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:padding="@dimen/alivc_record_title_icon_padding"
+            android:src="@mipmap/music_aliyun_svideo_icon_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/alivc_editor_manager_roll_caption_subtitle_title"
+            android:textColor="@color/alivc_common_font_white"
+            android:textSize="@dimen/alivc_common_font_18" />
+
+        <ImageView
+            android:id="@+id/iv_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/aliyun_svideo_check" />
+
+        <ImageView
+            android:id="@+id/iv_edit_color"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/iv_commit"
+            android:visibility="gone"
+            android:src="@mipmap/alivc_svideo_edit_icon_roll_caption_color" />
+
+    </RelativeLayout>
+
+    <com.aliyun.svideo.editor.effects.rollcaption.RollCaptionColorView
+        android:id="@+id/roll_caption_color_view"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:layout_height="@dimen/alivc_common_height_group_100" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/roll_caption_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/roll_caption_color_view"
+        android:background="@color/alivc_common_bg_black_alpha_30"
+        android:layout_below="@id/title" >
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

@@ -1,6 +1,6 @@
 package com.aliyun.svideo.recorder.view.effects.paster;
 
-import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
+import com.aliyun.svideosdk.common.struct.form.PreviewPasterForm;
 
 public interface PasterSelectListener {
     public void onPasterSelected(PreviewPasterForm imvForm);

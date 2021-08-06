@@ -23,10 +23,10 @@ import com.aliyun.svideo.crop.AliyunVideoCropActivity;
 import com.aliyun.svideo.crop.CropMediaActivity;
 import com.aliyun.svideo.common.utils.FastClickUtil;
 import com.aliyun.svideo.common.utils.ToastUtils;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
-import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
 
 public class AlivcCropSettingActivity extends Activity implements View.OnClickListener {
     String[] effDirs;

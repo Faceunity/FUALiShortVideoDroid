@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.util.RecordCommon;
 import com.aliyun.svideo.recorder.view.dialog.IPageTab;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

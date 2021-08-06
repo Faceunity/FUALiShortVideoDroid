@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/alivc_editor_effect_height"
+    android:layout_height="@dimen/alivc_common_height_group_200"
     android:background="@color/alivc_common_bg_black_alpha_70"
     android:orientation="vertical">
 

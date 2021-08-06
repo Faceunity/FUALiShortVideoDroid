@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import com.aliyun.svideo.editor.editor.thumblinebar.OverlayThumbLineBar;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.editor.widget.BaseAliyunPasterView;
-import com.aliyun.qupai.editor.AliyunIEditor;
-import com.aliyun.qupai.editor.AliyunPasterController;
+import com.aliyun.svideosdk.editor.AliyunIEditor;
+import com.aliyun.svideosdk.editor.AliyunPasterController;
 
 public class PasterUICaptionImpl extends PasterUIGifImpl {
 

@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -25,31 +24,31 @@ import android.widget.Toast;
 
 import com.aliyun.common.utils.MySystemParams;
 import com.aliyun.common.utils.StorageUtils;
-import com.aliyun.svideo.common.utils.ThreadUtils;
-import com.aliyun.svideo.common.utils.ToastUtils;
-import com.aliyun.svideo.common.utils.UriUtils;
-import com.aliyun.svideo.record.R;
-import com.aliyun.svideo.recorder.bean.AlivcRecordInputParam;
-import com.aliyun.svideo.recorder.bean.RenderingMode;
-import com.aliyun.svideo.recorder.mixrecorder.AlivcRecorderFactory;
-import com.aliyun.svideo.recorder.util.RecordCommon;
-import com.aliyun.svideo.recorder.util.FixedToastUtils;
-import com.aliyun.svideo.recorder.util.NotchScreenUtil;
-import com.aliyun.svideo.recorder.util.voice.PhoneStateManger;
-import com.aliyun.svideo.recorder.view.AliyunSVideoRecordView;
-import com.aliyun.svideo.recorder.view.music.MusicSelectListener;
 import com.aliyun.svideo.base.http.MusicFileBean;
 import com.aliyun.svideo.base.widget.ProgressDialog;
 import com.aliyun.svideo.common.utils.PermissionUtils;
+import com.aliyun.svideo.common.utils.ThreadUtils;
+import com.aliyun.svideo.common.utils.ToastUtils;
+import com.aliyun.svideo.common.utils.UriUtils;
 import com.aliyun.svideo.media.MediaInfo;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
+import com.aliyun.svideo.record.R;
+import com.aliyun.svideo.recorder.bean.AlivcRecordInputParam;
+import com.aliyun.svideo.recorder.bean.RenderingMode;
+import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
+import com.aliyun.svideo.recorder.mixrecorder.AlivcRecorder;
+import com.aliyun.svideo.recorder.mixrecorder.AlivcRecorderFactory;
+import com.aliyun.svideo.recorder.util.FixedToastUtils;
+import com.aliyun.svideo.recorder.util.NotchScreenUtil;
+import com.aliyun.svideo.recorder.util.RecordCommon;
+import com.aliyun.svideo.recorder.util.voice.PhoneStateManger;
+import com.aliyun.svideo.recorder.view.AliyunSVideoRecordView;
+import com.aliyun.svideo.recorder.view.music.MusicSelectListener;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 新版本(> 3.6.5之后)录制模块的实现类, 主要是为了承载 AliyunSvideoRecordView
@@ -73,10 +72,10 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
      * 权限申请
      */
     String[] permission = {
-        Manifest.permission.CAMERA,
-        Manifest.permission.RECORD_AUDIO,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     private Toast phoningToast;
     private PhoneStateManger phoneStateManger;
@@ -137,9 +136,14 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
             mVideoRecordView.setVideoCodec(mInputParam.getVideoCodec());
             mVideoRecordView.setRenderingMode(mInputParam.getmRenderingMode());
             mVideoRecordView.setSvideoRace(mInputParam.isSvideoRace());
-            //配置录制recorder
-            mVideoRecordView.setRecorder(AlivcRecorderFactory.createAlivcRecorderFactory(AlivcRecorderFactory.RecorderType.GENERAL, this));
-
+            AlivcRecorder alivcRecorder = (AlivcRecorder)AlivcRecorderFactory.createAlivcRecorderFactory(AlivcRecorderFactory.RecorderType.GENERAL, this);
+            com.aliyun.svideosdk.common.struct.recorder.MediaInfo outputInfo = new com.aliyun.svideosdk.common.struct.recorder.MediaInfo();
+            outputInfo.setFps(35);
+            outputInfo.setVideoWidth(mInputParam.getVideoWidth());
+            outputInfo.setVideoHeight(mInputParam.getVideoHeight());
+            outputInfo.setVideoCodec(mInputParam.getVideoCodec());            //配置录制recorder
+            alivcRecorder.setMediaInfo(outputInfo);
+            mVideoRecordView.setRecorder(alivcRecorder);
         }
         if (PermissionUtils.checkPermissionsGroup(this, PermissionUtils.PERMISSION_STORAGE)) {
             //有存储权限的时候才去copy资源
@@ -176,7 +180,7 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
 
     private void setAssetPath() {
         String path = StorageUtils.getCacheDirectory(this).getAbsolutePath() + File.separator + RecordCommon.QU_NAME
-                      + File.separator;
+                + File.separator;
         File filter = new File(new File(path), "filter");
         String[] list = filter.list();
         if (list == null || list.length == 0) {
@@ -195,7 +199,7 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
             @Override
             public void run() {
                 copyAssetsTask = new CopyAssetsTask(AlivcSvideoRecordActivity.this).executeOnExecutor(
-                    AsyncTask.THREAD_POOL_EXECUTOR);
+                        AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }, 700);
 
@@ -278,19 +282,20 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
         boolean isSvideoRace = intent.getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_RACE, false);
         //获取录制输入参数
         mInputParam = new AlivcRecordInputParam.Builder()
-        .setResolutionMode(resolutionMode)
-        .setRatioMode(ratioMode)
-        .setMaxDuration(maxDuration)
-        .setMinDuration(minDuration)
-        .setGop(gop)
-        .setFrame(frame)
-        .setVideoQuality(videoQuality)
-        .setVideoCodec(videoCodec)
-        .setVideoOutputPath(videoOutputPath)
-        .setVideoRenderingMode(renderingMode)
-        .setIsUseFlip(isUseFlip)
-        .setSvideoRace(isSvideoRace)
-        .build();
+                .setResolutionMode(resolutionMode)
+                .setRatioMode(ratioMode)
+                .setMaxDuration(maxDuration)
+                .setMinDuration(minDuration)
+                .setGop(gop)
+                .setFrame(frame)
+                .setVideoQuality(videoQuality)
+                .setVideoCodec(videoCodec)
+                .setVideoOutputPath(videoOutputPath)
+                .setVideoRenderingMode(renderingMode)
+                .setIsUseFlip(isUseFlip)
+                .setSvideoRace(isSvideoRace)
+                .setPlayDisplayParam(new VideoDisplayParam.Builder().build())
+                .build();
     }
 
 

@@ -9,7 +9,7 @@ import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.view.effects.filter.OnFilterItemClickListener;
 import com.aliyun.svideo.recorder.view.effects.filter.animfilter.AlivcAnimFilterChooseFragment;
 import com.aliyun.svideo.recorder.view.effects.filter.animfilter.OnAnimFilterItemClickListener;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
 
 import java.util.ArrayList;
 import java.util.List;

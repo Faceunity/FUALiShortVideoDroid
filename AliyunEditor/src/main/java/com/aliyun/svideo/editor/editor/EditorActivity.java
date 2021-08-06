@@ -13,20 +13,20 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.aliyun.svideo.music.utils.NotchScreenUtil;
-import com.aliyun.qupai.import_core.AliyunIImport;
-import com.aliyun.qupai.import_core.AliyunImportCreator;
+import com.aliyun.svideosdk.importer.AliyunIImport;
+import com.aliyun.svideosdk.importer.impl.AliyunImportCreator;
 import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.bean.AlivcEditInputParam;
 import com.aliyun.svideo.editor.bean.AlivcEditOutputParam;
 import com.aliyun.svideo.editor.publish.PublishActivity;
 import com.aliyun.svideo.editor.view.AlivcEditView;
 import com.aliyun.svideo.media.MediaInfo;
-import com.aliyun.svideo.sdk.external.struct.common.AliyunImageClip;
-import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoClip;
-import com.aliyun.svideo.sdk.external.struct.common.AliyunVideoParam;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.common.AliyunImageClip;
+import com.aliyun.svideosdk.common.struct.common.AliyunVideoClip;
+import com.aliyun.svideosdk.common.struct.common.AliyunVideoParam;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 
 import java.io.File;
 import java.util.ArrayList;

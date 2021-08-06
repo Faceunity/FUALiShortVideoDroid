@@ -26,9 +26,9 @@ import com.aliyun.svideo.common.utils.PermissionUtils;
 import com.aliyun.svideo.common.utils.ToastUtils;
 import com.aliyun.svideo.editor.EditorMediaActivity;
 import com.aliyun.svideo.editor.bean.AlivcEditInputParam;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 
 /**
  * 视频编辑模块, 参数设置界面

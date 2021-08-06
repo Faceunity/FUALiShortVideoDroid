@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.aliyun.common.global.AliyunTag;
 import com.aliyun.common.utils.ToastUtil;
-import com.aliyun.qupai.editor.AliyunIVodCompose;
-import com.aliyun.qupai.editor.impl.AliyunVodCompose;
+import com.aliyun.svideosdk.editor.AliyunIVodCompose;
+import com.aliyun.svideosdk.editor.impl.AliyunVodCompose;
 import com.aliyun.qupaiokhttp.HttpRequest;
 import com.aliyun.qupaiokhttp.RequestParams;
 import com.aliyun.qupaiokhttp.StringHttpRequestCallback;

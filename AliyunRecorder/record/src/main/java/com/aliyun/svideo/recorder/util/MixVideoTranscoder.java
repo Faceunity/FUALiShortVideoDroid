@@ -11,16 +11,16 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.aliyun.common.global.AliyunTag;
-import com.aliyun.crop.AliyunCropCreator;
-import com.aliyun.crop.struct.CropParam;
-import com.aliyun.crop.supply.AliyunICrop;
-import com.aliyun.crop.supply.CropCallback;
+import com.aliyun.svideosdk.crop.impl.AliyunCropCreator;
+import com.aliyun.svideosdk.crop.CropParam;
+import com.aliyun.svideosdk.crop.AliyunICrop;
+import com.aliyun.svideosdk.crop.CropCallback;
 import com.aliyun.svideo.base.Constants;
 import com.aliyun.svideo.media.MediaInfo;
-import com.aliyun.svideo.sdk.external.struct.MediaType;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.common.MediaType;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 import com.duanqu.transcode.NativeParser;
 
 /**

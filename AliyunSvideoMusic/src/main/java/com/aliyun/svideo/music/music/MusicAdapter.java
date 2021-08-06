@@ -15,7 +15,7 @@ import com.aliyun.svideo.music.widget.CircleProgressBar;
 import com.aliyun.svideo.music.widget.MusicHorizontalScrollView;
 import com.aliyun.svideo.music.widget.MusicWaveView;
 import com.aliyun.svideo.base.http.MusicFileBean;
-import com.aliyun.svideo.sdk.external.struct.form.IMVForm;
+import com.aliyun.svideosdk.common.struct.form.IMVForm;
 
 import java.util.ArrayList;
 import java.util.List;

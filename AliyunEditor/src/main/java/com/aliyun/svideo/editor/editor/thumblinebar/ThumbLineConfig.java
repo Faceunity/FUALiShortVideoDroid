@@ -2,7 +2,7 @@ package com.aliyun.svideo.editor.editor.thumblinebar;
 
 import android.graphics.Point;
 
-import com.aliyun.svideo.sdk.external.thumbnail.AliyunIThumbnailFetcher;
+import com.aliyun.svideosdk.common.AliyunIThumbnailFetcher;
 
 /**
  * Created by cross_ly on 2018/8/22.

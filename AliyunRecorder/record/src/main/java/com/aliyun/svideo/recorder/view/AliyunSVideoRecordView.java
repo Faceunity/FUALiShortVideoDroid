@@ -5,11 +5,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Outline;
+import android.graphics.Rect;
 import android.hardware.Camera;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.media.MediaScannerConnection;
 import android.opengl.EGL14;
 import android.os.AsyncTask;
@@ -26,7 +24,9 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,12 +36,15 @@ import com.aliyun.common.global.AliyunTag;
 import com.aliyun.common.utils.BitmapUtil;
 import com.aliyun.common.utils.CommonUtil;
 import com.aliyun.common.utils.DensityUtil;
-import com.aliyun.mix.AliyunMixMediaInfoParam;
-import com.aliyun.mix.AliyunMixRecorderDisplayParam;
-import com.aliyun.mix.AliyunMixTrackLayoutParam;
-import com.aliyun.querrorcode.AliyunErrorCode;
-import com.aliyun.recorder.supply.AliyunIClipManager;
-import com.aliyun.recorder.supply.RecordCallback;
+import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
+import com.aliyun.svideo.common.utils.image.ImageLoaderOptions;
+import com.aliyun.svideo.recorder.bean.AlivcMixBorderParam;
+import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
+import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.mixrecorder.AliyunMixMediaInfoParam;
+import com.aliyun.svideosdk.common.AliyunErrorCode;
+import com.aliyun.svideosdk.recorder.AliyunIClipManager;
+import com.aliyun.svideosdk.recorder.RecordCallback;
 import com.aliyun.svideo.base.Constants;
 import com.aliyun.svideo.base.http.MusicFileBean;
 import com.aliyun.svideo.base.utils.VideoInfoUtils;
@@ -110,24 +113,28 @@ import com.aliyun.svideo.recorder.view.effects.skin.BeautySkinDetailChooser;
 import com.aliyun.svideo.recorder.view.focus.FocusView;
 import com.aliyun.svideo.recorder.view.music.MusicChooser;
 import com.aliyun.svideo.recorder.view.music.MusicSelectListener;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectBean;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectFilter;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectImage;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectPaster;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
-import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
-import com.aliyun.svideo.sdk.external.struct.recorder.CameraParam;
-import com.aliyun.svideo.sdk.external.struct.recorder.MediaInfo;
-import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.effect.EffectBean;
+import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.effect.EffectImage;
+import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.form.PreviewPasterForm;
+import com.aliyun.svideosdk.common.struct.recorder.CameraParam;
+import com.aliyun.svideosdk.common.struct.recorder.MediaInfo;
+import com.aliyun.svideosdk.mixrecorder.AliyunMixMediaInfoParam;
+import com.faceunity.core.enumeration.CameraFacingEnum;
+import com.faceunity.core.enumeration.FUAIProcessorEnum;
+import com.faceunity.core.enumeration.FUInputTextureEnum;
+import com.faceunity.core.enumeration.FUTransformMatrixEnum;
+import com.faceunity.core.utils.CameraUtils;
 import com.faceunity.nama.FURenderer;
-import com.faceunity.nama.IFURenderer;
+import com.faceunity.nama.data.FaceUnityDataFactory;
+import com.faceunity.nama.listener.FURendererListener;
 import com.faceunity.nama.ui.FaceUnityView;
-import com.faceunity.nama.utils.CameraUtils;
 import com.google.gson.Gson;
-import com.qu.preview.callback.OnFrameCallBack;
-import com.qu.preview.callback.OnTextureIdCallBack;
+import com.aliyun.svideosdk.common.callback.recorder.OnFrameCallBack;
+import com.aliyun.svideosdk.common.callback.recorder.OnTextureIdCallBack;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -148,7 +155,7 @@ import java.util.Map;
  * 新版本(> 3.6.5之后)录制模块的具体业务实现类
  */
 public class AliyunSVideoRecordView extends FrameLayout
-    implements DialogVisibleListener, ScaleGestureDetector.OnScaleGestureListener, SensorEventListener {
+    implements DialogVisibleListener, ScaleGestureDetector.OnScaleGestureListener {
     private static final String TAG = AliyunSVideoRecordView.class.getSimpleName();
     private static final String TAG_GIF_CHOOSER = "gif";
     private static final String TAG_BEAUTY_CHOOSER = "beauty";
@@ -169,7 +176,8 @@ public class AliyunSVideoRecordView extends FrameLayout
      */
     private SurfaceView mRecorderSurfaceView;
     private SurfaceView mPlayerSurfaceView;
-
+    private FrameLayout mVideoContainer;
+    private ImageView mBackgroundImageView;
     private ControlView mControlView;
     private RecordTimelineView mRecordTimeView;
     private AlivcCountDownView mCountDownView;
@@ -177,8 +185,8 @@ public class AliyunSVideoRecordView extends FrameLayout
     private AlivcIMixRecorderInterface recorder;
 
     private AliyunIClipManager clipManager;
-    private com.aliyun.svideo.sdk.external.struct.recorder.CameraType cameraType
-        = com.aliyun.svideo.sdk.external.struct.recorder.CameraType.FRONT;
+    private com.aliyun.svideosdk.common.struct.recorder.CameraType cameraType
+            = com.aliyun.svideosdk.common.struct.recorder.CameraType.FRONT;
     private FragmentActivity mActivity;
     private boolean isOpenFailed = false;
     //正在准备录制视频,readyview显示期间为true，其他为false
@@ -204,6 +212,8 @@ public class AliyunSVideoRecordView extends FrameLayout
 //    private RenderingMode mRenderingMode = RenderingMode.Race;
     //是否是race录制包
     private boolean isSvideoRace = false;
+
+    private AlivcMixBorderParam mMixBorderParam;
 
     //视频输出参数
     private MediaInfo mOutputInfo;
@@ -361,10 +371,12 @@ public class AliyunSVideoRecordView extends FrameLayout
     /**
      * faceunity 美颜贴纸
      */
+    private FaceUnityDataFactory mFaceUnityDataFactory;
     private FURenderer mFURenderer;
     private boolean mIsFuBeautyOpen;
     private int mSkippedFrames = 5;
-    private SensorManager mSensorManager;
+    private TextView tvFps;
+
     private CSVUtils mCSVUtils;
 
     /**
@@ -542,50 +554,59 @@ public class AliyunSVideoRecordView extends FrameLayout
         }
     }
 
+    /**
+     * FURenderer状态回调
+     */
+    private FURendererListener mFURendererListener = new FURendererListener() {
+        @Override
+        public void onPrepare() {
+            mFaceUnityDataFactory.bindCurrentRenderer();
+        }
+
+        @Override
+        public void onTrackStatusChanged(FUAIProcessorEnum type, int status) {
+
+        }
+
+        @Override
+        public void onFpsChanged(double fps, double callTime) {
+            final String FPS = String.format(Locale.getDefault(), "%.2f", fps);
+            Log.e(TAG, "onFpsChanged: FPS " + FPS + " callTime " + String.format(Locale.getDefault(), "%.2f", callTime));
+            post(() -> tvFps.setText("FPS: " + FPS));
+        }
+
+        @Override
+        public void onRelease() {
+
+        }
+    };
+
     private void initFuBeautyView() {
         Context context = getContext();
         mIsFuBeautyOpen = TextUtils.equals(PreferenceUtil.VALUE_ON, PreferenceUtil.getString(context, PreferenceUtil.KEY_FACEUNITY_IS_ON));
         if (mIsFuBeautyOpen) {
-            FURenderer.setup(context);
-            final TextView tvFps = new TextView(context);
+            FURenderer.getInstance().setup(context);
+            tvFps = new TextView(context);
             tvFps.setTextColor(Color.BLACK);
             FrameLayout.LayoutParams fpsParams = new FrameLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             fpsParams.gravity = Gravity.START | Gravity.TOP;
             fpsParams.topMargin = DensityUtil.dip2px(context, 80);
             fpsParams.leftMargin = DensityUtil.dip2px(context, 10);
             addView(tvFps, fpsParams);
-            mFURenderer = new FURenderer.Builder(context)
-                    .setInputTextureType(FURenderer.INPUT_TEXTURE_EXTERNAL_OES)
-                    .setCameraFacing(cameraType.getType())
-                    .setRunBenchmark(true)
-                    .setOnDebugListener(new FURenderer.OnDebugListener() {
-                        @Override
-                        public void onFpsChanged(double fps, double callTime) {
-                            final String FPS = String.format(Locale.getDefault(), "%.2f", fps);
-                            Log.e(TAG, "onFpsChanged: FPS " + FPS + " callTime " + String.format(Locale.getDefault(), "%.2f", callTime));
-                            post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tvFps.setText("FPS: " + FPS);
-                                }
-                            });
-                        }
-                    })
-                    .setInputImageOrientation(CameraUtils.getCameraOrientation(cameraType.getType()))
-                    .build();
 
+            mFURenderer = FURenderer.getInstance();
+            mFURenderer.setMarkFPSEnable(true);
+            mFURenderer.setInputBufferMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
+            mFURenderer.setInputTextureMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
+            mFURenderer.setOutputMatrix(FUTransformMatrixEnum.CCROT0);
             FaceUnityView beautyControlView = new FaceUnityView(context);
-            beautyControlView.setModuleManager(mFURenderer);
+            mFaceUnityDataFactory = new FaceUnityDataFactory(0);
+            beautyControlView.bindDataFactory(mFaceUnityDataFactory);
+
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
             params.bottomMargin = DensityUtil.dip2px(context, 200);
             addView(beautyControlView, params);
-            mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-            Sensor sensor = null;
-            if (mSensorManager != null) {
-                sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            }
         }
     }
 
@@ -623,6 +644,55 @@ public class AliyunSVideoRecordView extends FrameLayout
         mRecordTimeView.setMinDuration(minRecordTime);
     }
 
+    private void initVideoContainer(){
+        mVideoContainer = new FrameLayout(getContext());
+        int videoOutputWidth = recorder.getVideoWidth();
+        int videoOutputHeight = recorder.getVideoHeight();
+        int width = ScreenUtils.getRealWidth(getContext());
+        int height = width*videoOutputHeight/videoOutputWidth;
+        LayoutParams params = new LayoutParams(width, height);
+        params.gravity = Gravity.CENTER;
+        addView(mVideoContainer,params);
+        if (recorder.isMixRecorder()) {
+            int backgroundColor = recorder.getBackgroundColor();
+            mVideoContainer.setBackgroundColor(backgroundColor);
+            String backgroundImage = recorder.getBackgroundImage();
+            if (!TextUtils.isEmpty(backgroundImage)){
+                int displayMode = recorder.getBackgroundImageDisplayMode();
+                mBackgroundImageView = new ImageView(getContext());
+                switch (displayMode){
+                    case 0:
+                        mBackgroundImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        break;
+                    case 1:
+                        mBackgroundImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                        break;
+                    case 2:
+                        mBackgroundImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        break;
+                }
+                mBackgroundImageView.setBackgroundColor(backgroundColor);
+                LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+                mVideoContainer.addView(mBackgroundImageView,layoutParams);
+                new ImageLoaderImpl().loadImage(getContext(), "file://" + backgroundImage, new ImageLoaderOptions.Builder().skipDiskCacheCache().skipMemoryCache().build()).into(mBackgroundImageView);
+            }
+            //调整布局级别
+            if (recorder.getPlayDisplayParams().getLayoutLevel()>recorder.getRecordDisplayParam().getLayoutLevel()){
+                initRecorderSurfaceView();
+                initPlayerSurfaceView();
+            }else {
+                initPlayerSurfaceView();
+                initRecorderSurfaceView();
+            }
+
+        } else {
+            initRecorderSurfaceView();
+        }
+        //添加录制surFaceView
+        recorder.setDisplayView(mRecorderSurfaceView, mPlayerSurfaceView);
+    }
+
+
     /**
      * 初始化RecordersurfaceView
      */
@@ -631,21 +701,21 @@ public class AliyunSVideoRecordView extends FrameLayout
         mRecorderSurfaceView = new SurfaceView(getContext());
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getContext(), this);
         final GestureDetector gestureDetector = new GestureDetector(getContext(),
-        new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                if (recorder == null) {
-                    return true;
-                }
-                float x = e.getX() / mRecorderSurfaceView.getWidth();
-                float y = e.getY() / mRecorderSurfaceView.getHeight();
-                recorder.setFocus(x, y);
+                new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onSingleTapUp(MotionEvent e) {
+                        if (recorder == null) {
+                            return true;
+                        }
+                        float x = e.getX() / mRecorderSurfaceView.getWidth();
+                        float y = e.getY() / mRecorderSurfaceView.getHeight();
+                        recorder.setFocus(x, y);
 
-                mFocusView.showView();
-                mFocusView.setLocation(e.getRawX(), e.getRawY());
-                return true;
-            }
-        });
+                        mFocusView.showView();
+                        mFocusView.setLocation(e.getRawX(), e.getRawY());
+                        return true;
+                    }
+                });
         mRecorderSurfaceView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -657,12 +727,73 @@ public class AliyunSVideoRecordView extends FrameLayout
                 return true;
             }
         });
-        //添加录制surFaceView
-        recorder.setDisplayView(mRecorderSurfaceView, mPlayerSurfaceView);
 
-        addSubView(mRecorderSurfaceView);
-        mRecorderSurfaceView.setLayoutParams(recorder.getLayoutParams());
+        int border = 0;
+        int color = Color.TRANSPARENT;
+        float tempRadius = 0;
 
+        if(mMixBorderParam != null){
+            border = mMixBorderParam.getBorderWidth();
+            color = mMixBorderParam.getBorderColor();
+            tempRadius = mMixBorderParam.getCornerRadius();
+        }
+
+        final float radius = tempRadius;
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            mRecorderSurfaceView.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    Rect rect = new Rect();
+                    view.getGlobalVisibleRect(rect);
+                    int leftMargin = 0;
+                    int topMargin = 0;
+                    Rect selfRect = new Rect(leftMargin, topMargin,
+                            rect.right - rect.left - leftMargin,
+                            rect.bottom - rect.top - topMargin);
+                    outline.setRoundRect(selfRect, radius);
+                }
+            });
+            mRecorderSurfaceView.setClipToOutline(true);
+        }
+
+        VideoDisplayParam displayParam = recorder.getRecordDisplayParam();
+        int videoOutputWidth = recorder.getVideoWidth();
+        int videoOutputHeight = recorder.getVideoHeight();
+        int parentWidth = ScreenUtils.getRealWidth(getContext());
+        int parentHeight = parentWidth*videoOutputHeight/videoOutputWidth;
+        int width = (int)(parentWidth*displayParam.getWidthRatio());
+        int height = (int)(parentHeight*displayParam.getHeightRatio());
+        int marginLeft = (int)((displayParam.getCenterX()-displayParam.getWidthRatio()/2)*parentWidth);
+        int marginTop = (int)((displayParam.getCenterY()-displayParam.getHeightRatio()/2)*parentHeight);
+
+        FrameLayout container = new FrameLayout(getContext());
+        container.setBackgroundColor(color);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            container.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    Rect rect = new Rect();
+                    view.getGlobalVisibleRect(rect);
+                    int leftMargin = 0;
+                    int topMargin = 0;
+                    Rect selfRect = new Rect(leftMargin, topMargin,
+                            rect.right - rect.left - leftMargin,
+                            rect.bottom - rect.top - topMargin);
+                    outline.setRoundRect(selfRect, radius);
+                }
+            });
+            container.setClipToOutline(true);
+        }
+
+        LayoutParams slp = new LayoutParams(width - border * 2, height - border * 2);
+        slp.gravity = Gravity.CENTER;
+        container.addView(mRecorderSurfaceView, slp);
+
+        LayoutParams layoutParams = new LayoutParams(width,height);
+        layoutParams.leftMargin = marginLeft;
+        layoutParams.topMargin = marginTop;
+        mVideoContainer.addView(container,layoutParams);
     }
 
     /**
@@ -715,9 +846,7 @@ public class AliyunSVideoRecordView extends FrameLayout
             public void onCameraSwitch() {
                 if (recorder != null) {
                     int cameraId = recorder.switchCamera();
-                    for (com.aliyun.svideo.sdk.external.struct.recorder.CameraType type : com.aliyun.svideo.sdk
-                            .external.struct.recorder.CameraType
-                            .values()) {
+                    for (com.aliyun.svideosdk.common.struct.recorder.CameraType type : com.aliyun.svideosdk.common.struct.recorder.CameraType.values()) {
                         if (type.getType() == cameraId) {
                             cameraType = type;
                         }
@@ -725,9 +854,17 @@ public class AliyunSVideoRecordView extends FrameLayout
                     mSkippedFrames = 3;
                     if (mFURenderer != null) {
                         int type = cameraType.getType();
-                        mFURenderer.onCameraChanged(type, CameraUtils.getCameraOrientation(type));
-                        if (mFURenderer.getMakeupModule() != null) {
-                            mFURenderer.getMakeupModule().setIsMakeupFlipPoints(type == Camera.CameraInfo.CAMERA_FACING_FRONT ? 0 : 1);
+                        CameraFacingEnum cameraType = type == Camera.CameraInfo.CAMERA_FACING_FRONT ? CameraFacingEnum.CAMERA_FRONT : CameraFacingEnum.CAMERA_BACK;
+                        mFURenderer.setCameraFacing(cameraType);
+                        mFURenderer.setInputOrientation(CameraUtils.INSTANCE.getCameraOrientation(type));
+                        if (cameraType == CameraFacingEnum.CAMERA_FRONT) {
+                            mFURenderer.setInputBufferMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
+                            mFURenderer.setInputTextureMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
+                            mFURenderer.setOutputMatrix(FUTransformMatrixEnum.CCROT0);
+                        }else {
+                            mFURenderer.setInputBufferMatrix(FUTransformMatrixEnum.CCROT0);
+                            mFURenderer.setInputTextureMatrix(FUTransformMatrixEnum.CCROT0);
+                            mFURenderer.setOutputMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
                         }
                     }
                     if (mControlView != null) {
@@ -739,7 +876,7 @@ public class AliyunSVideoRecordView extends FrameLayout
 
                         if (mControlView.getFlashType() == FlashType.ON
                                 && mControlView.getCameraType() == CameraType.BACK) {
-                            recorder.setLight(com.aliyun.svideo.sdk.external.struct.recorder.FlashType.TORCH);
+                            recorder.setLight(com.aliyun.svideosdk.common.struct.recorder.FlashType.TORCH);
                         }
                     }
                 }
@@ -748,9 +885,7 @@ public class AliyunSVideoRecordView extends FrameLayout
             @Override
             public void onLightSwitch(FlashType flashType) {
                 if (recorder != null) {
-                    for (com.aliyun.svideo.sdk.external.struct.recorder.FlashType type : com.aliyun.svideo.sdk
-                            .external.struct.recorder.FlashType
-                            .values()) {
+                    for (com.aliyun.svideosdk.common.struct.recorder.FlashType type : com.aliyun.svideosdk.common.struct.recorder.FlashType.values()) {
                         if (flashType.toString().equals(type.toString())) {
                             recorder.setLight(type);
                         }
@@ -759,7 +894,7 @@ public class AliyunSVideoRecordView extends FrameLayout
                 }
                 if (mControlView.getFlashType() == FlashType.ON
                         && mControlView.getCameraType() == CameraType.BACK) {
-                    recorder.setLight(com.aliyun.svideo.sdk.external.struct.recorder.FlashType.TORCH);
+                    recorder.setLight(com.aliyun.svideosdk.common.struct.recorder.FlashType.TORCH);
                 }
             }
 
@@ -1660,7 +1795,7 @@ public class AliyunSVideoRecordView extends FrameLayout
         clipManager.setMinDuration(minRecordTime);
         recorder.setFocusMode(CameraParam.FOCUS_MODE_CONTINUE);
         //mediaInfo.setHWAutoSize(true);//硬编时自适应宽高为16的倍数
-        cameraType = recorder.getCameraCount() == 1 ? com.aliyun.svideo.sdk.external.struct.recorder.CameraType.BACK : cameraType;
+        cameraType = recorder.getCameraCount() == 1 ? com.aliyun.svideosdk.common.struct.recorder.CameraType.BACK : cameraType;
         recorder.setCamera(cameraType);
         recorder.setBeautyStatus(false);
         recorder.applyFilter(new EffectFilter(null));
@@ -1668,19 +1803,7 @@ public class AliyunSVideoRecordView extends FrameLayout
 
 
         //获取需要的surFaceView数量
-        if (recorder.isMixRecorder()) {
-            initPlayerSurfaceView();
-            initRecorderSurfaceView();
-            //设置录制界面位置
-            recorder.setMixRecorderRatio(mRecorderSurfaceView);
-            //设置播放界面的位置
-            recorder.setMixPlayerRatio(mPlayerSurfaceView);
-        } else {
-            initRecorderSurfaceView();
-        }
-
-        //设置视频输入输出参数
-        setMediaInfo();
+        initVideoContainer();
 
         recorder.setOnFrameCallback(new OnFrameCallBack() {
             @Override
@@ -1914,14 +2037,14 @@ public class AliyunSVideoRecordView extends FrameLayout
                     mIsFirstFrame = false;
                     Log.d(TAG, "onTextureDestroyed thread:" + Thread.currentThread().getName()
                             + ", texId:" + textureId + ", width:" + textureWidth + ", height:" + textureHeight + " gl context " + EGL14.eglGetCurrentContext());
-                    mFURenderer.onSurfaceCreated();
+                    mFURenderer.prepareRenderer(mFURendererListener);
                     initCsvUtil(getContext());
                 }
                 int texId = 0;
                 if (currentBeautyFaceMode == BeautyMode.Advanced) {
                     long start = System.nanoTime();
 //                    texId = mFURenderer.onDrawFrameDualInput(frameBytes, textureId, textureWidth, textureHeight);
-                    texId = mFURenderer.onDrawFrameSingleInput(textureId, textureWidth, textureHeight);
+                    texId = mFURenderer.onDrawFrameDualInput(null, textureId, textureWidth, textureHeight);
                     long time = System.nanoTime() - start;
                     if (mCSVUtils != null) {
                         mCSVUtils.writeCsv(null, time);
@@ -1948,7 +2071,7 @@ public class AliyunSVideoRecordView extends FrameLayout
                 // sdk3.7.8改动, 自定义渲染（第三方渲染）销毁gl资源，以前GLSurfaceView时可以通过GLSurfaceView.queueEvent来做，
                 // 现在增加了一个gl资源销毁的回调，需要统一在这里面做。
                 if (mFURenderer != null) {
-                    mFURenderer.onSurfaceDestroyed();
+                    mFURenderer.release();
                 }
                 if (mCSVUtils != null) {
                     mCSVUtils.close();
@@ -2078,6 +2201,9 @@ public class AliyunSVideoRecordView extends FrameLayout
             @Override
             public void onOrientationChanged() {
                 rotation = getCameraRotation();
+                if (mFURenderer != null) {
+                    mFURenderer.setDeviceOrientation(rotation);
+                }
                 recorder.setRotation(rotation);
             }
         });
@@ -2194,9 +2320,6 @@ public class AliyunSVideoRecordView extends FrameLayout
      * 销毁录制，在activity或者fragment被销毁时调用此方法
      */
     public void destroyRecorder() {
-        if (mSensorManager != null) {
-            mSensorManager.unregisterListener(this);
-        }
 
         //destroy时删除多段录制的片段文件
         deleteSliceFile();
@@ -2250,65 +2373,6 @@ public class AliyunSVideoRecordView extends FrameLayout
         finishRecodingTask = new FinishRecodingTask(this).executeOnExecutor(
             AsyncTask.THREAD_POOL_EXECUTOR);
     }
-
-    private void setMediaInfo() {
-        // mMixInputInfo只对合拍有效，普通录制情况下，该参数将被忽略
-        AliyunMixRecorderDisplayParam recorderDisplayParam = new AliyunMixRecorderDisplayParam.Builder()
-        .displayMode(VideoDisplayMode.SCALE)
-        .layoutParam(
-            new AliyunMixTrackLayoutParam.Builder()
-            .centerX(0.25f)
-            .centerY(0.5f)
-            .widthRatio(0.5f)
-            .heightRatio(1.0f)
-            .build()
-        )
-        .build();
-        AliyunMixRecorderDisplayParam sampleDisplayParam = new AliyunMixRecorderDisplayParam
-        .Builder()
-        .displayMode(VideoDisplayMode.FILL)
-        .layoutParam(new AliyunMixTrackLayoutParam.Builder()
-                     .centerX(0.75f)
-                     .centerY(0.5f)
-                     .widthRatio(0.5f)
-                     .heightRatio(1.0f)
-                     .build())
-        .build();
-        mMixInputInfo = new AliyunMixMediaInfoParam
-        .Builder()
-        .streamStartTimeMills(0L)
-        .streamEndTimeMills(0L)
-        .mixVideoFilePath(mMixVideoPath)
-        .mixDisplayParam(sampleDisplayParam)
-        .recordDisplayParam(recorderDisplayParam)
-        .build();
-
-
-        mOutputInfo = new MediaInfo();
-        mOutputInfo.setFps(30);
-        mOutputInfo.setVideoWidth(recorder.getVideoWidth());
-        mOutputInfo.setVideoHeight(recorder.getVideoHeight());
-        mOutputInfo.setVideoCodec(mVideoCodec);
-        recorder.setMediaInfo(mMixInputInfo, mOutputInfo);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            float x = event.values[0];
-            float y = event.values[1];
-            if (Math.abs(x) > 3 || Math.abs(y) > 3) {
-                if (Math.abs(x) > Math.abs(y)) {
-                    mFURenderer.onDeviceOrientationChanged(x > 0 ? 0 : 180);
-                } else {
-                    mFURenderer.onDeviceOrientationChanged(y > 0 ? 90 : 270);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     /**
      * 录制结束的AsyncTask
@@ -2603,6 +2667,10 @@ public class AliyunSVideoRecordView extends FrameLayout
         this.isSvideoRace = isSvideoRace;
     }
 
+    public void setMixBorderParam(AlivcMixBorderParam param){
+        mMixBorderParam = param;
+    }
+
     /**
      * 设置视频码率
      *
@@ -2748,7 +2816,7 @@ public class AliyunSVideoRecordView extends FrameLayout
         String filePath = Constant.filePath + dateStrDir + File.separator + "excel-" + dateStrFile + ".csv";
         Log.d(TAG, "initLog: CSV file path:" + filePath);
         StringBuilder headerInfo = new StringBuilder();
-        headerInfo.append("version：").append(FURenderer.getVersion()).append(CSVUtils.COMMA)
+        headerInfo.append("version：").append(FURenderer.getInstance().getVersion()).append(CSVUtils.COMMA)
                 .append("机型：").append(android.os.Build.MANUFACTURER).append(android.os.Build.MODEL)
                 .append("处理方式：Texture").append(CSVUtils.COMMA);
         mCSVUtils.initHeader(filePath, headerInfo);

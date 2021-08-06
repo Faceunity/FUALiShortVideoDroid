@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.aliyun.svideo.editor.R;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.thumbnail.AliyunIThumbnailFetcher;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.AliyunIThumbnailFetcher;
 
 public class ThumbRecyclerAdapter extends RecyclerView.Adapter<ThumbRecyclerAdapter.ThumbnailViewHolder> {
     private static final String TAG = "ThumbRecyclerAdapter";

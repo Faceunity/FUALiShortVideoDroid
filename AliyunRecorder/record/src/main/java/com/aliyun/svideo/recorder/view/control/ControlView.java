@@ -26,7 +26,7 @@ import com.aliyun.svideo.base.UIConfigManager;
 import com.aliyun.svideo.base.utils.FastClickUtil;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.common.utils.image.ImageLoaderOptions;
-import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
 
 import java.util.ArrayList;
 import java.util.List;

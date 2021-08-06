@@ -31,6 +31,13 @@
         <item>麦茶</item>
         <item>黑白</item>
     </array>
+    <array name="videoeq_order">
+        <item>亮度</item>
+        <item>对比度</item>
+        <item>饱和度</item>
+        <item>锐度</item>
+        <item>暗角</item>
+    </array>
     <!--编辑模块的主题UI配置-->
     <style name="AlivcEditUIStyle" parent="Theme.AppCompat.NoActionBar">
         <!--滤镜item对应的图片-->
@@ -59,6 +66,8 @@
         <item name="pauseImage">@mipmap/aliyun_svideo_pause</item>
         <!--编辑完成对应图标-->
         <item name="finishImage">@mipmap/aliyun_svideo_complete_red</item>
+        <!--视频基本编辑对应图标-->
+        <item name="videoEqImage">@mipmap/aliyun_svideo_augmentation</item>
     </style>
     <!--用于控制编辑页面底部菜单显示内容，1显示0不显示-->
     <array name="bottomItemMenuVisibleTags">
@@ -84,5 +93,9 @@
         <item>1</item>
         <!--封面是否显示-->
         <item>0</item>
+        <!--视频编辑是否显示-->
+        <item>1</item>
+        <!--是否显示旋转字幕-->
+        <item>1</item>
     </array>
 </resources>

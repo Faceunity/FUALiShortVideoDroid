@@ -28,7 +28,7 @@ import com.aliyun.jasonparse.JSONSupportImpl;
 import com.aliyun.qupaiokhttp.HttpRequest;
 import com.aliyun.qupaiokhttp.StringHttpRequestCallback;
 import com.aliyun.svideo.base.widget.CircularImageView;
-import com.aliyun.svideo.sdk.external.struct.form.FontForm;
+import com.aliyun.svideosdk.common.struct.form.FontForm;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.common.utils.image.AbstractImageLoaderTarget;
 import java.util.ArrayList;

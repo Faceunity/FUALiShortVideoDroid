@@ -18,7 +18,7 @@ import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.effects.control.BaseChooser;
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
-import com.aliyun.editor.TimeEffectType;
+import com.aliyun.svideosdk.editor.TimeEffectType;
 import com.aliyun.svideo.base.utils.FastClickUtil;
 import com.aliyun.svideo.common.utils.DensityUtils;
 

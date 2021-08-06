@@ -23,11 +23,11 @@ import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.effects.caption.TextDialog;
 import com.aliyun.svideo.editor.effects.control.SpaceItemDecoration;
 import com.aliyun.svideo.editor.util.FixedToastUtils;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionBase;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionFade;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionScale;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionTranslate;
-import com.aliyun.svideo.sdk.external.struct.effect.ActionWipe;
+import com.aliyun.svideosdk.common.struct.effect.ActionBase;
+import com.aliyun.svideosdk.common.struct.effect.ActionFade;
+import com.aliyun.svideosdk.common.struct.effect.ActionScale;
+import com.aliyun.svideosdk.common.struct.effect.ActionTranslate;
+import com.aliyun.svideosdk.common.struct.effect.ActionWipe;
 import java.io.Serializable;
 
 public class AnimationDialog extends DialogFragment {

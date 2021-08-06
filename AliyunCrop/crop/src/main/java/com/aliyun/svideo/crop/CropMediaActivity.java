@@ -5,13 +5,13 @@
 package com.aliyun.svideo.crop;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -20,22 +20,22 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.aliyun.svideo.base.Constants;
-import com.aliyun.svideo.common.utils.MD5Utils;
+import com.aliyun.common.utils.FileUtils;
+import com.aliyun.svideo.common.utils.FastClickUtil;
+import com.aliyun.svideo.common.utils.ThreadUtils;
 import com.aliyun.svideo.common.utils.ToastUtils;
-import com.aliyun.svideo.common.utils.UriUtils;
 import com.aliyun.svideo.crop.bean.AlivcCropInputParam;
 import com.aliyun.svideo.media.MediaInfo;
 import com.aliyun.svideo.media.MediaStorage;
 import com.aliyun.svideo.media.MutiMediaView;
-import com.aliyun.svideo.sdk.external.struct.common.CropKey;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
-import com.aliyun.svideo.sdk.external.struct.recorder.CameraType;
-import com.aliyun.svideo.sdk.external.struct.recorder.FlashType;
-import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
-import com.aliyun.svideo.common.utils.FastClickUtil;
+import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.common.struct.common.CropKey;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.recorder.CameraType;
+import com.aliyun.svideosdk.common.struct.recorder.FlashType;
+import com.aliyun.svideosdk.common.utils.AliyunSVideoUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -79,6 +79,7 @@ public class CropMediaActivity extends Activity {
     private int sortMode = MediaStorage.SORT_MODE_MERGE;
 
     private MutiMediaView mMutiMediaView;
+    private String mTempMediaFilePath = null;
 
     private static final String RECORD_CLASS = "com.aliyun.svideo.recorder.activity.AlivcSvideoRecordActivity";
 
@@ -163,10 +164,6 @@ public class CropMediaActivity extends Activity {
                     intent.putExtra("need_gallery", false);
                     startActivityForResult(intent, RECORD_CODE);
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !TextUtils.isEmpty(info.fileUri)) {
-                        //适配 android Q, copy 媒体文件到应用沙盒下
-                        info.filePath = cacheMediaFile(CropMediaActivity.this, info.fileUri, info.filePath);
-                    }
                     String mediaPath = info.filePath;
                     if (info.filePath.endsWith("gif")) {
                         Toast.makeText(CropMediaActivity.this, R.string.alivc_crop_media_gif_not_support, Toast.LENGTH_SHORT).show();
@@ -189,32 +186,68 @@ public class CropMediaActivity extends Activity {
                             }
                         }
 
+                        if (AliyunSVideoUtils.isHEIFImage(info.filePath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            Log.e(TAG, "HEIF file " + info.filePath);
+                            final MediaInfo tempInfo = info;
+                            ThreadUtils.runOnSubThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final String path = Environment.getExternalStorageDirectory().getPath() + File.separator + "DCIM" + File.separator + "Camera" + File.separator + "crop_temp_" + System.currentTimeMillis() + ".png";
+                                    final boolean rs = AliyunSVideoUtils.convertHEIFImage(tempInfo.filePath, path, Bitmap.CompressFormat.PNG, 100);
+                                    ThreadUtils.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!rs) {
+                                                ToastUtils.show(CropMediaActivity.this, "HEIF图片转化失败，请重试!");
+                                                return;
+                                            }
+                                            Log.e(TAG, "HEIF file convert to " + path);
+                                            mTempMediaFilePath = path;
+                                            AlivcCropInputParam param = new AlivcCropInputParam.Builder()
+                                                    .setPath(path)
+                                                    .setResolutionMode(resolutionMode)
+                                                    .setCropMode(cropMode)
+                                                    .setQuality(quality)
+                                                    .setGop(gop)
+                                                    .setFrameRate(frameRate)
+                                                    .setRatioMode(ratioMode)
+                                                    .setMinCropDuration(minCropDuration)
+                                                    .setVideoCodecs(mVideoCodec)
+                                                    .build();
+                                            AliyunImageCropActivity.startImageCropForResult(CropMediaActivity.this, param, CROP_CODE);
+                                        }
+                                    });
+                                }
+                            });
+                            return;
+                        }
+
                         AlivcCropInputParam param = new AlivcCropInputParam.Builder()
-                        .setPath(mediaPath)
-                        .setResolutionMode(resolutionMode)
-                        .setCropMode(cropMode)
-                        .setQuality(quality)
-                        .setGop(gop)
-                        .setFrameRate(frameRate)
-                        .setRatioMode(ratioMode)
-                        .setMinCropDuration(minCropDuration)
-                        .setVideoCodecs(mVideoCodec)
-                        .build();
+                                .setPath(mediaPath)
+                                .setResolutionMode(resolutionMode)
+                                .setCropMode(cropMode)
+                                .setQuality(quality)
+                                .setGop(gop)
+                                .setFrameRate(frameRate)
+                                .setRatioMode(ratioMode)
+                                .setMinCropDuration(minCropDuration)
+                                .setVideoCodecs(mVideoCodec)
+                                .build();
                         AliyunImageCropActivity.startImageCropForResult(CropMediaActivity.this, param, CROP_CODE );
                     } else {
                         AlivcCropInputParam param = new AlivcCropInputParam.Builder()
-                        .setPath(mediaPath)
-                        .setResolutionMode(resolutionMode)
-                        .setCropMode(cropMode)
-                        .setQuality(quality)
-                        .setGop(gop)
-                        .setFrameRate(frameRate)
-                        .setRatioMode(ratioMode)
-                        .setMinCropDuration(minCropDuration)
-                        .setVideoCodecs(mVideoCodec)
-                        .setAction(CropKey.ACTION_TRANSCODE)
-                        .setUseGPU( getIntent().getBooleanExtra(AliyunSnapVideoParam.CROP_USE_GPU, false))
-                        .build();
+                                .setPath(mediaPath)
+                                .setResolutionMode(resolutionMode)
+                                .setCropMode(cropMode)
+                                .setQuality(quality)
+                                .setGop(gop)
+                                .setFrameRate(frameRate)
+                                .setRatioMode(ratioMode)
+                                .setMinCropDuration(minCropDuration)
+                                .setVideoCodecs(mVideoCodec)
+                                .setAction(CropKey.ACTION_TRANSCODE)
+                                .setUseGPU( getIntent().getBooleanExtra(AliyunSnapVideoParam.CROP_USE_GPU, false))
+                                .build();
                         AliyunVideoCropActivity.startVideoCropForResult(CropMediaActivity.this, param, CROP_CODE );
                     }
                 }
@@ -234,30 +267,13 @@ public class CropMediaActivity extends Activity {
         mMutiMediaView.loadMedia();
     }
 
-    /**
-     * Android Q 缓存媒体文件到文件沙盒
-     * @param context 上下文
-     * @param originalFilePath 文件path
-     * @param fileUri 文件Uri
-     * @return filePath 文件缓存地址
-     */
-    private String cacheMediaFile(Context context, String fileUri, String originalFilePath) {
-        String filePath = null;
-        if (!TextUtils.isEmpty(fileUri)) {
-            int index = originalFilePath.lastIndexOf(".");
-            String suffix = index == -1 ? "" : originalFilePath.substring(index);
-            filePath = Constants.SDCardConstants.getCacheDir(context) + File.separator + MD5Utils
-                       .getMD5(fileUri) + suffix;
-            if (!new File(filePath).exists()) {
-                UriUtils.copyFileToDir(context, fileUri, filePath);
-            }
-        }
-        return filePath;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode ==  CROP_CODE) {
+            if(!TextUtils.isEmpty(mTempMediaFilePath)){
+                boolean rs = FileUtils.deleteFile(mTempMediaFilePath);
+                Log.e(TAG, "delete temp file " + mTempMediaFilePath + " | " + rs);
+            }
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     data.putExtra(RESULT_TYPE, RESULT_TYPE_CROP);

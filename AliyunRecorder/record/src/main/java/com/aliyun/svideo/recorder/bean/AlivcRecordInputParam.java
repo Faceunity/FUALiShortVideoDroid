@@ -1,9 +1,12 @@
 package com.aliyun.svideo.recorder.bean;
 
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
-import com.aliyun.svideo.sdk.external.struct.snap.AliyunSnapVideoParam;
+import android.graphics.Color;
 
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
+import com.aliyun.svideosdk.mixrecorder.AliyunMixBorderParam;
+import com.aliyun.svideosdk.mixrecorder.MixAudioSourceType;
 
 /**
  * @author zsy_18 data:2019/5/16
@@ -25,6 +28,14 @@ public class AlivcRecordInputParam {
     public static final String INTENT_KEY_VIDEO_RENDERING_MODE = "mRenderingMode";
     public static final String INTENT_KEY_RECORD_FLIP = "mRecordFlip";
     public static final String INTENT_KEY_IS_SVIDEO_RACE = "mIsSvideoRace";
+    public static final String INTENT_KEY_MIX_AUDIO_SOURCE_TYPE = "mMixAudioSourceType";
+    public static final String INTENT_KEY_MIX_BACKGROUND_COLOR = "mMixBackgroundColor";
+    public static final String INTENT_KEY_MIX_BACKGROUND_IMAGE_PATH = "mMixBackgroundImagePath";
+    public static final String INTENT_KEY_MIX_BACKGROUND_IMAGE_MODE = "mMixBackgroundImageMode";
+    public static final String INTENT_KEY_MIX_VIDEO_PATH = "mMixVideoPath";
+    public static final String INTENT_KEY_DISPLAY_PARAM_PLAY = "mPlayDisplayParam";
+    public static final String INTENT_KEY_DISPLAY_PARAM_RECORD = "mRecordDisplayParam";
+    public static final String INTENT_KEY_MIX_BORDER_PARAM_RECORD = "mMixBorderParam";
 
     public static final int RESOLUTION_360P = 0;
     public static final int RESOLUTION_480P = 1;
@@ -90,8 +101,45 @@ public class AlivcRecordInputParam {
      * 是否是单独的race版本包
      */
     private boolean mIsSvideoRace = false;
+    /**
+     * 合拍导入视频路径
+     */
+    private String mMixVideoFilePath;
+    /**
+     * 合拍音频模式选择
+     */
+    private MixAudioSourceType mMixAudioSourceType;
+    /**
+     * v3.19.0 新增
+     * 设置合成窗口非填充模式下的背景颜色
+     */
+    private int mMixBackgroundColor;
+    /**
+     * 设置合成窗口非填充模式下的背景图片,assets, resource文件可以使用这个接口
+     * v3.19.0 新增
+     */
+    private String mMixBackgroundImagePath;
+    /**
+     * 设置合成窗口非填充模式下的背景图片路径
+     * v3.19.0 新增
+     * 0：裁切 1：填充 2：拉伸
+     */
+    private int mMixBackgroundImageMode;
+    /**
+     * 主要用于调整合拍功能中录制画面在视频中的布局；普通录制不需要额外设置
+     */
+    private VideoDisplayParam mRecordDisplayParam;
+    /**
+     * 主要用于调整合拍功能中导入视频在视频中的布局；普通录制不需要额外设置
+     */
+    private VideoDisplayParam mPlayDisplayParam;
 
-    public AlivcRecordInputParam() {
+    /**
+     * 合拍设置视频边框
+     * */
+    private AlivcMixBorderParam mMixBorderParam;
+
+    private AlivcRecordInputParam() {
         this.mResolutionMode = RESOLUTION_720P;
         this.mMaxDuration = DEFAULT_VALUE_MAX_DURATION;
         this.mMinDuration = DEFAULT_VALUE_MIN_DURATION;
@@ -102,6 +150,8 @@ public class AlivcRecordInputParam {
         this.mVideoCodec = VideoCodecs.H264_HARDWARE;
         this.mRenderingMode = RenderingMode.FaceUnity;
         this.mIsUseFlip = false;
+        this.mMixAudioSourceType = MixAudioSourceType.Original;
+        this.mMixBackgroundColor = Color.BLACK;
     }
     /**
      * 获取拍摄视频宽度
@@ -110,21 +160,21 @@ public class AlivcRecordInputParam {
     public int getVideoWidth() {
         int width = 0;
         switch (mResolutionMode) {
-        case AliyunSnapVideoParam.RESOLUTION_360P:
-            width = 360;
-            break;
-        case AliyunSnapVideoParam.RESOLUTION_480P:
-            width = 480;
-            break;
-        case AliyunSnapVideoParam.RESOLUTION_540P:
-            width = 540;
-            break;
-        case AliyunSnapVideoParam.RESOLUTION_720P:
-            width = 720;
-            break;
-        default:
-            width = 540;
-            break;
+            case AliyunSnapVideoParam.RESOLUTION_360P:
+                width = 360;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_480P:
+                width = 480;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_540P:
+                width = 540;
+                break;
+            case AliyunSnapVideoParam.RESOLUTION_720P:
+                width = 720;
+                break;
+            default:
+                width = 540;
+                break;
         }
 
         return width;
@@ -133,18 +183,18 @@ public class AlivcRecordInputParam {
         int width = getVideoWidth();
         int height = 0;
         switch (mRatioMode) {
-        case AliyunSnapVideoParam.RATIO_MODE_1_1:
-            height = width;
-            break;
-        case AliyunSnapVideoParam.RATIO_MODE_3_4:
-            height = width * 4 / 3;
-            break;
-        case AliyunSnapVideoParam.RATIO_MODE_9_16:
-            height = width * 16 / 9;
-            break;
-        default:
-            height = width;
-            break;
+            case AliyunSnapVideoParam.RATIO_MODE_1_1:
+                height = width;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_3_4:
+                height = width * 4 / 3;
+                break;
+            case AliyunSnapVideoParam.RATIO_MODE_9_16:
+                height = width * 16 / 9;
+                break;
+            default:
+                height = width;
+                break;
         }
         return height;
     }
@@ -159,7 +209,6 @@ public class AlivcRecordInputParam {
     public void setMinDuration(int mMinDuration) {
         this.mMinDuration = mMinDuration;
     }
-
     public void setRatioMode(int mRatioMode) {
         this.mRatioMode = mRatioMode;
     }
@@ -182,6 +231,39 @@ public class AlivcRecordInputParam {
 
     public void setVideoOutputPath(String videoOutputPath) {
         this.mVideoOutputPath = videoOutputPath;
+    }
+
+    public MixAudioSourceType getMixAudioSourceType() {
+        return mMixAudioSourceType;
+    }
+
+    public void setMixAudioSourceType(
+            MixAudioSourceType mMixAudioSourceType) {
+        this.mMixAudioSourceType = mMixAudioSourceType;
+    }
+
+    public int getMixBackgroundColor() {
+        return mMixBackgroundColor;
+    }
+
+    public void setMixBackgroundColor(int mMixBackgroundColor) {
+        this.mMixBackgroundColor = mMixBackgroundColor;
+    }
+
+    public String getMixBackgroundImagePath() {
+        return mMixBackgroundImagePath;
+    }
+
+    public void setMixBackgroundImagePath(String mMixBackgroundImagePath) {
+        this.mMixBackgroundImagePath = mMixBackgroundImagePath;
+    }
+
+    public int getMixBackgroundImageMode() {
+        return mMixBackgroundImageMode;
+    }
+
+    public void setMixBackgroundImageMode(int mMixBackgroundImageMode) {
+        this.mMixBackgroundImageMode = mMixBackgroundImageMode;
     }
 
     public int getResolutionMode() {
@@ -234,6 +316,31 @@ public class AlivcRecordInputParam {
 
     public void setmRenderingMode(RenderingMode mRenderingMode) {
         this.mRenderingMode = mRenderingMode;
+    }
+
+    public String getMixVideoFilePath() {
+        return mMixVideoFilePath;
+    }
+    public void setMixVideoFilePath(String videoFilePath){
+        mMixVideoFilePath = videoFilePath;
+    }
+    public VideoDisplayParam getRecordDisplayParam() {
+        return mRecordDisplayParam;
+    }
+    public VideoDisplayParam getPlayDisplayParam() {
+        return mPlayDisplayParam;
+    }
+
+    public AlivcMixBorderParam getMixBorderParam() {
+        return mMixBorderParam;
+    }
+
+    public void setRecordDisplayParam(VideoDisplayParam mRecordDisplayParam) {
+        this.mRecordDisplayParam = mRecordDisplayParam;
+    }
+
+    public void setPlayDisplayParam(VideoDisplayParam mPlayDisplayParam) {
+        this.mPlayDisplayParam = mPlayDisplayParam;
     }
 
     public static class Builder {
@@ -295,6 +402,42 @@ public class AlivcRecordInputParam {
             this.mParam.mIsSvideoRace = mIsSvideoRace;
             return this;
         }
+        public Builder setMixAudioSourceType(MixAudioSourceType mixAudioSourceType){
+            this.mParam.mMixAudioSourceType = mixAudioSourceType;
+            return this;
+        }
+        public Builder setMixBackgroundColor(int mMixBackgroundColor) {
+            this.mParam.mMixBackgroundColor = mMixBackgroundColor;
+            return this;
+        }
+        public Builder setMixBackgroundImagePath(String mMixBackgroundImagePath) {
+            this.mParam.mMixBackgroundImagePath = mMixBackgroundImagePath;
+            return this;
+        }
+        public Builder setMixBackgroundImageMode(int mMixBackgroundImageMode) {
+            this.mParam.mMixBackgroundImageMode = mMixBackgroundImageMode;
+            return this;
+        }
+
+        public Builder setMixVideoFilePath(String mMixVideoFilePath) {
+            this.mParam.mMixVideoFilePath = mMixVideoFilePath;
+            return this;
+        }
+        public Builder setRecordDisplayParam(VideoDisplayParam mRecordDisplayParam) {
+            this.mParam.mRecordDisplayParam = mRecordDisplayParam;
+            return this;
+        }
+
+        public Builder setPlayDisplayParam(VideoDisplayParam mPlayDisplayParam) {
+            this.mParam.mPlayDisplayParam = mPlayDisplayParam;
+            return this;
+        }
+
+        public Builder setMixVideoBorderParam(AlivcMixBorderParam param) {
+            this.mParam.mMixBorderParam = param;
+            return this;
+        }
+
         public AlivcRecordInputParam build() {
             return this.mParam;
         }

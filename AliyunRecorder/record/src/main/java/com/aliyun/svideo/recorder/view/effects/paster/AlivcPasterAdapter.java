@@ -13,7 +13,7 @@ import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.view.effects.EffectBody;
 import com.aliyun.svideo.base.widget.CircleProgressBar;
 import com.aliyun.svideo.base.widget.CircularImageView;
-import com.aliyun.svideo.sdk.external.struct.form.PreviewPasterForm;
+import com.aliyun.svideosdk.common.struct.form.PreviewPasterForm;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.common.utils.image.ImageLoaderOptions;
 import com.aliyun.svideo.common.utils.image.AbstractImageLoaderTarget;

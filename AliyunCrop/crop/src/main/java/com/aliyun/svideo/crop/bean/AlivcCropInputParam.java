@@ -1,9 +1,9 @@
 package com.aliyun.svideo.crop.bean;
 
-import com.aliyun.svideo.sdk.external.struct.common.CropKey;
-import com.aliyun.svideo.sdk.external.struct.common.VideoDisplayMode;
-import com.aliyun.svideo.sdk.external.struct.common.VideoQuality;
-import com.aliyun.svideo.sdk.external.struct.encoder.VideoCodecs;
+import com.aliyun.svideosdk.common.struct.common.CropKey;
+import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
+import com.aliyun.svideosdk.common.struct.common.VideoQuality;
+import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 
 /**
  * data:2019/5/22

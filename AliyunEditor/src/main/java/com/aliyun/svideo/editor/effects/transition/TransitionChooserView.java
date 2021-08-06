@@ -28,18 +28,17 @@ import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.OnItemClickListener;
 import com.aliyun.svideo.editor.effects.control.SpaceItemDecoration;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
-import com.aliyun.qupai.editor.AliyunIEditor;
+import com.aliyun.svideosdk.editor.AliyunIEditor;
 import com.aliyun.svideo.editor.util.EditorCommon;
-import com.aliyun.svideo.sdk.external.struct.AliyunIClipConstructor;
-import com.aliyun.svideo.sdk.external.struct.effect.EffectConfig;
-import com.aliyun.svideo.sdk.external.struct.effect.TransitionBase;
-import com.aliyun.svideo.sdk.external.struct.effect.ValueTypeEnum;
+import com.aliyun.svideosdk.common.AliyunIClipConstructor;
+import com.aliyun.svideosdk.common.struct.effect.EffectConfig;
+import com.aliyun.svideosdk.common.struct.effect.TransitionBase;
+import com.aliyun.svideosdk.common.struct.effect.ValueTypeEnum;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 /**
  * @author cross_ly
  * @date 2018/08/28 <p>描述:

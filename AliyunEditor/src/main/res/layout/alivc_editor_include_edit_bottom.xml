@@ -57,6 +57,15 @@
             android:id="@+id/tab_cover"
             style="@style/alivc_svideo_effect_tab"
             android:text="@string/alivc_editor_effect_cover"/>
+        <TextView
+            android:id="@+id/tab_videoeq"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/alivc_editor_effect_videoeq"/>
+
+        <TextView
+            android:id="@+id/tab_roll_caption"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/alivc_editor_effect_roll_caption"/>
 
     </LinearLayout>
 </HorizontalScrollView>

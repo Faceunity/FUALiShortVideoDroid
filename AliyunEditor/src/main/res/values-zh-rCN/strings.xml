@@ -19,7 +19,14 @@
     <string name="alivc_editor_effect_transition">转场</string>
     <string name="alivc_editor_effect_paint">涂鸦</string>
     <string name="alivc_editor_effect_cover">封面</string>
+    <string name="alivc_editor_effect_videoeq">调节</string>
+    <string name="alivc_editor_effect_roll_caption">翻转字幕</string>
     <!--end-->
+
+    <!-- 翻转字幕弹窗 -->
+    <string name="alivc_editor_dialog_roll_caption_tittle">翻转字幕</string>
+    <string name="alivc_editor_manager_roll_caption_subtitle_title">编辑字幕</string>
+    <!-- end -->
 
     <!--特效管理页面-->
     <string name="alivc_editor_mananger_tittle">特效管理</string>
@@ -28,6 +35,13 @@
     <!--end-->
 
     <!--特效弹窗-->
+    <string name="alivc_editor_dialog_roll_caption_subtitle">字幕</string>
+    <string name="alivc_editor_dialog_roll_caption_color">颜色</string>
+    <string name="alivc_editor_dialog_roll_caption_font">字体</string>
+    <string name="alivc_editor_dialog_roll_caption_clear">清空</string>
+    <string name="alivc_editor_dialog_roll_caption_edit">编辑</string>
+    <string name="alivc_editor_dialog_roll_caption_finish">完成</string>
+
     <string name="alivc_editor_dialog_transition_tittle">转场</string>
     <string name="alivc_editor_dialog_transition_tip_limit">一段视频无法添加转场</string>
     <string name="alivc_editor_dialog_transition_star">五角星</string>
@@ -44,6 +58,7 @@
 
     <string name="alivc_editor_dialog_none_effect">原片</string>
     <string name="alivc_editor_dialog_mv_more">更多</string>
+    <string name="alivc_editor_dialog_reset">重置</string>
 
     <string name="alivc_editor_dialog_time_tittle">时间特效</string>
     <string name="alivc_editor_dialog_time_tip_not_support">时间特效不支持多段视频</string>
@@ -64,6 +79,11 @@
     <string name="alivc_editor_dialog_sound_robot">机器人</string>
     <string name="alivc_editor_dialog_sound_devil">大魔王</string>
     <string name="alivc_editor_dialog_sound_minions">小黄人</string>
+    <string name="alivc_editor_dialog_sound_new_robot">新机器人</string>
+    <string name="alivc_editor_dialog_sound_new_lolita">新萝莉</string>
+    <string name="alivc_editor_dialog_sound_new_uncle">新大叔</string>
+    <string name="alivc_editor_dialog_sound_howl">怒吼</string>
+    <string name="alivc_editor_dialog_sound_dialect">方言</string>
 
     <string name="alivc_editor_dialog_animate_tittle">滤镜特效</string>
     <string name="alivc_editor_dialog_animate_revoke">撤销</string>
