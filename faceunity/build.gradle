@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 720
-        versionName "7.2.0"
+        versionCode 802
+        versionName "8.0.2"
     }
     buildTypes {
         release {
@@ -31,7 +31,7 @@ dependencies {
         resolutionStrategy.cacheChangingModulesFor 0,'seconds'
         resolutionStrategy.cacheDynamicVersionsFor 0,'seconds'
     }
-    api 'com.faceunity:core:7.4.1.0'
-    implementation 'com.faceunity:model:7.4.1.0'
+    api 'com.faceunity:core:8.0.2'
+    implementation 'com.faceunity:model:8.0.2'
 
 }
