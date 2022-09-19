@@ -1,32 +1,35 @@
 package com.aliyun.svideo.recorder.mixrecorder;
 
+import android.graphics.Bitmap;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
 
 import com.aliyun.svideo.recorder.bean.AlivcMixBorderParam;
 import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
-import com.aliyun.svideosdk.common.callback.recorder.OnFrameCallBack;
-import com.aliyun.svideosdk.common.callback.recorder.OnTextureIdCallBack;
+import com.aliyun.svideosdk.common.callback.recorder.OnFrameCallback;
+import com.aliyun.svideosdk.common.callback.recorder.OnPictureCallback;
+import com.aliyun.svideosdk.common.callback.recorder.OnRecordCallback;
+import com.aliyun.svideosdk.common.callback.recorder.OnTextureIdCallback;
 import com.aliyun.svideosdk.common.struct.common.VideoQuality;
 import com.aliyun.svideosdk.common.struct.effect.EffectBase;
 import com.aliyun.svideosdk.common.struct.effect.EffectBean;
 import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
 import com.aliyun.svideosdk.common.struct.effect.EffectImage;
 import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
+import com.aliyun.svideosdk.common.struct.effect.EffectStream;
 import com.aliyun.svideosdk.common.struct.recorder.CameraType;
 import com.aliyun.svideosdk.common.struct.recorder.FlashType;
 import com.aliyun.svideosdk.recorder.AliyunIClipManager;
+import com.aliyun.svideosdk.recorder.AliyunIRecordPasterManager;
 import com.aliyun.svideosdk.recorder.RecordCallback;
 
 /**
- *整合录制接口，包含录制，合拍，如果需要修改@AliyunSvideoRecordView的的recorder请先修改本接口
- */
+*整合录制接口，包含录制，合拍，如果需要修改@AliyunSvideoRecordView的的recorder请先修改本接口
+*/
 public interface AlivcIMixRecorderInterface {
     AliyunIClipManager getClipManager();
 
     void setOutputPath(String var1);
-
-    void setVideoQuality(VideoQuality var1);
 
     void setGop(int var1);
 
@@ -40,21 +43,15 @@ public interface AlivcIMixRecorderInterface {
 
     void stopPreview();
 
-    void addPaster(EffectPaster var1);
-
-    void addPaster(EffectPaster var1, float var2, float var3, float var4, float var5, float var6, boolean var7);
-
-    void setEffectView(float xRatio, float yRatio, float widthRatio, float heightRatio, EffectBase effectBase);
-
-    void addImage(EffectImage effctImage);
-
-    void removeImage(EffectImage effctImage);
-
-    void removePaster(EffectPaster var1);
+    AliyunIRecordPasterManager getPasterManager();
 
     void applyFilter(EffectFilter var1);
 
-    void setMusic(String var1, long var2, long var4);
+    void removeFilter();
+
+    int applyBackgroundMusic(EffectStream effectStream);
+
+    int removeBackgroundMusic();
 
     int switchCamera();
 
@@ -68,13 +65,7 @@ public interface AlivcIMixRecorderInterface {
 
     void setFocus(float var1, float var2);
 
-    void restartMv();
-
-    void applyMv(EffectBean var1);
-
     void setBeautyLevel(int var1);
-
-    void setBeautyStatus(boolean var1);
 
     void startRecording();
 
@@ -82,13 +73,13 @@ public interface AlivcIMixRecorderInterface {
 
     int finishRecording();
 
-    void setRecordCallback(RecordCallback var1);
+    void setOnRecordCallback(OnRecordCallback var1);
 
-    void setOnFrameCallback(OnFrameCallBack var1);
+    void setOnFrameCallback(OnFrameCallback var1);
 
     void setRotation(int var1);
 
-    void setOnTextureIdCallback(OnTextureIdCallBack var1);
+    void setOnTextureIdCallback(OnTextureIdCallback var1);
 
     void needFaceTrackInternal(boolean var1);
 
@@ -121,7 +112,9 @@ public interface AlivcIMixRecorderInterface {
      */
     FrameLayout.LayoutParams getLayoutParams();
 
-    void takePhoto(boolean needBitmap);
+    void takePicture(boolean needBitmap, OnPictureCallback pictureCallback);
+
+    void takeSnapshot(boolean needBitmap, OnPictureCallback pictureCallback);
 
     void applyAnimationFilter(EffectFilter effectFilter);
 
@@ -139,4 +132,5 @@ public interface AlivcIMixRecorderInterface {
     VideoDisplayParam getRecordDisplayParam();
     AlivcMixBorderParam getMixBorderParam();
     void setMixBorderParam(AlivcMixBorderParam param);
+    void setIsAutoClearClipVideos(boolean isAutoClear);
 }

@@ -1,18 +1,22 @@
 package com.aliyun.svideo.common.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
+
+import java.lang.reflect.Field;
 
 /**
  * @author cross_ly
  * @date 2018/11/28
  * <p>描述:获取当前设备的屏幕参数
- *
  */
 public class ScreenUtils {
 
@@ -20,6 +24,7 @@ public class ScreenUtils {
      * 获取屏幕的宽高 单位px
      * x = width
      * y = height
+     *
      * @param context Context
      * @return Point
      */
@@ -58,8 +63,9 @@ public class ScreenUtils {
 
     /**
      * 获取屏幕的真实高度，包含导航栏、状态栏
+     *
      * @param context 上下文
-     * @return int,单位px
+     * @return int, 单位px
      */
     public static int getRealHeight(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -75,8 +81,9 @@ public class ScreenUtils {
 
     /**
      * 获取屏幕的真实高度，包含导航栏、状态栏
+     *
      * @param context 上下文
-     * @return int,单位px
+     * @return int, 单位px
      */
     public static int getRealWidth(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -89,6 +96,7 @@ public class ScreenUtils {
         }
         return dm.widthPixels;
     }
+
     /**
      * 是否在屏幕右侧
      *
@@ -113,8 +121,9 @@ public class ScreenUtils {
 
     /**
      * 获取虚拟导航栏高度
+     *
      * @param activity 上下文
-     * @return int,单位px
+     * @return int, 单位px
      */
     public static int getNavigationHeight(Context activity) {
         if (activity == null) {
@@ -122,12 +131,43 @@ public class ScreenUtils {
         }
         Resources resources = activity.getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height",
-                         "dimen", "android");
+                "dimen", "android");
         int height = 0;
         if (resourceId > 0) {
             //获取NavigationBar的高度
             height = resources.getDimensionPixelSize(resourceId);
         }
         return height;
+    }
+
+    /**
+     * 获取状态栏高度
+     *
+     * @param context 上下文
+     * @return int, 单位px
+     */
+    public static int getStatusBarHeight(Context context) {
+        int statusBarHeight = 0;
+        try {
+            Class<?> c = Class.forName("com.android.internal.R$dimen");
+            Object o = c.newInstance();
+            Field field = c.getField("status_bar_height");
+            int x = (Integer) field.get(o);
+            statusBarHeight = context.getResources().getDimensionPixelSize(x);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return statusBarHeight;
+    }
+
+    public static int getDisplayHeight(Activity activity) {
+        Rect rect = new Rect();
+        if (activity != null) {
+            final View decorView = activity.getWindow().getDecorView();
+            decorView.getWindowVisibleDisplayFrame(rect);
+            return rect.bottom - rect.top;
+        } else {
+            return 0;
+        }
     }
 }

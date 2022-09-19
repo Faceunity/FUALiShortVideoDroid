@@ -1,16 +1,22 @@
 package com.aliyun.svideo.editor.effects.audiomix;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
+import com.aliyun.common.utils.StringUtils;
+import com.aliyun.svideo.editor.util.AlivcResUtil;
 import com.aliyun.svideo.music.music.MusicChooseView;
 import com.aliyun.svideo.base.http.MusicFileBean;
 import com.aliyun.svideo.music.music.MusicSelectListener;
 import com.aliyun.svideo.editor.effects.control.BaseChooser;
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
+import com.aliyun.svideosdk.common.struct.project.Source;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * @author zsy_18 data:2018/8/29
@@ -50,6 +56,18 @@ public class MusicChooser extends BaseChooser {
                 if (musicFileBean != null) {
                     effectInfo.id = musicFileBean.id;
                     effectInfo.setPath(musicFileBean.getPath());
+                    Source source = new Source(musicFileBean.getPath());
+                    source.setId(musicFileBean.musicId);
+                    if (!StringUtils.isEmpty(musicFileBean.musicId)) {
+                        String name = null;
+                        try {
+                            name = String.format("&name=%s", URLEncoder.encode(musicFileBean.title, "utf-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        source.setURL(AlivcResUtil.getCloudResUri(AlivcResUtil.TYPE_MUSIC, musicFileBean.musicId) + name);
+                    }
+                    effectInfo.setSource(source);
                 }
                 effectInfo.musicWeight = 50;
                 effectInfo.startTime = 0;

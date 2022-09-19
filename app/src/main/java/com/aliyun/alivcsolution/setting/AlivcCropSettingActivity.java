@@ -7,7 +7,7 @@ package com.aliyun.alivcsolution.setting;
 import android.Manifest;
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -50,7 +50,7 @@ public class AlivcCropSettingActivity extends Activity implements View.OnClickLi
     private VideoCodecs mVideoCodec = VideoCodecs.H264_HARDWARE;
     private boolean ifPaused = false;
     //视频编码方式选择按钮
-    private Button mEncorderHardwareBtn, mEncorderOpenh264Btn, mEncorderFfmpegBtn;
+    private Button mEncorderHardwareBtn, mEncorderOpenh264Btn;
     /**
      * 视频质量button
      */
@@ -157,10 +157,8 @@ public class AlivcCropSettingActivity extends Activity implements View.OnClickLi
         // 视频编码相关按钮
         mEncorderHardwareBtn = findViewById(R.id.alivc_crop_encoder_hardware);
         mEncorderOpenh264Btn = findViewById(R.id.alivc_crop_encoder_openh264);
-        mEncorderFfmpegBtn = findViewById(R.id.alivc_crop_encoder_ffmpeg);
         mEncorderHardwareBtn.setOnClickListener(this);
         mEncorderOpenh264Btn.setOnClickListener(this);
-        mEncorderFfmpegBtn.setOnClickListener(this);
 
         //初始化配置
         onRatioSelected(mCropRatio9P16Btn);
@@ -222,7 +220,7 @@ public class AlivcCropSettingActivity extends Activity implements View.OnClickLi
             .setSortMode(AliyunSnapVideoParam.SORT_MODE_MERGE)
             .build();
             CropMediaActivity.startCropForResult(this, REQUEST_CROP, mCropParam);
-        } else if (v == mEncorderFfmpegBtn || v == mEncorderHardwareBtn || v == mEncorderOpenh264Btn) {
+        } else if (v == mEncorderHardwareBtn || v == mEncorderOpenh264Btn) {
             onEncoderSelected(v);
         } else if (v == mQualityHighBtn || v == mQualityLowBtn || v == mQualitySuperBtn || v == mQualityNomalBtn) {
             onQualitySelected(v);
@@ -343,12 +341,8 @@ public class AlivcCropSettingActivity extends Activity implements View.OnClickLi
     private void onEncoderSelected(View view) {
         mEncorderHardwareBtn.setSelected(false);
         mEncorderOpenh264Btn.setSelected(false);
-        mEncorderFfmpegBtn.setSelected(false);
 
-        if (view == mEncorderFfmpegBtn) {
-            mVideoCodec = VideoCodecs.H264_SOFT_FFMPEG;
-            mEncorderFfmpegBtn.setSelected(true);
-        } else if (view == mEncorderOpenh264Btn) {
+        if (view == mEncorderOpenh264Btn) {
             mEncorderOpenh264Btn.setSelected(true);
             mVideoCodec = VideoCodecs.H264_SOFT_OPENH264;
         } else if (view == mEncorderHardwareBtn) {

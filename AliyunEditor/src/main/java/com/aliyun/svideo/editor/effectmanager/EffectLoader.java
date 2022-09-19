@@ -26,7 +26,7 @@ public class EffectLoader {
     public static final int ASPECT_9_16 = 3;
     public EffectService mService = new EffectService();
 
-    interface LoadCallback<T> {
+    public interface LoadCallback<T> {
         void onLoadCompleted(List<T> localInfos, List<T> remoteInfos, Throwable e);
     }
 

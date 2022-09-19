@@ -27,6 +27,11 @@ public interface ControlViewListener {
     void onCameraSwitch();
 
     /**
+     * 静音/打开音量
+     */
+    void onVoiceSwitch();
+
+    /**
      * 闪光灯模式
      * @param flashType
      */

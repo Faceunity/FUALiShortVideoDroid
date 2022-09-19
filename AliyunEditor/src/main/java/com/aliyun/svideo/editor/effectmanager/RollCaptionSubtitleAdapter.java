@@ -1,7 +1,6 @@
 package com.aliyun.svideo.editor.effectmanager;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.bean.AlivcRollCaptionSubtitleBean;
@@ -99,7 +100,7 @@ public class RollCaptionSubtitleAdapter extends RecyclerView.Adapter<RollCaption
     /**
      * 选中/未选中 item 切换对应的 View 状态
      */
-    private void changeViewState(AlivcRollCaptionSubtitleBean alivcRollCaptionSubtitleBean, RollCaptionSubtitleViewHolder holder, boolean checked){
+    private void changeViewState(AlivcRollCaptionSubtitleBean alivcRollCaptionSubtitleBean,RollCaptionSubtitleViewHolder holder,boolean checked){
         if(alivcRollCaptionSubtitleBean.isInEdit()){
             return;
         }
@@ -191,7 +192,7 @@ public class RollCaptionSubtitleAdapter extends RecyclerView.Adapter<RollCaption
     }
 
     public interface OnSelectItemChangedListener{
-        void onSelectItemChanged(int total, int inEditCount, int changedIndex, boolean isChecked);
+        void onSelectItemChanged(int total,int inEditCount,int changedIndex,boolean isChecked);
     }
 
     public void setOnSelectItemChangedListener(OnSelectItemChangedListener listener){

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/img_clean"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp"
+            android:src="@mipmap/alivc_svideo_caption_style_clear"
+            android:layout_width="@dimen/alivc_common_size_icon_35"
+            android:layout_height="@dimen/alivc_common_size_icon_35"/>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:clipToPadding="false"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/color_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:overScrollMode="never" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_50">
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:text="@string/ugsv_corner_radius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/alivc_common_font_12"
+            android:textColor="@color/alivc_common_font_white"
+            />
+        <SeekBar
+            android:layout_marginLeft="10dp"
+            android:max="32"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/radius_seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            />
+    </LinearLayout>
+</LinearLayout>

@@ -43,7 +43,7 @@ public class MusicQuery extends AsyncTask<Void, ArrayList<MusicFileBean>, Void> 
 
         int second = time % 60;
         minute %= 60;
-        if (minute <= 0 && second <= 30) {
+        if (minute <= 0 && second <= 3) {
             return false;
         }
         if (size <= 1024 * 1024) {
@@ -102,7 +102,7 @@ public class MusicQuery extends AsyncTask<Void, ArrayList<MusicFileBean>, Void> 
                 mediaEntity.size = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
                 mediaEntity.artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 mediaEntity.path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                if (mediaEntity.displayName.endsWith("mp3") || mediaEntity.displayName.endsWith("aac")) {
+                if (mediaEntity.displayName.endsWith("mp3") || mediaEntity.displayName.endsWith("aac") || mediaEntity.displayName.endsWith("wav")) {
                     if (TextUtils.isEmpty(mediaEntity.path) || !new File(mediaEntity.path).exists()) {
                         //如果path为空或者文件不存在跳过
                         continue;

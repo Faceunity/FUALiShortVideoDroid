@@ -2,12 +2,14 @@ package com.aliyun.svideo.base.widget.beauty.seekbar;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
+
+import androidx.annotation.Nullable;
+
 import com.aliyun.svideo.base.R;
 import com.aliyun.svideo.base.widget.beauty.listener.AbstractOnProgressFloatChangeListener;
 import com.aliyun.svideo.base.widget.beauty.listener.OnProgresschangeListener;

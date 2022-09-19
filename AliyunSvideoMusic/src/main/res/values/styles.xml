@@ -14,7 +14,7 @@
     </style>
     <style name="alivc_record_btn_style" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/alivc_record_btn_bg</item>
-        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_width">@dimen/alivc_common_width_btn_100</item>
         <item name="android:textSize">@dimen/alivc_common_font_14</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:layout_height">36dp</item>

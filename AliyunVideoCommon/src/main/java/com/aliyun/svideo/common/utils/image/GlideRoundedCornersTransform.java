@@ -9,7 +9,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 
 import com.aliyun.svideo.common.utils.DensityUtils;
-import com.bumptech.glide.BuildConfig;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
@@ -19,7 +18,7 @@ public class GlideRoundedCornersTransform extends CenterCrop {
     private float mRadius;
     private CornerType mCornerType;
     private static final int VERSION = 1;
-    private static final String ID = BuildConfig.APPLICATION_ID + "GlideRoundedCornersTransform." + VERSION;
+    private static final String ID = "com.aliyun.alivcsolution" + "GlideRoundedCornersTransform." + VERSION;
     private static final byte[] ID_BYTES = ID.getBytes(CHARSET);
 
 

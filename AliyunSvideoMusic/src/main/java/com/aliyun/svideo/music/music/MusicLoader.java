@@ -155,7 +155,7 @@ public class MusicLoader {
                 downloaderModel.setName(musicFileBean.title);
                 downloaderModel.setIsunzip(0);
                 downloaderModel.setDuration(musicFileBean.duration);
-                downloaderModel.setPath(StorageUtils.getFilesDirectory(mContext) + "/music/" + musicFileBean.title);
+                downloaderModel.setPath(StorageUtils.getFilesDirectory(mContext) + "/svideo_res/cloud/music/" + musicFileBean.title);
                 downloaderModel.setDescription(musicFileBean.artist);
                 downloaderModel.setEffectType(EFFECT_MUSIC);
                 if (downloaderModel == null) {

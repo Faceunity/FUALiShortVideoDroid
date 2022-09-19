@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="ugc_app_name">阿里云短视频</string>
     <string name="alivc_base_version">SDK版本信息</string>
     <!-- 美颜相关  start -->
     <string name="alivc_base_beauty">美颜</string>
@@ -47,7 +47,15 @@
     <string name="alivc_base_tips_fine_tuning">点击可微调</string>
     <string name="alivc_base_beauty_copyright">高级美颜美型由faceunity提供</string>
     <string name="alivc_base_beauty_race_copyright">高级美颜美型由race提供</string>
+    <string name="alivc_base_beauty_queen_copyright">高级美颜美型由queen提供</string>
+    <string name="alivc_setting_rendering_faceunity">FaceUnity</string>
+    <string name="alivc_setting_rendering_queen">Queen</string>
+    <string name="alivc_setting_rendering_default">默认</string>
     <string name="alivc_base_beauty_copyright_link">如何获取</string>
     <string name="alivc_base_svideo_next">下一步</string>
     <string name="alivc_base_svideo_save">保存</string>
+    <string name="alivc_develop_url">测试环境</string>
+    <string name="alivc_pre_release_url">预发布环境</string>
+    <string name="alivc_release_url">正式环境</string>
+
 </resources>

@@ -21,7 +21,7 @@ public class CaptionLoader {
 
     public EffectService mService;
 
-    interface LoadCallback {
+    public interface LoadCallback {
         void onLoadCompleted(List<ResourceForm> localInfos, List<ResourceForm> remoteInfos, Throwable e);
     }
     public CaptionLoader() {

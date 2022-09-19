@@ -2,17 +2,22 @@ package com.aliyun.svideo.editor.viewoperate;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.aliyun.svideo.editor.R;
-import com.aliyun.svideo.editor.effects.audiomix.MusicChooser;
-import com.aliyun.svideo.editor.effects.control.BaseChooser;
-import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.base.widget.beauty.animation.AnimUitls;
 import com.aliyun.svideo.common.utils.DensityUtils;
+import com.aliyun.svideo.editor.R;
+import com.aliyun.svideo.editor.effects.audiomix.MusicChooser;
+import com.aliyun.svideo.editor.effects.caption.CaptionChooserView;
+import com.aliyun.svideo.editor.effects.caption.component.CaptionChooserPanelView;
+import com.aliyun.svideo.editor.effects.control.BaseChooser;
+import com.aliyun.svideo.editor.effects.control.UIEditorPage;
+import com.aliyun.svideo.editor.effects.overlay.OverlayChooserView;
+import com.aliyun.svideo.editor.effects.pip.PipSettingView;
+import com.aliyun.svideo.editor.view.AlivcEditView;
+import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
 
 /**
  * @author zsy_18 data:2018/8/24
@@ -43,6 +48,7 @@ public class ViewOperator {
     private int btnTranslationY;
     private int btnTranslationYMax = -1000;
     private int moveLenth;
+    private View textEditorPanelView;
 
     //int playerBtn
     public ViewOperator(RelativeLayout rootView, ViewGroup titleView, View playerView, View bottomMenuView,
@@ -125,8 +131,6 @@ public class ViewOperator {
                         marginParams = new ViewGroup.MarginLayoutParams(params);
 
                     }
-                    long currentTime = animation.getCurrentPlayTime();
-
                     int marginTop = (int)Math.abs(
                                         playViewMarginTop - moveLenth * (1 - currentValue) / (1 - SCALE_SIZE));
 
@@ -145,15 +149,45 @@ public class ViewOperator {
 
             layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }else if (bottomView instanceof CaptionChooserPanelView){
+            //字幕要测算键盘高度,交互更友好
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    bottomViewHeight);
+            layoutParams.topMargin = rootView.getHeight() - bottomViewHeight;
         } else {
             layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         }
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         rootView.addView(bottomView, layoutParams);
         AnimUitls.startAppearAnimY(bottomView);
         this.bottomView = bottomView;
 
+    }
+
+    /**
+     * 获取动图tab缩略比例
+     *
+     * @return 动图tab缩略比例
+     */
+    public float getPasterScaleSize(int pasterType) {
+        int bottomViewHeight = 0;
+        if (pasterType == EffectPaster.PASTER_TYPE_GIF) {
+            OverlayChooserView overlayChooserView = new OverlayChooserView(rootView.getContext());
+            overlayChooserView.addThumbView(((AlivcEditView) rootView).getThumbLineBar());
+            bottomViewHeight = overlayChooserView.getCalculateHeight();
+        } else if (pasterType == EffectPaster.PASTER_TYPE_TEXT || pasterType == EffectPaster.PASTER_TYPE_CAPTION) {
+            CaptionChooserView chooserView = new CaptionChooserView(rootView.getContext());
+            chooserView.addThumbView(((AlivcEditView) rootView).getThumbLineBar());
+            bottomViewHeight = chooserView.getCalculateHeight();
+        }
+        int h = rootView.getHeight() - bottomViewHeight - DensityUtils.dip2px(rootView.getContext(), 20);
+        float scaleSize = (float) h / playerView.getHeight();
+        if (scaleSize >= 0.95f) {
+            scaleSize = 0.95f;
+        }
+        return scaleSize;
     }
 
     public void hideBottomView() {
@@ -217,6 +251,10 @@ public class ViewOperator {
         bottomView = null;
     }
 
+    public void setCaptionTextView(View view){
+        this.textEditorPanelView = view;
+    }
+
     /**
      * 点击空白区域或返回按钮是, 需要隐藏的弹窗
      *
@@ -225,8 +263,13 @@ public class ViewOperator {
     public void hideBottomEditorView(UIEditorPage page) {
         switch (page) {
         case FILTER:
+        case LUT:
         case SOUND:
+        case VIDEOEQ:
         case MV:
+        case ROLL_CAPTION:
+        case PIP:
+//        case COMPOUND_CAPTION:
             hideBottomView();
             break;
         default:
@@ -252,6 +295,14 @@ public class ViewOperator {
     public boolean isBottomViewShow() {
         return bottomView != null;
     }
+    public boolean isCaptionEditPanelShow(){
+        if (textEditorPanelView !=null && textEditorPanelView.getVisibility() == View.VISIBLE){
+            textEditorPanelView.setVisibility(View.GONE);
+            return  true;
+        }
+
+        return false;
+    };
 
     public BaseChooser getBottomView() {
         return bottomView;

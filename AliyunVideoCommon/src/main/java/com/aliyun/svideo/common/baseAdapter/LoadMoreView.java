@@ -1,7 +1,7 @@
 package com.aliyun.svideo.common.baseAdapter;
 
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 
 /**
  * BaseQuickAdapter的加载更多的状态，实现类SimpleLoadMoreView，可自定义

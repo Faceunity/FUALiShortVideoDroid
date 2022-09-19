@@ -4,11 +4,14 @@
 
 package com.aliyun.svideo.media;
 
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
@@ -24,13 +27,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         boolean onItemClick(GalleryAdapter adapter, int adapterPosition);
     }
 
-    private static final int TYPE_ITEM_DRAFT = 0;
     private static final int TYPE_ITEM_MEDIA = 1;
     private List<MediaInfo> medias;
-//    private boolean hasDraft;
-    private int draftCount;
     private ThumbnailGenerator thumbnailGenerator;
     private OnItemClickListener onItemClickListener;
+
+    private long mMinDuration = -1;
 
     public GalleryAdapter(ThumbnailGenerator thumbnailGenerator) {
         this.thumbnailGenerator = thumbnailGenerator;
@@ -41,21 +43,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void setDraftCount(int draftCount) {
-        this.draftCount = draftCount;
-    }
-
-//    public void addDraftItem(){
-//        hasDraft = true;
-//    }
-//
-//    public boolean isHasDraft() {
-//        return hasDraft;
-//    }
-//
-//    public void removeDraftItem(){
-//        hasDraft = false;
-//    }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -77,7 +64,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         boolean actived = activeAdapterPosition == position;
 
-        ((GalleryItemViewHolder)holder).onBind(getItem(position), actived);
+        ((GalleryItemViewHolder) holder).onBind(getItem(position), actived, mMinDuration);
 
     }
 
@@ -91,9 +78,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-//        if(hasDraft && position == 0){
-//            return TYPE_ITEM_DRAFT;
-//        }
         return TYPE_ITEM_MEDIA;
     }
 
@@ -142,14 +126,24 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onClick(View v) {
         RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) v.getTag();
         int adapterPos = holder.getAdapterPosition();
+        if (mMinDuration != -1) {
+            MediaInfo info = medias.get(adapterPos);
+            if (info.type == MediaStorage.TYPE_VIDEO && info.duration < mMinDuration) {
+                Toast.makeText(v.getContext(), R.string.alivc_media_video_short_error, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
 
         if (onItemClickListener != null) {
-            Log.d("active", "onItemClick");
             if (!onItemClickListener.onItemClick(this, adapterPos)) {
-                Log.d("active", "onItemClick1");
                 return;
             }
         }
         setActiveAdapterItem(adapterPos);
+    }
+
+    public void setMinDuration(long minDuration) {
+        this.mMinDuration = minDuration;
+        notifyDataSetChanged();
     }
 }

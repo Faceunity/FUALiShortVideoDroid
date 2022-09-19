@@ -83,7 +83,7 @@ public class MultilayerGridAdapter extends BaseAdapter {
             //专业版录制添加race hot 提示
             convertView.findViewById(R.id.rl_item_hint).setVisibility(View.VISIBLE);
             ((ImageView)convertView.findViewById(R.id.iv_item_hint)).setImageResource(R.mipmap.icon_hot);
-            ((TextView)convertView.findViewById(R.id.tv_item_hint)).setText(R.string.alivc_recorder_race_hint);
+            ((TextView)convertView.findViewById(R.id.tv_item_hint)).setText(R.string.alivc_recorder_queen_hint);
         }
 
         return convertView;

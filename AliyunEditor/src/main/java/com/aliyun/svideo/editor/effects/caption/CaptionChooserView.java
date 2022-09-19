@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.aliyun.svideo.base.Form.PasterForm;
 import com.aliyun.svideo.base.Form.ResourceForm;
 import com.aliyun.svideo.editor.R;
+import com.aliyun.svideo.editor.editor.AliyunBasePasterController;
 import com.aliyun.svideo.editor.editor.PasterUICaptionImpl;
 import com.aliyun.svideo.editor.editor.AbstractPasterUISimpleImpl;
 import com.aliyun.svideo.editor.editor.PasterUITextImpl;
@@ -296,7 +298,7 @@ public class CaptionChooserView extends BaseChooser {
     }
 
     @Override
-    public boolean isHostPaster(AbstractPasterUISimpleImpl uic) {
+    public boolean isHostPaster(AliyunBasePasterController uic) {
 
         return uic != null && (uic instanceof PasterUITextImpl || uic instanceof PasterUICaptionImpl);
     }

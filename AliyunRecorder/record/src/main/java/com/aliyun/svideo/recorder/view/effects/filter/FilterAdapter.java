@@ -6,9 +6,10 @@ package com.aliyun.svideo.recorder.view.effects.filter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.aliyun.svideo.base.widget.CircularImageView;
 import com.aliyun.svideo.common.utils.LanguageUtils;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.common.utils.image.AbstractImageLoaderTarget;
+import com.aliyun.svideosdk.common.struct.project.Source;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,6 +140,9 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 EffectInfo effectInfo = new EffectInfo();
                 effectInfo.type = UIEditorPage.FILTER_EFFECT;
                 effectInfo.setPath(mFilterList.get(position));
+                Source source = new Source(mFilterList.get(position));
+                source.setId(String.valueOf(position));
+                effectInfo.setSource(source);
                 effectInfo.id = position;
                 mItemClick.onItemClick(effectInfo, position);
             }

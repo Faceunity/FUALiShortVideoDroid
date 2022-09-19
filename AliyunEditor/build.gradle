@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion externalCompileSdkVersion
-    buildToolsVersion externalBuildToolsVersion
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion externalMinSdkVersion
-        targetSdkVersion externalTargetSdkVersion
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
         consumerProguardFiles 'lib-proguard-rules.pro'
     }
 }
@@ -24,6 +24,7 @@ dependencies {
     implementation externalEventBus
     implementation externalAliyunVodUpload
     implementation project(':AliyunVideoCommon')
-    implementation externalAndroidAppCompatV7
-    implementation externalAndroidRecyclerView
+    implementation externalAndroidXAppcompat
+    implementation externalAndroidXRecyclerView
+
 }

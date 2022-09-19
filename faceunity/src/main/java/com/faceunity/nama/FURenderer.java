@@ -10,6 +10,7 @@ import com.faceunity.core.entity.FURenderOutputData;
 import com.faceunity.core.enumeration.CameraFacingEnum;
 import com.faceunity.core.enumeration.FUAIProcessorEnum;
 import com.faceunity.core.enumeration.FUAITypeEnum;
+import com.faceunity.core.enumeration.FUTransformMatrixEnum;
 import com.faceunity.core.faceunity.FURenderConfig;
 import com.faceunity.core.faceunity.FURenderKit;
 import com.faceunity.core.faceunity.FURenderManager;
@@ -214,16 +215,19 @@ public class FURenderer extends IFURenderer {
     //region AI识别
 
 
-    /**
-     * 设置输入数据朝向
-     *
-     * @param inputOrientation
-     */
     @Override
-    public void setInputOrientation(int inputOrientation) {
-        super.setInputOrientation(inputOrientation);
+    public void setCameraFacing(CameraFacingEnum cameraFacing) {
+        super.setCameraFacing(cameraFacing);
+        if (cameraFacing == CameraFacingEnum.CAMERA_FRONT) {
+            setInputBufferMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
+            setInputTextureMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
+            setOutputMatrix(FUTransformMatrixEnum.CCROT0);
+        }else {
+            setInputBufferMatrix(FUTransformMatrixEnum.CCROT0);
+            setInputTextureMatrix(FUTransformMatrixEnum.CCROT0);
+            setOutputMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
+        }
     }
-
 
     @Override
     public void setDeviceOrientation(int deviceOrientation) {

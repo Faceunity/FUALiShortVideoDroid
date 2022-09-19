@@ -12,12 +12,12 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -59,6 +59,7 @@ import com.aliyun.svideosdk.common.struct.effect.ActionTranslate;
 import com.aliyun.svideosdk.common.struct.effect.ActionWipe;
 import com.aliyun.svideosdk.common.struct.form.FontForm;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
+import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -76,6 +77,8 @@ public class TextDialog extends DialogFragment {
     private static final int FONT_TYPE = 1;
     List<FontForm> mFormList;
     List<WheelView.DataModel> mFontDataList;
+
+    private boolean flag = false;
 
     //字幕操作tab
     private static final int[] ID_TITLE_ARRAY = {R.string.alivc_editor_dialog_caption_keyboard,
@@ -207,7 +210,7 @@ public class TextDialog extends DialogFragment {
         }
 
         mEditView.setTextSize(
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 7, getResources().getDisplayMetrics()));
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 6, getResources().getDisplayMetrics()));
 
         pageContainer = (FrameLayout) contentView.findViewById(R.id.container);
         mPagerViewStack = new ViewStack(View.GONE);
@@ -659,17 +662,34 @@ public class TextDialog extends DialogFragment {
                 maxLength = 90;
             }
 
-            StringBuffer s1 = new StringBuffer(lineFeedText(s.toString()));
             // 限定EditText只能输入maxLength个数字
-            if (s1.length() > maxLength) {
+            if (s.length() > maxLength) {
                 // 默认光标在最前端，所以当输入第11个数字的时候，删掉（光标位置从11-1到11）的数字，这样就无法输入超过10个以后的数字
                 ToastUtils.show(getActivity(), R.string.alivc_editor_dialog_caption_tip_text_limit);
-
-                s1.delete(maxLength, s1.length());
-                mEditView.setText(s1);
-                mEditView.setSelection(maxLength);
+                int deleteCount = s.length() - maxLength;
+                int selIndex = mEditView.getSelectionStart();
+                int startIndex = selIndex-deleteCount;
+                int endIndex = selIndex;
+                //添加条件判断，防止出现崩溃
+                if (startIndex < 0){
+                    startIndex = 0;
+                }
+                if (endIndex > s.length()){
+                    endIndex = s.length();
+                }
+                if (startIndex > endIndex){
+                    startIndex = endIndex;
+                }
+                s.delete(startIndex, endIndex );
             }
-
+            StringBuffer s1 = new StringBuffer(lineFeedText(s.toString()));
+            if (flag) {
+                return;
+            }
+            flag = true;
+            mEditView.setText(s1);
+            mEditView.setSelection(s1.length());
+            flag = false;
 
         }
 

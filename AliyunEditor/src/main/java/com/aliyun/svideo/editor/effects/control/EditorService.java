@@ -7,8 +7,8 @@ package com.aliyun.svideo.editor.effects.control;
 import android.graphics.Paint;
 
 import com.aliyun.svideo.editor.effects.transition.TransitionEffectCache;
+import com.aliyun.svideosdk.editor.AliyunISourcePartManager;
 import com.aliyun.svideosdk.editor.TimeEffectType;
-import com.aliyun.svideosdk.common.AliyunIClipConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class EditorService {
         }
     }
 
-    public TransitionEffectCache getTransitionEffectCache(AliyunIClipConstructor clipConstructor) {
+    public TransitionEffectCache getTransitionEffectCache(AliyunISourcePartManager clipConstructor) {
         if (mTransitionEffectCache == null) {
             mTransitionEffectCache = TransitionEffectCache.newInstance(clipConstructor);
         } else {

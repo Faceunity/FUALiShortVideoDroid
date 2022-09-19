@@ -4,14 +4,29 @@
 
 package com.aliyun.alivcsolution;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.support.multidex.MultiDex;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
+
+import android.util.Log;
+
+import androidx.multidex.MultiDex;
+
+
 
 import com.aliyun.common.httpfinal.QupaiHttpFinal;
 import com.aliyun.svideo.base.http.EffectService;
 import com.aliyun.svideo.downloader.DownloaderManager;
-import com.aliyun.sys.AlivcSdkCore;
+import com.aliyun.svideosdk.AlivcSdkCore;
+import com.aliyun.svideosdk.AlivcSdkCore.AlivcDebugLoggerLevel;
+import com.aliyun.svideosdk.AlivcSdkCore.AlivcLogLevel;
+import com.faceunity.FUConfig;
+import com.faceunity.nama.utils.FuDeviceUtils;
+
+import static com.aliyun.svideo.base.ui.SdkVersionActivity.DEBUG_DEVELOP_URL;
+import static com.aliyun.svideo.base.ui.SdkVersionActivity.DEBUG_PARAMS;
 
 /**
  * Created by Mulberry on 2018/2/24.
@@ -21,6 +36,7 @@ public class MutiApplication extends Application {
      * 友盟数据统计key值
      */
     private static final String UM_APP_KEY = "5c6e4e6cb465f5ff4700120e";
+    private String mLogPath;
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -30,34 +46,38 @@ public class MutiApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-//        initFaceUnity();
+        FUConfig.DEVICE_LEVEL = FuDeviceUtils.judgeDeviceLevel(this);
         QupaiHttpFinal.getInstance().initOkHttpFinal();
         initDownLoader();
-        /**
-         * 注意: 即使您已经在AndroidManifest.xml中配置过appkey和channel值，也需要在App代码中调
-         * 用初始化接口（如需要使用AndroidManifest.xml中配置好的appkey和channel值，
-         * UMConfigure.init调用中appkey和channel参数请置为null）。
-         */
-        AlivcSdkCore.register(getApplicationContext());
-        AlivcSdkCore.setLogLevel(AlivcSdkCore.AlivcLogLevel.AlivcLogWarn);
-        AlivcSdkCore.setDebugLoggerLevel(AlivcSdkCore.AlivcDebugLoggerLevel.AlivcDLClose);
-
-        
-        
-        EffectService.setAppInfo(getResources().getString(R.string.app_name), getPackageName(), BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
-    }
-
-    private void initFaceUnity() {
-        //以下为faceunity高级美颜接入代码，如果未集成faceunity，可以把此回调方法注释掉。以避免产生额外的license校验请求，影响您的产品性能。
-        //如果购买使用faceUnity将判断条件删除
-        if ("com.aliyun.apsaravideo".equals(getPackageName())) {
-//            FaceUnityManager.getInstance().setUp(this);
+        AlivcSdkCore.register(this);
+        if (BuildConfig.isFinal) {
+            AlivcSdkCore.setLogLevel(AlivcLogLevel.AlivcLogDebug);
+            AlivcSdkCore.setDebugLoggerLevel(AlivcDebugLoggerLevel.AlivcDLAll);
+        } else {
+            AlivcSdkCore.setLogLevel(AlivcLogLevel.AlivcLogDebug);
+            AlivcSdkCore.setDebugLoggerLevel(AlivcDebugLoggerLevel.AlivcDLAll);
         }
+        setSdkDebugParams();
+        if (TextUtils.isEmpty(mLogPath)) {
+            //保证每次运行app生成一个新的日志文件
+            mLogPath = getExternalFilesDir("Log").getAbsolutePath() + "/ShortVideo";
+            AlivcSdkCore.setLogPath(mLogPath);
+        }
+        
+        
+        EffectService.setAppInfo(getResources().getString(R.string.ugc_app_name), getPackageName(), BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
     }
+
 
     private void initDownLoader() {
         DownloaderManager.getInstance().init(this);
+    }
+
+    private void setSdkDebugParams() {
+        //Demo 调试用，外部客户请勿使用
+        SharedPreferences mySharedPreferences = this.getSharedPreferences(DEBUG_PARAMS, Activity.MODE_PRIVATE);
+        int hostType = mySharedPreferences.getInt(DEBUG_DEVELOP_URL, 0);
+        //AlivcSdkCore.setDebugHostType(hostType);
     }
 
 }

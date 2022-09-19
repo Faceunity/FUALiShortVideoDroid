@@ -6,17 +6,19 @@ package com.aliyun.svideo.editor.effects.rollcaption;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.aliyun.common.logger.Logger;
-import com.aliyun.jasonparse.JSONSupportImpl;
-import com.aliyun.qupaiokhttp.HttpRequest;
-import com.aliyun.qupaiokhttp.StringHttpRequestCallback;
+import com.aliyun.common.utils.StringUtils;
+import com.aliyun.common.jasonparse.JSONSupportImpl;
+import com.aliyun.common.qupaiokhttp.HttpRequest;
+import com.aliyun.common.qupaiokhttp.StringHttpRequestCallback;
 import com.aliyun.svideo.base.Form.PasterForm;
 import com.aliyun.svideo.base.Form.ResourceForm;
 import com.aliyun.svideo.base.widget.CircularImageView;
@@ -26,10 +28,11 @@ import com.aliyun.svideo.downloader.DownloaderManager;
 import com.aliyun.svideo.downloader.FileDownloaderCallback;
 import com.aliyun.svideo.downloader.FileDownloaderModel;
 import com.aliyun.svideo.editor.R;
+import com.aliyun.svideo.editor.contant.CaptionConfig;
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.OnItemClickListener;
-import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.editor.util.EditorCommon;
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.common.struct.form.FontForm;
 
 import java.io.File;
@@ -182,9 +185,16 @@ public class RollCaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Logger.getDefaultLogger().d("downloadId..." + downloadId + "  path..." + path);
                 if (mItemClick != null) {
                     EffectInfo effectInfo = new EffectInfo();
-                    effectInfo.type = UIEditorPage.CAPTION;
                     effectInfo.setPath(path);
-                    effectInfo.fontPath = getFontByPaster(form).getUrl();
+                    Source source = new Source(path);
+                    source.setId(String.valueOf(form.getId()));
+                    effectInfo.setSource(source);
+                    String fontPath = DownloaderManager.getInstance().getDbController().getPathByUrl(getFontByPaster(form).getUrl());
+                    if(!StringUtils.isEmpty(fontPath)){
+                        effectInfo.fontSource = new Source(fontPath);
+                        effectInfo.fontSource.setId(String.valueOf(form.getFontId()));
+                        effectInfo.fontSource.setURL(getFontByPaster(form).getUrl());
+                    }
                     mItemClick.onItemClick(effectInfo, index);
                 }
 
@@ -268,7 +278,7 @@ public class RollCaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         });
     }
 
-    private void downloadFont(FontForm form, final int index) {
+    private void downloadFont(final FontForm form, final int index) {
         FileDownloaderModel model = new FileDownloaderModel();
         model.setEffectType(FONT_TYPE);
         model.setName(form.getName());
@@ -293,9 +303,12 @@ public class RollCaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Logger.getDefaultLogger().d("downloadId..." + downloadId + "  path..." + path);
                 if (mItemClick != null) {
                     EffectInfo effectInfo = new EffectInfo();
-                    effectInfo.type = UIEditorPage.FONT;
                     effectInfo.setPath(null);
-                    effectInfo.fontPath = path;
+                    effectInfo.setSource(null);
+                    effectInfo.fontPath = path + CaptionConfig.FONT_NAME;
+                    effectInfo.fontSource = new Source(path + CaptionConfig.FONT_NAME);
+                    effectInfo.fontSource.setId(String.valueOf(form.getId()));
+                    effectInfo.fontSource.setURL(form.getUrl());
                     mItemClick.onItemClick(effectInfo, index);
                 }
             }
@@ -328,13 +341,18 @@ public class RollCaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (path != null && !path.isEmpty()) {
                 if (mItemClick != null) {
                     EffectInfo effectInfo = new EffectInfo();
-                    effectInfo.type = UIEditorPage.CAPTION;
                     effectInfo.setPath(path);
+                    Source source = new Source(path);
+                    source.setId(String.valueOf(form.getId()));
+                    effectInfo.setSource(source);
                     FontForm fontForm = getFontByPaster(form);
                     if (fontForm == null) {
                         effectInfo.fontPath = null;
+                        effectInfo.fontSource = null;
                     } else {
-                        effectInfo.fontPath = DownloaderManager.getInstance().getDbController().getPathByUrl(fontForm.getUrl());
+                        effectInfo.fontSource = new Source(DownloaderManager.getInstance().getDbController().getPathByUrl(fontForm.getUrl()));
+                        effectInfo.fontSource.setId(String.valueOf(form.getFontId()));
+                        effectInfo.fontSource.setURL(fontForm.getUrl());
                     }
                     mItemClick.onItemClick(effectInfo, position);
                 }
@@ -348,21 +366,24 @@ public class RollCaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 //系统字体
                 if (mItemClick != null) {
                     EffectInfo effectInfo = new EffectInfo();
-                    effectInfo.type = UIEditorPage.FONT;
                     effectInfo.setPath(null);
+                    effectInfo.setSource(null);
                     effectInfo.fontPath = SYSTEM_FONT;
+                    effectInfo.fontSource = new Source(SYSTEM_FONT);
                     mItemClick.onItemClick(effectInfo, position);
                 }
             } else {
 
-//                String path = DownloaderManager.getInstance().getDbController().getPathByUrl(form.getUrl());
-                String path = form.getUrl();
+                String path = DownloaderManager.getInstance().getDbController().getPathByUrl(form.getUrl());
                 if (path != null && !path.isEmpty()) {
                     if (mItemClick != null) {
                         EffectInfo effectInfo = new EffectInfo();
-                        effectInfo.type = UIEditorPage.FONT;
                         effectInfo.setPath(null);
-                        effectInfo.fontPath = path;
+                        effectInfo.setSource(null);
+                        effectInfo.fontPath = path + CaptionConfig.FONT_NAME;
+                        effectInfo.fontSource = new Source(path+ CaptionConfig.FONT_NAME);
+                        effectInfo.fontSource.setId(String.valueOf(form.getId()));
+                        effectInfo.fontSource.setURL(form.getUrl());
                         mItemClick.onItemClick(effectInfo, position);
                     }
                 } else {

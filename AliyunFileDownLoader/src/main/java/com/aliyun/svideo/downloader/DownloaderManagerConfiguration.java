@@ -21,6 +21,8 @@ public class DownloaderManagerConfiguration {
     private DbUpgradeListener mDbUpgradeListener;
     private int mAutoRetryTimes;
     private Headers mHeaders;
+    private boolean mIsCipher;
+    private String mCk;
 
     private DownloaderManagerConfiguration(final Builder builder) {
         this.mContext = builder.mContext;
@@ -29,6 +31,8 @@ public class DownloaderManagerConfiguration {
         this.mDbVersion = builder.mDbVersion;
         this.mDbUpgradeListener = builder.mDbUpgradeListener;
         this.mDebug = builder.mDebug;
+        this.mCk = builder.mCk;
+        this.mIsCipher = builder.mIsCipher;
 
         if (builder.mMaxDownloadingCount > 0) {
             this.mMaxDownloadingCount = builder.mMaxDownloadingCount;
@@ -48,6 +52,8 @@ public class DownloaderManagerConfiguration {
         private boolean mDebug;
         private int mAutoRetryTimes = 3;
         private Headers.Builder mHeaders;
+        private boolean mIsCipher;
+        private String mCk;
 
         public Builder(Context context) {
             this.mContext = context;
@@ -56,6 +62,7 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 设置下载存储目录
+         *
          * @param path
          * @return
          */
@@ -66,6 +73,7 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 设置最大并行下载数
+         *
          * @param maxCount
          * @return
          */
@@ -76,6 +84,7 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 设置表扩展字段
+         *
          * @param extFieldMap
          * @return
          */
@@ -86,6 +95,7 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 数据库版本号
+         *
          * @param dbVersion
          * @return
          */
@@ -96,6 +106,7 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 自动重试次数
+         *
          * @param autoRetryTimes
          * @return
          */
@@ -106,6 +117,7 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 数据库更新监听
+         *
          * @param dbUpgradeListener
          * @return
          */
@@ -116,6 +128,7 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 添加header
+         *
          * @param line
          * @return
          */
@@ -126,6 +139,7 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 添加header
+         *
          * @param name
          * @param value
          * @return
@@ -137,11 +151,27 @@ public class DownloaderManagerConfiguration {
 
         /**
          * 设置是否开启debug
+         *
          * @param debug
          * @return
          */
         public Builder setDebug(boolean debug) {
             this.mDebug = debug;
+            return this;
+        }
+
+        public Builder setCipher(boolean isCipher) {
+            mIsCipher = isCipher;
+            return this;
+        }
+
+        /**
+         * 安全扫描中不允许存在密码关键词
+         *
+         * @return
+         */
+        public Builder setCK(String ck) {
+            mCk = ck;
             return this;
         }
 
@@ -185,5 +215,13 @@ public class DownloaderManagerConfiguration {
 
     public Headers getHeaders() {
         return mHeaders;
+    }
+
+    public boolean iCipher() {
+        return mIsCipher;
+    }
+
+    public String getCk() {
+        return mCk;
     }
 }

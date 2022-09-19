@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/alivc_common_bg_white_alpha_10" />
+    <corners android:radius="@dimen/alivc_common_line_3dp" />
+    <padding android:left="@dimen/alivc_common_padding_4" android:bottom="@dimen/alivc_common_padding_4" android:right="@dimen/alivc_common_padding_8" android:top="@dimen/alivc_common_padding_4"/>
+</shape>

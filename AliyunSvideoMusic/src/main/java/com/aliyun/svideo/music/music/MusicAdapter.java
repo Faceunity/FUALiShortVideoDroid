@@ -1,6 +1,5 @@
 package com.aliyun.svideo.music.music;
 
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aliyun.svideo.music.R;
 import com.aliyun.svideo.music.widget.CircleProgressBar;

@@ -1,0 +1,25 @@
+
+dependencies {
+
+    // svideo api
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    //短视频专业版依赖库
+    svideoproApi project(':AliyunEditor')
+    svideoproApi  project(':AliyunRecorder:pro_record')
+    svideoproApi  project(':AliyunCrop:crop')
+    svideoproApi  project(':AliyunVideoCommon')
+    svideoproApi  project(':AliyunFileDownLoader')
+    svideoproApi  project(':AliyunResample')
+    svideoproApi  project(':AliyunSVideoBase')
+    svideoproApi  project(':QueenBeauty')
+    svideoproApi  project(':FaceunityBeauty')
+
+    implementation externalAndroidXAppcompat
+    implementation externalAndroidXRecyclerView
+    implementation externalAndroidXConstraintlayout
+    implementation externalGSON
+    implementation externalOKHTTP
+    implementation externalLeakcanary
+    implementation externalAndroidMultiDex
+}

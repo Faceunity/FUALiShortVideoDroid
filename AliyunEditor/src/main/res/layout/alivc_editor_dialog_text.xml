@@ -73,7 +73,7 @@
             android:src="#979797"
             />
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_tab"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -112,7 +112,7 @@
             android:orientation="vertical"
             >
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/color_viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -120,7 +120,7 @@
                 android:foregroundGravity="center"
                 />
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/color_tab_host"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
             android:layout_height="match_parent"
             android:visibility="gone">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/font_animation_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

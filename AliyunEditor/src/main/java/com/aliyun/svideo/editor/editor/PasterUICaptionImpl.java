@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.aliyun.svideo.editor.editor.thumblinebar.OverlayThumbLineBar;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.editor.widget.BaseAliyunPasterView;
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.editor.AliyunIEditor;
 import com.aliyun.svideosdk.editor.AliyunPasterController;
 
@@ -46,6 +47,7 @@ public class PasterUICaptionImpl extends PasterUIGifImpl {
         mText.setTextStrokeColor(controller.getTextStrokeColor());
         mText.setCurrentColor(controller.getTextColor());
         mText.setFontPath(controller.getPasterTextFont());
+        mText.setFontSource(controller.getPasterTextFontSource());
         mText.setTextWidth(textWidth);
         mText.setTextHeight(textHeight);
         mText.setTextTop(top);
@@ -75,6 +77,11 @@ public class PasterUICaptionImpl extends PasterUIGifImpl {
     @Override
     public String getPasterTextFont() {
         return mText.getFontPath();
+    }
+
+    @Override
+    public Source getPasterTextFontSource() {
+        return mText.getFontSource();
     }
 
     @Override

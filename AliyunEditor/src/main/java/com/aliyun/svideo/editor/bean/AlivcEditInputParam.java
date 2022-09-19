@@ -9,7 +9,7 @@ import com.aliyun.svideosdk.common.struct.common.AliyunVideoParam;
 import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
 import com.aliyun.svideosdk.common.struct.common.VideoQuality;
 import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
-import com.duanqu.transcode.NativeParser;
+import com.aliyun.svideosdk.transcode.NativeParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,16 @@ public class AlivcEditInputParam {
     public static final String INTETN_KEY_SCANLE_RATE = "mScaleRate";
     public static final String INTETN_KEY_SCANLE_MODE = "mScaleMode";
     public static final String INTENT_KEY_TAIL_ANIMATION = "mHasTailAnimation";
+    public static final String INTENT_KEY_DE_NOISE = "mHasDeNoise";
     public static final String INTENT_KEY_REPLACE_MUSIC = "canReplaceMusic";
     public static final String INTENT_KEY_WATER_MARK = "hasWaterMark";
+    public static final String INTENT_KEY_HORIZONTAL_FLIP = "horizontalFlip";
     public static final String INTENT_KEY_MEDIA_INFO = "mediaInfos";
+    public static final String INTENT_KEY_NEED_TRANSCODE = "mNeedTrancode";
+    public static final String INTENT_KEY_DRAFT_PATH = "draftPath";
+    public static final String INTENT_KEY_GET_MEDIA = "get_media";
+    public static final String INTENT_KEY_OUTPUT_WIDTH = "OutputWidth";
+    public static final String INTENT_KEY_OUTPUT_HEIGHT= "OutputHeight";
     /**
      * 是否是合拍
      */
@@ -103,8 +110,19 @@ public class AlivcEditInputParam {
      */
     private boolean isMixRecorder;
 
+    /**
+     * 是否开启降噪，默认无
+     */
+    private boolean mHasDeNoise = false;
+
+    /**
+     * 需要开启转码
+     */
+    private boolean mNeedTrancode = false;
+
     private ArrayList<MediaInfo> mediaInfos;
     private boolean hasWaterMark = true;//默认显示视频水印
+    private boolean horizontalFlip = false; //水平镜像翻转
 
     private AlivcEditInputParam() {
         this.mediaInfos = new ArrayList<>();
@@ -337,6 +355,10 @@ public class AlivcEditInputParam {
         return mScaleRate;
     }
 
+    public boolean getDeNoise() {
+        return mHasDeNoise;
+    }
+
     public VideoDisplayMode getScaleMode() {
         return mScaleMode;
     }
@@ -357,8 +379,16 @@ public class AlivcEditInputParam {
         return hasWaterMark;
     }
 
+    public boolean isHorizontalFlip() {
+        return horizontalFlip;
+    }
+
     public boolean isMixRecorder() {
         return isMixRecorder;
+    }
+
+    public boolean isNeedTrancode() {
+        return mNeedTrancode;
     }
 
     public void setsMixRecorder(boolean mixRecorder) {
@@ -441,8 +471,23 @@ public class AlivcEditInputParam {
             return this;
         }
 
+        public Builder setHorizontalFlip(boolean flip) {
+            mParam.horizontalFlip = flip;
+            return this;
+        }
+
         public Builder setIsMixRecorder(boolean isMixRecord) {
             mParam.isMixRecorder = isMixRecord;
+            return this;
+        }
+
+        public Builder setDeNoise(boolean deNoise) {
+            mParam.mHasDeNoise = deNoise;
+            return this;
+        }
+
+        public Builder setNeedTranscode(boolean needTranscode) {
+            mParam.mNeedTrancode = needTranscode;
             return this;
         }
 

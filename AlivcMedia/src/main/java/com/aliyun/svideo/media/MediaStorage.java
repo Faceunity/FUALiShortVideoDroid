@@ -524,28 +524,28 @@ public class MediaStorage {
                                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                                 videoInfo.id).toString();
 
-        Cursor thumbCursor = resolver.query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
-                                            new String[] {
-                                                MediaStore.Video.Thumbnails.DATA,
-                                                MediaStore.Video.Thumbnails.VIDEO_ID,
-                                                MediaStore.Video.Thumbnails._ID
-                                            },
-                                            MediaStore.Video.Thumbnails.VIDEO_ID + "=?",
-                                            new String[] {String.valueOf(videoInfo.id)}, null);
-
-        if (thumbCursor == null) {
-            return videoInfo;
-        }
-
-        if (thumbCursor.moveToFirst()) {
-            videoInfo.thumbnailPath = thumbCursor.getString(
-                                          thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA));
-            int id = thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails._ID);
-            videoInfo.thumbnailUri = ContentUris.withAppendedId(
-                                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                         thumbCursor.getInt(id)).toString();
-        }
-        thumbCursor.close();
+//        Cursor thumbCursor = resolver.query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
+//                                            new String[] {
+//                                                MediaStore.Video.Thumbnails.DATA,
+//                                                MediaStore.Video.Thumbnails.VIDEO_ID,
+//                                                MediaStore.Video.Thumbnails._ID
+//                                            },
+//                                            MediaStore.Video.Thumbnails.VIDEO_ID + "=?",
+//                                            new String[] {String.valueOf(videoInfo.id)}, null);
+//
+//        if (thumbCursor == null) {
+//            return videoInfo;
+//        }
+//
+//        if (thumbCursor.moveToFirst()) {
+//            videoInfo.thumbnailPath = thumbCursor.getString(
+//                                          thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA));
+//            int id = thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails._ID);
+//            videoInfo.thumbnailUri = ContentUris.withAppendedId(
+//                                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                                         thumbCursor.getInt(id)).toString();
+//        }
+//        thumbCursor.close();
 
         return videoInfo;
     }
@@ -567,32 +567,32 @@ public class MediaStorage {
         mediaInfo.fileUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, mediaInfo.id).toString();
 
         mediaInfo.addTime = cursor.getLong(colDateAdded);
-        Cursor thumbCursor = resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-                                            new String[] {
-                                                MediaStore.Images.Thumbnails.DATA,
-                                                MediaStore.Images.Thumbnails.IMAGE_ID
-                                            },
-                                            MediaStore.Images.Thumbnails.IMAGE_ID + "=?",
-                                            new String[] {String.valueOf(mediaInfo.id)}, null);
-        if (thumbCursor == null || thumbCursor.getCount() == 0) {
-            if (thumbCursor != null) {
-                thumbCursor.close();
-            }
-            thumbCursor = createThumbnailAndRequery(mediaInfo, resolver);
-        }
-        if (thumbCursor == null) {
-            return mediaInfo;
-        }
-        if (thumbCursor.moveToFirst()) {
-            mediaInfo.thumbnailPath = thumbCursor.getString(
-                                          thumbCursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA));
-            int id = thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID);
-
-            mediaInfo.thumbnailUri =  ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, thumbCursor.getInt(id)).toString();
-            checkIfNeedToRotateThumbnail(mediaInfo.filePath, mediaInfo.thumbnailPath);
-        }
-
-        thumbCursor.close();
+//        Cursor thumbCursor = resolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+//                                            new String[] {
+//                                                MediaStore.Images.Thumbnails.DATA,
+//                                                MediaStore.Images.Thumbnails.IMAGE_ID
+//                                            },
+//                                            MediaStore.Images.Thumbnails.IMAGE_ID + "=?",
+//                                            new String[] {String.valueOf(mediaInfo.id)}, null);
+//        if (thumbCursor == null || thumbCursor.getCount() == 0) {
+//            if (thumbCursor != null) {
+//                thumbCursor.close();
+//            }
+//            thumbCursor = createThumbnailAndRequery(mediaInfo, resolver);
+//        }
+//        if (thumbCursor == null) {
+//            return mediaInfo;
+//        }
+//        if (thumbCursor.moveToFirst()) {
+//            mediaInfo.thumbnailPath = thumbCursor.getString(
+//                                          thumbCursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA));
+//            int id = thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID);
+//
+//            mediaInfo.thumbnailUri =  ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, thumbCursor.getInt(id)).toString();
+//            checkIfNeedToRotateThumbnail(mediaInfo.filePath, mediaInfo.thumbnailPath);
+//        }
+//
+//        thumbCursor.close();
 
         return mediaInfo;
     }
@@ -649,6 +649,7 @@ public class MediaStorage {
                 all.thumbnailUrl = info.thumbnailPath;
                 all.id = -1;
                 all.resId = info.id;
+                all.type = info.type;
                 dirs.add(all);
             }
             dirs.add(dirInfo);

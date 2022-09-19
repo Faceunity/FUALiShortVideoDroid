@@ -8,4 +8,5 @@ import android.database.sqlite.SQLiteDatabase;
 
 public interface DbUpgradeListener {
     void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
+    void onCipherUpgrade(net.sqlcipher.database.SQLiteDatabase db, int oldVersion, int newVersion);
 }

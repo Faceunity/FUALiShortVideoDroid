@@ -2,13 +2,13 @@ package com.aliyun.svideo.base.utils;
 
 import android.util.Log;
 
-import com.duanqu.transcode.NativeParser;
+import com.aliyun.svideosdk.transcode.NativeParser;
 
 import java.util.LinkedHashMap;
 
 /**
  * @author cross_ly DATE 2019/08/16
- * <p>描述:视频信息工具类，基于{@link com.duanqu.transcode.NativeParser}
+ * <p>描述:视频信息工具类，基于{@link com.aliyun.svideosdk.transcode.NativeParser}
  */
 public class VideoInfoUtils {
 

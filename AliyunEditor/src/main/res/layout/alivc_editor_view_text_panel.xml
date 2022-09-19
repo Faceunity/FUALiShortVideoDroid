@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/fl_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_40"
+        android:layout_marginLeft="@dimen/alivc_common_keyline_tittle_bar_left"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:textSize="@dimen/alivc_common_font_16"
+        android:layout_marginRight="@dimen/alivc_common_keyline_tittle_bar_right"
+        android:background="@drawable/alivc_svideo_shape_text_editor_bg"
+        android:focusable="true"
+        android:hint="输入文字" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_45"
+        android:layout_marginTop="5dp"
+        android:background="@color/alivc_common_bg_black_alpha_70"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/alivc_common_margin_30"
+            android:layout_height="@dimen/alivc_common_margin_30"
+            android:src="@mipmap/aliyun_svideo_icon_back" />
+
+        <ImageView
+            android:layout_width="@dimen/alivc_common_line_1dp"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/alivc_common_padding_10"
+            android:paddingBottom="@dimen/alivc_common_padding_10"
+            android:src="#979797" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_tab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/alivc_common_bg_black_alpha_70" />
+
+
+        <ImageView
+            android:layout_width="@dimen/alivc_common_line_1dp"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/alivc_common_padding_10"
+            android:paddingBottom="@dimen/alivc_common_padding_10"
+            android:src="#979797" />
+
+        <ImageView
+            android:id="@+id/iv_confirm"
+            android:layout_width="@dimen/alivc_common_height_group_30"
+            android:layout_height="@dimen/alivc_common_height_group_30"
+            android:padding="@dimen/alivc_common_padding_4"
+            android:src="@mipmap/aliyun_svideo_icon_effect_confirm" />
+    </LinearLayout>
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+         />
+
+
+</LinearLayout>

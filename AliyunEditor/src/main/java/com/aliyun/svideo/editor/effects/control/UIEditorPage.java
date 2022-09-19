@@ -3,6 +3,7 @@
  */
 
 package com.aliyun.svideo.editor.effects.control;
+
 /**
  * NOTE: item order must match
  */
@@ -19,6 +20,10 @@ public enum UIEditorPage {
      * 动图
      */
     OVERLAY,
+    /**
+     * 3.22字幕
+     */
+    COMPOUND_CAPTION,
     /**
      * 字幕
      */
@@ -49,25 +54,30 @@ public enum UIEditorPage {
      */
     PAINT,
     /**
-     *封面
+     * 封面
      */
     COVER,
     /**
      * 视频增强
-     * */
+     */
     VIDEOEQ,
     /**
      * 翻滚字幕
      */
     ROLL_CAPTION,
     /**
+     * 画中画
+     */
+    PIP,
+    LUT,
+    /**
      * 字体
      */
     FONT;
 
 
-    public static
-    UIEditorPage get(int index) {
+
+    public static UIEditorPage get(int index) {
         return values()[index];
     }
 

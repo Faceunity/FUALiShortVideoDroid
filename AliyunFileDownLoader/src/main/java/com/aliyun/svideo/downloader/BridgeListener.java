@@ -131,26 +131,36 @@ class BridgeListener extends FileDownloadListener {
                                 File sourceFile = new File(task.getPath());
                                 File descFile = new File(task.getPath() + "tmp");
                                 boolean isRename = sourceFile.renameTo(descFile);
-                                //File descFile = new File(task.getPath() + "tmp");
-                                //if(sourceFile.exists() && !sourceFile.isDirectory()) {
-                                //    try {
-                                //        FileUtils.copyFile(sourceFile, descFile, true);
-                                //    } catch (Exception e) {
-                                //        e.printStackTrace();
-                                //    } finally {
-                                //        if(sourceFile.exists()) {
-                                //            sourceFile.delete();
-                                //        }
-                                //    }
-                                //}
 
-                                File file = new File(FileDownloadUtils.getDefaultSaveRootPath(), StringUtils.subString(task.getPath()));
-                                boolean success = file.mkdirs();
+                                String savePath = "";
+                                switch (model.getEffectType()){
+                                    case FileDownloaderModel.EFFECT_MV:
+                                        savePath = sourceFile.getParentFile().getPath();
+                                        break;
+                                    case FileDownloaderModel.EFFECT_TEXT:
+                                    case FileDownloaderModel.EFFECT_ANIMATION_FILTER:
+                                    case FileDownloaderModel.EFFECT_TRANSITION:
+                                    case FileDownloaderModel.EFFECT_PASTER:
+                                    case FileDownloaderModel.EFFECT_CAPTION:
+                                        savePath = task.getPath();
+                                        break;
+                                    default:
+                                        savePath = FileDownloadUtils.getDefaultSaveRootPath() + File.separator + StringUtils.subString(task.getPath());
+                                }
+                                File file = new File(savePath);
+                                boolean success = true;
+                                if (!file.exists() || !file.isDirectory()) {
+                                    success = file.mkdirs();
+                                }
 
                                 if (success && descFile.exists() && isRename) {
                                     ZIPFileProcessor zipFileProcessor = new ZIPFileProcessor(file, task.getDownloadId());
                                     outFile = zipFileProcessor.process(descFile);
                                     if (outFile != null) {
+                                        //mv做特殊处理
+                                        if (model.getEffectType() == FileDownloaderModel.EFFECT_MV) {
+                                            model.setPath(savePath);
+                                        }
                                         DownloaderManager.getInstance().getDbController().addTask(model);
                                     }
                                 } else {

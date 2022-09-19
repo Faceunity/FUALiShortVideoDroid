@@ -2,6 +2,7 @@
 <resources>
 
     <array name="qupai_text_edit_colors">
+        <item>#FFF9FAFB</item>
         <item>#FFF8AA99</item>
         <item>#FFFFC580</item>
         <item>#FFFFEA8A</item>
@@ -10,7 +11,6 @@
         <item>#FFB4E0FA</item>
         <item>#FFB3BCF5</item>
         <item>#FFE3D0FF</item>
-        <item>#FFF9FAFB</item>
         <item>#FFF4775C</item>
         <item>#FFFFA133</item>
         <item>#FFEDC200</item>
@@ -72,7 +72,12 @@
     <color name="alivc_edit_animation_filter_color5">#E6798ECD</color>
 
     <color name="alivc_edit_font_gray_unselected">#606E7C</color>
-    
+
     <color name="alivc_edit_roll_caption_checkbox_checked">#007ACE</color>
     <color name="alivc_edit_roll_caption_checkbox_unchecked">#F9FAFB</color>
+    <color name="alivc_edit_template_item_bg">#527193</color>
+    <color name="alivc_svideo_template_editor_group_title_selected">#d6204b</color>
+    <color name="alivc_svideo_template_edit_text_bg">#99d6204b</color>
+    <color name="alivc_svideo_template_edit_text_input_bg">#333333</color>
+    <color name="alivc_svideo_template_edit_text_draft">#eed9a1</color>
 </resources>

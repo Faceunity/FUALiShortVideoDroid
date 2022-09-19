@@ -4,6 +4,7 @@
 
 package com.aliyun.svideo.recorder.view.effects.filter;
 
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.editor.TimeEffectType;
 import com.aliyun.svideosdk.common.struct.form.AspectForm;
 
@@ -44,15 +45,65 @@ public class EffectInfo {
 
     public long streamEndTime;
 
-    String path;
+    Source mSource;
 
     public int musicWeight;
 
+    /**
+     * 获取资源文件路径
+     * @deprecated 使用 {@link #getSource()}替代
+     * @return 资源文件路径
+     */
+    /****
+     * Gets the file of a resource.
+     * @deprecated Replaced by {@link ##getSource()}.
+     * @return path
+     */
+    @Deprecated
     public String getPath() {
-        return path;
+        if (mSource != null) {
+            return mSource.getPath();
+        }
+        return null;
     }
 
+    /**
+     * 设置资源文件路径
+     * @param path
+     * @deprecated 使用 {@link #setSource(Source)}替代
+     */
+    /****
+     * Sets the file of a resource.
+     * @param path
+     * @deprecated Replaced by {@link #setSource(Source)}.
+     */
+    @Deprecated
     public void setPath(String path) {
-        this.path = path;
+        mSource = new Source(path);
+    }
+
+    /**
+     * 获取资源
+     *
+     * @return 资源
+     */
+    /****
+     * Gets the file of a resource.
+     * @return Source
+     */
+    public Source getSource() {
+        return mSource;
+    }
+
+    /**
+     * 设置资源
+     * @param source 资源
+     */
+    /****
+     * Sets the file of a resource.
+     * @param source Source
+     */
+    public void setSource(final Source source) {
+        mSource = source;
     }
 }

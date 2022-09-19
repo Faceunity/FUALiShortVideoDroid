@@ -6,10 +6,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,6 +52,7 @@ import com.aliyun.svideosdk.common.struct.effect.ValueTypeEnum;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class AnimationFilterChooserView extends BaseChooser
     implements OnItemClickListener, OnItemTouchListener, View.OnClickListener {
@@ -134,9 +136,9 @@ public class AnimationFilterChooserView extends BaseChooser
                     //添加特效开始时，关闭特效界面点击
                     //setThumbScrollEnable(false);
                     setClickable(false);
-                    info.streamStartTime = mPlayerListener.getCurrDuration();
-                    if (mCurrentEffect == null || !info.getPath().equals(mCurrentEffect.getPath())) {
-                        mCurrentEffect = new EffectFilter(info.getPath());
+                    info.streamStartTime = TimeUnit.MILLISECONDS.toMicros(mPlayerListener.getCurrDuration());
+                    if (mCurrentEffect == null || !info.getSource().equals(mCurrentEffect.getSource())) {
+                        mCurrentEffect = new EffectFilter(info.getSource());
                     }
                     showEffectParamsUI(mCurrentEffect);
                     Dispatcher.getInstance().postMsg(new LongClickAnimationFilter.Builder()
@@ -160,7 +162,7 @@ public class AnimationFilterChooserView extends BaseChooser
 
     public EffectConfig copyEffectConfig() {
 
-        EffectFilter effectFilter = new EffectFilter(mCurrentEffect.getPath());
+        EffectFilter effectFilter = new EffectFilter(mCurrentEffect.getSource());
         mCurrentEffect.copy(effectFilter);
         return effectFilter.getEffectConfig();
     }
@@ -309,8 +311,15 @@ public class AnimationFilterChooserView extends BaseChooser
         extFile.setPath(EditorCommon.QU_DIR + EditorCommon.QU_ANIMATION_FILTER);
         extFile.setNameEn("default");
         extFile.setName("默认");
-        extFile.setId(mFilterList4Category.size());
+        extFile.setId(EditorCommon.QU_ANIMATION_FILTER_ID);
         downloadmodels.add(0, extFile);
+
+        FileDownloaderModel splitScreen = new FileDownloaderModel();
+        splitScreen.setPath(EditorCommon.QU_DIR + EditorCommon.QU_ANIMATION_SPLIT_SCREEN_FILTER);
+        splitScreen.setNameEn("split screen");
+        splitScreen.setName("分屏");
+        splitScreen.setId(EditorCommon.QU_ANIMATION_SPLIT_SCREEN_FILTER_ID);
+        downloadmodels.add(splitScreen);
 
         if (downloadmodels.size() > 0) {
             for (FileDownloaderModel model : downloadmodels) {
@@ -371,7 +380,7 @@ public class AnimationFilterChooserView extends BaseChooser
             List<String> list = EditorCommon.getAnimationFilterListByDir(resourceForm.getPath());
             //添加撤销
             list.add(0, null);
-            mFilterAdapter.setDataList(list);
+            mFilterAdapter.setDataList(resourceForm.getId(), list);
             mFilterAdapter.notifyDataSetChanged();
         }
     }

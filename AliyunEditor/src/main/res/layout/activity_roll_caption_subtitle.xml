@@ -58,7 +58,7 @@
         android:visibility="gone"
         android:layout_height="@dimen/alivc_common_height_group_100" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/roll_caption_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,6 +66,6 @@
         android:background="@color/alivc_common_bg_black_alpha_30"
         android:layout_below="@id/title" >
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

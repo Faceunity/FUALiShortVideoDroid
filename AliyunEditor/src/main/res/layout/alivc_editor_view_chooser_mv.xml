@@ -16,7 +16,22 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/alivc_common_line_1px"
         android:background="@color/alivc_common_line_gray_light"/>
-    <android.support.v7.widget.RecyclerView
+    <SeekBar
+        android:visibility="gone"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:id="@+id/seek_bar"
+        android:max="100"
+        android:progress="100"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:background="@null"
+        android:layout_centerHorizontal="true"
+       />
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/effect_list_filter"
         android:layout_width="match_parent"
         android:overScrollMode="never"

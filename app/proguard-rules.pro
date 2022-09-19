@@ -47,14 +47,7 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
-######################conan混淆配置#########################
--keepattributes *Annotation*
--keep class com.alivc.conan.DoNotProguard
--keep,allowobfuscation @interface com.alivc.conan.DoNotProguard
--keep @com.alivc.conan.DoNotProguard class *
--keepclassmembers class * {
-    @com.alivc.conan.DoNotProguard *;
-}
+
 ######################短视频混淆配置#########################
 -keep class com.aliyun.**{*;}
 -keep class com.duanqu.**{*;}
@@ -67,3 +60,10 @@
 ######################glide 混淆配置#########################
 -keep class com.bumptech.glide{*;}
 -keep class com.bumptech.glide.**{*;}
+
+-keep class com.alivc.**{*;}
+-keep class com.aliyun.**{*;}
+-keep class com.cicada.**{*;}
+-dontwarn com.alivc.**
+-dontwarn com.aliyun.**
+-dontwarn com.cicada.**

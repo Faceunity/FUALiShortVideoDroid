@@ -14,9 +14,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.aliyun.common.utils.MySystemParams;
 import com.aliyun.common.utils.StorageUtils;
+import com.aliyun.svideo.base.beauty.api.constant.BeautySDKType;
 import com.aliyun.svideo.base.http.MusicFileBean;
 import com.aliyun.svideo.base.widget.ProgressDialog;
 import com.aliyun.svideo.common.utils.PermissionUtils;
@@ -33,7 +35,6 @@ import com.aliyun.svideo.common.utils.UriUtils;
 import com.aliyun.svideo.media.MediaInfo;
 import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.bean.AlivcRecordInputParam;
-import com.aliyun.svideo.recorder.bean.RenderingMode;
 import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
 import com.aliyun.svideo.recorder.mixrecorder.AlivcRecorder;
 import com.aliyun.svideo.recorder.mixrecorder.AlivcRecorderFactory;
@@ -72,10 +73,10 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
      * 权限申请
      */
     String[] permission = {
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     private Toast phoningToast;
     private PhoneStateManger phoneStateManger;
@@ -126,23 +127,24 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
     private void initRecord() {
         mVideoRecordView.setActivity(this);
         if (mInputParam != null) {
-            mVideoRecordView.setGop(mInputParam.getGop());
             mVideoRecordView.isUseFlip(mInputParam.isUseFlip());
             mVideoRecordView.setMaxRecordTime(mInputParam.getMaxDuration());
             mVideoRecordView.setMinRecordTime(mInputParam.getMinDuration());
             mVideoRecordView.setRatioMode(mInputParam.getRatioMode());
-            mVideoRecordView.setVideoQuality(mInputParam.getVideoQuality());
             mVideoRecordView.setResolutionMode(mInputParam.getResolutionMode());
-            mVideoRecordView.setVideoCodec(mInputParam.getVideoCodec());
             mVideoRecordView.setRenderingMode(mInputParam.getmRenderingMode());
             mVideoRecordView.setSvideoRace(mInputParam.isSvideoRace());
             AlivcRecorder alivcRecorder = (AlivcRecorder)AlivcRecorderFactory.createAlivcRecorderFactory(AlivcRecorderFactory.RecorderType.GENERAL, this);
             com.aliyun.svideosdk.common.struct.recorder.MediaInfo outputInfo = new com.aliyun.svideosdk.common.struct.recorder.MediaInfo();
             outputInfo.setFps(35);
+            outputInfo.setGop(mInputParam.getGop());
+            outputInfo.setVideoCodec(mInputParam.getVideoCodec());
+            outputInfo.setVideoQuality(mInputParam.getVideoQuality());
             outputInfo.setVideoWidth(mInputParam.getVideoWidth());
             outputInfo.setVideoHeight(mInputParam.getVideoHeight());
             outputInfo.setVideoCodec(mInputParam.getVideoCodec());            //配置录制recorder
             alivcRecorder.setMediaInfo(outputInfo);
+            alivcRecorder.setIsAutoClearClipVideos(mInputParam.isAutoClearTemp());
             mVideoRecordView.setRecorder(alivcRecorder);
         }
         if (PermissionUtils.checkPermissionsGroup(this, PermissionUtils.PERMISSION_STORAGE)) {
@@ -180,7 +182,7 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
 
     private void setAssetPath() {
         String path = StorageUtils.getCacheDirectory(this).getAbsolutePath() + File.separator + RecordCommon.QU_NAME
-                + File.separator;
+                      + File.separator;
         File filter = new File(new File(path), "filter");
         String[] list = filter.list();
         if (list == null || list.length == 0) {
@@ -199,7 +201,7 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
             @Override
             public void run() {
                 copyAssetsTask = new CopyAssetsTask(AlivcSvideoRecordActivity.this).executeOnExecutor(
-                        AsyncTask.THREAD_POOL_EXECUTOR);
+                    AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }, 700);
 
@@ -235,7 +237,7 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
             AlivcSvideoRecordActivity activity = weakReference.get();
             if (activity != null) {
                 RecordCommon.copyAll(activity);
-//                RecordCommon.copyRace(activity);
+                RecordCommon.copyQueen(activity);
             }
             return null;
         }
@@ -263,6 +265,7 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
         int maxDuration = intent.getIntExtra(AlivcRecordInputParam.INTENT_KEY_MAX_DURATION, AlivcRecordInputParam.DEFAULT_VALUE_MAX_DURATION);
         int minDuration = intent.getIntExtra(AlivcRecordInputParam.INTENT_KEY_MIN_DURATION, AlivcRecordInputParam.DEFAULT_VALUE_MIN_DURATION);
         int ratioMode = intent.getIntExtra(AlivcRecordInputParam.INTENT_KEY_RATION_MODE, AlivcRecordInputParam.RATIO_MODE_9_16);
+        boolean watermark = intent.getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_WATER_MARK, true);
         int gop = intent.getIntExtra(AlivcRecordInputParam.INTENT_KEY_GOP, AlivcRecordInputParam.DEFAULT_VALUE_GOP);
         int frame = intent.getIntExtra(AlivcRecordInputParam.INTENT_KEY_FRAME, AlivcRecordInputParam.DEFAULT_VALUE_FRAME);
         VideoQuality videoQuality = (VideoQuality) intent.getSerializableExtra(AlivcRecordInputParam.INTENT_KEY_QUALITY);
@@ -273,29 +276,32 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
         if (videoCodec == null) {
             videoCodec = VideoCodecs.H264_HARDWARE;
         }
-        RenderingMode renderingMode = (RenderingMode) intent.getSerializableExtra(AlivcRecordInputParam.INTENT_KEY_VIDEO_RENDERING_MODE);
+        BeautySDKType renderingMode = (BeautySDKType) intent.getSerializableExtra(AlivcRecordInputParam.INTENT_KEY_VIDEO_RENDERING_MODE);
         if (renderingMode == null) {
-            renderingMode = RenderingMode.FaceUnity;
+            renderingMode = BeautySDKType.FACEUNITY;
         }
         String videoOutputPath = intent.getStringExtra(AlivcRecordInputParam.INTENT_KEY_VIDEO_OUTPUT_PATH);
         boolean isUseFlip = intent.getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_RECORD_FLIP, false);
-        boolean isSvideoRace = intent.getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_RACE, false);
+        boolean isSvideoQueen = intent.getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_QUEEN, false);
+        boolean isAutoClear = intent.getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_IS_AUTO_CLEAR, false);
         //获取录制输入参数
         mInputParam = new AlivcRecordInputParam.Builder()
-                .setResolutionMode(resolutionMode)
-                .setRatioMode(ratioMode)
-                .setMaxDuration(maxDuration)
-                .setMinDuration(minDuration)
-                .setGop(gop)
-                .setFrame(frame)
-                .setVideoQuality(videoQuality)
-                .setVideoCodec(videoCodec)
-                .setVideoOutputPath(videoOutputPath)
-                .setVideoRenderingMode(renderingMode)
-                .setIsUseFlip(isUseFlip)
-                .setSvideoRace(isSvideoRace)
-                .setPlayDisplayParam(new VideoDisplayParam.Builder().build())
-                .build();
+        .setResolutionMode(resolutionMode)
+        .setRatioMode(ratioMode)
+        .setMaxDuration(maxDuration)
+        .setMinDuration(minDuration)
+        .setGop(gop)
+        .setWaterMark(watermark)
+        .setFrame(frame)
+        .setVideoQuality(videoQuality)
+        .setVideoCodec(videoCodec)
+        .setVideoOutputPath(videoOutputPath)
+        .setVideoRenderingMode(renderingMode)
+        .setIsUseFlip(isUseFlip)
+        .setSvideoRace(isSvideoQueen)
+        .setIsAutoClearTemp(isAutoClear)
+        .setPlayDisplayParam(new VideoDisplayParam.Builder().build())
+        .build();
     }
 
 
@@ -383,8 +389,8 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
 
                     } else {
                         MediaScannerConnection.scanFile(AlivcSvideoRecordActivity.this.getApplicationContext(),
-                                new String[] {path},
-                                new String[] {"video/mp4"}, null);
+                                                        new String[] {path},
+                                                        new String[] {"video/mp4"}, null);
                         ToastUtils.show(AlivcSvideoRecordActivity.this, "已保存到相册");
                         AlivcSvideoRecordActivity.this.finish();
                     }
@@ -410,7 +416,7 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
                 intent.putExtra("mResolutionMode", mInputParam.getResolutionMode());
                 intent.putExtra("mVideoCodec", mInputParam.getVideoCodec());
                 intent.putExtra("canReplaceMusic", isUseMusic);
-                intent.putExtra("hasWaterMark", true);
+                intent.putExtra("hasWaterMark", mInputParam.hasWaterMark());
                 intent.putParcelableArrayListExtra("mediaInfos", infoList);
                 AlivcSvideoRecordActivity.this.startActivity(intent);
 
@@ -498,7 +504,9 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_VIDEO_OUTPUT_PATH, recordInputParam.getVideoOutputPath());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_VIDEO_RENDERING_MODE, recordInputParam.getmRenderingMode());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_RECORD_FLIP, recordInputParam.isUseFlip());
-        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_RACE, recordInputParam.isSvideoRace());
+        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_QUEEN, recordInputParam.isSvideoRace());
+        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_IS_AUTO_CLEAR, recordInputParam.isAutoClearTemp());
+        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_WATER_MARK, recordInputParam.hasWaterMark());
         context.startActivity(intent);
     }
 
@@ -534,7 +542,7 @@ public class AlivcSvideoRecordActivity extends AppCompatActivity {
 
     private void showPermissionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.app_name) + getResources().getString(R.string.alivc_recorder_record_dialog_permission_remind));
+        builder.setMessage(getString(R.string.ugc_app_name) + getResources().getString(R.string.alivc_recorder_record_dialog_permission_remind));
         builder.setPositiveButton(getResources().getString(R.string.alivc_record_request_permission_positive_btn_text), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

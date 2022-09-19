@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="85dp"
+    android:layout_height="102dp">
+
+    <FrameLayout
+        android:id="@+id/layout_item"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_cover"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/tv_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/alivc_common_white"
+            android:textSize="@dimen/alivc_common_font_14"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_edit"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/alivc_svideo_template_edit_text_bg"
+            android:drawableTop="@mipmap/alivc_svideo_icon_template_edit"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="15dp"
+            android:text="点击编辑"
+            android:textColor="@color/alivc_common_white"
+            android:textSize="@dimen/alivc_common_font_12" />
+
+        <ImageButton
+            android:id="@+id/iv_lock"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/alivc_common_bg_black_alpha_30"
+            android:src="@mipmap/alivc_svideo_icon_template_clip_lock" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/iv_index"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/alivc_common_white"
+        android:textSize="@dimen/alivc_common_font_14"
+        android:textStyle="bold" />
+
+
+</FrameLayout>

@@ -26,10 +26,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aliyun.common.global.AliyunTag;
-import com.aliyun.svideo.editor.effects.caption.TextDialog;
 import com.aliyun.svideo.editor.util.ChineseUtil;
 import com.aliyun.svideo.editor.util.CompatUtil;
-import com.aliyun.nativerender.BitmapGenerator;
+import com.aliyun.svideosdk.nativerender.BitmapGenerator;
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.editor.impl.text.TextBitmap;
 import com.aliyun.svideosdk.editor.impl.text.TextBitmapGenerator;
 
@@ -75,7 +75,7 @@ public class AutoResizingTextView extends TextView implements BitmapGenerator {
     private int mRight; //动图文字配置左边偏移
     private int mBottom; //动图文字配置底部偏移
 
-    private String mFontPath;
+    private Source mFontSource;
 
     private boolean isEditCompleted = false;
     private boolean isMirror;
@@ -378,19 +378,38 @@ public class AutoResizingTextView extends TextView implements BitmapGenerator {
         this.mRight = mRight;
     }
 
+    /**
+     * @deprecated 使用 {@link #setFontSource(Source)}替代
+     */
+    @Deprecated
     public void setFontPath(String fontPath) {
-        mFontPath = fontPath;
-        if (TextUtils.isEmpty(fontPath)) {
+        setFontSource(new Source(fontPath));
+    }
+
+    /**
+     * @deprecated 使用 {@link #getFontSource()}替代
+     */
+    @Deprecated
+    public String getFontPath() {
+        if (mFontSource != null) {
+            return mFontSource.getPath();
+        }
+        return null;
+    }
+
+    public void setFontSource(Source fontSource) {
+        mFontSource = fontSource;
+        if (fontSource == null ||TextUtils.isEmpty(fontSource.getPath())) {
             setTypeface(Typeface.DEFAULT);
         } else {
-            if (new File(mFontPath).exists()) {
-                setTypeface(Typeface.createFromFile(fontPath));
+            if (new File(fontSource.getPath()).exists()) {
+                setTypeface(Typeface.createFromFile(fontSource.getPath()));
             }
         }
     }
 
-    public String getFontPath() {
-        return mFontPath;
+    public Source getFontSource() {
+        return mFontSource;
     }
 
     public void restore(int width, int height) {
@@ -591,11 +610,10 @@ public class AutoResizingTextView extends TextView implements BitmapGenerator {
     private int efficientTextSizeSearch(int start, int end,
                                         SizeTester sizeTester, RectF availableSpace) {
         String text = getText().toString();
-        if (isTextOnly) {
-            //添加10个字换行
-            text = TextDialog.lineFeedText(getText().toString());
-        }
-
+        //if (isTextOnly) {
+        //    //添加10个字换行
+        //    text = TextDialog.lineFeedText(getText().toString());
+        //}
         int textSize = binarySearch(start, end, text, sizeTester, availableSpace);
         return textSize;
     }
@@ -812,7 +830,9 @@ public class AutoResizingTextView extends TextView implements BitmapGenerator {
             mBitmapGenerator = new TextBitmapGenerator();
         }
         mTextBitmap.mText = getText().toString();
-        mTextBitmap.mFontPath = mFontPath;
+        if (mFontSource != null) {
+            mTextBitmap.mFontPath =  mFontSource.getPath();
+        }
         mTextBitmap.mBmpWidth = bmpWidth;
         mTextBitmap.mBmpHeight = bmpHeight;
         mTextBitmap.mTextWidth = bmpWidth;

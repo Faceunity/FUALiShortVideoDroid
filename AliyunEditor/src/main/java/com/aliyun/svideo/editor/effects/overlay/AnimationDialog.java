@@ -9,8 +9,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -19,8 +17,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.svideo.editor.R;
-import com.aliyun.svideo.editor.effects.caption.TextDialog;
 import com.aliyun.svideo.editor.effects.control.SpaceItemDecoration;
 import com.aliyun.svideo.editor.util.FixedToastUtils;
 import com.aliyun.svideosdk.common.struct.effect.ActionBase;
@@ -73,7 +74,7 @@ public class AnimationDialog extends DialogFragment {
     public static class PasterInfo implements Serializable {
 
         public ActionBase mAnimation;
-        public int mAnimationSelect;//字体动画选择的selectPosition
+        public int mAnimationSelect = -1;//字体动画选择的selectPosition
     }
 
     @Override
@@ -134,7 +135,47 @@ public class AnimationDialog extends DialogFragment {
 
         RecyclerView recyclerView = contentView.findViewById(R.id.font_animation_view);
         AnimationAdapter animationAdapter = new AnimationAdapter(contentView.getContext());
-        animationAdapter.setSelectPosition(pasterInfo.mAnimationSelect);
+        if (pasterInfo.mAnimationSelect == -1 && mActionBase != null) {
+            if (mActionBase instanceof ActionTranslate) {
+                if (((ActionTranslate) mActionBase).getToPointY() == 1f) {
+                    pasterInfo.mAnimationSelect = EFFECT_UP;
+                } else if (((ActionTranslate) mActionBase).getToPointY() == -1f) {
+                    pasterInfo.mAnimationSelect = EFFECT_DOWN;
+                } else if (((ActionTranslate) mActionBase).getToPointX() == 1f) {
+                    pasterInfo.mAnimationSelect = EFFECT_RIGHT;
+                } else if (((ActionTranslate) mActionBase).getToPointX() == -1f) {
+                    pasterInfo.mAnimationSelect = EFFECT_LEFT;
+                } else {
+                    if (((ActionTranslate) mActionBase).getFromPointX() == -1f) {
+                        //向右平移
+                        pasterInfo.mAnimationSelect = EFFECT_RIGHT;
+                    } else if (((ActionTranslate) mActionBase).getFromPointX() == 1f) {
+                        //向左平移
+                        pasterInfo.mAnimationSelect = EFFECT_LEFT;
+                    } else if (((ActionTranslate) mActionBase).getFromPointY() > 0) {
+                        //向下平移
+                        pasterInfo.mAnimationSelect = EFFECT_DOWN;
+                    } else if (((ActionTranslate) mActionBase).getFromPointY() < 0) {
+                        //向上平移
+                        pasterInfo.mAnimationSelect = EFFECT_UP;
+                    } else {
+                        pasterInfo.mAnimationSelect = EFFECT_NONE;
+                    }
+                }
+            } else if (mActionBase instanceof ActionScale) {
+                pasterInfo.mAnimationSelect = EFFECT_SCALE;
+            } else if (mActionBase instanceof ActionWipe) {
+                pasterInfo.mAnimationSelect = EFFECT_LINEARWIPE;
+            } else if (mActionBase instanceof ActionFade) {
+                pasterInfo.mAnimationSelect = EFFECT_FADE;
+            } else {
+                pasterInfo.mAnimationSelect = EFFECT_NONE;
+            }
+        }
+        if (pasterInfo.mAnimationSelect != -1) {
+            mAnimationSelectPosition = pasterInfo.mAnimationSelect;
+            animationAdapter.setSelectPosition(pasterInfo.mAnimationSelect);
+        }
         animationAdapter.setOnItemClickListener(mOnItemClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(contentView.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);

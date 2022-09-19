@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/demo_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_white"
+    android:orientation="vertical">
+
+    <com.aliyun.svideo.base.widget.RecordTimelineView
+        android:id="@+id/record_timeline"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="6dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ib_pencil"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@mipmap/alivc_svideo_icon_board_edit" />
+
+        <ImageButton
+            android:id="@+id/ib_pen"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@mipmap/alivc_svideo_icon_brush" />
+
+        <ImageButton
+            android:id="@+id/ib_rudder"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@mipmap/alivc_svideo_icon_rudder" />
+
+        <ImageButton
+            android:id="@+id/ib_color"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@mipmap/alivc_svideo_icon_palette" />
+
+        <ImageButton
+            android:id="@+id/ib_left"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@mipmap/alivc_svideo_icon_left_revoke" />
+
+        <ImageButton
+            android:id="@+id/ib_right"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@mipmap/alivc_svideo_icon_right_revoke" />
+
+        <ImageButton
+            android:id="@+id/ib_clear"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@mipmap/alivc_svideo_icon_clear" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/alivc_common_bg_black">
+
+        <RelativeLayout
+            android:id="@+id/record_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.aliyun.svideo.recorder.view.borad.DrawingBoard
+                android:id="@+id/paint_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/alivc_common_bg_white_bright" />
+
+            <FrameLayout
+                android:id="@+id/camera_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/camera_ctrl_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            android:layout_marginLeft="@dimen/alivc_common_margin_16"
+            android:layout_marginBottom="@dimen/alivc_common_margin_16"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ctrl_icon_music"
+                style="@style/MultiRecorderCameraCtrlIcon"
+                android:src="@mipmap/aliyun_svideo_music" />
+
+            <ImageView
+                android:id="@+id/ctrl_icon_filter"
+                style="@style/MultiRecorderCameraCtrlIcon"
+                android:src="@mipmap/aliyun_svideo_filter" />
+
+            <ImageView
+                android:id="@+id/ctrl_icon_gif"
+                style="@style/MultiRecorderCameraCtrlIcon"
+                android:src="@mipmap/alivc_svideo_icon_gif_effect" />
+
+            <ImageView
+                android:id="@+id/ctrl_icon_photo"
+                style="@style/MultiRecorderCameraCtrlIcon"
+                android:src="@mipmap/alivc_svideo_take_photo" />
+
+            <ImageView
+                android:id="@+id/ctrl_icon_beauty"
+                style="@style/MultiRecorderCameraCtrlIcon"
+                android:src="@mipmap/alivc_svideo_icon_beauty_face" />
+
+            <ImageView
+                android:id="@+id/ctrl_icon_switch"
+                style="@style/MultiRecorderCameraCtrlIcon"
+                android:src="@mipmap/alivc_svideo_icon_magic_turn" />
+
+            <ImageView
+                android:id="@+id/ctrl_icon_flash"
+                style="@style/MultiRecorderCameraCtrlIcon"
+                android:src="@mipmap/aliyun_svideo_icon_magic_light_off" />
+
+            <ImageView
+                android:id="@+id/ctrl_icon_ratio"
+                style="@style/MultiRecorderCameraCtrlIcon"
+                android:src="@mipmap/alivc_svideo_icon_aspect_ratio" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/switch_record_mute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="静音"
+            android:textColor="@color/alivc_common_font_black" />
+
+        <Switch
+            android:id="@+id/switch_record_watermark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:checked="false"
+            android:text="水印"
+            android:textColor="@color/alivc_common_font_black" />
+
+        <Switch
+            android:id="@+id/switch_record_denoise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:checked="false"
+            android:text="降噪"
+            android:textColor="@color/alivc_common_font_black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/switch_record_mixaudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="混音"
+            android:textColor="@color/alivc_common_font_black" />
+
+        <Switch
+            android:id="@+id/switch_record_aec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:checked="false"
+            android:text="回声消除"
+            android:textColor="@color/alivc_common_font_black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/record_rate_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="录制速率"
+            android:textColor="@color/alivc_common_font_black" />
+
+        <SeekBar
+            android:id="@+id/record_rate_seekbar"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:max="20"
+            android:min="5"
+            android:progress="10" />
+
+        <TextView
+            android:id="@+id/record_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1.0"
+            android:textColor="@color/alivc_common_font_black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_btn_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/record_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnClickRecord"
+            android:text="开启录制" />
+
+        <Button
+            android:id="@+id/finish_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:onClick="btnFinishRecord"
+            android:text="完成录制"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/delete_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:onClick="btnDeleteRecord"
+            android:text="回删"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>

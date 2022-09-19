@@ -21,7 +21,7 @@ public class ThumbLineOverlay {
     public static final byte STATE_ACTIVE = 1; //激活态（编辑态）
     public static final byte STATE_FIX = 2;    //固定态(非编辑态)
     private byte mState;
-    private long mMinDuration = 2000000;   //最小时长，到达最小时长内再无法缩减, 默认2s
+    private long mMinDuration = 2000;   //最小时长，到达最小时长内再无法缩减, 默认2s
     private long mMaxDuration = 0;
 
     public long mDuration;     //时长
@@ -61,9 +61,9 @@ public class ThumbLineOverlay {
         if (!mIsInvert) {
             if (mDuration < mMinDuration) {//不满足最小时长，则默认设置为最小时长
                 mDuration = mMinDuration;
-            } else if (mMaxDuration - startTime <= 100000) {
+            } else if (mMaxDuration - startTime <= 100) {
                 //如果startTime比最大时长大，则要向前移动，保证不超出范围。
-                startTime = mMaxDuration  - 100000;
+                startTime = mMaxDuration  - 100;
                 mDuration = mMaxDuration - startTime;
             } else if (mDuration + startTime > mMaxDuration) {
                 //如果动图时长+startTime比最大时长大，则要向前移动，保证不超出范围。

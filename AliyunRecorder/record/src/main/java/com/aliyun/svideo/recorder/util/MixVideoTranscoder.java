@@ -21,7 +21,7 @@ import com.aliyun.svideosdk.common.struct.common.MediaType;
 import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
 import com.aliyun.svideosdk.common.struct.common.VideoQuality;
 import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
-import com.duanqu.transcode.NativeParser;
+import com.aliyun.svideosdk.transcode.NativeParser;
 
 /**
  * 合拍转码视频专用
@@ -32,9 +32,9 @@ import com.duanqu.transcode.NativeParser;
 public class MixVideoTranscoder {
 
     /**
-     * 大于360P的视频需要进行转码
+     * 大于540P的视频需要进行转码
      */
-    public final static int WIDTH = 360, HEIGHT = 640;
+    public final static int WIDTH = 540, HEIGHT = 960;
 
     private static final String TAG = MixVideoTranscoder.class.getSimpleName();
     private MediaInfo mMediaInfo;
@@ -175,7 +175,7 @@ public class MixVideoTranscoder {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //目前只对360p以上对视频转码,填充模式
+        //目前只对540p以上对视频转码,填充模式
         if (frameWidth * frameHeight > WIDTH * HEIGHT) {
             Log.d(TAG, "need transcode...path..." + info.filePath);
             CropParam cropParam = new CropParam();
@@ -198,7 +198,7 @@ public class MixVideoTranscoder {
             cropParam.setGop(5);
             cropParam.setFrameRate(30);
             cropParam.setCrf(19);
-            cropParam.setVideoCodec(VideoCodecs.H264_SOFT_FFMPEG);
+            cropParam.setVideoCodec(VideoCodecs.H264_SOFT_OPENH264);
             cropParam.setEndTime(duration);
             cropParam.setMediaType(MediaType.ANY_VIDEO_TYPE);
             return cropParam;

@@ -6,323 +6,192 @@ package com.aliyun.svideo.downloader;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 
-import com.aliyun.common.utils.FileUtils;
-import com.aliyun.common.utils.StringUtils;
-
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class FileDownloaderDBController {
     protected static final String TABLE_NAME = "FileDownloader";
 
-    private FileDownloaderDBOpenHelper mDBHelper;
+    private FileDownloaderDBGeneralController mFileDownloaderDBGeneralController = null;
+    private FileDownloaderDBCipherController mFileDownloaderDBCipherController = null;
 
-    public FileDownloaderDBController(Context context, int dbVersion, Map<String, String> dbExtFieldMap, DbUpgradeListener dbUpgradeListener) {
-        mDBHelper = new FileDownloaderDBOpenHelper(context, dbVersion, dbExtFieldMap, dbUpgradeListener);
+    public FileDownloaderDBController(Context context, int dbVersion, Map<String, String> dbExtFieldMap, DbUpgradeListener dbUpgradeListener, boolean isCipher, String ck) {
+        if (isCipher && !TextUtils.isEmpty(ck)) {
+            mFileDownloaderDBCipherController = new FileDownloaderDBCipherController(new FileDownloaderDBCipherOpenHelper(context, dbVersion, dbExtFieldMap, dbUpgradeListener), TABLE_NAME, ck);
+        } else {
+            mFileDownloaderDBGeneralController = new FileDownloaderDBGeneralController(new FileDownloaderDBOpenHelper(context, dbVersion, dbExtFieldMap, dbUpgradeListener),
+                    TABLE_NAME);
+            Log.d(TABLE_NAME, "FileDownloaderDBController: " + isCipher + TextUtils.isEmpty(ck));
+        }
     }
 
     /**
      * 从数据库中读取所有下载任务
+     *
      * @return
      */
     public SparseArray<FileDownloaderModel> getAllTasks() {
-        SQLiteDatabase sqliteDatabase = mDBHelper.getReadableDatabase();
-        final Cursor c = sqliteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-
-        final SparseArray<FileDownloaderModel> tasksMap = new SparseArray<>();
-        try {
-            while (c.moveToNext()) {
-                int taskId = c.getInt(c.getColumnIndex(FileDownloaderModel.TASK_ID));
-                FileDownloaderModel model = addCursor2Data(c);
-                tasksMap.put(taskId, model);
-            }
-        } catch (Exception e) {
-
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-
-            if (sqliteDatabase.isOpen()) {
-                sqliteDatabase.close();
-            }
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.getAllTasks();
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.getAllTasks();
         }
+        return null;
 
-        return tasksMap;
     }
 
     /**
      * 添加一个任务，保存到数据库
+     *
      * @param downloaderModel
      * @return
      */
     public synchronized FileDownloaderModel addTask(FileDownloaderModel downloaderModel) {
-        String path = downloaderModel.getPath();
-        if (StringUtils.isEmpty(path)) {
-            return null;
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.addTask(downloaderModel);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.addTask(downloaderModel);
         }
+        return null;
 
-        final int taskId = downloaderModel.getTaskId();
-        SQLiteDatabase sqliteDatabase = mDBHelper.getWritableDatabase();
-        boolean succeed = false;
-        if (sqliteDatabase.isOpen()) {
-            try {
-                if (!checkExits(taskId)) {
-                    succeed = sqliteDatabase.insert(TABLE_NAME, null, downloaderModel.toContentValues()) != -1;
-                } else {
-                    succeed = sqliteDatabase.update(TABLE_NAME, downloaderModel.toContentValues(), "task_id = ?", new String[] {String.valueOf(taskId)}) != -1;
-                }
-
-            } catch (Exception e) {
-            }
-        }
-        try {
-            sqliteDatabase.close();
-        } catch (SQLException e) {
-        }
-
-        return succeed ? downloaderModel : null;
     }
 
     public synchronized boolean insertDb(FileDownloaderModel model, HashMap<String, String> hashMap) {
-        SQLiteDatabase sqliteDatabase = mDBHelper.getWritableDatabase();
-        boolean succeed = false;
-        //查询是否已经存在
-        List<FileDownloaderModel> list = getResourceByFiled(hashMap);
-        if (sqliteDatabase.isOpen()) {
-            try {
-                if (list.size() == 0) {
-                    succeed = sqliteDatabase.insert(TABLE_NAME, null, model.toContentValues()) != -1;
-                }
-            } catch (Exception e) {
-            }
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.insertDb(model, hashMap);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.insertDb(model, hashMap);
         }
-        try {
-            sqliteDatabase.close();
-        } catch (SQLException e) {
-        }
-        return succeed;
+        return false;
     }
 
     /**
      * 删除数据库中的一条任务信息
+     *
      * @param downloadId
      * @return
      */
     public synchronized boolean deleteTask(final int downloadId) {
-        String[] args = {String.valueOf(downloadId)};
-        SQLiteDatabase sqliteDatabase = mDBHelper.getWritableDatabase();
-        boolean succeed = false;
-        if (sqliteDatabase.isOpen()) {
-            try {
-                succeed = sqliteDatabase.delete(TABLE_NAME, "task_id=?", args) != -1;
-            } catch (Exception e) {
-            }
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.deleteTask(downloadId);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.deleteTask(downloadId);
         }
-
-        try {
-            sqliteDatabase.close();
-        } catch (SQLException e) {
-        }
-
-        return succeed;
+        return false;
     }
 
     /**
      * 删除数据库中的一条任务信息
+     *
      * @param id
      * @return
      */
     public synchronized boolean deleteTaskById(final int id) {
-        boolean succeed = deleteTaskById(id, false);
-        return succeed;
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.deleteTaskById(id);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.deleteTaskById(id);
+        }
+        return false;
+
     }
 
     public synchronized boolean deleteTaskById(final int id, boolean isParent) {
-        String[] args = {String.valueOf(id)};
-        SQLiteDatabase sqliteDatabase = mDBHelper.getWritableDatabase();
-        boolean succeed = false;
-        if (sqliteDatabase.isOpen()) {
-            try {
-                List<String> list = getPath(id);
-                succeed = sqliteDatabase.delete(TABLE_NAME, "id=?", args) != -1;
-                if (succeed) {
-                    for (int i = 0; i < list.size(); i++) {
-                        if (isParent) {
-                            FileUtils.deleteFD(new File(list.get(i)).getParent());
-                        } else {
-                            FileUtils.deleteFD(new File(list.get(i)));
-                        }
-                    }
-                }
-            } catch (Exception e) {
-            } finally {
-            }
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.deleteTaskById(id, isParent);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.deleteTaskById(id, isParent);
         }
-
-        try {
-            sqliteDatabase.close();
-        } catch (SQLException e) {
-        }
-
-        return succeed;
+        return false;
     }
 
     public synchronized boolean checkExits(int id, int type) {
-        boolean exits = false;
-        String selection = " where id = ? and type = ?";
-        String[] selectionArgs = new String[] {String.valueOf(id), String.valueOf(type)};
-        SQLiteDatabase sqliteDatabase = mDBHelper.getReadableDatabase();
-        final Cursor c = sqliteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + selection, selectionArgs);
-        if (c.getCount() > 0) {
-            exits = true;
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.checkExits(id, type);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.checkExits(id, type);
         }
-        c.close();
-        return exits;
+        return false;
     }
 
     public synchronized boolean checkExits(int taskId) {
-        boolean exits = false;
-        String selection = " where task_id = ?";
-        String[] selectionArgs = new String[] {String.valueOf(taskId)};
-        SQLiteDatabase sqliteDatabase = mDBHelper.getReadableDatabase();
-        final Cursor c = sqliteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + selection, selectionArgs);
-        if (c.getCount() > 0) {
-            exits = true;
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.checkExits(taskId);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.checkExits(taskId);
         }
-        c.close();
-        return exits;
+        return false;
     }
 
     public synchronized String getPathByUrl(String url) {
-        String path = null;
-        if (url == null || url.isEmpty()) {
-            return null;
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.getPathByUrl(url);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.getPathByUrl(url);
         }
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put(FileDownloaderModel.URL, url);
-        List<FileDownloaderModel> list = getResourceByFiled(hashMap);
-        if (list.size() > 0) {
-            String pathTemp = list.get(0).getPath();
-            if (new File(pathTemp).exists()) {
-                path = pathTemp;
-            }
-        }
-
-        return path;
+        return null;
     }
 
     /**
      * 查询
+     *
      * @param hashMap key - value
      * @return List<FileDownloaderModel>
      */
     public synchronized List<FileDownloaderModel> getResourceByFiled(HashMap<String, String> hashMap) {
-        String select = "SELECT * FROM ";
-        StringBuffer sqlselection = new StringBuffer();
-        sqlselection.append(" where ");
-        List<String> list = new ArrayList<>();
-        Iterator iterator = hashMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            sqlselection.append(entry.getKey().toString() + " = ?");
-            list.add(entry.getValue().toString());
-            if (iterator.hasNext()) {
-                sqlselection.append(" and ");
-            }
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.getResourceByFiled(hashMap);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.getResourceByFiled(hashMap);
         }
-        String [] selectionArgs = list.toArray(new String[list.size()]);
-        List<FileDownloaderModel> modelList = new ArrayList<>();
-        SQLiteDatabase sqliteDatabase = mDBHelper.getReadableDatabase();
-        Cursor c = sqliteDatabase.rawQuery(select + TABLE_NAME + sqlselection, selectionArgs);
-        while (c.moveToNext()) {
-            FileDownloaderModel model = addCursor2Data(c);
-            modelList.add(model);
-        }
-        c.close();
-        return modelList;
+        return null;
     }
 
     public synchronized List<String> getPath(int id) {
-        List<String> list = new ArrayList<>();
-        HashMap hashMap = new HashMap();
-        hashMap.put(FileDownloaderModel.ID, String.valueOf(id));
-        List<String> colums = new ArrayList<>();
-        colums.add(FileDownloaderModel.PATH);
-        Cursor cursor = getResourceColumns(hashMap, colums);
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String path = cursor.getString(cursor.getColumnIndex(FileDownloaderModel.PATH));
-                list.add(path);
-            }
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.getPath(id);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.getPath(id);
         }
-        cursor.close();
-        return list;
+        return null;
     }
 
     public synchronized Cursor getResourceColumns(HashMap<String, String> hashMap, List<String> colums) {
-        Cursor c;
-        String select = "SELECT DISTINCT * FROM ";
-        if (colums.size() > 0) {
-            select = "SELECT DISTINCT " + listToString(colums) + " FROM ";
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.getResourceColumns(hashMap, colums);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.getResourceColumns(hashMap, colums);
         }
-        StringBuffer sqlSelection = new StringBuffer();
-        sqlSelection.append(" where ");
-        List<String> list = new ArrayList<>();
-        Iterator iterator = hashMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            sqlSelection.append(entry.getKey().toString() + " = ?");
-            list.add(entry.getValue().toString());
-            if (iterator.hasNext()) {
-                sqlSelection.append(" and ");
-            }
-        }
-        String [] selectionArgs = list.toArray(new String[list.size()]);
-        SQLiteDatabase sqliteDatabase = mDBHelper.getReadableDatabase();
-        c = sqliteDatabase.rawQuery(select + TABLE_NAME + sqlSelection, selectionArgs);
-
-        return c;
+        return null;
     }
 
     public synchronized Cursor getResourceById(int id) {
-        Cursor c;
-        String selection = " where id = ?";
-        String[] selectionArgs = new String[] {String.valueOf(id)};
-        SQLiteDatabase sqliteDatabase = mDBHelper.getReadableDatabase();
-        c = sqliteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + selection, selectionArgs);
-        if (c.getCount() > 0) {
-            return c;
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.getResourceById(id);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.getResourceById(id);
         }
-        return c;
+        return null;
     }
 
     /**
      * 通过type来获取数据库资源
+     *
      * @param type { EffectService }
      * @return List<FileDownloaderModel>
      */
     public synchronized List<FileDownloaderModel> getResourceByType(int type) {
-        List<FileDownloaderModel> list = new ArrayList<>();
-        Cursor c;
-        String selection = " where effecttype = ? order by id";
-        String[] selectionArgs = new String[] {String.valueOf(type)};
-        SQLiteDatabase sqliteDatabase = mDBHelper.getReadableDatabase();
-        c = sqliteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + selection, selectionArgs);
-        while (c.moveToNext()) {
-            FileDownloaderModel model = addCursor2Data(c);
-            list.add(model);
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.getResourceByType(type);
+        } else if (mFileDownloaderDBGeneralController != null) {
+            return mFileDownloaderDBGeneralController.getResourceByType(type);
         }
-        c.close();
-        return list;
+        return null;
     }
 
     private FileDownloaderModel addCursor2Data(Cursor c) {
@@ -413,5 +282,12 @@ public class FileDownloaderDBController {
             stringBuilder.append(list.get(i) + ",");
         }
         return stringBuilder.toString();
+    }
+
+    public FileDownloaderDBCipherOpenHelper getDBCipherOpenHelper() {
+        if (mFileDownloaderDBCipherController != null) {
+            return mFileDownloaderDBCipherController.getDBHelper();
+        }
+        return null;
     }
 }

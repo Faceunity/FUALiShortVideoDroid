@@ -13,12 +13,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.aliyun.common.utils.FileUtils;
 import com.aliyun.svideo.common.utils.FastClickUtil;
@@ -223,31 +224,31 @@ public class CropMediaActivity extends Activity {
                         }
 
                         AlivcCropInputParam param = new AlivcCropInputParam.Builder()
-                                .setPath(mediaPath)
-                                .setResolutionMode(resolutionMode)
-                                .setCropMode(cropMode)
-                                .setQuality(quality)
-                                .setGop(gop)
-                                .setFrameRate(frameRate)
-                                .setRatioMode(ratioMode)
-                                .setMinCropDuration(minCropDuration)
-                                .setVideoCodecs(mVideoCodec)
-                                .build();
+                        .setPath(mediaPath)
+                        .setResolutionMode(resolutionMode)
+                        .setCropMode(cropMode)
+                        .setQuality(quality)
+                        .setGop(gop)
+                        .setFrameRate(frameRate)
+                        .setRatioMode(ratioMode)
+                        .setMinCropDuration(minCropDuration)
+                        .setVideoCodecs(mVideoCodec)
+                        .build();
                         AliyunImageCropActivity.startImageCropForResult(CropMediaActivity.this, param, CROP_CODE );
                     } else {
                         AlivcCropInputParam param = new AlivcCropInputParam.Builder()
-                                .setPath(mediaPath)
-                                .setResolutionMode(resolutionMode)
-                                .setCropMode(cropMode)
-                                .setQuality(quality)
-                                .setGop(gop)
-                                .setFrameRate(frameRate)
-                                .setRatioMode(ratioMode)
-                                .setMinCropDuration(minCropDuration)
-                                .setVideoCodecs(mVideoCodec)
-                                .setAction(CropKey.ACTION_TRANSCODE)
-                                .setUseGPU( getIntent().getBooleanExtra(AliyunSnapVideoParam.CROP_USE_GPU, false))
-                                .build();
+                        .setPath(mediaPath)
+                        .setResolutionMode(resolutionMode)
+                        .setCropMode(cropMode)
+                        .setQuality(quality)
+                        .setGop(gop)
+                        .setFrameRate(frameRate)
+                        .setRatioMode(ratioMode)
+                        .setMinCropDuration(minCropDuration)
+                        .setVideoCodecs(mVideoCodec)
+                        .setAction(CropKey.ACTION_TRANSCODE)
+                        .setUseGPU( getIntent().getBooleanExtra(AliyunSnapVideoParam.CROP_USE_GPU, false))
+                        .build();
                         AliyunVideoCropActivity.startVideoCropForResult(CropMediaActivity.this, param, CROP_CODE );
                     }
                 }

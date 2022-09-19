@@ -10,17 +10,21 @@ import android.util.Log;
 import android.view.View;
 
 import com.aliyun.common.logger.Logger;
+import com.aliyun.common.utils.FileUtils;
+import com.aliyun.common.utils.StringUtils;
 import com.aliyun.svideo.base.Form.I18nBean;
 import com.aliyun.svideo.downloader.DownloaderManager;
 import com.aliyun.svideo.downloader.FileDownloaderModel;
-import com.aliyun.jasonparse.JSONSupport;
-import com.aliyun.jasonparse.JSONSupportImpl;
+import com.aliyun.common.jasonparse.JSONSupport;
+import com.aliyun.common.jasonparse.JSONSupportImpl;
 import com.aliyun.svideo.base.Form.IMVForm;
 import com.aliyun.svideo.base.http.EffectService;
 import com.aliyun.svideo.base.Form.AspectForm;
 import com.aliyun.svideo.base.Form.PasterForm;
 import com.aliyun.svideo.base.Form.ResourceForm;
 import com.aliyun.svideo.editor.R;
+import com.aliyun.svideo.editor.contant.CaptionConfig;
+import com.aliyun.svideo.editor.contant.EditorConstants;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -35,10 +39,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -61,9 +63,12 @@ public class EditorCommon {
     public static String QU_DIR;
     private static Object object = new Object();
     private static WeakReference<View> mView;
-
+    public final static String QU_LUT_FILTER_DEFAULT_GROUP = "default";
     public final static String QU_COLOR_FILTER = "aliyun_svideo_filter";
     public final static String QU_ANIMATION_FILTER = "aliyun_svideo_animation_filter";
+    public final static int QU_ANIMATION_FILTER_ID = 0;
+    public final static String QU_ANIMATION_SPLIT_SCREEN_FILTER = "aliyun_svideo_split_screen_filters";
+    public final static int QU_ANIMATION_SPLIT_SCREEN_FILTER_ID = 1;
     public final static String QU_MV = "aliyun_svideo_mv";
     public final static String QU_CAPTION = "aliyun_svideo_caption";
     public final static String QU_OVERLAY = "aliyun_svideo_overlay";
@@ -75,11 +80,11 @@ public class EditorCommon {
     private final static String MV16_9 = "folder16.9";
 
     public static String[] mv_dirs = {
-            MV1_1,
-            MV3_4,
-            MV4_3,
-            MV9_16,
-            MV16_9
+        MV1_1,
+        MV3_4,
+        MV4_3,
+        MV9_16,
+        MV16_9
     };
 
     public static String getMVPath(List<AspectForm> list, int w, int h) {
@@ -177,8 +182,19 @@ public class EditorCommon {
         return total;
     }
 
-    private static void copySelf(Context cxt, String root) {
+    public static void copySelf(Context cxt, String root) {
+        copySelf(cxt, root, null);
+    }
+
+    public interface CopyCallback {
+        void onFileCopy(String filePath);
+    }
+
+    public static void copySelf(Context cxt, String root, CopyCallback copyCallback) {
         try {
+            if(StringUtils.isEmpty(SD_DIR)){
+                SD_DIR = getExtFileDir(cxt);
+            }
             String[] files = cxt.getAssets().list(root);
             if (files.length > 0) {
                 File subdir = new File(EditorCommon.SD_DIR + root);
@@ -188,12 +204,15 @@ public class EditorCommon {
 
                 for (String fileName : files) {
                     File fileTemp = new File(EditorCommon.SD_DIR + root + File.separator + fileName);
-                    if (fileTemp.exists()) {
+                    if (!fileTemp.isDirectory() && fileTemp.exists()) {
                         continue;
                     }
-                    copySelf(cxt, root + File.separator + fileName);
+                    copySelf(cxt, root + File.separator + fileName, copyCallback);
                 }
             } else {
+                if (FileUtils.isFileExists(EditorCommon.SD_DIR + root)) {
+                    return;
+                }
                 Logger.getDefaultLogger().d("copy...." + EditorCommon.SD_DIR + root);
                 OutputStream myOutput = new FileOutputStream(EditorCommon.SD_DIR + root);
                 InputStream myInput = cxt.getAssets().open(root);
@@ -207,6 +226,10 @@ public class EditorCommon {
                 myOutput.flush();
                 myInput.close();
                 myOutput.close();
+
+                if (copyCallback != null) {
+                    copyCallback.onFileCopy(EditorCommon.SD_DIR + root);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -219,6 +242,8 @@ public class EditorCommon {
         mView = new WeakReference<>(view);
         File dir = new File(EditorCommon.QU_DIR);
         copySelf(cxt,"font");
+        copySelf(cxt, CaptionConfig.COOL_TEXT_FILE_DIR);
+        copySelf(cxt, EditorConstants.LUT_FILE_DIR);
         copySelf(cxt, QU_NAME);
         dir.mkdirs();
         unZip();
@@ -248,6 +273,18 @@ public class EditorCommon {
         }
         return list;
     }
+    public static List<String> getLutFilterList(Context context) {
+        int[] lutFilterList = context.getResources().getIntArray(R.array.lut_order);
+        List<String> list = new ArrayList<>();
+        for (int filter : lutFilterList) {
+            File file = new File(EditorCommon.SD_DIR + EditorConstants.LUT_FILE_DIR
+                    +File.separator+QU_LUT_FILTER_DEFAULT_GROUP +File.separator+filter,"lookup.png" );
+            if (file.exists() && file.isFile()) {
+                list.add(file.getAbsolutePath());
+            }
+        }
+        return list;
+    }
 
     public static List<String> getVideoEqList(Context context) {
         String[] arr = context.getResources().getStringArray(R.array.videoeq_order);
@@ -257,6 +294,23 @@ public class EditorCommon {
     public static List<String> getAnimationFilterList() {
         List<String> list = new ArrayList<>();
         File file = new File(QU_DIR, QU_ANIMATION_FILTER);
+        if (file.exists() && file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File fileTemp : files) {
+                if (fileTemp.exists()) {
+                    list.add(fileTemp.getAbsolutePath());
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * @return 花字文件
+     */
+    public static List<String> getCoolTextFileList() {
+        List<String> list = new ArrayList<>();
+        File file = new File(SD_DIR, CaptionConfig.COOL_TEXT_FILE_DIR);
         if (file.exists() && file.isDirectory()) {
             File[] files = file.listFiles();
             for (File fileTemp : files) {
@@ -301,7 +355,7 @@ public class EditorCommon {
         JsonElement parse;
         try {
             parse = new JsonParser().parse(
-                    new InputStreamReader(new FileInputStream(i18nFile)));
+                new InputStreamReader(new FileInputStream(i18nFile)));
         } catch (FileNotFoundException e) {
             Log.w(TAG, "getCurrentEffectI18n 解析json失败，msg = " + e.getMessage());
             return null;

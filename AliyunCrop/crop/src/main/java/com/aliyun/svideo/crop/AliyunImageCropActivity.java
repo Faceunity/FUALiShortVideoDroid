@@ -13,7 +13,6 @@ import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -21,6 +20,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
 
 import com.aliyun.common.global.Version;
 import com.aliyun.common.utils.DensityUtil;
@@ -644,13 +645,6 @@ public class AliyunImageCropActivity extends Activity implements HorizontalListV
         crop.setCropParam(cropParam);
         isCropping = true;
         crop.startCrop();
-        mCropProgressBg.setVisibility(View.GONE);
-        isCropping = false;
-
-        AlivcCropOutputParam cropOutputParam = new AlivcCropOutputParam();
-        cropOutputParam.setOutputPath(outputPath);
-        onCropComplete(cropOutputParam);
-
     }
     /**
      * 裁剪结束

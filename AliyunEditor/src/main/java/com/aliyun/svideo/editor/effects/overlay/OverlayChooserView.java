@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,21 +17,23 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.aliyun.svideo.downloader.DownloaderManager;
-import com.aliyun.svideo.downloader.FileDownloaderModel;
+import com.aliyun.svideo.base.Form.PasterForm;
+import com.aliyun.svideo.base.Form.ResourceForm;
 import com.aliyun.svideo.base.http.EffectService;
 import com.aliyun.svideo.base.widget.pagerecyclerview.PageIndicatorView;
 import com.aliyun.svideo.base.widget.pagerecyclerview.PageRecyclerView;
-import com.aliyun.svideo.base.Form.PasterForm;
-import com.aliyun.svideo.base.Form.ResourceForm;
+import com.aliyun.svideo.downloader.DownloaderManager;
+import com.aliyun.svideo.downloader.FileDownloaderModel;
 import com.aliyun.svideo.editor.R;
-import com.aliyun.svideo.editor.editor.AbstractPasterUISimpleImpl;
+import com.aliyun.svideo.editor.editor.AliyunBasePasterController;
 import com.aliyun.svideo.editor.effectmanager.MorePasterActivity;
 import com.aliyun.svideo.editor.effects.CategoryAdapter;
 import com.aliyun.svideo.editor.effects.control.BaseChooser;
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.OnItemClickListener;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
+import com.aliyun.svideo.editor.util.AlivcResUtil;
+import com.aliyun.svideosdk.common.struct.project.Source;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -121,6 +124,12 @@ public class OverlayChooserView extends BaseChooser {
                 EffectInfo effectInfo = new EffectInfo();
                 effectInfo.type = UIEditorPage.OVERLAY;
                 effectInfo.setPath(pasterForm.getPath());
+                Source source = new Source(pasterForm.getPath());
+                source.setId(String.valueOf(pasterForm.getId()));
+                boolean isApp = source.getPath().contains("aliyun_svideo_overlay/");
+                int groupId = mPageListCallback.getGroupId();
+                source.setURL(AlivcResUtil.getResUri(isApp ? "app" : "cloud", AlivcResUtil.TYPE_STICKER, String.valueOf(groupId), source.getId()));
+                effectInfo.setSource(source);
                 if (mOnEffectChangeListener != null) {
                     mOnEffectChangeListener.onEffectChange(effectInfo);
                 }
@@ -279,7 +288,7 @@ public class OverlayChooserView extends BaseChooser {
     }
 
     @Override
-    public boolean isHostPaster(AbstractPasterUISimpleImpl uic) {
+    public boolean isHostPaster(AliyunBasePasterController uic) {
         return uic != null && uic.getEditorPage() == UIEditorPage.OVERLAY;
     }
 

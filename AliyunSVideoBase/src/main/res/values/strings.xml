@@ -1,6 +1,6 @@
 <resources>
 
-
+    <string name="ugc_app_name">ShortVideo</string>
     <string name="alivc_base_version">SDK VERSION INFO</string>
 
     <!-- 美颜相关  start -->
@@ -46,9 +46,16 @@
     <string name="alivc_base_tips_fine_tuning">Tuning</string>
     <string name="alivc_base_beauty_copyright">Advanced features are supported by FaceUnity</string>、
     <string name="alivc_base_beauty_race_copyright">Advanced features are supported by Race</string>
+    <string name="alivc_base_beauty_queen_copyright">Advanced features are supported by queen</string>
+    <string name="alivc_setting_rendering_faceunity">FaceUnity</string>
+    <string name="alivc_setting_rendering_queen">Queen</string>
+    <string name="alivc_setting_rendering_default">默认</string>
+
     <string name="alivc_base_beauty_copyright_link">View details</string>
     <string name="alivc_base_svideo_next">Next</string>
     <string name="alivc_base_svideo_save">Save</string>
-
+    <string name="alivc_develop_url">Develop Url</string>
+    <string name="alivc_pre_release_url">PreRelease Url</string>
+    <string name="alivc_release_url">Release Url</string>
 
 </resources>

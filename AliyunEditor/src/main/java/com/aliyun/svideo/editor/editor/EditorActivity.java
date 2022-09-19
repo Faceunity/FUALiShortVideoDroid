@@ -8,11 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.fragment.app.FragmentActivity;
+
+import com.aliyun.common.utils.StringUtils;
 import com.aliyun.svideo.music.utils.NotchScreenUtil;
+import com.aliyun.svideosdk.editor.draft.AliyunDraft;
 import com.aliyun.svideosdk.importer.AliyunIImport;
 import com.aliyun.svideosdk.importer.impl.AliyunImportCreator;
 import com.aliyun.svideo.editor.R;
@@ -37,7 +40,7 @@ import java.util.List;
  */
 public class EditorActivity extends FragmentActivity {
     private static final String TAG = "EditorActivity";
-    private static final String NEXT_ACTIVITY_CLASS_NAME = "com.aliyun.svideo.editor.publish.PublishActivity";
+    public static final String NEXT_ACTIVITY_CLASS_NAME = "com.aliyun.svideo.editor.publish.PublishActivity";
     private AlivcEditView editView;
     /**
      * 编辑输入参数
@@ -62,13 +65,20 @@ public class EditorActivity extends FragmentActivity {
         boolean hasTailAnimation = mInputParam.isHasTailAnimation();
         boolean isReplaceMusic = mInputParam.isCanReplaceMusic();
         boolean isMixRecorder = mInputParam.isMixRecorder();
-        List<MediaInfo> mediaInfos = mInputParam.getMediaInfos();
-        Uri mUri = Uri.fromFile(new File(getProjectJsonPath(mediaInfos)));
-        editView.setParam(mVideoParam, mUri, hasTailAnimation, mInputParam.isHasWaterMark());
+        boolean isDeNoise = mInputParam.getDeNoise();
+        String draftPath = getIntent().getStringExtra(AlivcEditInputParam.INTENT_KEY_DRAFT_PATH);
+        Uri uri;
+        if (!StringUtils.isEmpty(draftPath)) {
+            uri = Uri.parse(draftPath);
+        } else {
+            List<MediaInfo> mediaInfos = mInputParam.getMediaInfos();
+            uri = Uri.fromFile(new File(getProjectJsonPath(mediaInfos)));
+        }
+        editView.setHasDeNoise(isDeNoise);
+        editView.setParam(mVideoParam, uri, hasTailAnimation, mInputParam.isHasWaterMark(), mInputParam.isHorizontalFlip());
         editView.setReplaceMusic(isReplaceMusic);
         editView.setHasRecordMusic(isReplaceMusic);
         editView.setIsMixRecord(isMixRecorder);
-
         editView.setmOnFinishListener(new AlivcEditView.OnFinishListener() {
             @Override
             public void onComplete(AlivcEditOutputParam outputParam) {
@@ -82,7 +92,7 @@ public class EditorActivity extends FragmentActivity {
                 //传入视频比列
                 intent.putExtra(PublishActivity.KEY_PARAM_VIDEO_RATIO, outputParam.getVideoRatio());
                 intent.putExtra("videoParam", outputParam.getVideoParam());
-                startActivity(intent);
+                startActivityForResult(intent, PublishActivity.REQUEST_CODE);
             }
         });
     }
@@ -108,11 +118,17 @@ public class EditorActivity extends FragmentActivity {
             mScaleMode = VideoDisplayMode.FILL;
         }
         boolean mHasTailAnimation = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_TAIL_ANIMATION, false);
+        boolean hasDeNoise = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_DE_NOISE, false);
         boolean canReplaceMusic = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_REPLACE_MUSIC, true);
         ArrayList<MediaInfo> mediaInfos = intent.getParcelableArrayListExtra(AlivcEditInputParam.INTENT_KEY_MEDIA_INFO);
         boolean hasWaterMark = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_WATER_MARK, false);
+        boolean horizontalFlip = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_HORIZONTAL_FLIP, false);
         boolean isMixRecord = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_IS_MIX, false);
-        mInputParam = new AlivcEditInputParam.Builder()
+        AlivcEditInputParam.Builder builder = new AlivcEditInputParam.Builder();
+        if (mediaInfos != null) {
+            builder.addMediaInfos(mediaInfos);
+        }
+        mInputParam = builder
         .setFrameRate(mFrameRate)
         .setGop(mGop)
         .setRatio(mRatio)
@@ -124,14 +140,22 @@ public class EditorActivity extends FragmentActivity {
         .setScaleMode(mScaleMode)
         .setHasTailAnimation(mHasTailAnimation)
         .setCanReplaceMusic(canReplaceMusic)
-        .addMediaInfos(mediaInfos)
         .setHasWaterMark(hasWaterMark)
         .setIsMixRecorder(isMixRecord)
+        .setDeNoise(hasDeNoise)
+        .setHorizontalFlip(horizontalFlip)
         .build();
         if (isMixRecord) {
             mVideoParam = mInputParam.generateMixVideoParam();
         } else {
             mVideoParam = mInputParam.generateVideoParam();
+            //草稿跳转的直接用草稿那边传过来的
+            int outputWidth = intent.getIntExtra(AlivcEditInputParam.INTENT_KEY_OUTPUT_WIDTH, -1);
+            int outputHeight = intent.getIntExtra(AlivcEditInputParam.INTENT_KEY_OUTPUT_HEIGHT, -1);
+            if (outputWidth != -1 && outputHeight != -1) {
+                mVideoParam.setOutputWidth(outputWidth);
+                mVideoParam.setOutputHeight(outputHeight);
+            }
         }
     }
 
@@ -213,6 +237,7 @@ public class EditorActivity extends FragmentActivity {
                                      .source(mediaInfo.filePath)
                                      .startTime(mediaInfo.startTime)
                                      .endTime(mediaInfo.startTime + mediaInfo.duration)
+                                     .duration(mediaInfo.duration)
                                      .build());
             } else if (mediaInfo.mimeType.startsWith("image")) {
                 mImport.addMediaClip(new AliyunImageClip.Builder()
@@ -228,7 +253,11 @@ public class EditorActivity extends FragmentActivity {
     }
 
     public static void startEdit(Context context, AlivcEditInputParam param) {
-        if (param == null || param.getMediaInfos() == null || param.getMediaInfos().size() == 0) {
+        startEdit(context, param, null, -1, -1);
+    }
+
+    public static void startEdit(Context context, AlivcEditInputParam param, String draftPath, int outputWidth, int outputHeight) {
+        if (param == null || ((param.getMediaInfos() == null || param.getMediaInfos().size() == 0) && StringUtils.isEmpty(draftPath))) {
             return;
         }
         Intent intent = new Intent(context, EditorActivity.class);
@@ -242,12 +271,37 @@ public class EditorActivity extends FragmentActivity {
         intent.putExtra(AlivcEditInputParam.INTETN_KEY_SCANLE_RATE, param.getScaleRate());
         intent.putExtra(AlivcEditInputParam.INTETN_KEY_SCANLE_MODE, param.getScaleMode());
         intent.putExtra(AlivcEditInputParam.INTENT_KEY_TAIL_ANIMATION, param.isHasTailAnimation());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_DE_NOISE, param.getDeNoise());
         intent.putExtra(AlivcEditInputParam.INTENT_KEY_REPLACE_MUSIC, param.isCanReplaceMusic());
         intent.putExtra(AlivcEditInputParam.INTENT_KEY_WATER_MARK, param.isHasWaterMark());
-        intent.putExtra(AlivcEditInputParam.INTENT_KEY_RATION_MODE, param.getRatio());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_HORIZONTAL_FLIP, param.isHorizontalFlip());
         intent.putExtra(AlivcEditInputParam.INTENT_KEY_IS_MIX, param.isMixRecorder());
-        intent.putParcelableArrayListExtra(AlivcEditInputParam.INTENT_KEY_MEDIA_INFO, param.getMediaInfos());
+        if (draftPath != null) {
+            intent.putExtra(AlivcEditInputParam.INTENT_KEY_DRAFT_PATH, draftPath);
+            intent.putExtra(AlivcEditInputParam.INTENT_KEY_OUTPUT_WIDTH, outputWidth);
+            intent.putExtra(AlivcEditInputParam.INTENT_KEY_OUTPUT_HEIGHT, outputHeight);
+        } else {
+            intent.putParcelableArrayListExtra(AlivcEditInputParam.INTENT_KEY_MEDIA_INFO, param.getMediaInfos());
+        }
         context.startActivity(intent);
+    }
+
+    /**
+     * 使用草稿打开编辑
+     * @param context 上下文
+     * @param draft 草稿
+     */
+    public static void startEdit(Context context, AliyunDraft draft) {
+        AlivcEditInputParam param = new AlivcEditInputParam.Builder()
+                                           .setScaleMode(VideoDisplayMode.valueOf(draft.getConfig().getDisplayMode()))
+                                           .setVideoQuality(VideoQuality.values()[draft.getConfig().getVideoQuality()])
+                                           .setFrameRate(draft.getConfig().getFps())
+                                           .setGop(draft.getConfig().getGop())
+                                           .setCrf(draft.getConfig().getCrf())
+                                           .setVideoCodec(VideoCodecs.getInstanceByValue(draft.getConfig().getVideoCodec()))
+                                           .setScaleRate(draft.getConfig().getScale())
+                                           .build();
+        startEdit(context, param, draft.getEditorProjectUri(), draft.getConfig().getOutputWidth(), draft.getConfig().getOutputHeight());
     }
 
 }

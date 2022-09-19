@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/seek_bar_area"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_tv_45"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/iv_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/alivc_common_font_white"
+            android:text="重置"
+            />
+        <SeekBar
+            android:id="@+id/seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_line_1px"
+        android:background="@color/alivc_common_line_gray_light"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/effect_list_filter"
+        android:layout_width="match_parent"
+        android:overScrollMode="never"
+        android:layout_height="@dimen/alivc_common_height_group_100"/>
+
+</LinearLayout>

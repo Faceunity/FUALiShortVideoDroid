@@ -18,7 +18,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
@@ -30,6 +29,8 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.aliyun.common.global.Version;
 import com.aliyun.common.utils.DensityUtil;
@@ -67,11 +68,11 @@ import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
 import com.aliyun.svideosdk.common.AliyunIThumbnailFetcher;
 import com.aliyun.svideo.common.utils.DateTimeUtils;
 import com.aliyun.svideosdk.common.impl.AliyunThumbnailFetcherFactory;
-import com.duanqu.transcode.NativeParser;
-import java.io.File;
+import com.aliyun.svideosdk.transcode.NativeParser;
+
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Copyright (C) 2010-2013 Alibaba Group Holding Limited
@@ -947,8 +948,8 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         cropParam.setOutputHeight(outputHeight);
         Rect cropRect = new Rect(posX, posY, posX + cropWidth, posY + cropHeight);
         cropParam.setCropRect(cropRect);
-        cropParam.setStartTime(mStartTime * 1000);
-        cropParam.setEndTime(mEndTime * 1000);
+        cropParam.setStartTime(mStartTime, TimeUnit.MILLISECONDS);
+        cropParam.setEndTime(mEndTime, TimeUnit.MILLISECONDS);
         cropParam.setScaleMode(cropMode);
         cropParam.setFrameRate(frameRate);
         cropParam.setGop(gop);
@@ -1185,7 +1186,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
         mThumbnailFetcher = AliyunThumbnailFetcherFactory.createThumbnailFetcher();
         mThumbnailFetcher.addVideoSource(mInputVideoPath, 0, Integer.MAX_VALUE, 0);
         mThumbnailFetcher.setParameters(itemWidth, itemWidth, AliyunIThumbnailFetcher.CropMode.Mediate, VideoDisplayMode.SCALE, 10);
-
+        mThumbnailFetcher.setFastMode(true);
         long duration = mThumbnailFetcher.getTotalDuration();
         long itemTime = duration / 10;
         for (int i = 1; i <= 10; i++) {
@@ -1210,7 +1211,7 @@ public class AliyunVideoCropActivity extends Activity implements TextureView.Sur
             private int vecIndex = 1;
 
             @Override
-            public void onThumbnailReady(Bitmap frameBitmap, long l) {
+            public void onThumbnailReady(Bitmap frameBitmap, long l, int index) {
                 if (frameBitmap != null && !frameBitmap.isRecycled()) {
                     Log.i(TAG, "onThumbnailReady  put: " + position + " ,l = " + l / 1000);
 

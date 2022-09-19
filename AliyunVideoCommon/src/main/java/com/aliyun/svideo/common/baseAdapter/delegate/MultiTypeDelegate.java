@@ -1,7 +1,8 @@
 package com.aliyun.svideo.common.baseAdapter.delegate;
 
-import android.support.annotation.LayoutRes;
 import android.util.SparseIntArray;
+
+import androidx.annotation.LayoutRes;
 
 import java.util.List;
 

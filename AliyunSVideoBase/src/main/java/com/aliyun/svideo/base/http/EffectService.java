@@ -5,11 +5,11 @@
 package com.aliyun.svideo.base.http;
 
 import android.text.TextUtils;
-import com.aliyun.jasonparse.JSONSupportImpl;
-import com.aliyun.qupaiokhttp.BaseHttpRequestCallback;
-import com.aliyun.qupaiokhttp.HttpRequest;
-import com.aliyun.qupaiokhttp.RequestParams;
-import com.aliyun.qupaiokhttp.StringHttpRequestCallback;
+import com.aliyun.common.jasonparse.JSONSupportImpl;
+import com.aliyun.common.qupaiokhttp.BaseHttpRequestCallback;
+import com.aliyun.common.qupaiokhttp.HttpRequest;
+import com.aliyun.common.qupaiokhttp.RequestParams;
+import com.aliyun.common.qupaiokhttp.StringHttpRequestCallback;
 import com.aliyun.svideo.base.Form.AnimationEffectForm;
 import com.aliyun.svideo.base.Form.FontForm;
 import com.aliyun.svideo.base.Form.IMVForm;

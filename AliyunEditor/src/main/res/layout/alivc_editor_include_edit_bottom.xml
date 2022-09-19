@@ -15,6 +15,10 @@
             style="@style/alivc_svideo_effect_tab"
             android:text="@string/alivc_editor_effect_filter"/>
         <TextView
+            android:id="@+id/tab_lut"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="LUT"/>
+        <TextView
             android:id="@+id/tab_effect_audio_mix"
             style="@style/alivc_svideo_effect_tab"
             android:text="@string/alivc_editor_effect_music"/>
@@ -27,6 +31,10 @@
             android:id="@+id/tab_effect_caption"
             style="@style/alivc_svideo_effect_tab"
             android:text="@string/alivc_editor_effect_caption"/>
+        <TextView
+            android:id="@+id/tab_effect_caption_old"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/alivc_editor_effect_caption_old"/>
         <TextView
             android:id="@+id/tab_effect_mv"
             style="@style/alivc_svideo_effect_tab"
@@ -66,6 +74,13 @@
             android:id="@+id/tab_roll_caption"
             style="@style/alivc_svideo_effect_tab"
             android:text="@string/alivc_editor_effect_roll_caption"/>
+
+        <TextView
+            android:id="@+id/tab_pip"
+            style="@style/alivc_svideo_effect_tab"
+            android:text="@string/alivc_editor_effect_pip"/>
+
+
 
     </LinearLayout>
 </HorizontalScrollView>

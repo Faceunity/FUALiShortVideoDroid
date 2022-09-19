@@ -1,9 +1,10 @@
 package com.aliyun.svideo.editor.editor.thumblinebar;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -56,7 +57,7 @@ public class OverlayThumbLineBar extends ThumbLineBar {
     void addOverlayView(final View overlayView, final ThumbLineOverlayHandleView tailView, final ThumbLineOverlay overlay, final boolean isIvert) {
 
         if (overlayView.getParent() instanceof ViewGroup) {
-            ((ViewGroup)overlayView.getParent()).removeView(overlayView);
+            ((ViewGroup) overlayView.getParent()).removeView(overlayView);
         }
         addView(overlayView);
         final View view = tailView.getView();
@@ -102,6 +103,7 @@ public class OverlayThumbLineBar extends ThumbLineBar {
 
     /**
      * 实现和recyclerView的同步滑动
+     *
      * @param dx x的位移量
      * @param dy y的位移量
      */
@@ -123,18 +125,19 @@ public class OverlayThumbLineBar extends ThumbLineBar {
         super.onRecyclerViewScrollStateChanged(newState);
 
         switch (newState) {
-        case RecyclerView.SCROLL_STATE_IDLE:
-            for (ThumbLineOverlay overlay : mOverlayList) {
-                overlay.requestLayout();
-            }
-            break;
-        default:
-            break;
+            case RecyclerView.SCROLL_STATE_IDLE:
+                for (ThumbLineOverlay overlay : mOverlayList) {
+                    overlay.requestLayout();
+                }
+                break;
+            default:
+                break;
         }
     }
 
     /**
      * 计算overlay尾部view左面的margin值
+     *
      * @param tailView view
      * @return int 单位sp
      */
@@ -148,6 +151,7 @@ public class OverlayThumbLineBar extends ThumbLineBar {
 
     /**
      * 计算在倒放时overlay尾部view右边的margin值
+     *
      * @param tailView view
      * @return 单位sp
      */
@@ -187,6 +191,7 @@ public class OverlayThumbLineBar extends ThumbLineBar {
     public void removeOverlay(ThumbLineOverlay overlay) {
         if (overlay != null) {
             Log.d(TAG, "remove TimelineBar Overlay : " + overlay.getUIEditorPage());
+
             removeView(overlay.getOverlayView());
             mOverlayList.remove(overlay);
         }
@@ -195,7 +200,7 @@ public class OverlayThumbLineBar extends ThumbLineBar {
     /**
      * 清除指定by{@link UIEditorPage}
      */
-    public void removeOverlayByPages(UIEditorPage ... uiEditorPages) {
+    public void removeOverlayByPages(UIEditorPage... uiEditorPages) {
 
         if (uiEditorPages == null || uiEditorPages.length == 0) {
             return;
@@ -205,7 +210,7 @@ public class OverlayThumbLineBar extends ThumbLineBar {
         for (int i = 0; i < getChildCount(); i++) {
             View childAt = getChildAt(i);
             if (childAt.getTag() instanceof ThumbLineOverlay) {
-                ThumbLineOverlay thumbLineOverlay = (ThumbLineOverlay)childAt.getTag();
+                ThumbLineOverlay thumbLineOverlay = (ThumbLineOverlay) childAt.getTag();
                 UIEditorPage uiEditorPage = thumbLineOverlay.getUIEditorPage();
                 if (uiEditorPageList.contains(uiEditorPage)) {
                     removeOverlay(thumbLineOverlay);
@@ -217,21 +222,16 @@ public class OverlayThumbLineBar extends ThumbLineBar {
 
     /**
      * 显示指定的overlay
+     *
      * @param uiEditorPage UIEditorPage
      */
     public void showOverlay(UIEditorPage uiEditorPage) {
         if (uiEditorPage == null) {
             return;
         }
-        boolean isCaption;
-        isCaption = uiEditorPage == UIEditorPage.FONT || uiEditorPage == UIEditorPage.CAPTION;
 
         for (ThumbLineOverlay overlay : mOverlayList) {
-
             if (uiEditorPage == overlay.getUIEditorPage()) {
-                overlay.getOverlayView().setVisibility(VISIBLE);
-            } else if ((isCaption && (overlay.getUIEditorPage() == UIEditorPage.CAPTION || overlay.getUIEditorPage() == UIEditorPage.FONT))) {
-                //如果是字幕，将字体和字幕全部显示
                 overlay.getOverlayView().setVisibility(VISIBLE);
             } else {
                 overlay.getOverlayView().setVisibility(INVISIBLE);

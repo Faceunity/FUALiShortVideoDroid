@@ -3,11 +3,13 @@ package com.aliyun.svideo.editor.effects.transition;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.common.utils.DensityUtil;
 import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.editor.EditorActivity;
@@ -16,6 +18,7 @@ import com.aliyun.svideosdk.common.struct.common.AliyunClip;
 import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
 import com.aliyun.svideosdk.common.AliyunIThumbnailFetcher;
 import com.aliyun.svideosdk.common.impl.AliyunThumbnailFetcherFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,7 @@ public class TransitionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mTransitionCache = transitionEffectCache;
         mThumbnailFetcher = AliyunThumbnailFetcherFactory.createThumbnailFetcher();
         long startTime = 0;
-        for (AliyunClip clip : mTransitionCache.getAliyunIClipConstructor().getAllClips()) {
+        for (AliyunClip clip : mTransitionCache.getAliyunSourcePartManager().getAllClips()) {
             if (clip.getMediaType() == MediaType.ANY_IMAGE_TYPE) {
                 mThumbnailFetcher.addImageSource(clip.getSource(), 100, 0);
             } else if (clip.getMediaType() == MediaType.ANY_VIDEO_TYPE) {
@@ -92,7 +95,7 @@ public class TransitionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         //获取缩略图
         mThumbnailFetcher.requestThumbnailImage(time, new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
             @Override
-            public void onThumbnailReady(Bitmap bitmap, long l) {
+            public void onThumbnailReady(Bitmap bitmap, long l, int index) {
                 ((TransitionViewHolder) holder).mThumbnail.setImageBitmap(bitmap);
             }
 
@@ -155,7 +158,7 @@ public class TransitionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 public void onClick(View v) {
                     mSelectPosition = getAdapterPosition();
                     if (mOnSelectListener != null) {
-                        mOnSelectListener.onSelect(mTransition,mSelectPosition, true);
+                        mOnSelectListener.onSelect(mTransition, mSelectPosition, true);
                     }
                     notifyDataSetChanged();
                 }

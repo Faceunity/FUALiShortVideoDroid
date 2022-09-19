@@ -11,22 +11,19 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.aliyun.common.utils.ToastUtil;
-import com.aliyun.svideo.base.Constants;
 import com.aliyun.svideo.base.widget.ProgressDialog;
 import com.aliyun.svideo.common.utils.FastClickUtil;
-import com.aliyun.svideo.common.utils.MD5Utils;
 import com.aliyun.svideo.common.utils.ToastUtils;
-import com.aliyun.svideo.common.utils.UriUtils;
 import com.aliyun.svideo.crop.AliyunImageCropActivity;
 import com.aliyun.svideo.crop.AliyunVideoCropActivity;
 import com.aliyun.svideo.crop.bean.AlivcCropInputParam;
@@ -40,9 +37,8 @@ import com.aliyun.svideosdk.common.struct.common.CropKey;
 import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
 import com.aliyun.svideosdk.common.struct.common.VideoQuality;
 import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
-import com.duanqu.transcode.NativeParser;
+import com.aliyun.svideosdk.transcode.NativeParser;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -64,6 +60,7 @@ public class EditorMediaActivity extends Activity {
     private int mCropPosition;
 
     private AlivcEditInputParam mInputParam;
+    private boolean isGetMedia = false;
 
     /**
      * 页面恢复时保存mBundleSaveMedias对象的key
@@ -78,6 +75,7 @@ public class EditorMediaActivity extends Activity {
     private ArrayList<MediaInfo> mBundleSaveMedias;
     private MutiMediaView mMutiMediaView;
     private int mRatio;
+    private boolean mNeedTranscode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,24 +106,35 @@ public class EditorMediaActivity extends Activity {
             mScaleMode = VideoDisplayMode.FILL;
         }
         boolean mHasTailAnimation = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_TAIL_ANIMATION, false );
+        boolean hasDeNoise = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_DE_NOISE, false );
         boolean canReplaceMusic = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_REPLACE_MUSIC, true );
         ArrayList<MediaInfo> mediaInfos = intent.getParcelableArrayListExtra(AlivcEditInputParam.INTENT_KEY_MEDIA_INFO);
         boolean hasWaterMark = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_WATER_MARK, false );
-        mInputParam = new AlivcEditInputParam.Builder()
-        .setFrameRate(mFrameRate)
-        .setGop(mGop)
-        .setRatio(mRatio)
-        .setVideoQuality(mVideoQuality)
-        .setResolutionMode(mResolutionMode)
-        .setVideoCodec(mVideoCodec)
-        .setCrf(mCrf)
-        .setScaleRate(mScaleRate)
-        .setScaleMode(mScaleMode)
-        .setHasTailAnimation(mHasTailAnimation)
-        .setCanReplaceMusic(canReplaceMusic)
-        .addMediaInfos(mediaInfos)
-        .setHasWaterMark(hasWaterMark)
-        .build();
+        mNeedTranscode =  intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_NEED_TRANSCODE, false );
+        boolean horizontalFlip = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_HORIZONTAL_FLIP, false );
+
+        isGetMedia = intent.getBooleanExtra(AlivcEditInputParam.INTENT_KEY_GET_MEDIA, false);
+        if (!isGetMedia) {
+            mInputParam = new AlivcEditInputParam.Builder()
+                    .setFrameRate(mFrameRate)
+                    .setGop(mGop)
+                    .setRatio(mRatio)
+                    .setVideoQuality(mVideoQuality)
+                    .setResolutionMode(mResolutionMode)
+                    .setVideoCodec(mVideoCodec)
+                    .setCrf(mCrf)
+                    .setScaleRate(mScaleRate)
+                    .setScaleMode(mScaleMode)
+                    .setHasTailAnimation(mHasTailAnimation)
+                    .setCanReplaceMusic(canReplaceMusic)
+                    .addMediaInfos(mediaInfos)
+                    .setDeNoise(hasDeNoise)
+                    .setHasWaterMark(hasWaterMark)
+                    .setHorizontalFlip(horizontalFlip)
+                    .build();
+        } else {
+            mInputParam = new AlivcEditInputParam.Builder().build();
+        }
     }
 
     private void init() {
@@ -171,8 +180,10 @@ public class EditorMediaActivity extends Activity {
                 if (progressDialog != null) {
                     progressDialog.dismiss();
                 }
+
                 mInputParam.setMediaInfos((ArrayList<MediaInfo>)resultVideos);
                 EditorActivity.startEdit(EditorMediaActivity.this, mInputParam  );
+
             }
 
             @Override
@@ -193,11 +204,18 @@ public class EditorMediaActivity extends Activity {
                 if (FastClickUtil.isFastClick()) {
                     return;
                 }
+                if (isGetMedia) {
+                    mInputParam.setMediaInfos(mTransCoder.getOriginalVideos());
+                    Intent intent = new Intent(EditorMediaActivity.this, EditorActivity.class);
+                    intent.putParcelableArrayListExtra(AlivcEditInputParam.INTENT_KEY_MEDIA_INFO, mInputParam.getMediaInfos());
+                    EditorMediaActivity.this.setResult(100, intent);
+                    finish();
+                }
                 if (isReachedMaxDuration) {
                     ToastUtil.showToast(EditorMediaActivity.this, R.string.alivc_media_message_max_duration_import);
                     return;
                 }
-                //对于大于720P的视频需要走转码流程
+                //对于大于1080P的视频需要走转码流程
 
                 int videoCount = mTransCoder.getVideoCount();
                 if (videoCount > 0 && (progressDialog == null || !progressDialog.isShowing())) {
@@ -205,7 +223,7 @@ public class EditorMediaActivity extends Activity {
                     progressDialog.setCancelable(true);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.setOnCancelListener(new OnCancelListener(EditorMediaActivity.this));
-                    mTransCoder.transcode(EditorMediaActivity.this.getApplicationContext(), mInputParam.getScaleMode());
+                    mTransCoder.transcode(EditorMediaActivity.this.getApplicationContext(), mInputParam.getScaleMode(), mNeedTranscode);
                 } else {
                     ToastUtil.showToast(EditorMediaActivity.this, R.string.alivc_media_please_select_video);
                 }
@@ -220,16 +238,15 @@ public class EditorMediaActivity extends Activity {
         mMutiMediaView.setOnMediaClickListener(new MutiMediaView.OnMediaClickListener() {
             @Override
             public void onClick(MediaInfo info) {
+                if (isGetMedia && mTransCoder.getVideoCount() > 0) {
+                    return;
+                }
                 Log.i(TAG, "log_editor_video_path : " + info.filePath);
                 MediaInfo infoCopy = new MediaInfo();
                 infoCopy.addTime = info.addTime;
                 infoCopy.mimeType = info.mimeType;
                 if (info.mimeType.startsWith("image")) {
                     if (info.filePath.endsWith("gif") || info.filePath.endsWith("GIF")) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !TextUtils.isEmpty(info.fileUri)) {
-                            //适配 android Q, copy 媒体文件到应用沙盒下
-                            info.filePath = cacheMediaFile(EditorMediaActivity.this, info.fileUri, info.filePath);
-                        }
                         NativeParser parser = new NativeParser();
                         parser.init(info.filePath);
                         int frameCount;
@@ -291,7 +308,6 @@ public class EditorMediaActivity extends Activity {
                 infoCopy.thumbnailUri = info.thumbnailUri;
                 infoCopy.title = info.title;
                 infoCopy.type = info.type;
-
                 mMutiMediaView.addSelectMedia(infoCopy);
                 mMutiMediaView.setNextEnable(true);
                 mTransCoder.addMedia(infoCopy);
@@ -311,10 +327,6 @@ public class EditorMediaActivity extends Activity {
                     return;
                 }
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !TextUtils.isEmpty(info.fileUri)) {
-                    //适配 android Q, copy 媒体文件到应用沙盒下
-                    info.filePath = cacheMediaFile(EditorMediaActivity.this, info.fileUri, info.filePath);
-                }
                 mCurrMediaInfo = info;
                 mCropPosition = position;
 
@@ -352,29 +364,6 @@ public class EditorMediaActivity extends Activity {
 
     }
 
-    /**
-     * Android Q 缓存媒体文件到文件沙盒
-     * @param context 上下文
-     * @param originalFilePath 文件path
-     * @param fileUri 文件Uri
-     * @return filePath 文件缓存地址
-     */
-    private String cacheMediaFile(Context context, String fileUri, String originalFilePath) {
-        if (originalFilePath.contains(context.getPackageName())) {
-            return originalFilePath;
-        }
-        String filePath = null;
-        if (!TextUtils.isEmpty(fileUri)) {
-            int index = originalFilePath.lastIndexOf(".");
-            String suffix = index == -1 ? "" : originalFilePath.substring(index);
-            filePath = Constants.SDCardConstants.getCacheDir(context) + File.separator + MD5Utils
-                       .getMD5(fileUri) + suffix;
-            if (!new File(filePath).exists()) {
-                UriUtils.copyFileToDir(context, fileUri, filePath);
-            }
-        }
-        return filePath;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -492,8 +481,34 @@ public class EditorMediaActivity extends Activity {
         intent.putExtra(AlivcEditInputParam.INTENT_KEY_TAIL_ANIMATION, param.isHasTailAnimation());
         intent.putExtra(AlivcEditInputParam.INTENT_KEY_REPLACE_MUSIC, param.isCanReplaceMusic());
         intent.putExtra(AlivcEditInputParam.INTENT_KEY_WATER_MARK, param.isHasWaterMark());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_HORIZONTAL_FLIP, param.isHorizontalFlip());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_DE_NOISE, param.getDeNoise());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_NEED_TRANSCODE, param.isNeedTrancode());
         intent.putParcelableArrayListExtra(AlivcEditInputParam.INTENT_KEY_MEDIA_INFO, param.getMediaInfos());
         context.startActivity(intent);
+    }
+
+    public static void selectMediaOnResult(Activity activity, int requestCode) {
+        Intent intent = new Intent(activity, EditorMediaActivity.class);
+        AlivcEditInputParam param = new AlivcEditInputParam.Builder().build();
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_FRAME, param.getFrameRate());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_GOP, param.getGop());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_RATION_MODE, param.getRatio());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_QUALITY, param.getVideoQuality());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_RESOLUTION_MODE, param.getResolutionMode());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_CODEC, param.getVideoCodec());
+        intent.putExtra(AlivcEditInputParam.INTETN_KEY_CRF, param.getCrf());
+        intent.putExtra(AlivcEditInputParam.INTETN_KEY_SCANLE_RATE, param.getScaleRate());
+        intent.putExtra(AlivcEditInputParam.INTETN_KEY_SCANLE_MODE, param.getScaleMode());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_TAIL_ANIMATION, param.isHasTailAnimation());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_REPLACE_MUSIC, param.isCanReplaceMusic());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_WATER_MARK, param.isHasWaterMark());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_HORIZONTAL_FLIP, param.isHorizontalFlip());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_DE_NOISE, param.getDeNoise());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_NEED_TRANSCODE, param.isNeedTrancode());
+        intent.putParcelableArrayListExtra(AlivcEditInputParam.INTENT_KEY_MEDIA_INFO, param.getMediaInfos());
+        intent.putExtra(AlivcEditInputParam.INTENT_KEY_GET_MEDIA, true);
+        activity.startActivityForResult(intent, requestCode);
     }
 
 }

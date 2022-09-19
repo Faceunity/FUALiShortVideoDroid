@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70">
+
+    <RadioGroup
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp">
+
+        <RadioButton
+            android:background="@drawable/alivc_svideo_shape_btn_bg"
+            android:id="@+id/btn_alignment_left"
+            android:checked="true"
+            android:layout_gravity="center_vertical"
+            android:text="@string/alivc_editor_effect_text_alignment_left"
+            android:textColor="@color/alivc_common_bg_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/btn_alignment_middle"
+            android:background="@drawable/alivc_svideo_shape_btn_bg"
+            android:layout_marginLeft="27dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/alivc_editor_effect_text_alignment_center"
+            android:textColor="@color/alivc_common_bg_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <RadioButton
+            android:id="@+id/btn_alignment_right"
+            android:background="@drawable/alivc_svideo_shape_btn_bg"
+            android:layout_marginLeft="27dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/alivc_editor_effect_text_alignment_right"
+            android:textColor="@color/alivc_common_bg_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+
+    </RadioGroup>
+
+</FrameLayout>

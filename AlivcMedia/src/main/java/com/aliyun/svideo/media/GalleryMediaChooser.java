@@ -4,10 +4,12 @@
 
 package com.aliyun.svideo.media;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 /**
@@ -29,7 +31,6 @@ public class GalleryMediaChooser {
         gallery.setLayoutManager(new WrapContentGridLayoutManager(gallery.getContext(),
                                  4, GridLayoutManager.VERTICAL, false));
         gallery.setAdapter(adapter);
-//        adapter.addDraftItem();
         adapter.setData(storage.getMedias());
         storage.setOnMediaDataUpdateListener(new MediaStorage.OnMediaDataUpdate() {
             @Override
@@ -53,9 +54,7 @@ public class GalleryMediaChooser {
             public boolean onItemClick(GalleryAdapter adapter, int adapterPosition) {
                 if (adapter.getItemCount() > adapterPosition) {
                     MediaInfo info = adapter.getItem(adapterPosition);
-                    if (info == null) {
-                        //                    mStorage.onDraftItemClicked();
-                    } else {
+                    if (info != null) {
                         mStorage.setCurrentDisplayMediaData(info);
                     }
                 }
@@ -89,34 +88,27 @@ public class GalleryMediaChooser {
         mGallery.smoothScrollToPosition(pos);
     }
 
-    public void setDraftCount(int draftCount) {
-        adapter.setDraftCount(draftCount);
-        adapter.notifyItemChanged(0);
-    }
 
     private void selectedFirstMediaOnAll(List<MediaInfo> list) {
         if (list.size() == 0) {
             return ;
         }
         MediaInfo info = list.get(0);
-//        mStorage.setCurrentDisplayMediaData(info);
         adapter.setActiveDataItem(info);
     }
 
     public void changeMediaDir(MediaDir dir) {
         if (dir.id == -1) {
-            //adapter.addDraftItem();
             adapter.setData(mStorage.getMedias());
             selectedFirstMediaOnAll(mStorage.getMedias());
         } else {
-            //adapter.removeDraftItem();
             adapter.setData(mStorage.findMediaByDir(dir));
             selectedFirstMediaOnAll(mStorage.findMediaByDir(dir));
         }
     }
 
-    public RecyclerView getGallery() {
-        return mGallery;
+    public void setMinDuration(long minDuration) {
+        adapter.setMinDuration(minDuration);
     }
 
 }

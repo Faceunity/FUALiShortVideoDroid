@@ -6,11 +6,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +26,15 @@ import com.aliyun.alivcsolution.model.ScenesModel;
 import com.aliyun.alivcsolution.setting.AlivcRecordSettingActivity;
 import com.aliyun.alivcsolution.setting.AlivcCropSettingActivity;
 import com.aliyun.alivcsolution.setting.AlivcEditorSettingActivity;
-import com.aliyun.race.sample.activity.AliyunBeautifyActivity;
-import com.aliyun.race.sample.activity.RaceMainActivity;
+import com.aliyun.svideo.recorder.util.PreferenceUtil;
 import com.aliyun.svideo.base.ui.SdkVersionActivity;
 import com.aliyun.svideo.base.utils.FastClickUtil;
 import com.aliyun.svideo.common.SdcardUtils;
 import com.aliyun.svideo.common.utils.PermissionUtils;
+import com.aliyun.svideo.editor.draft.DraftListActivity;
+import com.aliyun.svideo.editor.template.TemplateListActivity;
+import com.aliyun.svideo.recorder.activity.AlivcMixComposeActivity;
+import com.faceunity.nama.FURenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,12 +78,19 @@ public class MainActivity extends AppCompatActivity {
      */
     private int[] modules = new int[] {
         R.string.solution_recorder,
-        R.string.solution_edit, R.string.solution_crop, R.string.solution_race_beauty
+        R.string.solution_edit,
+        R.string.solution_crop,
+        R.string.solution_draft_box,
+        R.string.solution_template/*,
+        R.string.solution_mix*/
     };
     private int[] homeicon = {
         R.mipmap.icon_home_svideo_record,
-        R.mipmap.icon_home_svideo_edit, R.mipmap.icon_home_svideo_crop, R.mipmap.icon_home_svideo_race_beauty,
-
+        R.mipmap.icon_home_svideo_edit,
+        R.mipmap.icon_home_svideo_crop,
+        R.mipmap.icon_home_svideo_draft,
+        R.mipmap.icon_home_svideo_template,
+        R.mipmap.icon_home_svideo_race_beauty
     };
 
     private static final int PERMISSION_REQUEST_CODE = 1000;
@@ -97,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
 
         buildHomeItem();
         SdcardUtils.checkAvailableSize(this, 100);
+
+        String isOpen = PreferenceUtil.getString(this, PreferenceUtil.KEY_FACEUNITY_ISON);
+        if (!TextUtils.isEmpty(isOpen) && !isOpen.equals("false")) {
+            FURenderer.getInstance().setup(this);
+        }
     }
 
     /**
@@ -141,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog openAppDetDialog = null;
     private void showPermissionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.app_name) + "需要访问 \"相册\"、\"摄像头\" 和 \"外部存储器\",否则会影响绝大部分功能使用, 请到 \"应用信息 -> 权限\" 中设置！");
+        builder.setMessage(getString(R.string.ugc_app_name) + "需要访问 \"相册\"、\"摄像头\" 和 \"外部存储器\",否则会影响绝大部分功能使用, 请到 \"应用信息 -> 权限\" 中设置！");
         builder.setPositiveButton("去设置", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -238,12 +254,23 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case 3:
-                        // race美颜
-                        Intent raceBeauty = new Intent(MainActivity.this, AliyunBeautifyActivity.class);
-                        startActivity(raceBeauty);
+                        // 草稿箱
+                        Intent draft = new Intent(MainActivity.this, DraftListActivity.class);
+                        startActivity(draft);
 
                         break;
+                    case 4:
+                        // 草稿箱
+                        Intent templateList = new Intent(MainActivity.this, TemplateListActivity.class);
+                        startActivity(templateList);
 
+                        break;
+                    case 5:
+                        // 视频拼接
+                        Intent test = new Intent(MainActivity.this, AlivcMixComposeActivity.class);
+                        startActivity(test);
+
+                        break;
                     default:
                         break;
                     }
@@ -281,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //设置ViewPager滑动监听
-        viewPager.addOnPageChangeListener(new OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

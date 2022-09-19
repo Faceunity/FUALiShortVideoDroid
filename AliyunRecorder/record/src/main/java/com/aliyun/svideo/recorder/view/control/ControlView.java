@@ -4,19 +4,17 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.aliyun.svideo.record.R;
@@ -39,6 +37,7 @@ public class ControlView extends RelativeLayout implements View.OnTouchListener 
     private ImageView ivReadyRecord;
     private ImageView aliyunSwitchLight;
     private ImageView aliyunSwitchCamera;
+    private ImageView aliyunVoiceSwitch;
     public TextView aliyunComplete;
     private ImageView aliyunBack;
     private LinearLayout aliyunRecordLayoutBottom;
@@ -92,6 +91,7 @@ public class ControlView extends RelativeLayout implements View.OnTouchListener 
     private int mAspectRatio = AliyunSnapVideoParam.RATIO_MODE_9_16;
     //录制类型 合拍true 正常录制false
     private Boolean mIsMixRecorderType = false;
+    private boolean mVoiceOff;
 
 
     public ControlView(Context context) {
@@ -128,6 +128,7 @@ public class ControlView extends RelativeLayout implements View.OnTouchListener 
         aliyunSwitchLight = (ImageView) findViewById(R.id.aliyun_switch_light);
         mLlFilterEffect = findViewById(R.id.alivc_record_effect_filter);
         aliyunSwitchCamera = (ImageView) findViewById(R.id.aliyun_switch_camera);
+        aliyunVoiceSwitch = findViewById(R.id.aliyun_voice_switch);
         mIvMusicIcon = findViewById(R.id.alivc_record_iv_music);
         aliyunComplete = findViewById(R.id.aliyun_complete);
         aliyunBack = (ImageView) findViewById(R.id.aliyun_back);
@@ -175,6 +176,7 @@ public class ControlView extends RelativeLayout implements View.OnTouchListener 
         mPickerView.setData(strings);
         //向上的三角形对应的图片
         mPickerView.setCenterItemBackground(UIConfigManager.getDrawableResources(getContext(), R.attr.triangleImage, R.mipmap.alivc_svideo_icon_selected_indicator));
+        aliyunVoiceSwitch.setImageDrawable(getSwitchVoiceDrawable(mVoiceOff));
     }
 
     /**
@@ -193,6 +195,17 @@ public class ControlView extends RelativeLayout implements View.OnTouchListener 
         stateListDrawable.addState(new int[] {},
                                    drawable);
         return stateListDrawable;
+    }
+
+    private Drawable getSwitchVoiceDrawable(boolean voiceOff) {
+        Drawable drawable;
+        if (voiceOff) {
+            drawable = ContextCompat.getDrawable(getContext(), R.mipmap.alivc_svideo_icon_voice_off);
+        } else {
+            drawable = ContextCompat.getDrawable(getContext(), R.mipmap.alivc_svideo_icon_voice_on);
+
+        }
+        return drawable;
     }
 
     /**
@@ -287,6 +300,19 @@ public class ControlView extends RelativeLayout implements View.OnTouchListener 
                 }
             }
         });
+        aliyunVoiceSwitch.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (FastClickUtil.isFastClick()) {
+                    return;
+                }
+                mVoiceOff = !mVoiceOff;
+                aliyunVoiceSwitch.setImageDrawable(getSwitchVoiceDrawable(mVoiceOff));
+                if (mListener != null) {
+                    mListener.onVoiceSwitch();
+                }
+            }
+        });
 
         // 下一步(跳转编辑)
         aliyunComplete.setOnClickListener(new OnClickListener() {
@@ -370,15 +396,14 @@ public class ControlView extends RelativeLayout implements View.OnTouchListener 
 
             @Override
             public void onClick(View v) {
-//                if (mListener != null) {
-//                    if (FastClickUtil.isFastClick()) {
-//                        return;
-//                    }
-//                    mListener.onBeautyFaceClick();
-//                }
+                if (mListener != null) {
+                    if (FastClickUtil.isFastClick()) {
+                        return;
+                    }
+                    mListener.onBeautyFaceClick();
+                }
             }
         });
-        llBeautyFace.setVisibility(INVISIBLE);
         // 点击音乐
         mAlivcMusic.setOnClickListener(new OnClickListener() {
             @Override
@@ -401,18 +426,17 @@ public class ControlView extends RelativeLayout implements View.OnTouchListener 
             }
         });
         // 点击动图
-//        llGifEffect.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (FastClickUtil.isFastClick()) {
-//                    return;
-//                }
-//                if (mListener != null) {
-//                    mListener.onGifEffectClick();
-//                }
-//            }
-//        });
-        llGifEffect.setVisibility(INVISIBLE);
+        llGifEffect.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (FastClickUtil.isFastClick()) {
+                    return;
+                }
+                if (mListener != null) {
+                    mListener.onGifEffectClick();
+                }
+            }
+        });
         mLlFilterEffect.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

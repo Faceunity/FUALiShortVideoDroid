@@ -2,14 +2,15 @@ package com.aliyun.svideo.common.widget;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.aliyun.svideo.common.R;
 
@@ -84,15 +85,15 @@ public class AlivcCustomAlertDialog extends Dialog {
         private CustomDialogType customDialogType = CustomDialogType.Alert;
         public Builder(Context mContext) {
             this.mContext = mContext;
+            message = mContext.getResources().getString(R.string.alivc_common_note);
+            confirm = mContext.getResources().getString(R.string.alivc_common_confirm);
+            cancel = mContext.getResources().getString(R.string.alivc_common_cancel);
         }
 
         public AlivcCustomAlertDialog create() {
             AlivcCustomAlertDialog dialog = new AlivcCustomAlertDialog(mContext);
             dialog.setContentView(R.layout.alivc_common_dialog_alert_custom);
             dialog.initView();
-            message = mContext.getResources().getString(R.string.alivc_common_note);
-            confirm = mContext.getResources().getString(R.string.alivc_common_confirm);
-            cancel = mContext.getResources().getString(R.string.alivc_common_cancel);
             dialog.tvDialogMessage.setText(message);
             dialog.tvCancel.setText(cancel);
             dialog.tvConfirm.setText(confirm);

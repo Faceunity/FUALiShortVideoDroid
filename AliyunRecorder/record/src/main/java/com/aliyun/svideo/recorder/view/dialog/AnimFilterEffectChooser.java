@@ -1,12 +1,11 @@
 package com.aliyun.svideo.recorder.view.dialog;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.aliyun.svideo.record.R;
-import com.aliyun.svideo.recorder.view.effects.filter.OnFilterItemClickListener;
 import com.aliyun.svideo.recorder.view.effects.filter.animfilter.AlivcAnimFilterChooseFragment;
 import com.aliyun.svideo.recorder.view.effects.filter.animfilter.OnAnimFilterItemClickListener;
 import com.aliyun.svideosdk.common.struct.effect.EffectFilter;

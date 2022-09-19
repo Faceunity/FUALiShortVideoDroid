@@ -1,19 +1,19 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion externalCompileSdkVersion
-    buildToolsVersion externalBuildToolsVersion
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
     defaultConfig {
-        minSdkVersion externalMinSdkVersion
-        targetSdkVersion externalTargetSdkVersion
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
     }
 
 }
 
 dependencies {
     implementation project(':AliyunFileDownLoader')
-    implementation externalAndroidAppCompatV7
-    implementation externalAndroidRecyclerView
+    implementation externalAndroidXAppcompat
+    implementation externalAndroidXRecyclerView
 
     implementation externalGSON
     implementation project(':AliyunSVideoBase')

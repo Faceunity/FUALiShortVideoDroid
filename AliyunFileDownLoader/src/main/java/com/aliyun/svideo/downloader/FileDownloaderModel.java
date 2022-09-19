@@ -7,10 +7,30 @@ package com.aliyun.svideo.downloader;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 
 public class FileDownloaderModel implements Serializable {
+
+    public final static String RESOURCE_CLOUD_DIR = "svideo_res" + File.separator + "cloud";
+    public final static String MV_DIR = RESOURCE_CLOUD_DIR + File.separator + "mv";
+    public final static String ANIMATION_EFFECTS_DIR = RESOURCE_CLOUD_DIR + File.separator + "animation_effects";
+    public final static String TRANSITION_DIR = RESOURCE_CLOUD_DIR + File.separator + "transition";
+    public final static String FONT_DIR = RESOURCE_CLOUD_DIR + File.separator + "font";
+    public final static String STICKER_DIR = RESOURCE_CLOUD_DIR + File.separator + "sticker";
+    public final static String CAPTION_DIR = RESOURCE_CLOUD_DIR + File.separator + "caption";
+
+    public static final int EFFECT_TEXT = 1;        //字体
+    public static final int EFFECT_PASTER = 2;      //动图
+    public static final int EFFECT_MV = 3;          //MV
+    public static final int EFFECT_FILTER = 4;      //滤镜
+    public static final int EFFECT_MUSIC = 5;       //音乐
+    public static final int EFFECT_CAPTION = 6;     //字幕
+    public static final int EFFECT_FACE_PASTER = 7; //人脸动图
+    public static final int EFFECT_IMG = 8;         //静态贴纸
+    public static final int EFFECT_ANIMATION_FILTER = 9;//动态滤镜
+    public static final int EFFECT_TRANSITION = 10;   //转场特效
 
     public final static String TASK_ID = "task_id";//主键
     public final static String ID = "id";//组id

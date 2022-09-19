@@ -6,9 +6,10 @@ package com.aliyun.svideo.recorder.view.effects.filter.animfilter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,7 @@ import com.aliyun.svideo.common.utils.image.AbstractImageLoaderTarget;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.util.RecordCommon;
-import com.aliyun.svideo.recorder.view.effects.filter.EffectInfo;
-import com.aliyun.svideo.recorder.view.effects.filter.UIEditorPage;
-import com.aliyun.svideo.recorder.view.effects.filter.OnFilterItemClickListener;
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
 
 import org.json.JSONException;
@@ -145,8 +144,7 @@ public class AnimFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 viewHolder.mImage.setSelected(true);
                 mSelectedPos = position;
                 mSelectedHolder = viewHolder;
-
-                EffectFilter effectFilter = new EffectFilter(mFilterList.get(position));
+                EffectFilter effectFilter = new EffectFilter(new Source(String.valueOf(position), mFilterList.get(position)));
                 mItemClick.onItemClick(effectFilter, position);
             }
         }

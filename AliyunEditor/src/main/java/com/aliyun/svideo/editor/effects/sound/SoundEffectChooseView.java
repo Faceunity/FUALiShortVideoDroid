@@ -2,10 +2,11 @@ package com.aliyun.svideo.editor.effects.sound;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TextView;
@@ -57,6 +58,12 @@ public class SoundEffectChooseView extends BaseChooser {
         Drawable top = getContext().getResources().getDrawable(R.mipmap.alivc_svideo_icon_tab_filter);
         top.setBounds(0, 0, top.getMinimumWidth(), top.getMinimumHeight());
         soundTitle.setCompoundDrawables(top, null, null, null );
+    }
+
+    public void setSelectedPos(final int selectedPos) {
+        if (adapter != null) {
+            adapter.setSelectedPos(selectedPos);
+        }
     }
 
     @Override

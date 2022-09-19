@@ -310,7 +310,7 @@ public abstract class BaseAliyunPasterView extends ViewGroup {
     private final Matrix mInverseTransform = new Matrix();
     private boolean mInverseTransformInvalidated = false;
 
-    private void invalidateTransform() {
+    public void invalidateTransform() {
         mInverseTransformInvalidated = true;
         validateTransform();
         requestLayout();
@@ -449,5 +449,7 @@ public abstract class BaseAliyunPasterView extends ViewGroup {
         mMatrixUtil.decomposeTSR(mTransform);
         invalidateTransform();
     }
-
+    public Matrix getTransform() {
+        return mTransform;
+    }
 }

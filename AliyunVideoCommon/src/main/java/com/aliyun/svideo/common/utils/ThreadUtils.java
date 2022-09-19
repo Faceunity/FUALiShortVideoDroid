@@ -75,6 +75,10 @@ public class ThreadUtils {
         sMainHandler.postDelayed(runnable, delayed);
     }
 
+    public static void removeCallbacks(Runnable runnable){
+        sMainHandler.removeCallbacks(runnable);
+    }
+
     /**
      * 从线程池中创建子线程执行异步任务
      * 在任务数超过128，或者线程池Shutdown时将跳过这条任务

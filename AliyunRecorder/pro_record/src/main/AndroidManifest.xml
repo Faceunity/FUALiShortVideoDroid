@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.aliyun.svideo.pro.record">
+
+    <application>
+        <activity
+            android:name="com.aliyun.svideo.recorder.activity.AlivcSvideoViewRecordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AlivcRecordUIStyle" />
+    </application>
+
+</manifest>

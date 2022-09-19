@@ -1,7 +1,8 @@
 package com.aliyun.svideo.common.utils;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 /**
  * 限制快速点击多次触发的工具类

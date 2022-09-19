@@ -63,6 +63,7 @@ public class DownloaderManager {
 
     /**
      * 获取DownloadManager实例
+     *
      * @return
      */
     public static DownloaderManager getInstance() {
@@ -76,7 +77,7 @@ public class DownloaderManager {
         return mDownloadManager;
     }
 
-    private DownloaderManager () {
+    private DownloaderManager() {
         if (mDbController == null && mContext != null) {
             initDownloaderConfiger(mContext);
         }
@@ -87,28 +88,28 @@ public class DownloaderManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT_WATCH) {
             //解决适配性问题，在api16-20的手机上https下载失败的问题
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
-            .readTimeout(15, TimeUnit.SECONDS)
-            .connectTimeout(15, TimeUnit.SECONDS);
+                    .readTimeout(15, TimeUnit.SECONDS)
+                    .connectTimeout(15, TimeUnit.SECONDS);
             try {
                 SSLSocketFactory factory = new SSLSocketFactoryCompat();
                 builder.sslSocketFactory(factory);
             } catch (KeyManagementException e) {
                 e.printStackTrace();
-                Log.e(TAG, "KeyManagementException" );
+                Log.e(TAG, "KeyManagementException");
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
-                Log.e(TAG, "NoSuchAlgorithmException" );
+                Log.e(TAG, "NoSuchAlgorithmException");
             }
             FileDownloader.init(context, new DownloadMgrInitialParams.InitCustomMaker()
-                                .connectionCreator(new OkHttp3Connection.Creator(builder)));
+                    .connectionCreator(new OkHttp3Connection.Creator(builder)));
         } else {
             FileDownloader.init(context, new DownloadMgrInitialParams.InitCustomMaker()
-                                .connectionCreator(new FileDownloadUrlConnection
-                                                   .Creator(new FileDownloadUrlConnection.Configuration()
-                                                           .connectTimeout(15000) // set connection timeout.
-                                                           .readTimeout(15000) // set read timeout.
-                                                           .proxy(Proxy.NO_PROXY) // set proxy
-                                                           )));
+                    .connectionCreator(new FileDownloadUrlConnection
+                            .Creator(new FileDownloadUrlConnection.Configuration()
+                            .connectTimeout(15000) // set connection timeout.
+                            .readTimeout(15000) // set read timeout.
+                            .proxy(Proxy.NO_PROXY) // set proxy
+                    )));
         }
     }
 
@@ -125,7 +126,7 @@ public class DownloaderManager {
         this.mConfiguration = configuration;
         this.mExtFieldMap = configuration.getDbExtField();
         mDbController = new FileDownloaderDBController(configuration.getContext(), configuration.getDbVersion(),
-                mExtFieldMap, configuration.getDbUpgradeListener());
+                mExtFieldMap, configuration.getDbUpgradeListener(),configuration.iCipher(),configuration.getCk());
 //        mAllTasks = mDbController.getAllTasks();
         mConnectListenerList = new ArrayList<>();
         mListenerManager = new ListenerManager();
@@ -145,6 +146,7 @@ public class DownloaderManager {
 
     /**
      * 获取扩展字段map
+     *
      * @return
      */
     Map<String, String> getDbExtFieldMap() {
@@ -153,6 +155,7 @@ public class DownloaderManager {
 
     /**
      * 开始下载任务
+     *
      * @param downloadId
      */
     public void startTask(int downloadId) {
@@ -161,6 +164,7 @@ public class DownloaderManager {
 
     /**
      * 开始下载任务
+     *
      * @param downloadId
      * @param callback
      */
@@ -177,10 +181,10 @@ public class DownloaderManager {
             } else {
                 mDownloadingList.add(model);
                 final BaseDownloadTask task = FileDownloader.getImpl().create(model.getUrl())
-                                              .setPath(model.getPath())
-                                              .setCallbackProgressTimes(100)
-                                              .setAutoRetryTimes(mAutoRetryTimes)
-                                              .setListener(bridgeListener);
+                        .setPath(model.getPath())
+                        .setCallbackProgressTimes(100)
+                        .setAutoRetryTimes(mAutoRetryTimes)
+                        .setListener(bridgeListener);
                 for (int i = 0; i < mHeaders.size(); i++) {
                     task.addHeader(mHeaders.name(i), mHeaders.value(i));
                 }
@@ -206,11 +210,11 @@ public class DownloaderManager {
             } else {
                 mDownloadingList.add(model);
                 task = FileDownloader.getImpl().create(model.getUrl())
-                       .setPath(model.getPath())
-                       .setCallbackProgressTimes(100)
-                       .setCallbackProgressMinInterval(100)
-                       .setAutoRetryTimes(mAutoRetryTimes)
-                       .setListener(bridgeListener);
+                        .setPath(model.getPath())
+                        .setCallbackProgressTimes(100)
+                        .setCallbackProgressMinInterval(100)
+                        .setAutoRetryTimes(mAutoRetryTimes)
+                        .setListener(bridgeListener);
                 for (int i = 0; i < mHeaders.size(); i++) {
                     task.addHeader(mHeaders.name(i), mHeaders.value(i));
                 }
@@ -226,10 +230,10 @@ public class DownloaderManager {
         FileDownloaderModel model = getFileDownloaderModelById(downloadId);
         if (model != null) {
             final BaseDownloadTask task = FileDownloader.getImpl().create(model.getUrl())
-                                          .setPath(model.getPath())
-                                          .setCallbackProgressTimes(100)
-                                          .setAutoRetryTimes(mAutoRetryTimes)
-                                          .setListener(listener);
+                    .setPath(model.getPath())
+                    .setCallbackProgressTimes(100)
+                    .setAutoRetryTimes(mAutoRetryTimes)
+                    .setListener(listener);
             for (int i = 0; i < mHeaders.size(); i++) {
                 task.addHeader(mHeaders.name(i), mHeaders.value(i));
             }
@@ -242,6 +246,7 @@ public class DownloaderManager {
 
     /**
      * 删除一个任务
+     *
      * @param downloadId
      */
     public void deleteTaskByTaskId(int downloadId) {
@@ -271,6 +276,7 @@ public class DownloaderManager {
 
     /**
      * 添加下载监听
+     *
      * @param downloadId
      * @param listener
      */
@@ -281,6 +287,7 @@ public class DownloaderManager {
 
     /**
      * 下一个任务
+     *
      * @return
      */
     protected synchronized FileDownloaderModel nextTask() {
@@ -289,13 +296,14 @@ public class DownloaderManager {
 
     /**
      * 将一个下载中的任务从下载中队列移除
+     *
      * @param downloadId
      */
     protected synchronized void removeDownloadingTask(int downloadId) {
         Iterator<FileDownloaderModel> iterator = mDownloadingList.iterator();
         while (iterator.hasNext()) {
             FileDownloaderModel model = iterator.next();
-            if ( model != null && model.getTaskId() == downloadId) {
+            if (model != null && model.getTaskId() == downloadId) {
                 try {
                     iterator.remove();
                 } catch (Exception e) {
@@ -307,13 +315,14 @@ public class DownloaderManager {
 
     /**
      * 将一个等待中的任务从下等待队列中移除
+     *
      * @param downloadId
      */
     protected synchronized void removeWaitQueueTask(int downloadId) {
         Iterator<FileDownloaderModel> iterator = mWaitQueue.iterator();
         while (iterator.hasNext()) {
             FileDownloaderModel model = iterator.next();
-            if ( model != null && model.getTaskId() == downloadId) {
+            if (model != null && model.getTaskId() == downloadId) {
                 try {
                     iterator.remove();
                 } catch (Exception e) {
@@ -325,6 +334,7 @@ public class DownloaderManager {
 
     /**
      * 暂停任务
+     *
      * @param downloadId
      */
     public synchronized void pauseTask(int downloadId) {
@@ -346,6 +356,7 @@ public class DownloaderManager {
 
     /**
      * 根据任务ID获取任务
+     *
      * @param downloadId
      * @return
      */
@@ -356,6 +367,7 @@ public class DownloaderManager {
 
     /**
      * 添加service连接监听
+     *
      * @param listener
      */
     public void addServiceConnectListener(FileDownloadConnectListener listener) {
@@ -364,6 +376,7 @@ public class DownloaderManager {
 
     /**
      * 移除sevice连接监听
+     *
      * @param listener
      */
     public void removeServiceConnectListener(FileDownloadConnectListener listener) {
@@ -378,11 +391,13 @@ public class DownloaderManager {
             mConnectListenerList.clear();
             pauseAllTask();
             FileDownloader.getImpl().unBindServiceIfIdle();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     /**
      * 获取service是否已连接
+     *
      * @return
      */
     public boolean isReady() {
@@ -391,6 +406,7 @@ public class DownloaderManager {
 
     /**
      * 根据索引获取下载信息
+     *
      * @param position
      * @return
      */
@@ -401,6 +417,7 @@ public class DownloaderManager {
 
     /**
      * 根据URL获取下载信息
+     *
      * @param url
      * @return
      */
@@ -418,6 +435,7 @@ public class DownloaderManager {
 
     /**
      * 根据downloadId获取下载信息
+     *
      * @param downloadId
      * @return
      */
@@ -430,6 +448,7 @@ public class DownloaderManager {
 
     /**
      * 是否下载完成
+     *
      * @param downloadId
      * @return
      */
@@ -446,6 +465,7 @@ public class DownloaderManager {
 
     /**
      * 判断是否在等待队列
+     *
      * @param downloadId
      * @return
      */
@@ -457,23 +477,25 @@ public class DownloaderManager {
 
     /**
      * 判断一个任务是否在下载中
+     *
      * @param downloadId
      * @return
      */
     public boolean isDownloading(final int downloadId, String path) {
         int status = getStatus(downloadId, path);
         switch (status) {
-        case FileDownloadStatus.pending:
-        case FileDownloadStatus.connected:
-        case FileDownloadStatus.progress:
-            return true;
-        default:
-            return false;
+            case FileDownloadStatus.pending:
+            case FileDownloadStatus.connected:
+            case FileDownloadStatus.progress:
+                return true;
+            default:
+                return false;
         }
     }
 
     /**
      * 判断任务是否存在
+     *
      * @param url
      * @return
      */
@@ -488,6 +510,7 @@ public class DownloaderManager {
 
     /**
      * 获取FileDownloader FileDownloadStatus下载状态
+     *
      * @param downloadId
      * @return
      */
@@ -497,6 +520,7 @@ public class DownloaderManager {
 
     /**
      * 根据downloadId获取文件总大小
+     *
      * @param downloadId
      * @return
      */
@@ -506,6 +530,7 @@ public class DownloaderManager {
 
     /**
      * 根据downloadId获取文件已下载大小
+     *
      * @param downloadId
      * @return
      */
@@ -515,6 +540,7 @@ public class DownloaderManager {
 
     /**
      * 获取下载速度
+     *
      * @param downloadId
      * @return
      */
@@ -525,13 +551,14 @@ public class DownloaderManager {
 
     /**
      * 根据downloadId获取文件下载进度
+     *
      * @param downloadId
      * @return
      */
     public int getProgress(int downloadId) {
         FileDownloaderModel model = getFileDownloaderModelById(downloadId);
         int progress = 0;
-        if ( model != null ) {
+        if (model != null) {
             if (!new File(model.getPath()).exists()) {
                 return progress;
             }
@@ -540,8 +567,8 @@ public class DownloaderManager {
         long totalBytes = getTotal(downloadId);
         long soFarBytes = getSoFar(downloadId);
 
-        if ( totalBytes != 0 ) {
-            progress = (int)(soFarBytes / (float)totalBytes * 100);
+        if (totalBytes != 0) {
+            progress = (int) (soFarBytes / (float) totalBytes * 100);
         }
 
         return progress;
@@ -557,6 +584,7 @@ public class DownloaderManager {
 
     /**
      * 获取所任务数
+     *
      * @return
      */
     public int getTaskCounts() {
@@ -569,6 +597,7 @@ public class DownloaderManager {
     /**
      * 添加一个任务
      * 注：同样的URL，保存的目录不一样表示这两次addTask是不同的任务
+     *
      * @param url
      * @return
      */
@@ -582,6 +611,7 @@ public class DownloaderManager {
     /**
      * 添加一个任务
      * 注：同样的URL，保存的目录不一样表示这两次addTask是不同的任务
+     *
      * @param url
      * @param path
      * @return
@@ -597,18 +627,58 @@ public class DownloaderManager {
     /**
      * 添加一个任务
      * 注：同样的URL，保存的目录不一样表示这两次addTask是不同的任务
+     *
      * @param downloaderModel
      * @return
      */
     public FileDownloaderModel addTask(FileDownloaderModel downloaderModel, String url) {
-//        String url = downloaderModel.getUrl();
         String path = downloaderModel.getPath();
 
         if (TextUtils.isEmpty(url)) {
             return null;
         }
         if (TextUtils.isEmpty(path)) {
-            path = createPath(url);
+            String subDirPath = "";
+            switch (downloaderModel.getEffectType()) {
+                case FileDownloaderModel.EFFECT_MV:
+                    subDirPath = FileDownloaderModel.MV_DIR;
+                    break;
+                case FileDownloaderModel.EFFECT_TEXT:
+                    subDirPath = FileDownloaderModel.FONT_DIR;
+                    break;
+                case FileDownloaderModel.EFFECT_PASTER:
+                    subDirPath = FileDownloaderModel.STICKER_DIR;
+                    break;
+                case FileDownloaderModel.EFFECT_CAPTION:
+                    subDirPath = FileDownloaderModel.CAPTION_DIR;
+                    break;
+                case FileDownloaderModel.EFFECT_TRANSITION:
+                    subDirPath = FileDownloaderModel.TRANSITION_DIR;
+                    break;
+                case FileDownloaderModel.EFFECT_ANIMATION_FILTER:
+                    subDirPath = FileDownloaderModel.ANIMATION_EFFECTS_DIR;
+                    break;
+            }
+            switch (downloaderModel.getEffectType()) {
+                case FileDownloaderModel.EFFECT_MV:
+                    subDirPath = subDirPath + File.separator + downloaderModel.getId() + "-" + downloaderModel.getName() + File.separator + downloaderModel.getAspect();
+                    break;
+                case FileDownloaderModel.EFFECT_PASTER:
+                case FileDownloaderModel.EFFECT_CAPTION:
+                    subDirPath = subDirPath + File.separator + downloaderModel.getId() + "-" + downloaderModel.getName()
+                            + File.separator + downloaderModel.getSubid() + "-" + downloaderModel.getSubname();
+                    break;
+                case FileDownloaderModel.EFFECT_TEXT:
+                case FileDownloaderModel.EFFECT_TRANSITION:
+                case FileDownloaderModel.EFFECT_ANIMATION_FILTER:
+                    subDirPath = subDirPath + File.separator + downloaderModel.getId() + "-" + downloaderModel.getName();
+                    break;
+                default:
+                    path = createPath(url);
+            }
+            if (!StringUtils.isEmpty(subDirPath)) {
+                path = FileDownloadUtils.generateFilePath(FileDownloadUtils.getDefaultSaveRootPath(), subDirPath);
+            }
             downloaderModel.setPath(path);
         }
 
@@ -627,6 +697,7 @@ public class DownloaderManager {
 
     /**
      * 添加任务并启动
+     *
      * @param url
      * @return
      */
@@ -638,6 +709,7 @@ public class DownloaderManager {
 
     /**
      * 添加任务并启动
+     *
      * @param url
      * @param path
      * @return
@@ -669,12 +741,12 @@ public class DownloaderManager {
     public int createTask(FileDownloaderModel model, BridgeListener bridgeListener) {
 
         final int task = FileDownloader.getImpl().create(model.getUrl())
-                         .setPath(model.getPath())
-                         .setCallbackProgressTimes(100)
-                         .setAutoRetryTimes(mAutoRetryTimes)
-                         .setListener(bridgeListener)
-                         .asInQueueTask()
-                         .enqueue();
+                .setPath(model.getPath())
+                .setCallbackProgressTimes(100)
+                .setAutoRetryTimes(mAutoRetryTimes)
+                .setListener(bridgeListener)
+                .asInQueueTask()
+                .enqueue();
 
         return task;
     }
@@ -692,6 +764,7 @@ public class DownloaderManager {
 
     /**
      * 创建下载保存地址
+     *
      * @param url
      * @return
      */
@@ -705,6 +778,7 @@ public class DownloaderManager {
 
     /**
      * 设置全局下载事件监听
+     *
      * @param callback
      */
     public void setGlobalDownloadCallback(FileDownloaderCallback callback) {
@@ -713,6 +787,7 @@ public class DownloaderManager {
 
     /**
      * 获取全局下载事件监听
+     *
      * @return
      */
     protected FileDownloaderCallback getGlobalDownloadCallback() {
@@ -732,11 +807,13 @@ public class DownloaderManager {
             storeFile.mkdirs();
         }
         final DownloaderManagerConfiguration.Builder dmBulder = new DownloaderManagerConfiguration.Builder(context)
-        .setMaxDownloadingCount(50) //配置最大并行下载任务数，配置范围[1-100]
-        .setDbExtField(new HashMap<String, String>()) //配置数据库扩展字段
-        .setDbVersion(2)//配置数据库版本
-        .setDbUpgradeListener(null) //配置数据库更新回调
-        .setDownloadStorePath(storeFile.getAbsolutePath()); //配置下载文件存储目录
+                .setMaxDownloadingCount(50) //配置最大并行下载任务数，配置范围[1-100]
+                .setDbExtField(new HashMap<String, String>()) //配置数据库扩展字段
+                .setDbVersion(DBFileDownloadConfig.DB_VERSION)//配置数据库版本
+                .setDbUpgradeListener(null) //配置数据库更新回调
+                .setDownloadStorePath(storeFile.getAbsolutePath()); //配置下载文件存储目录
+//                .setCipher(true)//使用加密数据库
+//                .setCK("6Zi/6YeM55+t6KeG6aKR");
 
         if (mDbController == null) {
             init(dmBulder.build());//必要语句

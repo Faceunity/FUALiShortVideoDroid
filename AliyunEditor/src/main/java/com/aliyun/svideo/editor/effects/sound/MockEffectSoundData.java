@@ -19,7 +19,7 @@ public class MockEffectSoundData {
         new SoundModel(R.string.alivc_editor_dialog_sound_robot, 50, R.drawable.alivc_svideo_effect_sound_robot, AudioEffectType.EFFECT_TYPE_ROBOT),
         new SoundModel(R.string.alivc_editor_dialog_sound_devil, 50, R.drawable.alivc_svideo_effect_sound_devil, AudioEffectType.EFFECT_TYPE_BIG_DEVIL),
         new SoundModel(R.string.alivc_editor_dialog_sound_minions, 50, R.drawable.alivc_svideo_effect_sound_minions, AudioEffectType.EFFECT_TYPE_MINIONS),
-
+        new SoundModel(R.string.alivc_editor_dialog_sound_dialect, 50, R.drawable.alivc_svideo_effect_sound_devil, AudioEffectType.EFFECT_TYPE_DIALECT),
     };
 
     static {

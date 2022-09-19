@@ -4,9 +4,10 @@
 
 package com.aliyun.svideo.editor.editor.thumblinebar;
 
-import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.core.view.MotionEventCompat;
 
 public class ThumbLineOverlayHandleView implements View.OnTouchListener {
     interface OnPositionChangeListener {

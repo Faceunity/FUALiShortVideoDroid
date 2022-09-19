@@ -21,7 +21,7 @@ public class VideoDisplayParam implements Serializable {
     private float mWidthRatio;
     private float mHeightRatio;
 
-    private VideoDisplayParam(Builder builder) {
+    private VideoDisplayParam(VideoDisplayParam.Builder builder) {
         this.mDisplayMode = builder.mDisplayMode;
         this.mLayoutLevel = builder.mLayoutLevel;
         this.mCenterX = builder.mCenterX;
@@ -83,32 +83,32 @@ public class VideoDisplayParam implements Serializable {
             this.mWidthRatio = 1f;
         }
 
-        public Builder displayMode(VideoDisplayMode val) {
+        public VideoDisplayParam.Builder displayMode(VideoDisplayMode val) {
             this.mDisplayMode = val;
             return this;
         }
 
-        public Builder layoutLevel(int val) {
+        public VideoDisplayParam.Builder layoutLevel(int val) {
             this.mLayoutLevel = val;
             return this;
         }
 
-        public Builder setmCenterX(float mCenterX) {
+        public VideoDisplayParam.Builder setmCenterX(float mCenterX) {
             this.mCenterX = mCenterX;
             return this;
         }
 
-        public Builder setmCenterY(float mCenterY) {
+        public VideoDisplayParam.Builder setmCenterY(float mCenterY) {
             this.mCenterY = mCenterY;
             return this;
         }
 
-        public Builder setmWidthRatio(float mWidthRatio) {
+        public VideoDisplayParam.Builder setmWidthRatio(float mWidthRatio) {
             this.mWidthRatio = mWidthRatio;
             return this;
         }
 
-        public Builder setmHeightRatio(float mHeightRatio) {
+        public VideoDisplayParam.Builder setmHeightRatio(float mHeightRatio) {
             this.mHeightRatio = mHeightRatio;
             return this;
         }

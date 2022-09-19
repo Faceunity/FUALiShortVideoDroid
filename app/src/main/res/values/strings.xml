@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Aliyun Video Client</string>
+    <string name="ugc_app_name">ShortVideo</string>
     <string name="race_app_name">Race</string>
     <string name="solution_apsarav">ApsaraV</string>
     <string name="solution_push">Publish</string>
@@ -11,6 +11,9 @@
     <string name="solution_camera">Camera</string>
     <string name="solution_crop">Crop</string>
     <string name="solution_race_beauty">Race Beauty</string>
+    <string name="solution_draft_box">draft box</string>
+    <string name="solution_template">Template</string>
+    <string name="solution_mix">Mix</string>
     <string name="solution_edit">Edit</string>
     <string name="solution_community">community</string>
     <string name="solution_videocall">Video Call</string>
@@ -30,5 +33,5 @@
     <string name="aliyun_max_record_duration_less_than">The maximum length connot be greater than 300 seconds</string>
 
     <string name="alivc_apsara_video_title">Aparsara Video</string>
-    <string name="alivc_recorder_race_hint">RACE</string>
+    <string name="alivc_recorder_queen_hint">Queen</string>
 </resources>

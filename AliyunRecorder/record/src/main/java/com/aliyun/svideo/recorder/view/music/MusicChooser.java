@@ -3,16 +3,17 @@ package com.aliyun.svideo.recorder.view.music;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.aliyun.svideo.base.BaseChooser;
 import com.aliyun.svideo.music.music.MusicChooseView;
 import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.base.http.MusicFileBean;
-import com.aliyun.svideo.recorder.view.dialog.BaseChooser;
 
 /**
  * @author zsy_18 data:2018/8/29
@@ -41,10 +42,10 @@ public class MusicChooser extends BaseChooser {
             musicChooseView.setMusicSelectListener(new com.aliyun.svideo.music.music.MusicSelectListener() {
                 @Override
                 public void onMusicSelect(MusicFileBean musicFileBean, long startTime) {
-                    dismiss();
                     if (musicSelectListener != null) {
                         musicSelectListener.onMusicSelect(musicFileBean, startTime);
                     }
+                    dismiss();
                 }
 
                 @Override

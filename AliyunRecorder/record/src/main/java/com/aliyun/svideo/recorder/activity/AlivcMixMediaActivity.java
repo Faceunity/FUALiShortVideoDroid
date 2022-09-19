@@ -5,11 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.aliyun.common.utils.ToastUtil;
+import com.aliyun.svideo.base.beauty.api.constant.BeautySDKType;
 import com.aliyun.svideo.base.widget.ProgressDialog;
 import com.aliyun.svideo.common.utils.FastClickUtil;
 import com.aliyun.svideo.common.utils.ToastUtils;
@@ -19,7 +21,6 @@ import com.aliyun.svideo.media.MutiMediaView;
 import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.bean.AlivcMixBorderParam;
 import com.aliyun.svideo.recorder.bean.AlivcRecordInputParam;
-import com.aliyun.svideo.recorder.bean.RenderingMode;
 import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
 import com.aliyun.svideo.recorder.util.MixVideoTranscoder;
 import com.aliyun.svideosdk.common.AliyunErrorCode;
@@ -27,7 +28,7 @@ import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
 import com.aliyun.svideosdk.common.struct.common.VideoQuality;
 import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 import com.aliyun.svideosdk.mixrecorder.MixAudioSourceType;
-import com.duanqu.transcode.NativeParser;
+import com.aliyun.svideosdk.transcode.NativeParser;
 
 import java.lang.ref.WeakReference;
 
@@ -52,8 +53,8 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
     private MixVideoTranscoder mMixVideoTranscoder;
     private MutiMediaView mMutiMediaView;
 
-    private RenderingMode renderingMode;
-    private boolean isSvideoRace = false;
+    private BeautySDKType renderingMode;
+    private boolean isSvideoQueen = false;
     private MixAudioSourceType mMixAudioSourceType;
     /**
      * 设置合成窗口非填充模式下的背景颜色
@@ -67,6 +68,8 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
      * displayMode 0：裁切 1：填充 2：拉伸
      */
     private int mBackgroundImageDisplayMode;
+
+    private boolean isNeedTranscode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,18 +95,18 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
                             mProgressDialog.dismiss();
                         }
                         switch (errorCode) {
-                            case AliyunErrorCode.ALIVC_SVIDEO_ERROR_MEDIA_NOT_SUPPORTED_AUDIO:
-                                ToastUtil.showToast(AlivcMixMediaActivity.this,
-                                        R.string.alivc_record_not_supported_audio);
-                                break;
-                            case AliyunErrorCode.ALIVC_SVIDEO_ERROR_MEDIA_NOT_SUPPORTED_VIDEO:
-                                ToastUtil.showToast(AlivcMixMediaActivity.this,
-                                        R.string.alivc_record_video_crop_failed);
-                                break;
-                            case AliyunErrorCode.ALIVC_COMMON_UNKNOWN_ERROR_CODE:
-                            default:
-                                ToastUtil.showToast(AlivcMixMediaActivity.this,
-                                        R.string.alivc_record_video_crop_failed);
+                        case AliyunErrorCode.ALIVC_SVIDEO_ERROR_MEDIA_NOT_SUPPORTED_AUDIO:
+                            ToastUtil.showToast(AlivcMixMediaActivity.this,
+                                                R.string.alivc_record_not_supported_audio);
+                            break;
+                        case AliyunErrorCode.ALIVC_SVIDEO_ERROR_MEDIA_NOT_SUPPORTED_VIDEO:
+                            ToastUtil.showToast(AlivcMixMediaActivity.this,
+                                                R.string.alivc_record_video_crop_failed);
+                            break;
+                        case AliyunErrorCode.ALIVC_COMMON_UNKNOWN_ERROR_CODE:
+                        default:
+                            ToastUtil.showToast(AlivcMixMediaActivity.this,
+                                                R.string.alivc_record_video_crop_failed);
                         }
                     }
                 });
@@ -126,7 +129,7 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
                 mAliyunVideoParam.setMixVideoFilePath(resultVideos.filePath);
                 //跳转AlivcSvideoRecordActivity
                 AlivcSvideoMixRecordActivity.startMixRecord(AlivcMixMediaActivity.this,
-                        mAliyunVideoParam, renderingMode, isSvideoRace);
+                        mAliyunVideoParam, renderingMode, isSvideoQueen);
 
             }
 
@@ -146,40 +149,42 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
     private void getData() {
         //录制参数
         int mResolutionMode = getIntent().getIntExtra(
-                AlivcRecordInputParam.INTENT_KEY_RESOLUTION_MODE, AliyunSnapVideoParam.RESOLUTION_540P);
+                                  AlivcRecordInputParam.INTENT_KEY_RESOLUTION_MODE, AliyunSnapVideoParam.RESOLUTION_540P);
         int mRatioMode = getIntent().getIntExtra(AlivcRecordInputParam.INTENT_KEY_RATION_MODE,
-                AliyunSnapVideoParam.RATIO_MODE_3_4);
+                         AliyunSnapVideoParam.RATIO_MODE_3_4);
         int mGop = getIntent().getIntExtra(AlivcRecordInputParam.INTENT_KEY_GOP, 250);
         VideoQuality mVideoQuality = (VideoQuality)getIntent().getSerializableExtra(
-                AlivcRecordInputParam.INTENT_KEY_QUALITY);
+                                         AlivcRecordInputParam.INTENT_KEY_QUALITY);
         if (mVideoQuality == null) {
             mVideoQuality = VideoQuality.HD;
         }
         VideoCodecs mVideoCodec = (VideoCodecs)getIntent().getSerializableExtra(
-                AlivcRecordInputParam.INTENT_KEY_CODEC);
+                                      AlivcRecordInputParam.INTENT_KEY_CODEC);
         if (mVideoCodec == null) {
             mVideoCodec = VideoCodecs.H264_HARDWARE;
         }
-        renderingMode = (RenderingMode)getIntent().getSerializableExtra(
-                AlivcRecordInputParam.INTENT_KEY_VIDEO_RENDERING_MODE);
+        renderingMode = (BeautySDKType)getIntent().getSerializableExtra(
+            AlivcRecordInputParam.INTENT_KEY_VIDEO_RENDERING_MODE);
         if (renderingMode == null) {
-            renderingMode = RenderingMode.FaceUnity;
+            renderingMode = BeautySDKType.FACEUNITY;
         }
-        isSvideoRace = getIntent().getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_RACE,
-                false);
+        isSvideoQueen = getIntent().getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_QUEEN,
+                       false);
+        isNeedTranscode = getIntent().getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_NEED_TRANSCODE,
+                          false);
         //帧率裁剪参数,默认30
         int frame = getIntent().getIntExtra(AlivcRecordInputParam.INTENT_KEY_FRAME, 30);
         mMixAudioSourceType = (MixAudioSourceType)getIntent().getSerializableExtra(
-                AlivcRecordInputParam.INTENT_KEY_MIX_AUDIO_SOURCE_TYPE);
+                                  AlivcRecordInputParam.INTENT_KEY_MIX_AUDIO_SOURCE_TYPE);
         if (mMixAudioSourceType == null) {
             mMixAudioSourceType = MixAudioSourceType.Original;
         }
         mBackgroundColor = getIntent().getIntExtra(
-                AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_COLOR, Color.BLACK);
+                               AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_COLOR, Color.BLACK);
         mBackgroundImagePath = getIntent().getStringExtra(
-                AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_IMAGE_PATH);
+                                   AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_IMAGE_PATH);
         mBackgroundImageDisplayMode = getIntent().getIntExtra(
-                AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_IMAGE_MODE, 0);
+                                          AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_IMAGE_MODE, 0);
         VideoDisplayParam mPlayDisplayParam = (VideoDisplayParam)getIntent().getSerializableExtra(
                 AlivcRecordInputParam.INTENT_KEY_DISPLAY_PARAM_PLAY);
         VideoDisplayParam mRecordDisplayParam = (VideoDisplayParam)getIntent().getSerializableExtra(
@@ -187,20 +192,22 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
         AlivcMixBorderParam borderParam = (AlivcMixBorderParam)getIntent().getSerializableExtra(AlivcRecordInputParam.INTENT_KEY_MIX_BORDER_PARAM_RECORD);
 
         mAliyunVideoParam = new AlivcRecordInputParam.Builder()
-                .setResolutionMode(mResolutionMode)
-                .setRatioMode(mRatioMode)
-                .setGop(mGop)
-                .setVideoCodec(mVideoCodec)
-                .setFrame(frame)
-                .setVideoQuality(mVideoQuality)
-                .setMixAudioSourceType(mMixAudioSourceType)
-                .setMixBackgroundColor(mBackgroundColor)
-                .setMixBackgroundImagePath(mBackgroundImagePath)
-                .setMixBackgroundImageMode(mBackgroundImageDisplayMode)
-                .setPlayDisplayParam(mPlayDisplayParam)
-                .setRecordDisplayParam(mRecordDisplayParam)
-                .setMixVideoBorderParam(borderParam)
-                .build();
+        .setResolutionMode(mResolutionMode)
+        .setRatioMode(mRatioMode)
+        .setGop(mGop)
+        .setVideoCodec(mVideoCodec)
+        .setFrame(frame)
+        .setVideoQuality(mVideoQuality)
+        .setMixAudioSourceType(mMixAudioSourceType)
+        .setMixBackgroundColor(mBackgroundColor)
+        .setMixBackgroundImagePath(mBackgroundImagePath)
+        .setMixBackgroundImageMode(mBackgroundImageDisplayMode)
+        .setPlayDisplayParam(mPlayDisplayParam)
+        .setRecordDisplayParam(mRecordDisplayParam)
+        .setMixVideoBorderParam(borderParam)
+        .setIsAutoClearTemp(getIntent().getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_IS_AUTO_CLEAR, false))
+        .setWaterMark(getIntent().getBooleanExtra(AlivcRecordInputParam.INTENT_KEY_WATER_MARK, false))
+        .build();
     }
 
     private void initView() {
@@ -208,7 +215,7 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
         mMutiMediaView = findViewById(R.id.mix_mediaview);
         mMutiMediaView.setMediaSortMode(MediaStorage.SORT_MODE_VIDEO);//只显示视频
         mMutiMediaView.setVideoDurationRange(MIN_VIDEO_DURATION,
-                MAX_VIDEO_DURATION);//设置显示的最小时长和最大时长
+                                             MAX_VIDEO_DURATION);//设置显示的最小时长和最大时长
         mMutiMediaView.enableSelectView(MAX_VIDEO_DURATION);
         mMutiMediaView.setOnMediaClickListener(new MutiMediaView.OnMediaClickListener() {
             @Override
@@ -240,31 +247,31 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
             @Override
             public void onNext(boolean isReachedMaxDuration) {
                 if (FastClickUtil.isFastClickActivity(
-                        AlivcMixMediaActivity.class.getSimpleName())) {
+                            AlivcMixMediaActivity.class.getSimpleName())) {
                     return;
                 }
                 MediaInfo mediaInfo = mMutiMediaView.getOnlyOneMedia();
 
                 if (null == mediaInfo) {
                     ToastUtils.show(AlivcMixMediaActivity.this,
-                            getResources().getString(R.string.alivc_media_please_select_video));
+                                    getResources().getString(R.string.alivc_media_please_select_video));
                     return;
                 }
 
-                if (isMixTranscoder(mediaInfo)) {
+                if (isNeedTranscode && isMixTranscoder(mediaInfo)) {
                     if (mProgressDialog == null || !mProgressDialog.isShowing()) {
                         mProgressDialog = ProgressDialog.show(AlivcMixMediaActivity.this, null,
-                                getResources().getString(R.string.alivc_media_wait));
+                                                              getResources().getString(R.string.alivc_media_wait));
                         mProgressDialog.setCancelable(true);
                         mProgressDialog.setCanceledOnTouchOutside(false);
                         mProgressDialog.setOnCancelListener(
-                                new OnCancelListener(AlivcMixMediaActivity.this));
+                            new OnCancelListener(AlivcMixMediaActivity.this));
                         mMixVideoTranscoder.start();
                     }
                 } else {
                     mAliyunVideoParam.setMixVideoFilePath(mediaInfo.filePath);
                     AlivcSvideoMixRecordActivity.startMixRecord(AlivcMixMediaActivity.this,
-                            mAliyunVideoParam, renderingMode, isSvideoRace);
+                            mAliyunVideoParam, renderingMode, isSvideoQueen);
 
                 }
             }
@@ -295,38 +302,42 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
     public static void startRecord(Context context, AlivcRecordInputParam recordInputParam) {
         Intent intent = new Intent(context, AlivcMixMediaActivity.class);
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_RESOLUTION_MODE,
-                recordInputParam.getResolutionMode());
+                        recordInputParam.getResolutionMode());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_MAX_DURATION,
-                recordInputParam.getMaxDuration());
+                        recordInputParam.getMaxDuration());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_MIN_DURATION,
-                recordInputParam.getMinDuration());
+                        recordInputParam.getMinDuration());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_RATION_MODE,
-                recordInputParam.getRatioMode());
+                        recordInputParam.getRatioMode());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_GOP, recordInputParam.getGop());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_FRAME, recordInputParam.getFrame());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_QUALITY,
-                recordInputParam.getVideoQuality());
+                        recordInputParam.getVideoQuality());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_CODEC, recordInputParam.getVideoCodec());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_VIDEO_OUTPUT_PATH,
-                recordInputParam.getVideoOutputPath());
+                        recordInputParam.getVideoOutputPath());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_VIDEO_RENDERING_MODE,
-                recordInputParam.getmRenderingMode());
-        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_RACE,
-                recordInputParam.isSvideoRace());
+                        recordInputParam.getmRenderingMode());
+        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_IS_SVIDEO_QUEEN,
+                        recordInputParam.isSvideoRace());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_MIX_AUDIO_SOURCE_TYPE,
-                recordInputParam.getMixAudioSourceType());
+                        recordInputParam.getMixAudioSourceType());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_COLOR,
-                recordInputParam.getMixBackgroundColor());
+                        recordInputParam.getMixBackgroundColor());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_IMAGE_PATH,
-                recordInputParam.getMixBackgroundImagePath());
+                        recordInputParam.getMixBackgroundImagePath());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_MIX_BACKGROUND_IMAGE_MODE,
-                recordInputParam.getMixBackgroundImageMode());
+                        recordInputParam.getMixBackgroundImageMode());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_DISPLAY_PARAM_PLAY,
-                recordInputParam.getPlayDisplayParam());
+                        recordInputParam.getPlayDisplayParam());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_DISPLAY_PARAM_RECORD,
-                recordInputParam.getRecordDisplayParam());
+                        recordInputParam.getRecordDisplayParam());
         intent.putExtra(AlivcRecordInputParam.INTENT_KEY_MIX_BORDER_PARAM_RECORD,
-                recordInputParam.getMixBorderParam());
+                        recordInputParam.getMixBorderParam());
+        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_NEED_TRANSCODE,
+                        recordInputParam.isNeedTranscode());
+        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_IS_AUTO_CLEAR, recordInputParam.isAutoClearTemp());
+        intent.putExtra(AlivcRecordInputParam.INTENT_KEY_WATER_MARK, recordInputParam.hasWaterMark());
         context.startActivity(intent);
     }
 
@@ -353,7 +364,7 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
     }
 
     /**
-     * 如果大于360p需要转码
+     * 如果大于540p需要转码
      *
      * @param mediaInfo
      */
@@ -367,7 +378,7 @@ public class AlivcMixMediaActivity extends AppCompatActivity {
                 try {
                     frameWidth = Integer.parseInt(nativeParser.getValue(NativeParser.VIDEO_WIDTH));
                     frameHeight = Integer.parseInt(
-                            nativeParser.getValue(NativeParser.VIDEO_HEIGHT));
+                                      nativeParser.getValue(NativeParser.VIDEO_HEIGHT));
                 } catch (Exception e) {
                     Log.e(TAG, "parse rotation failed");
                 }

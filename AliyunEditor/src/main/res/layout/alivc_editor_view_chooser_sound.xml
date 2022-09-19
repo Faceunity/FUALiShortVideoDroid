@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/alivc_common_line_1px"
         android:background="@color/alivc_common_line_gray_light"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/effect_sound_list_filter"
         android:layout_width="match_parent"
         android:overScrollMode="never"
