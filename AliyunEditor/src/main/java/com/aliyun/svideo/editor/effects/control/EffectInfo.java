@@ -5,8 +5,9 @@
 package com.aliyun.svideo.editor.effects.control;
 
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.editor.AudioEffectType;
 import com.aliyun.svideosdk.editor.TimeEffectType;
 import com.aliyun.svideo.base.Form.AspectForm;
@@ -48,7 +49,17 @@ public class EffectInfo implements Serializable {
 
     public boolean isLocalMusic;
 
+    /**
+     * 字体文件路径
+     * @deprecated 使用 {@link #fontSource}替代
+     */
+    @Deprecated
     public String fontPath;
+
+    /**
+     * 字体文件资源
+     */
+    public Source fontSource;
 
     public int id;
 
@@ -64,16 +75,67 @@ public class EffectInfo implements Serializable {
 
     public long streamEndTime;
 
-    String path;
+    private Source mSource;
 
     public int musicWeight;
 
+
+    /**
+     * 获取资源文件路径
+     * @deprecated 使用 {@link #getSource()}替代
+     * @return 资源文件路径
+     */
+    /****
+     * Gets the file of a resource.
+     * @deprecated Replaced by {@link ##getSource()}.
+     * @return path
+     */
+    @Deprecated
     public String getPath() {
-        return path;
+        if (mSource != null) {
+            return mSource.getPath();
+        }
+        return null;
     }
 
+    /**
+     * 设置资源文件路径
+     * @param path
+     * @deprecated 使用 {@link #setSource(Source)}替代
+     */
+    /****
+     * Sets the file of a resource.
+     * @param path
+     * @deprecated Replaced by {@link ##setSource(Source)}.
+     */
+    @Deprecated
     public void setPath(String path) {
-        this.path = path;
+        mSource = new Source(path);
+    }
+
+    /**
+     * 获取资源
+     *
+     * @return 资源
+     */
+    /****
+     * Gets the file of a resource.
+     * @return Source
+     */
+    public Source getSource() {
+        return mSource;
+    }
+
+    /**
+     * 设置资源
+     * @param source 资源
+     */
+    /****
+     * Sets the file of a resource.
+     * @param source Source
+     */
+    public void setSource(final Source source) {
+        mSource = source;
     }
 
     public int transitionType;
@@ -81,6 +143,8 @@ public class EffectInfo implements Serializable {
     public int clipIndex;
 
     public boolean isUpdateTransition = false;
+
+    public boolean needReplay = false;
 
     public TransitionBase transitionBase;
 
@@ -98,7 +162,7 @@ public class EffectInfo implements Serializable {
             EffectInfo obj1 = (EffectInfo)obj;
             if (transitionType == obj1.transitionType){
                 if (transitionType == TransitionChooserView.EFFECT_CUSTOM){
-                    return path.equals(obj1.getPath());
+                    return mSource.equals(obj1.mSource);
                 }else {
                     return true;
                 }

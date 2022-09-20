@@ -38,12 +38,12 @@ public class RecordCommon {
     private static final String TAG = "RecordCommon";
     private static String SD_DIR ;
     public final static String QU_NAME = "AliyunDemo";
-    public final static String RACE_NAME = "race_res";
+    public final static String QUEEN_NAME = "queen_res";
     private final static String QU_COLOR_FILTER = "filter";
     public static final String QU_ANIMATION_FILTER = "animation_filter";
     private final static String QU_PASTER = "maohuzi";
     public static String QU_DIR ;
-    private static String RACE_DIR ;
+    private static String QUEEN_DIR;
 
     private static void copySelf(Context cxt, String root) {
         try {
@@ -89,14 +89,14 @@ public class RecordCommon {
     }
 
     /**
-     * @param cxt 拷贝race相关资源到沙盒目录内
+     * @param cxt 拷贝queen相关资源到沙盒目录内
      */
-    static public void copyRace(Context cxt) {
+    static public void copyQueen(Context cxt) {
 
         SD_DIR = getExtFileDir(cxt);
-        RACE_DIR = SD_DIR + RACE_NAME + File.separator;
-        File dir = new File(RecordCommon.RACE_DIR);
-        copySelf(cxt, RACE_NAME);
+        QUEEN_DIR = SD_DIR + QUEEN_NAME + File.separator;
+        File dir = new File(RecordCommon.QUEEN_DIR);
+        copySelf(cxt, QUEEN_NAME);
         dir.mkdirs();
     }
 

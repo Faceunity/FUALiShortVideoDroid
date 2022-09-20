@@ -1,15 +1,16 @@
 package com.aliyun.svideo.editor.effects.overlay;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.svideo.editor.R;
+import com.aliyun.svideo.editor.contant.CaptionConfig;
 import com.aliyun.svideo.editor.editor.EditorActivity;
-import com.aliyun.svideo.editor.effects.caption.TextDialog;
 
 public class AnimationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -37,35 +38,35 @@ public class AnimationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         TransitionViewEffectHolder effectHolder = (TransitionViewEffectHolder)holder;
         switch (position) {
-        case TextDialog.EFFECT_NONE:
+        case CaptionConfig.EFFECT_NONE:
             effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_none_effect_selector);
             effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_none);
             break;
-        case TextDialog.EFFECT_UP:
+        case CaptionConfig.EFFECT_UP:
             effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_translate_up_effect_selector);
             effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_up);
             break;
-        case TextDialog.EFFECT_DOWN:
+        case CaptionConfig.EFFECT_DOWN:
             effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_translate_down_effect_selector);
             effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_down);
             break;
-        case TextDialog.EFFECT_LEFT:
+        case CaptionConfig.EFFECT_LEFT:
             effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_translate_left_effect_selector);
             effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_left);
             break;
-        case TextDialog.EFFECT_RIGHT:
+        case CaptionConfig.EFFECT_RIGHT:
             effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_translate_right_effect_selector);
             effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_right);
             break;
-        case TextDialog.EFFECT_FADE:
+        case CaptionConfig.EFFECT_FADE:
             effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_fade_effect_selector);
             effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_fade);
             break;
-        case TextDialog.EFFECT_LINEARWIPE:
+        case CaptionConfig.EFFECT_LINEARWIPE:
             effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_linearwipe_effect_selector);
             effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_linearwipe);
             break;
-        case TextDialog.EFFECT_SCALE:
+        case CaptionConfig.EFFECT_SCALE:
             effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_fade_effect_selector);
             effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_effect_scale);
             break;

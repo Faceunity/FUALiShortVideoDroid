@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -25,7 +25,7 @@ import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
 import com.aliyun.svideosdk.common.AliyunIThumbnailFetcher;
 import com.aliyun.svideosdk.common.impl.AliyunThumbnailFetcherFactory;
 import com.aliyun.svideo.common.utils.ToastUtils;
-import com.duanqu.transcode.NativeParser;
+import com.aliyun.svideosdk.transcode.NativeParser;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -240,7 +240,7 @@ public class CoverEditActivity extends Activity {
             private int vecIndex = 1;
 
             @Override
-            public void onThumbnailReady(Bitmap frameBitmap, long l) {
+            public void onThumbnailReady(Bitmap frameBitmap, long l, int index) {
                 if (frameBitmap != null && !frameBitmap.isRecycled()) {
                     Log.i(TAG, "onThumbnailReady  put: " + position + " ,l = " + l / 1000);
                     ImageView image = new ImageView(CoverEditActivity.this);
@@ -369,9 +369,9 @@ public class CoverEditActivity extends Activity {
         mCoverThumbnailFetcher.addVideoSource(mVideoPath, 0, Integer.MAX_VALUE, 0);
         mCoverThumbnailFetcher.setParameters(mTextureView.getWidth(), mTextureView.getHeight(), AliyunIThumbnailFetcher.CropMode.Mediate, VideoDisplayMode.SCALE, 2);
         mCoverThumbnailFetcher.requestThumbnailImage(new long[] {mEndTime},
-        new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
+                new AliyunIThumbnailFetcher.OnThumbnailCompletion() {
             @Override
-            public void onThumbnailReady(Bitmap bitmap, long l) {
+            public void onThumbnailReady(Bitmap bitmap, long l, int index) {
                 if (bitmap != null && !bitmap.isRecycled()) {
                     String path = getExternalFilesDir(null) + "thumbnail.jpeg";
                     FileOutputStream fileOutputStream = null;

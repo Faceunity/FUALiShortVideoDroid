@@ -7,12 +7,12 @@ package com.aliyun.svideo.editor.effects.paint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aliyun.svideo.editor.R;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ColorAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class ColorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private List<Integer> mColorList = new ArrayList<>();
@@ -32,14 +32,14 @@ public class ColorAdapter extends RecyclerView.Adapter<ViewHolder> {
         mColorList = initColors();
     }
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.alivc_editor_item_color, parent, false);
         ColorViewHolder colorViewHolder = new ColorViewHolder(view);
         return colorViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final ColorViewHolder viewHolder = (ColorViewHolder) holder;
         if (position == 0) {
             viewHolder.colorImage.setImageResource(R.mipmap.alivc_svideo_icon_effect_revoke);
@@ -84,7 +84,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ViewHolder> {
         return mColorList.size();
     }
 
-    private static class ColorViewHolder extends  ViewHolder {
+    private static class ColorViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView colorImage;
         public ColorViewHolder(View itemView) {

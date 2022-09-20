@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70">
+
+    <LinearLayout
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp">
+
+
+        <CheckBox
+            android:background="@drawable/alivc_svideo_shape_btn_bg"
+            android:id="@+id/btn_font_weight"
+            android:layout_gravity="center_vertical"
+            android:text="加粗"
+            android:textColor="@color/alivc_common_bg_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <CheckBox
+            android:background="@drawable/alivc_svideo_shape_btn_bg"
+            android:id="@+id/btn_font_italic"
+            android:layout_marginLeft="27dp"
+            android:layout_gravity="center_vertical"
+            android:text="倾斜"
+            android:textColor="@color/alivc_common_bg_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+</FrameLayout>

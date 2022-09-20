@@ -3,8 +3,8 @@ package com.aliyun.svideo.editor.effects.control;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +13,7 @@ import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
-import com.aliyun.svideo.editor.editor.AbstractPasterUISimpleImpl;
+import com.aliyun.svideo.editor.editor.AliyunBasePasterController;
 import com.aliyun.svideo.editor.editor.thumblinebar.OverlayThumbLineBar;
 import com.aliyun.svideo.editor.editor.thumblinebar.ThumbLineBar;
 import com.aliyun.svideo.editor.view.AlivcEditView;
@@ -115,6 +115,7 @@ public abstract class BaseChooser extends FrameLayout {
 
     /**
      * 子类继承实现 用于显示指定的缩略图覆盖效果
+     *
      * @return UIEditorPage
      */
     protected UIEditorPage getUIEditorPage() {
@@ -131,12 +132,14 @@ public abstract class BaseChooser extends FrameLayout {
 
     /**
      * 设置整个容器是否可点击
+     *
      * @param clickable 默认可点击
      */
     @Override
     public void setClickable(boolean clickable) {
-        setClickable(this, clickable );
+        setClickable(this, clickable);
     }
+
     private void setClickable(ViewGroup viewGroup, boolean clickable) {
         if (mTransparentView == null) {
             mTransparentView = new ImageButton(getContext());
@@ -157,11 +160,13 @@ public abstract class BaseChooser extends FrameLayout {
             mTransparentView.setVisibility(VISIBLE);
         }
     }
+
     public void setThumbScrollEnable(boolean enable) {
         if (mThumbContainer != null) {
-            setClickable(mThumbContainer, enable );
+            setClickable(mThumbContainer, enable);
         }
     }
+
     /**
      * remove this 的时候调用，用于销毁资源
      */
@@ -187,12 +192,14 @@ public abstract class BaseChooser extends FrameLayout {
 
     /**
      * 是否需要缩放播放界面
+     *
      * @return boolean
      */
     public abstract boolean isPlayerNeedZoom();
 
     /**
      * 是否显示确认界面
+     *
      * @return boolean
      */
     public boolean isShowSelectedView() {
@@ -202,14 +209,16 @@ public abstract class BaseChooser extends FrameLayout {
     public void onBackPressed() {
     }
 
-    /**˙
+    /**
+     * ˙
      * 用于点击屏幕是否恢复已渲染贴纸的判断
      * 判断是否支持此贴纸的操作
      * 默认返回false，在字幕、动图等支持贴纸的子类中做自己的实现
+     *
      * @param uic PasterUISimpleImpl
      * @return boolean
      */
-    public boolean isHostPaster(AbstractPasterUISimpleImpl uic) {
+    public boolean isHostPaster(AliyunBasePasterController uic) {
         return false;
     }
 

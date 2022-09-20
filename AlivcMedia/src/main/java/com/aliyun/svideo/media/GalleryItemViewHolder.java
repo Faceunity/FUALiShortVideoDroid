@@ -8,11 +8,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.common.utils.image.ImageLoaderOptions;
 
@@ -26,6 +28,7 @@ public class GalleryItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView thumbImage;
     private TextView duration;
     private View durationLayoput;
+    private ImageView mIvMask;
     private ThumbnailGenerator thumbnailGenerator;
     private int mScreenWidth;
 
@@ -37,17 +40,19 @@ public class GalleryItemViewHolder extends RecyclerView.ViewHolder {
         thumbImage = (ImageView) itemView.findViewById(R.id.draft_thumbnail);
         duration = (TextView) itemView.findViewById(R.id.draft_duration);
         durationLayoput = itemView.findViewById(R.id.duration_layoput);
+        mIvMask = (ImageView) itemView.findViewById(R.id.iv_mask);
 
         itemView.setTag(this);
     }
 
 
-    public void setData(final MediaInfo info) {
+    public void setData(final MediaInfo info, long minDuration) {
         if (info == null) {
             return;
         }
         //每一个imageView都需要设置tag，video异步生成缩略图，需要对应最后设置给imageView的info key
         thumbImage.setTag(R.id.tag_first, ThumbnailGenerator.generateKey(info.type, info.id));
+        mIvMask.setVisibility(View.GONE);
         if (info.thumbnailPath != null
                 && onCheckFileExists(info.thumbnailPath)) {
             String uri;
@@ -92,14 +97,17 @@ public class GalleryItemViewHolder extends RecyclerView.ViewHolder {
         if (du == 0) {
             durationLayoput.setVisibility(View.GONE);
         } else {
+            if (minDuration != -1 && info.type != MediaStorage.TYPE_PHOTO && du < minDuration) {
+                mIvMask.setVisibility(View.VISIBLE);
+            }
             durationLayoput.setVisibility(View.VISIBLE);
             onMetaDataUpdate(duration, du);
         }
 
     }
 
-    public void onBind(MediaInfo info, boolean actived) {
-        setData(info);
+    public void onBind(MediaInfo info, boolean actived, long minDuration) {
+        setData(info, minDuration);
         itemView.setActivated(actived);
     }
 

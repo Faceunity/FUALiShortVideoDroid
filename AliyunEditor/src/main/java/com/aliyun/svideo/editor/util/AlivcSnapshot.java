@@ -15,7 +15,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.IntBuffer;
+
+import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
+import static android.opengl.GLES20.GL_COLOR_ATTACHMENT0;
+import static android.opengl.GLES20.GL_FRAMEBUFFER;
+import static android.opengl.GLES20.GL_FRAMEBUFFER_BINDING;
+import static android.opengl.GLES20.GL_LINEAR;
+import static android.opengl.GLES20.GL_RGBA;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TEXTURE_MAG_FILTER;
+import static android.opengl.GLES20.GL_TEXTURE_MIN_FILTER;
+import static android.opengl.GLES20.GL_TEXTURE_WRAP_S;
+import static android.opengl.GLES20.GL_TEXTURE_WRAP_T;
+import static android.opengl.GLES20.GL_UNSIGNED_BYTE;
+import static android.opengl.GLES20.glBindFramebuffer;
+import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glDeleteFramebuffers;
+import static android.opengl.GLES20.glDeleteTextures;
+import static android.opengl.GLES20.glFramebufferTexture2D;
+import static android.opengl.GLES20.glGenFramebuffers;
+import static android.opengl.GLES20.glGenTextures;
+import static android.opengl.GLES20.glGetIntegerv;
+import static android.opengl.GLES20.glTexImage2D;
+import static android.opengl.GLES20.glTexParameteri;
+
 
 /**
  * use glReadPixels get frame
@@ -30,24 +53,45 @@ public class AlivcSnapshot {
     /**
      * useTextureIDGetFrame
      * @param srcTextureID
-     * @param mSurfaceView
      * @param outPutFile
      */
-    public void useTextureIDGetFrame(int srcTextureID, SurfaceView mSurfaceView, int width, int height, File outPutFile) {
+    //public void useTextureIDGetFrame(int srcTextureID, SurfaceView mSurfaceView, int width, int height, File outPutFile) {
+    //    isSnapshotting = true;
+    //    IntBuffer prevTex = IntBuffer.allocate(1);
+    //    GLES20.glGetFramebufferAttachmentParameteriv(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, prevTex);
+    //    GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, srcTextureID, 0);
+    //    saveFrame(outPutFile, mSurfaceView, width, height);
+    //    GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, prevTex.get(0), 0);
+    //}
+    public void useTextureIDGetFrame(int srcTextureID, int width, int height, File outPutFile) {
         isSnapshotting = true;
-        IntBuffer prevTex = IntBuffer.allocate(1);
-        GLES20.glGetFramebufferAttachmentParameteriv(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, prevTex);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, srcTextureID, 0);
-        saveFrame(outPutFile, mSurfaceView, width, height);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, prevTex.get(0), 0);
+        int[] last = new int[1];
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, last, 0);
+        Log.e(TAG, "current fbo " + last[0]);
+        int[] texture = new int[1];
+        glGenTextures(1, texture, 0);
+        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
+        int[] fbo = new int[1];
+        glGenFramebuffers(1, fbo, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo[0]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture[0], 0);
+        BasicRenderer renderer = new BasicRenderer();
+        renderer.draw(srcTextureID);
+        saveFrame(outPutFile, width, height);
+        glBindFramebuffer(GL_FRAMEBUFFER, last[0]);
+        glDeleteFramebuffers(1, fbo, 0);
+        glDeleteTextures(1, texture, 0);
     }
-
     /**
      * takeFrame
      * @param outPutFile
-     * @param mSurfaceView
      */
-    private void saveFrame(final File outPutFile, SurfaceView mSurfaceView, final int width, final int height) {
+    private void saveFrame(final File outPutFile, final int width, final int height) {
 
 
         //final int width = mSurfaceView.getWidth();

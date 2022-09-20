@@ -8,10 +8,13 @@
     <string name="empty_music">Original</string>
     <string name="alivc_mix_record_waring_content">Mix record video cannot add background music</string>
     <!--effect menu-->
+    <string name="alivc_editor_effect_compound_text">CompoundCaption</string>
     <string name="alivc_editor_effect_filter">Filter</string>
     <string name="alivc_editor_effect_music">Music</string>
     <string name="alivc_editor_effect_sticker">Sticker</string>
+    <string name="alivc_editor_effect_pip">Pic In Pic</string>
     <string name="alivc_editor_effect_caption">Caption</string>
+    <string name="alivc_editor_effect_caption_old">Caption_old</string>
     <string name="alivc_editor_effect_mv">MV</string>
     <string name="alivc_editor_effect_sound">Sound Effect</string>
     <string name="alivc_editor_effect_effect">Effect</string>
@@ -21,6 +24,7 @@
     <string name="alivc_editor_effect_cover">Album Art</string>
     <string name="alivc_editor_effect_videoeq">Adjust</string>
     <string name="alivc_editor_effect_roll_caption">Roll Caption</string>
+    <string name="alivc_editor_effect_beauty">Beauty</string>
     <!--end-->
 
     <!--effect manager page-->
@@ -53,12 +57,15 @@
 
     <string name="alivc_editor_dialog_caption_keyboard">Keyboard</string>
     <string name="alivc_editor_dialog_caption_color">Color</string>
+    <string name="alivc_editor_dialog_caption_background_color">Background</string>
     <string name="alivc_editor_dialog_caption_tip_not_support">Reverse playback does not support captions</string>
 
     <string name="alivc_editor_dialog_caption_effect">Effect</string>
     <string name="alivc_editor_dialog_none_effect">Original</string>
     <string name="alivc_editor_dialog_mv_more">More</string>
     <string name="alivc_editor_dialog_reset">Reset</string>
+    <string name="alivc_editor_dialog_caption_animation">animation</string>
+    <string name="alivc_editor_dialog_caption_style">style</string>
 
     <string name="alivc_editor_dialog_time_tittle">speed control</string>
     <string name="alivc_editor_dialog_time_tip_not_support">Images and multiple videos do not support speed control</string>
@@ -107,7 +114,19 @@
     <string name="alivc_editor_dialog_effect_shutter">Horizontal Bars</string>
     <string name="alivc_editor_dialog_effect_fade">Fade</string>
     <string name="alivc_editor_dialog_effect_circle">Circle</string>
+    <string name="alivc_editor_dialog_effect_printer">Printer</string>
+    <string name="alivc_editor_dialog_effect_rotate_by">RotateBy</string>
+    <string name="alivc_editor_dialog_effect_rotate_to">RotateTo</string>
+    <string name="alivc_editor_dialog_effect_set1">EffectSet1</string>
+    <string name="alivc_editor_dialog_effect_set2">EffectSet2</string>
+    <string name="alivc_editor_dialog_effect_wave">Wave</string>
+    <string name="alivc_editor_dialog_effect_rotate_in">RotateIn</string>
+    <string name="alivc_editor_dialog_effect_heat">Heat</string>
+    <string name="alivc_editor_dialog_effect_roundscan">RoundScan</string>
+    <string name="alivc_editor_dialog_effect_wave_jump">WaveJump</string>
 
+    <string name="alivc_editor_toast_no_authorization">The value-added service does not have product authorization. Please check the authorization.</string>
+    <string name="alivc_editor_toast_template_loading">Demo template loading, please wait.</string>
 
     <!--end-->
 
@@ -141,14 +160,23 @@
     <string name="alivc_editor_publish_tip_retry">Go back and try again later</string>
     <string name="alivc_editor_publish_tip_add_desc">Add a description here</string>
     <string name="alivc_editor_publish_my_video">My Videos</string>
+    <string name="alivc_editor_publish_upload_error">Upload failed, please upload again</string>
+    <string name="alivc_editor_publish_upload_get_image_auth_failure">Get the image upload auth Failure</string>
+    <string name="alivc_editor_publish_upload_get_video_auth_failure">Get the video upload auth Failure</string>
     <string name="alivc_editor_publish_upload_param_error">Parameter missing</string>
+    <string name="alivc_editor_publish_video_uploading">Video uploading:%s%%</string>
+    <string name="alivc_editor_publish_image_uploading">Image uploading</string>
+    <string name="alivc_editor_publish_upload_image_success">Image upload successfully</string>
+    <string name="aliyun_svideo_editor_compose">compose</string>
+    <string name="aliyun_svideo_editor_compose_and_upload">compose and upload</string>
+    <string name="aliyun_svideo_editor_build_template">Build template</string>
 
     <!--end-->
     <!--cover selected page-->
     <string name="alivc_editor_cover_tittle">Select Album Art</string>
     <string name="alivc_editor_cover_fetch_cover_error">Select Album Art</string>
-
     <!--end-->
+
     <!--error tip-->
     <string name="alivc_editor_error_tip_play_video_error">The video format is invalid</string>
     <string name="alivc_editor_error_tip_not_supported_audio">The audio format is invalid</string>
@@ -166,12 +194,75 @@
     <string name="alivc_editor_edit_tip_transcode_no_operate">Transcoding</string>
     <string name="alivc_editor_effect_text_stroke">Stroke</string>
     <string name="alivc_editor_effect_text_color">Fill</string>
+    <string name="alivc_editor_effect_text_bubble">bubble</string>
+    <string name="alivc_editor_effect_text_flourish">flourish</string>
+    <string name="alivc_editor_effect_text_fontstyle">fontStyle</string>
+    <string name="alivc_editor_effect_text_alignment">Alignment</string>
+    <string name="alivc_editor_effect_text_shadow">shadow</string>
+    <string name="alivc_editor_effect_text_default">default</string>
+    <string name="alivc_editor_effect_text_alignment_left">left</string>
+    <string name="alivc_editor_effect_text_alignment_right">right</string>
+    <string name="alivc_editor_effect_text_alignment_center">center</string>
     <!--end-->
     <!--media select-->
     <string name="alivc_editor_media_tip_no_permission">No permission</string>
 
     <!--end-->
 
+    <!--draft box-->
+    <string name="alivc_editor_draft">draft box</string>
+    <string name="alivc_editor_draft_enter_name">enter draft name</string>
+    <string name="alivc_editor_draft_enter_name_hint">draft name</string>
+    <string name="alivc_editor_draft_server_url">enter server url</string>
+    <string name="alivc_editor_draft_server_url_hint">server url</string>
+    <string name="alivc_editor_draft_server_user_name">enter server user name</string>
+    <string name="alivc_editor_draft_server_user_name_hint">user name</string>
+    <string name="alivc_svideo_draft_menu_rename">Rename</string>
+    <string name="alivc_svideo_draft_menu_update_cover">Update cover</string>
+    <string name="alivc_svideo_draft_menu_copy">Copy</string>
+    <string name="alivc_svideo_draft_menu_backup">Backup</string>
+    <string name="alivc_svideo_draft_backup_tips">Backed up in</string>
+    <string name="alivc_svideo_draft_backup_success">Successful backup</string>
+    <string name="alivc_svideo_draft_backup_exception">Backup exception</string>
+    <string name="alivc_svideo_draft_backup_failed">Backup failed</string>
+    <string name="alivc_svideo_draft_restore_success">Successfully restored to local</string>
+    <string name="alivc_svideo_draft_restore_failed">Failed to restore to local</string>
+    <string name="alivc_svideo_draft_cover_failed">Failed to find cover</string>
+    <string name="alivc_svideo_draft_cover_cancel">Cover selection cancel</string>
+    <string name="alivc_svideo_draft_update_tips">Update in</string>
+    <string name="alivc_svideo_draft_preload_failed">Preload failed</string>
+    <!--end-->
+
+    <!--template list-->
+    <string name="alivc_editor_template_list">template list</string>
+    <string name="alivc_editor_template_list_import">Import</string>
+    <string name="alivc_editor_template_list_loading_exception">Template list loading exception</string>
+    <string name="alivc_editor_template_list_import_success">Imported successfully</string>
+    <string name="alivc_editor_template_list_import_failed">Import failed</string>
+    <string name="alivc_svideo_template_list_menu_export">Export</string>
+    <string name="alivc_editor_template_list_export_success">Exported successfully</string>
+    <string name="alivc_editor_template_list_export_failed">Export failed</string>
+    <!--end-->
+
+    <!--template build page-->
+    <string name="alivc_editor_template_build_title">Confirm the material to be replaced</string>
+    <string name="alivc_editor_template_build_tips">Check the clip so that the user can replace it with a direct video</string>
+    <string name="alivc_editor_template_build_btn">Finish</string>
+    <string name="alivc_editor_template_build_title_tips">Please enter the template title</string>
+    <string name="alivc_editor_template_build_title_hint">Template title</string>
+    <!--end-->
+
+    <!--template editor page-->
+    <string name="alivc_editor_template_editor_video">Video Editor</string>
+    <string name="alivc_editor_template_editor_text">Text Editor</string>
+    <string name="alivc_editor_template_editor_draft">Draft Editor</string>
+    <string name="alivc_editor_template_editor_draft_failed">Failed to convert to draft</string>
+    <string name="alivc_editor_template_editor_load_failed">Template loading exception</string>
+    <!--end-->
+
+    <string name="alivc_svideo_menu_delete">Delete</string>
+    <string name="alivc_svideo_menu_positive">positive</string>
+    <string name="alivc_svideo_menu_cancel">cancel</string>
 
     <string name="alivc_svideo_grace">Grace</string>
     <string name="alivc_svideo_halo">Halo</string>
@@ -202,6 +293,12 @@
     <string name="alivc_svideo_wheat">Wheat</string>
     <string name="alivc_svideo_black_white">Black &amp; White</string>
     <string name="alivc_svideo_blurry">Blurry</string>
+    <string name="alivc_svideo_filter_lut_add">Add</string>
+    <string name="alivc_svideo_filter_lut_remove">Clear</string>
+    <string name="alivc_svideo_filter_lut">Lut</string>
+
+    <string name="ugsv_width">Width</string>
+    <string name="ugsv_corner_radius">Radius</string>
 
 </resources>
 

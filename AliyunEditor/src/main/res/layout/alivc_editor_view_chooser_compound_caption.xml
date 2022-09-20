@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/compound_caption_apply_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/alivc_common_padding_10"
+            android:src="@mipmap/aliyun_svideo_check" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/compound_caption_chooser"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:gravity="center"
+        android:layout_below="@id/top"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_compound_caption_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/alivc_svideo_edit_icon_roll_caption_color"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:layout_marginLeft="@dimen/alivc_common_margin_30"
+                android:layout_marginRight="@dimen/alivc_common_margin_30"
+                android:textColor="@color/alivc_common_font_white"
+                android:text="@string/alivc_editor_dialog_roll_caption_color" />
+
+            <TextView
+                android:id="@+id/tv_compound_caption_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/aliyun_svideo_icon_font"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:textColor="@color/alivc_common_font_white"
+                android:text="@string/alivc_editor_dialog_roll_caption_font" />
+
+            <TextView
+                android:id="@+id/tv_compound_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/aliyun_svideo_icon_font"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:layout_marginLeft="@dimen/alivc_common_margin_30"
+                android:layout_marginRight="@dimen/alivc_common_margin_30"
+                android:textColor="@color/alivc_common_font_white"
+                android:text="查找文字"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_compound_caption_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/alivc_common_font_white"
+                android:drawableTop="@mipmap/alivc_svideo_icon_roll_caption"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:text="添加字幕" />
+
+            <TextView
+                android:id="@+id/tv_compound_caption_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/alivc_svideo_edit_icon_roll_caption_color"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:layout_marginLeft="@dimen/alivc_common_margin_30"
+                android:layout_marginRight="@dimen/alivc_common_margin_30"
+                android:textColor="@color/alivc_common_font_white"
+                android:text="删除字幕" />
+
+            <TextView
+                android:id="@+id/tv_compound_caption_rotate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/aliyun_svideo_icon_font"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:textColor="@color/alivc_common_font_white"
+                android:text="旋转字幕" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_compound_scale_h_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/aliyun_svideo_icon_font"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:textColor="@color/alivc_common_font_white"
+                android:text="放大字体" />
+
+            <TextView
+                android:id="@+id/tv_compound_scale_l_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/aliyun_svideo_icon_font"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:layout_marginLeft="@dimen/alivc_common_margin_30"
+                android:layout_marginRight="@dimen/alivc_common_margin_30"
+                android:textColor="@color/alivc_common_font_white"
+                android:text="缩小字体"
+                />
+            <TextView
+                android:id="@+id/tv_compound_style_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/aliyun_svideo_icon_font"
+                android:drawablePadding="@dimen/alivc_common_margin_5"
+                android:layout_marginLeft="@dimen/alivc_common_margin_30"
+                android:layout_marginRight="@dimen/alivc_common_margin_30"
+                android:textColor="@color/alivc_common_font_white"
+                android:text="设置气泡"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.aliyun.svideo.editor.effects.rollcaption.RollCaptionColorView
+        android:id="@+id/roll_caption_color_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_100"
+        android:layout_below="@id/top"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/roll_caption_font_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alivc_common_height_group_100"
+        android:layout_below="@id/top"
+        android:visibility="gone" />
+
+</RelativeLayout>

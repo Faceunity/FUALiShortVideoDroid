@@ -6,13 +6,14 @@ package com.aliyun.svideo.editor.effectmanager;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aliyun.svideo.base.Form.IMVForm;
 import com.aliyun.svideo.common.utils.LanguageUtils;

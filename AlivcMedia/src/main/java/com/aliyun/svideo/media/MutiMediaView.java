@@ -1,11 +1,6 @@
 package com.aliyun.svideo.media;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -14,14 +9,25 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.svideo.common.utils.ToastUtils;
 import com.aliyun.svideo.media.JsonExtend.JSONSupportImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author cross_ly DATE 2019/08/12
  * <p>描述:多功能媒体选择自定义View
  */
 public class MutiMediaView extends FrameLayout {
+    public final static int MODE_NORMAL = 0;
+    public final static int MODE_TEMPLATE_IMPORT = 0;
 
     private static final String TAG = "MutiMediaView";
     private MediaStorage mMediaStorage;
@@ -31,8 +37,10 @@ public class MutiMediaView extends FrameLayout {
     private ImageButton mBackBtn;
     private TextView mTitleTv;
     private SelectedMediaAdapter mSelectedVideoAdapter;
+    private TemplateImportMediaAdapter mTemplateImportAdapter;
     private Button mBtnNextStep;
     private OnActionListener mOnActionListener;
+    private OnTemplateActionListener mOnTemplateActionListener;
     private OnMediaClickListener mOnMediaClickListener;
     private OnSelectMediaChangeListener mOnSelectMediaChangeListener;
 
@@ -40,7 +48,11 @@ public class MutiMediaView extends FrameLayout {
      * 是否达到最大时长
      */
     private boolean mIsReachedMaxDuration;
+    private List<MediaInfo> mTemplateImportData = new ArrayList<>();
     private RecyclerView mRvSelectedView;
+    private int mMode = MODE_NORMAL;
+
+    private List<Long> mTemplateParams = new ArrayList<>();
 
     public MutiMediaView(@NonNull Context context) {
         this(context, null);
@@ -171,6 +183,64 @@ public class MutiMediaView extends FrameLayout {
     }
 
     /**
+     * 启用模板导入模式
+     *
+     * @param templateParams
+     */
+    public void enableTemplateImportView(List<Long> templateParams){
+        if (templateParams == null || templateParams.isEmpty()) {
+            return;
+        }
+        if (mRvSelectedView == null) {
+            mBtnNextStep.setEnabled(false);
+            ((TextView) findViewById(R.id.tv_duration_title)).setText(getResources().getString(R.string.alivc_media_video_template_import, templateParams.size()));
+            mTvTotalDuration.setVisibility(GONE);
+            findViewById(R.id.rl_select).setVisibility(VISIBLE);
+            mRvSelectedView = findViewById(R.id.rv_selected_video);
+            mTemplateImportAdapter = new TemplateImportMediaAdapter(new MediaImageLoader(getContext()));
+            mTemplateImportAdapter.setTemplateParams(templateParams);
+            mRvSelectedView.setAdapter(mTemplateImportAdapter);
+            mRvSelectedView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            mTemplateImportAdapter.setItemViewCallback(new TemplateImportMediaAdapter.OnItemViewCallback() {
+                @Override
+                public void onItemPhotoClick(MediaInfo info, int position) {
+
+                }
+
+                @Override
+                public void onItemDeleteClick(MediaInfo info) {
+                    mBtnNextStep.setEnabled(false);
+                }
+
+                @Override
+                public void onDurationChange(long currDuration) {
+                    galleryMediaChooser.setMinDuration(currDuration);
+                }
+
+                @Override
+                public void onFinish(List<MediaInfo> data) {
+                    mTemplateImportData.clear();
+                    mTemplateImportData.addAll(data);
+                    mBtnNextStep.setEnabled(true);
+                }
+            });
+            galleryMediaChooser.setMinDuration(templateParams.get(0));
+        }
+    }
+
+    /**
+     * 启用模板替换模式
+     *
+     * @param duration
+     */
+    public void enableTemplateReplace(long duration){
+        List<Long> list = new ArrayList<>();
+        list.add(duration);
+        enableTemplateImportView(list);
+        findViewById(R.id.rl_select).setVisibility(GONE);
+    }
+
+    /**
      * 设置select列表的media可以长按交换顺序，需要启用SelectView列表{@link #enableSelectView(long)} ()}
      */
     public void enableSwap() {
@@ -225,16 +295,26 @@ public class MutiMediaView extends FrameLayout {
                 if (mOnActionListener != null) {
                     mOnActionListener.onBack();
                 }
+                if (mOnTemplateActionListener != null) {
+                    mOnTemplateActionListener.onBack();
+                }
             } else if (v == mBtnNextStep) {
                 if (mOnActionListener != null) {
                     mOnActionListener.onNext(mIsReachedMaxDuration);
+                }
+                if (mOnTemplateActionListener != null) {
+                    mOnTemplateActionListener.onTemplateImport(mTemplateImportData);
                 }
             }
         }
     };
 
     public void addSelectMedia(MediaInfo info) {
-        mSelectedVideoAdapter.addMedia(info);
+        if (mSelectedVideoAdapter != null) {
+            mSelectedVideoAdapter.addMedia(info);
+        } else if (mTemplateImportAdapter != null) {
+            mTemplateImportAdapter.putData(info);
+        }
     }
 
     public void setNextEnable(boolean isNextEnable) {
@@ -243,6 +323,10 @@ public class MutiMediaView extends FrameLayout {
 
     public void setOnActionListener(OnActionListener onActionListener) {
         mOnActionListener = onActionListener;
+    }
+
+    public void setOnTemplateActionListener(OnTemplateActionListener onTemplateActionListener) {
+        this.mOnTemplateActionListener = onTemplateActionListener;
     }
 
     public void setOnMediaClickListener(OnMediaClickListener onMediaClickListener) {
@@ -268,6 +352,9 @@ public class MutiMediaView extends FrameLayout {
         mMediaStorage.setVideoDurationRange(minVideoDuration, maxVideoDuration);
     }
 
+    public void setMode(int mode) {
+        this.mMode = mode;
+    }
     /**
      * 设置media种类
      * @param sortModeVideo {@link MediaStorage#SORT_MODE_VIDEO , SORT_MODE_PHOTO , SORT_MODE_MERGE}
@@ -343,4 +430,10 @@ public class MutiMediaView extends FrameLayout {
         void onBack();
     }
 
+    public interface OnTemplateActionListener {
+
+        void onTemplateImport(List<MediaInfo> data);
+
+        void onBack();
+    }
 }

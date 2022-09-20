@@ -88,14 +88,30 @@
 
     <string name="alivc_recorder_setting_video_style">Record Mode</string>
     <string name="alivc_recorder_setting_general_text">Normal</string>
+    <string name="alivc_recorder_setting_duet_original">Original</string>
+    <string name="alivc_recorder_setting_duet_recorded">Recorded</string>
+    <string name="alivc_recorder_setting_duet_mute">Mute</string>
+    <string name="alivc_recorder_setting_duet_mix">Mix</string>
     <string name="alivc_recorder_setting_mix_text">Duet</string>
     <string name="alivc_mix_record_continue">"Your video is too short.</string>
     <string name="alivc_progress_content_text">Copying resources…</string>
     <string name="aliyun_start_mix_record">Select a video to create a duet</string>
 
-    <string name="alivc_recorder_setting_rendering_mode">Rendering Mode"</string>
-    <string name="alivc_recorder_setting_rendering_faceunity">FaceUnity</string>
-    <string name="alivc_recorder_setting_rendering_race">Race</string>
+    <string name="alivc_recorder_setting_duet_source_mode">Duet Source Mode</string>
+    <string name="alivc_recorder_setting_duet_background">Duet Background</string>
+    <string name="alivc_recorder_setting_duet_round_corner">Video Border</string>
+    <string name="alivc_recorder_setting_duet_round_corner_blue">Border</string>
+    <string name="alivc_recorder_setting_duet_background_no">No Setting</string>
+    <string name="alivc_recorder_setting_duet_background_red">Red</string>
+    <string name="alivc_recorder_setting_duet_background_image">Image</string>
+    <string name="alivc_recorder_setting_duet_bg_scale_mode">Duet Background Image Fit</string>
+    <string name="alivc_recorder_setting_duet_bg_scale_mode_fill">Fill</string>
+    <string name="alivc_recorder_setting_duet_bg_scale_mode_crop">Crop</string>
+    <string name="alivc_recorder_setting_duet_bg_scale_mode_stretch">Stretch</string>
+    <string name="alivc_recorder_setting_rendering_mode">Rendering Mode</string>
+    <string name="alivc_recorder_setting_watermark">Add watermark</string>
+
+
 
 
 </resources>

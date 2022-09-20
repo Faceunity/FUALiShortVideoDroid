@@ -24,4 +24,11 @@
         android:layout_marginRight="@dimen/alivc_common_margin_20"
         />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/color_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:overScrollMode="never" />
+
 </RelativeLayout>

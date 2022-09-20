@@ -2,6 +2,7 @@ package com.aliyun.svideo.recorder.bean;
 
 import android.graphics.Color;
 
+import com.aliyun.svideo.base.beauty.api.constant.BeautySDKType;
 import com.aliyun.svideosdk.common.struct.common.VideoQuality;
 import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
@@ -22,12 +23,14 @@ public class AlivcRecordInputParam {
     public static final String INTENT_KEY_RATION_MODE = "mRatioMode";
     public static final String INTENT_KEY_GOP = "mGop";
     public static final String INTENT_KEY_FRAME = "mFrame";
+    public static final String INTENT_KEY_NEED_TRANSCODE = "mNeedTranscode";
     public static final String INTENT_KEY_QUALITY = "mVideoQuality";
     public static final String INTENT_KEY_CODEC = "mVideoCodec";
     public static final String INTENT_KEY_VIDEO_OUTPUT_PATH = "videoOutputPath";
     public static final String INTENT_KEY_VIDEO_RENDERING_MODE = "mRenderingMode";
     public static final String INTENT_KEY_RECORD_FLIP = "mRecordFlip";
-    public static final String INTENT_KEY_IS_SVIDEO_RACE = "mIsSvideoRace";
+    public static final String INTENT_KEY_IS_AUTO_CLEAR = "mIsAutoClear";
+    public static final String INTENT_KEY_IS_SVIDEO_QUEEN = "mIsSvideoQueen";
     public static final String INTENT_KEY_MIX_AUDIO_SOURCE_TYPE = "mMixAudioSourceType";
     public static final String INTENT_KEY_MIX_BACKGROUND_COLOR = "mMixBackgroundColor";
     public static final String INTENT_KEY_MIX_BACKGROUND_IMAGE_PATH = "mMixBackgroundImagePath";
@@ -36,6 +39,7 @@ public class AlivcRecordInputParam {
     public static final String INTENT_KEY_DISPLAY_PARAM_PLAY = "mPlayDisplayParam";
     public static final String INTENT_KEY_DISPLAY_PARAM_RECORD = "mRecordDisplayParam";
     public static final String INTENT_KEY_MIX_BORDER_PARAM_RECORD = "mMixBorderParam";
+    public static final String INTENT_KEY_WATER_MARK = "mWaterMark";
 
     public static final int RESOLUTION_360P = 0;
     public static final int RESOLUTION_480P = 1;
@@ -92,11 +96,19 @@ public class AlivcRecordInputParam {
     /**
      * 渲染方式
      */
-    private RenderingMode mRenderingMode;
+    private BeautySDKType mRenderingMode;
     /**
      * 录制是否输出镜像
      */
     private boolean mIsUseFlip;
+    /**
+     * 是否自动清空录制分段视频
+     */
+    private boolean mIsAutoClearTemp = false;
+    /**
+     * 是否有水印
+     */
+    private boolean mHasWaterMark = true;
     /**
      * 是否是单独的race版本包
      */
@@ -135,6 +147,11 @@ public class AlivcRecordInputParam {
     private VideoDisplayParam mPlayDisplayParam;
 
     /**
+     * 是否需要转码
+     */
+    private boolean isNeedTranscode;
+
+    /**
      * 合拍设置视频边框
      * */
     private AlivcMixBorderParam mMixBorderParam;
@@ -148,7 +165,7 @@ public class AlivcRecordInputParam {
         this.mFrame = DEFAULT_VALUE_FRAME;
         this.mVideoQuality = VideoQuality.HD;
         this.mVideoCodec = VideoCodecs.H264_HARDWARE;
-        this.mRenderingMode = RenderingMode.FaceUnity;
+        this.mRenderingMode = BeautySDKType.FACEUNITY;
         this.mIsUseFlip = false;
         this.mMixAudioSourceType = MixAudioSourceType.Original;
         this.mMixBackgroundColor = Color.BLACK;
@@ -160,21 +177,21 @@ public class AlivcRecordInputParam {
     public int getVideoWidth() {
         int width = 0;
         switch (mResolutionMode) {
-            case AliyunSnapVideoParam.RESOLUTION_360P:
-                width = 360;
-                break;
-            case AliyunSnapVideoParam.RESOLUTION_480P:
-                width = 480;
-                break;
-            case AliyunSnapVideoParam.RESOLUTION_540P:
-                width = 540;
-                break;
-            case AliyunSnapVideoParam.RESOLUTION_720P:
-                width = 720;
-                break;
-            default:
-                width = 540;
-                break;
+        case AliyunSnapVideoParam.RESOLUTION_360P:
+            width = 360;
+            break;
+        case AliyunSnapVideoParam.RESOLUTION_480P:
+            width = 480;
+            break;
+        case AliyunSnapVideoParam.RESOLUTION_540P:
+            width = 540;
+            break;
+        case AliyunSnapVideoParam.RESOLUTION_720P:
+            width = 720;
+            break;
+        default:
+            width = 540;
+            break;
         }
 
         return width;
@@ -183,18 +200,18 @@ public class AlivcRecordInputParam {
         int width = getVideoWidth();
         int height = 0;
         switch (mRatioMode) {
-            case AliyunSnapVideoParam.RATIO_MODE_1_1:
-                height = width;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_3_4:
-                height = width * 4 / 3;
-                break;
-            case AliyunSnapVideoParam.RATIO_MODE_9_16:
-                height = width * 16 / 9;
-                break;
-            default:
-                height = width;
-                break;
+        case AliyunSnapVideoParam.RATIO_MODE_1_1:
+            height = width;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_3_4:
+            height = width * 4 / 3;
+            break;
+        case AliyunSnapVideoParam.RATIO_MODE_9_16:
+            height = width * 16 / 9;
+            break;
+        default:
+            height = width;
+            break;
         }
         return height;
     }
@@ -238,7 +255,7 @@ public class AlivcRecordInputParam {
     }
 
     public void setMixAudioSourceType(
-            MixAudioSourceType mMixAudioSourceType) {
+        MixAudioSourceType mMixAudioSourceType) {
         this.mMixAudioSourceType = mMixAudioSourceType;
     }
 
@@ -294,6 +311,18 @@ public class AlivcRecordInputParam {
         return mIsUseFlip;
     }
 
+    public boolean isAutoClearTemp() {
+        return mIsAutoClearTemp;
+    }
+
+    public boolean hasWaterMark() {
+        return mHasWaterMark;
+    }
+
+    public void setHasWaterMark(boolean waterMark) {
+        this.mHasWaterMark = waterMark;
+    }
+
     public VideoQuality getVideoQuality() {
         return mVideoQuality;
     }
@@ -306,7 +335,7 @@ public class AlivcRecordInputParam {
         return mVideoOutputPath;
     }
 
-    public RenderingMode getmRenderingMode() {
+    public BeautySDKType getmRenderingMode() {
         return mRenderingMode;
     }
 
@@ -314,14 +343,18 @@ public class AlivcRecordInputParam {
         return mIsSvideoRace;
     }
 
-    public void setmRenderingMode(RenderingMode mRenderingMode) {
+    public void setmRenderingMode(BeautySDKType mRenderingMode) {
         this.mRenderingMode = mRenderingMode;
+    }
+
+    public boolean isNeedTranscode() {
+        return isNeedTranscode;
     }
 
     public String getMixVideoFilePath() {
         return mMixVideoFilePath;
     }
-    public void setMixVideoFilePath(String videoFilePath){
+    public void setMixVideoFilePath(String videoFilePath) {
         mMixVideoFilePath = videoFilePath;
     }
     public VideoDisplayParam getRecordDisplayParam() {
@@ -365,8 +398,18 @@ public class AlivcRecordInputParam {
             return this;
         }
 
+        public Builder setIsAutoClearTemp(boolean isAutoClearTemp) {
+            this.mParam.mIsAutoClearTemp = isAutoClearTemp;
+            return this;
+        }
+
         public Builder setRatioMode(int mRatioMode) {
             this.mParam.mRatioMode = mRatioMode;
+            return this;
+        }
+
+        public Builder setWaterMark(boolean waterMark) {
+            this.mParam.mHasWaterMark = waterMark;
             return this;
         }
 
@@ -389,7 +432,7 @@ public class AlivcRecordInputParam {
             this.mParam.mVideoCodec = mVideoCodec;
             return this;
         }
-        public Builder setVideoRenderingMode(RenderingMode mRenderingMode) {
+        public Builder setVideoRenderingMode(BeautySDKType mRenderingMode) {
             this.mParam.mRenderingMode = mRenderingMode;
             return this;
         }
@@ -402,7 +445,7 @@ public class AlivcRecordInputParam {
             this.mParam.mIsSvideoRace = mIsSvideoRace;
             return this;
         }
-        public Builder setMixAudioSourceType(MixAudioSourceType mixAudioSourceType){
+        public Builder setMixAudioSourceType(MixAudioSourceType mixAudioSourceType) {
             this.mParam.mMixAudioSourceType = mixAudioSourceType;
             return this;
         }
@@ -435,6 +478,11 @@ public class AlivcRecordInputParam {
 
         public Builder setMixVideoBorderParam(AlivcMixBorderParam param) {
             this.mParam.mMixBorderParam = param;
+            return this;
+        }
+
+        public Builder setMixNeedTranscode(boolean needTranscode) {
+            this.mParam.isNeedTranscode = needTranscode;
             return this;
         }
 

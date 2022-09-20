@@ -5,13 +5,8 @@ import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -27,17 +22,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.aliyun.svideo.base.Constants;
-import com.aliyun.svideo.common.utils.MD5Utils;
-import com.aliyun.svideo.common.utils.UriUtils;
-import com.aliyun.svideo.music.R;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.common.utils.ToastUtil;
-import com.aliyun.svideo.downloader.FileDownloaderCallback;
 import com.aliyun.svideo.base.CopyrightWebActivity;
 import com.aliyun.svideo.base.http.MusicFileBean;
+import com.aliyun.svideo.downloader.FileDownloaderCallback;
+import com.aliyun.svideo.music.R;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -423,16 +420,7 @@ public class MusicChooseView extends LinearLayout implements View.OnClickListene
 
             if (musicSelectListener != null) {
                 Log.i(TAG, "log_music_start_time : " + mStartTime);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !TextUtils.isEmpty(mSelectMusic.uri)) {
-                    //适配Android Q，音乐文件copy到沙盒内部加载
-                    String filePath = Constants.SDCardConstants.getCacheDir(getContext()) + File.separator + MD5Utils
-                                      .getMD5(mSelectMusic.uri) + ".mp3";
 
-                    if (new File(filePath).exists() || UriUtils.copyFileToDir(getContext(), mSelectMusic.uri, filePath)) {
-                        //已经缓存或者copy完成时替换path
-                        mSelectMusic.path = filePath;
-                    }
-                }
                 musicSelectListener.onMusicSelect(mSelectMusic, mStartTime);
                 //缓存选择的值
                 mCacheMusic = mSelectMusic;

@@ -1,0 +1,5 @@
+<resources>
+    <!--设置界面-->
+    <string name="alivc_recorder_setting_multi_text">多源录制</string>
+    <!--end-->
+</resources>

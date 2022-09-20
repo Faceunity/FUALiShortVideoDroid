@@ -1,9 +1,10 @@
 package com.aliyun.svideo.common.baseAdapter;
 
-import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.view.View;
 
+
+import androidx.annotation.Nullable;
 
 import com.aliyun.svideo.common.baseAdapter.delegate.MultiTypeDelegate;
 import com.aliyun.svideo.common.baseAdapter.provider.BaseItemProvider;

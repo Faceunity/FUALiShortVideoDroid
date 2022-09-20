@@ -8,13 +8,14 @@ import android.graphics.Paint.Align;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.support.v4.widget.ScrollerCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+
+import androidx.core.widget.ScrollerCompat;
 
 import com.aliyun.svideo.common.R;
 

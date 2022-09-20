@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/resource_name"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textSize="@dimen/alivc_common_font_14"
+        android:textColor="@color/aliyun_svideo_selector_font_color_tab"
+        android:text="@string/alivc_editor_dialog_none_effect"/>
+</LinearLayout>

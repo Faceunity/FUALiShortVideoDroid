@@ -6,7 +6,7 @@
     <string name="alivc_recorder_setting_frame_rate">帧率</string>
     <string name="alivc_recorder_setting_quality">视频质量</string>
     <string name="alivc_recorder_setting_gop">关键帧间隔</string>
-
+    <string name="alivc_recorder_setting_duet_source_mode">合拍音频类型</string>
     <string name="alivc_recorder_setting_resolution">分辨率</string>
     <string name="alivc_recorder_setting_ratio">视频比例</string>
     <string name="alivc_recorder_setting_min_record_duration_hint">最小时长大于0，默认值2S</string>
@@ -37,6 +37,22 @@
     <string name="alivc_recorder_setting_open_skin_filter">美颜开</string>
     <string name="alivc_recorder_setting_close_face_detection">人脸检测关</string>
     <string name="alivc_recorder_setting_open_face_detection">人脸检测开</string>
+    <string name="alivc_recorder_setting_duet_original">视频原音</string>
+    <string name="alivc_recorder_setting_duet_recorded">录制声音</string>
+    <string name="alivc_recorder_setting_duet_mute">视频静音</string>
+    <string name="alivc_recorder_setting_duet_mix">混音</string>
+
+    <string name="alivc_recorder_setting_duet_background">合拍背景</string>
+    <string name="alivc_recorder_setting_duet_round_corner">视频边框</string>
+    <string name="alivc_recorder_setting_duet_round_corner_blue">边框</string>
+    <string name="alivc_recorder_setting_duet_background_no">不设置</string>
+    <string name="alivc_recorder_setting_duet_background_red">红色</string>
+    <string name="alivc_recorder_setting_duet_background_image">图片</string>
+
+    <string name="alivc_recorder_setting_duet_bg_scale_mode">背景图片模式</string>
+    <string name="alivc_recorder_setting_duet_bg_scale_mode_fill">填充</string>
+    <string name="alivc_recorder_setting_duet_bg_scale_mode_crop">裁切</string>
+    <string name="alivc_recorder_setting_duet_bg_scale_mode_stretch">拉伸</string>
     <!--录制界面控制view-->
     <string name="alivc_recorder_control_music">剪音乐</string>
     <string name="alivc_recorder_control_rate_slow">慢</string>
@@ -68,8 +84,7 @@
     <string name="aliyun_face_sticker">Stickers</string>
     <string name="alivc_recorder_setting_video_style">拍摄方式</string>
     <string name="alivc_recorder_setting_rendering_mode">高级美颜</string>
-    <string name="alivc_recorder_setting_rendering_faceunity">FaceUnity</string>
-    <string name="alivc_recorder_setting_rendering_race">Race</string>
+    <string name="alivc_recorder_setting_watermark">添加水印</string>
     <string name="alivc_recorder_setting_general_text">普通</string>
     <string name="alivc_recorder_setting_mix_text">合拍</string>
     <string name="alivc_mix_record_continue">视频太短，再拍一段儿吧</string>

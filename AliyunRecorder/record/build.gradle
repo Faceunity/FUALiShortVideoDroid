@@ -1,33 +1,33 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion externalCompileSdkVersion
-    buildToolsVersion externalBuildToolsVersion
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
     defaultConfig {
-        minSdkVersion externalMinSdkVersion
-        targetSdkVersion externalTargetSdkVersion
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
         consumerProguardFiles 'lib-proguard-rules.pro'
     }
     lintOptions {
         warning 'InvalidPackage'
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
-    implementation project(':AliyunSVideoBase')
-    implementation project(":AliyunSvideoMusic")
-    implementation project(path: ':AliyunFileDownLoader')
-    implementation externalGSON
-    implementation externalAliyunRace
-    implementation project(':AlivcMedia')
-    implementation project(':AliyunVideoCommon')
-    implementation externalAndroidAppCompatV7
-    implementation externalAndroidRecyclerView
-    implementation project (':faceunity')
+    api fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+    api project(':AliyunSVideoBase')
+    api project(":AliyunSvideoMusic")
+    api project(path: ':AliyunFileDownLoader')
+    api externalGSON
+    api project(':AlivcMedia')
+    api project(':AliyunVideoCommon')
+    implementation externalAndroidXAppcompat
+    implementation externalAndroidXRecyclerView
+    implementation externalAndroidXConstraintlayout
+    implementation externalAndroidXCardview
+    implementation externalAndroidDesign
+    api project(':QueenBeauty')
+    api project(':faceunity')
 }

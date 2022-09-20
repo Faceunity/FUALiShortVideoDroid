@@ -1,18 +1,19 @@
 package com.aliyun.svideo.base;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.svideo.base.widget.beauty.listener.AbstractOnProgressFloatChangeListener;
 import com.aliyun.svideo.base.widget.beauty.seekbar.BeautySeekBar;
 import com.aliyun.svideosdk.common.struct.effect.EffectConfig;
-
 
 import java.util.ArrayList;
 import java.util.List;

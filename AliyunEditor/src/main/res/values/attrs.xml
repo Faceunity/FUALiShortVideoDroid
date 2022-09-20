@@ -32,5 +32,8 @@
         <attr name="coverImage" format="reference"/>
         <attr name="videoEqImage" format="reference"/>
         <attr name="rollCoverImage" format="reference" />
+        <attr name="beautyImage" format="reference" />
+        <attr name="picInPic" format="reference" />
+        <attr name="lutImage" format="reference"/>
     </declare-styleable>
 </resources>

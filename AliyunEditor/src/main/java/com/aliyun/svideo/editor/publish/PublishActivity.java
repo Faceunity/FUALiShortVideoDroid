@@ -12,7 +12,7 @@ import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -29,8 +29,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aliyun.common.global.AliyunTag;
-import com.aliyun.svideosdk.common.AliyunErrorCode;
-import com.aliyun.svideosdk.editor.AliyunIComposeCallBack;
+import com.aliyun.common.qupaiokhttp.HttpRequest;
+import com.aliyun.common.qupaiokhttp.RequestParams;
+import com.aliyun.common.qupaiokhttp.StringHttpRequestCallback;
+import com.aliyun.common.utils.StringUtils;
+import com.aliyun.common.utils.ToastUtil;
+import com.aliyun.svideo.editor.template.TemplateBuilderActivity;
+import com.aliyun.svideosdk.common.struct.project.AliyunEditorProject;
+import com.aliyun.svideosdk.common.struct.project.json.ProjectJSONSupportImpl;
 import com.aliyun.svideosdk.editor.AliyunIVodCompose;
 import com.aliyun.svideo.base.ActionInfo;
 import com.aliyun.svideo.base.AliyunSvideoActionConfig;
@@ -44,10 +50,12 @@ import com.aliyun.svideo.editor.R;
 import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
 import com.aliyun.svideosdk.common.AliyunIThumbnailFetcher;
 import com.aliyun.svideosdk.common.impl.AliyunThumbnailFetcherFactory;
-import com.duanqu.transcode.NativeParser;
+import com.aliyun.svideosdk.editor.ComposeAndUploadCallBack;
+import com.aliyun.svideosdk.editor.impl.AliyunComposeFactory;
+import com.aliyun.svideosdk.editor.impl.AliyunVodCompose;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.LinkedHashMap;
 
 /**
  * Created by macpro on 2017/11/6.
@@ -63,6 +71,9 @@ public class PublishActivity extends Activity implements View.OnClickListener {
     public static final String KEY_PARAM_VIDEO_WIDTH = "key_param_video_width";
     public static final String KEY_PARAM_VIDEO_HEIGHT = "key_param_video_height";
 
+    public static final int REQUEST_CODE = 2021;
+    public static final String KEY_RESULT_COVER = "result_cover";
+
     private View mActionBar;
     private ImageView mIvLeft;
     private ProgressBar mProgress;
@@ -70,19 +81,34 @@ public class PublishActivity extends Activity implements View.OnClickListener {
     private EditText mVideoDesc;
     private View mCoverSelect;
     private View mComposeProgressView;
+    private View mLayoutCompose;
+    private View mBtnCompose;
+    private View mBtnComposeAndUpload;
+    private TextView mUploadStatusText;
     private TextView mComposeProgress;
     private View mComposeIndiate;
     private TextView mComposeStatusText, mComposeStatusTip;
     private TextView mPublish;
+    private TextView mTemplateBuild;
 
     private String mOutputPath = "";
 
+    private String config;
     private String mThumbnailPath;
+    private boolean mIsUpdateCover;
     private AliyunIVodCompose mCompose;
     private boolean mComposeCompleted;
     private AsyncTask<String, Void, Bitmap> mAsyncTaskOnCreate;
     private AsyncTask<String, Void, Bitmap> mAsyncTaskResult;
-
+    private boolean isComposeAndUpload = false;
+    private boolean isUploadFailed = false;
+    private VodImageUploadAuth mTokenInfo;
+    private long mComposeCompletedTime;
+    private long mComposeUploadedSize = 0;
+    /**
+     * 临时上传的视频id,主要用于刷新视频上传凭证使用
+     */
+    private String videoId;
     private int videoWidth;
     private int videoHeight;
 
@@ -96,37 +122,33 @@ public class PublishActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alivc_editor_activity_publish);
         initView();
-        String config = getIntent().getStringExtra(KEY_PARAM_CONFIG);
+        config = getIntent().getStringExtra(KEY_PARAM_CONFIG);
         mThumbnailPath = getIntent().getStringExtra(KEY_PARAM_THUMBNAIL);
         videoWidth = getIntent().getIntExtra(KEY_PARAM_VIDEO_WIDTH, 0);
         videoHeight = getIntent().getIntExtra(KEY_PARAM_VIDEO_HEIGHT, 0);
 
         aliyunIThumbnailFetcher = AliyunThumbnailFetcherFactory.createThumbnailFetcher();
-
-        mCompose = ComposeFactory.INSTANCE.getAliyunVodCompose();
+        mComposeCompletedTime = System.currentTimeMillis();
+        mCompose = AliyunComposeFactory.createAliyunVodCompose();
         mCompose.init(this.getApplicationContext());
-
-        //开始合成
 
         String time = DateTimeUtils.getDateTimeFromMillisecond(System.currentTimeMillis());
         mOutputPath = Constants.SDCardConstants.getDir(this) + time + Constants.SDCardConstants.COMPOSE_SUFFIX;
-        int ret = mCompose.compose(config, mOutputPath, mCallback);
-        if (ret != AliyunErrorCode.ALIVC_COMMON_RETURN_SUCCESS) {
-            return;
-        }
+    }
+
+    private void hideSoftInput() {
         View root = (View) mActionBar.getParent();
         root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 InputMethodManager inputManager = (InputMethodManager) getApplication()
-                                                  .getSystemService(Context.INPUT_METHOD_SERVICE);
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (inputManager.isActive()) {
                     inputManager
-                    .hideSoftInputFromWindow(mVideoDesc.getWindowToken(), 0);
+                            .hideSoftInputFromWindow(mVideoDesc.getWindowToken(), 0);
                 }
             }
         });
-        mAsyncTaskOnCreate = new MyAsyncTask(this).execute(mThumbnailPath);
     }
 
     private void initThumbnail(Bitmap thumbnail) {
@@ -234,6 +256,13 @@ public class PublishActivity extends Activity implements View.OnClickListener {
         mPublish.setVisibility(View.VISIBLE);
         mProgress = (ProgressBar) findViewById(R.id.publish_progress);
         mComposeProgressView = findViewById(R.id.compose_progress_view);
+        mComposeProgressView.setVisibility(View.GONE);
+        mLayoutCompose = findViewById(R.id.layout_compose);
+        mBtnCompose = findViewById(R.id.btn_compose);
+        mBtnComposeAndUpload = findViewById(R.id.btn_compose_and_upload);
+        mBtnCompose.setOnClickListener(this);
+        mBtnComposeAndUpload.setOnClickListener(this);
+
         mCoverBlur = (ImageView) findViewById(R.id.publish_cover_blur);
         mCoverImage = (ImageView) findViewById(R.id.publish_cover_image);
         mVideoDesc = (EditText) findViewById(R.id.publish_desc);
@@ -246,6 +275,11 @@ public class PublishActivity extends Activity implements View.OnClickListener {
         mComposeProgress = (TextView) findViewById(R.id.compose_progress_text);
         mComposeStatusText = (TextView) findViewById(R.id.compose_status_text);
         mComposeStatusTip = (TextView) findViewById(R.id.compose_status_tip);
+        mTemplateBuild = (TextView) findViewById(R.id.btn_template_build);
+        mUploadStatusText = (TextView) findViewById(R.id.upload_status_text);
+        mUploadStatusText.setVisibility(View.GONE);
+        mTemplateBuild.setOnClickListener(this);
+        mTemplateBuild.setVisibility(View.GONE);
         mVideoDesc.addTextChangedListener(new TextWatcher() {
 
             private int start;
@@ -350,6 +384,23 @@ public class PublishActivity extends Activity implements View.OnClickListener {
             startActivityForResult(intent, 0);
         } else if (v == mIvLeft) {
             onBackPressed();
+        } else if (v == mTemplateBuild) {
+            Intent intent = new Intent(this, TemplateBuilderActivity.class);
+            intent.putExtra(TemplateBuilderActivity.KEY_PARAM_CONFIG, config);
+            intent.putExtra(TemplateBuilderActivity.KEY_PARAM_OUTPUT_PATH, mOutputPath);
+            startActivity(intent);
+        } else if (v == mBtnCompose) {
+            mComposeProgressView.setVisibility(View.VISIBLE);
+            mLayoutCompose.setVisibility(View.GONE);
+            isComposeAndUpload = false;
+            mCompose.compose(config, mOutputPath, mCallback);
+            hideSoftInput();
+        } else if (v == mBtnComposeAndUpload) {
+            mComposeProgressView.setVisibility(View.VISIBLE);
+            mLayoutCompose.setVisibility(View.GONE);
+            isComposeAndUpload = true;
+            mCompose.composeAndUpload(config, mOutputPath, mCallback);
+            hideSoftInput();
         }
     }
 
@@ -382,12 +433,158 @@ public class PublishActivity extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
+            mIsUpdateCover = true;
             mThumbnailPath = data.getStringExtra(CoverEditActivity.KEY_PARAM_RESULT);
             mAsyncTaskResult = new MyAsyncTask(this).execute(mThumbnailPath);
+            if (isComposeAndUpload) {
+                uploadImageWithVod();
+            }
         }
     }
 
-    private final AliyunIComposeCallBack mCallback = new AliyunIComposeCallBack() {
+    @Override
+    public void finish() {
+        //封面修改回调
+        if (mIsUpdateCover && !StringUtils.isEmpty(mThumbnailPath)) {
+            Intent data = new Intent();
+            data.putExtra(KEY_RESULT_COVER, mThumbnailPath);
+            setResult(RESULT_OK, data);
+        }
+        super.finish();
+    }
+
+    private final ComposeAndUploadCallBack mCallback = new ComposeAndUploadCallBack() {
+        @Override
+        public void onUploadFailed(String code, String message) {
+            isUploadFailed = true;
+            if (mComposeCompleted) {
+                releaseAndShowTemplate();
+            }
+            Log.d("PublishActivity", "VideoUpload onUploadFailed code:"+code+" message:"+message);
+        }
+
+        @Override
+        public void onUploadProgress(long uploadedSize, long totalSize) {
+            if (mCompose == null) {
+                return;
+            }
+            if (mCompose.getState() == AliyunVodCompose.AliyunComposeState.STATE_VIDEO_UPLOADING) {
+                if (totalSize > 0) {
+                    if (mComposeUploadedSize == 0) {
+                        mComposeUploadedSize = uploadedSize;
+                    }
+                    //进度按合成之后大小计算
+                    final int progress = (int) ((uploadedSize - mComposeUploadedSize) * 100 / (totalSize - mComposeUploadedSize));
+                    ThreadUtils.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mUploadStatusText.setVisibility(View.VISIBLE);
+                            String text = getString(R.string.alivc_editor_publish_video_uploading, String.valueOf(progress));
+                            mUploadStatusText.setText(text);
+                        }
+                    });
+                }
+            }
+        }
+
+        @Override
+        public void onUploadRetry(String code, String message) {
+            Log.d("PublishActivity", "VideoUpload onUploadRetry");
+        }
+
+        @Override
+        public void onUploadRetryResume() {
+            Log.d("PublishActivity", "VideoUpload onUploadRetryResume");
+        }
+
+        @Override
+        public void onUploadSucceed() {
+            long costTime = System.currentTimeMillis() - mComposeCompletedTime;
+            if (mCompose.getState() == AliyunIVodCompose.AliyunComposeState.STATE_IMAGE_UPLOADING) {
+                ThreadUtils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mUploadStatusText.setText(R.string.alivc_editor_publish_upload_image_success);
+                    }
+                });
+                releaseAndShowTemplate();
+            } else {
+                uploadImageWithVod();
+            }
+
+            Log.d("PublishActivity", "VideoUpload onUploadSucceed costTime:" + costTime);
+        }
+
+        @Override
+        public void onUploadTokenExpired() {
+            Log.d("PublishActivity", "VideoUpload onUploadTokenExpired");
+            if(mCompose.getState()== AliyunIVodCompose.AliyunComposeState.STATE_IMAGE_UPLOADING){
+                refreshVideoUpload(videoId);
+            }
+        }
+
+        @Override
+        public void getVideoUploadAuth(final VideoUploadAuthCallBack callBack) {
+            mTokenInfo = null;
+            RequestParams imageUploadAuthParams = new RequestParams();
+            imageUploadAuthParams.addFormDataPart("imageType", "default");
+            HttpRequest.get("https://alivc-demo.aliyuncs.com/demo/getImageUploadAuth", imageUploadAuthParams, new StringHttpRequestCallback() {
+                @Override
+                protected void onSuccess(String s) {
+                    Log.d("PublishActivity", "VideoUpload getImageUploadAuth:" + s);
+                    mTokenInfo = VodImageUploadAuth.getImageTokenInfo(s);
+                    if (mTokenInfo != null) {
+                        RequestParams params = new RequestParams();
+                        params.addFormDataPart("title", TextUtils.isEmpty(mVideoDesc.getText().toString().trim()) ? "android test video" : mVideoDesc.getText().toString().trim());
+                        params.addFormDataPart("fileName", mOutputPath);
+                        params.addFormDataPart("coverURL", mTokenInfo.getImageURL());
+                        Log.d("PublishActivity", "VideoUpload coverURL:" + mTokenInfo.getImageURL());
+                        HttpRequest.get("https://alivc-demo.aliyuncs.com/demo/getVideoUploadAuth?", params, new StringHttpRequestCallback() {
+                            @Override
+                            protected void onSuccess(String s) {
+                                Log.d("PublishActivity", "VideoUpload auth onSuccess");
+                                VodVideoUploadAuth tokenInfo = VodVideoUploadAuth.getVideoTokenInfo(s);
+                                if (tokenInfo != null) {
+                                    videoId = tokenInfo.getVideoId();
+                                    callBack.onSuccess(tokenInfo.getVideoId(), tokenInfo.getUploadAddress(), tokenInfo.getUploadAuth());
+                                } else {
+                                    ThreadUtils.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mUploadStatusText.setVisibility(View.VISIBLE);
+                                            mUploadStatusText.setText(R.string.alivc_editor_publish_upload_get_video_auth_failure);
+                                        }
+                                    });
+                                    callBack.onFailure(-1, "VodVideoUploadAuth null");
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int errorCode, String msg) {
+                                callBack.onFailure(errorCode, msg);
+                                Log.e("PublishActivity", "VideoUpload auth failed, errorCode:" + errorCode + ", msg:" + msg);
+                            }
+                        });
+                    } else {
+                        ThreadUtils.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mUploadStatusText.setVisibility(View.VISIBLE);
+                                mUploadStatusText.setText(R.string.alivc_editor_publish_upload_get_image_auth_failure);
+                            }
+                        });
+                        callBack.onFailure(-1, "VodImageUploadAuth null");
+                    }
+                }
+
+                @Override
+                public void onFailure(int errorCode, String msg) {
+                    Log.e(AliyunTag.TAG, "Get image upload auth info failed, errorCode:" + errorCode + ", msg:" + msg);
+                    callBack.onFailure(errorCode, msg);
+                }
+            });
+        }
+
         @Override
 
         public void onComposeError(int errorCode) {
@@ -416,6 +613,8 @@ public class PublishActivity extends Activity implements View.OnClickListener {
 
         @Override
         public void onComposeCompleted() {
+            Log.d("PublishActivity", "VideoUpload onComposeCompleted costTime:" + (System.currentTimeMillis() - mComposeCompletedTime));
+            mComposeCompletedTime = System.currentTimeMillis();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 //适配android Q
                 ThreadUtils.runOnSubThread(new Runnable() {
@@ -430,24 +629,109 @@ public class PublishActivity extends Activity implements View.OnClickListener {
                                                 new String[] {mOutputPath}, new String[] {"video/mp4"}, null);
             }
             mComposeCompleted = true;
-            aliyunIThumbnailFetcher.addVideoSource(mOutputPath, 0, Integer.MAX_VALUE, 0);
-            aliyunIThumbnailFetcher.setParameters(videoWidth, videoHeight,
-                                                  AliyunIThumbnailFetcher.CropMode.Mediate, VideoDisplayMode.SCALE, 8);
-            requestThumbnailImage(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    //请务必在非回调线程调用，避免内存泄露
-                    if (mCompose != null) {
-                        mCompose.release();
-                        mCompose = null;
-                    }
+                    mComposeProgress.setText("100%");
+                    mProgress.setProgress(100);
+                    mComposeStatusText.setText(R.string.alivc_editor_publish_compose_success);
                 }
             });
+            if (!isComposeAndUpload || isUploadFailed) {
+                releaseAndShowTemplate();
+            }
 
             VideoInfoUtils.printVideoInfo(mOutputPath);
         }
     };
+
+    private void releaseAndShowTemplate() {
+        aliyunIThumbnailFetcher.addVideoSource(mOutputPath, 0, Integer.MAX_VALUE, 0);
+        aliyunIThumbnailFetcher.setParameters(videoWidth, videoHeight,
+                AliyunIThumbnailFetcher.CropMode.Mediate, VideoDisplayMode.SCALE, 8);
+        requestThumbnailImage(0);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //请务必在非回调线程调用，避免内存泄露，边合成边上传模式先不要释放，修改封面重新上传需要用到
+                if (mCompose != null && !isComposeAndUpload) {
+                    mCompose.release();
+                    mCompose = null;
+                }
+                try {
+                    //如果不存在模板则显示构建模板入口
+                    AliyunEditorProject project = new ProjectJSONSupportImpl().readValue(new File(config), AliyunEditorProject.class);
+                    if (project.getTemplate() == null || StringUtils.isEmpty(project.getTemplate().getPath())) {
+                        mTemplateBuild.setVisibility(View.VISIBLE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void uploadImageWithVod() {
+        ThreadUtils.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mUploadStatusText.setText(R.string.alivc_editor_publish_image_uploading);
+            }
+        });
+        int rv = mCompose.uploadImageWithVod(mThumbnailPath, mTokenInfo.getUploadAddress(), mTokenInfo.getUploadAuth(), mCallback);
+        if (rv < 0) {
+            Log.d(AliyunTag.TAG, "上传参数错误 video path : " + mOutputPath + " thumbnailk : " + mThumbnailPath);
+            ThreadUtils.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(PublishActivity.this, getResources().getString(R.string.alivc_editor_publish_upload_param_error));
+                }
+            });
+        }
+    }
+
+    /**
+     * 刷新视频凭证
+     * @param videoId
+     */
+    private void refreshVideoUpload(String videoId) {
+        RequestParams params = new RequestParams();
+        params.addFormDataPart("videoId", videoId);
+        HttpRequest.get("https://alivc-demo.aliyuncs.com/demo/refreshVideoUploadAuth?", params, new StringHttpRequestCallback() {
+            @Override
+            protected void onSuccess(String s) {
+                super.onSuccess(s);
+                RefreshVodVideoUploadAuth tokenInfo = RefreshVodVideoUploadAuth.getReVideoTokenInfo(s);
+                if (tokenInfo != null && mCompose != null) {
+                    int rv = mCompose.refreshWithUploadAuth(tokenInfo.getUploadAuth());
+                    if (rv < 0) {
+                        Log.d(AliyunTag.TAG, "上传参数错误 video path : " + mOutputPath + " thumbnailk : " + mThumbnailPath);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.showToast(PublishActivity.this, getResources().getString(R.string.alivc_editor_publish_upload_param_error));
+                            }
+                        });
+                    }
+
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtil.showToast(PublishActivity.this, "Get video upload auth failed");
+                        }
+                    });
+                    Log.e(AliyunTag.TAG, "Get video upload auth info failed");
+                }
+
+            }
+
+            @Override
+            public void onFailure(int errorCode, String msg) {
+                super.onFailure(errorCode, msg);
+            }
+        });
+    }
 
     private void requestThumbnailImage(int index) {
         Log.e("frameBitmap", "requestThumbnailImage" + index);
@@ -459,12 +743,18 @@ public class PublishActivity extends Activity implements View.OnClickListener {
         private int mInterval = 100;
 
         @Override
-        public void onThumbnailReady(Bitmap frameBitmap, long time) {
+        public void onThumbnailReady(Bitmap frameBitmap, long time, int index) {
             if (frameBitmap != null && !frameBitmap.isRecycled()) {
                 Log.e("frameBitmap", "isRecycled");
                 mCoverImage.setVisibility(View.VISIBLE);
+                //没有设置过封面就用首帧
                 initThumbnail(frameBitmap);
-                mPublish.setEnabled(mComposeCompleted);
+                if (!isComposeAndUpload || isUploadFailed) {
+                    if (isUploadFailed) {
+                        ToastUtil.showToast(PublishActivity.this, getResources().getString(R.string.alivc_editor_publish_upload_error));
+                    }
+                    mPublish.setEnabled(mComposeCompleted);
+                }
                 mProgress.setVisibility(View.GONE);
                 mComposeProgress.setVisibility(View.GONE);
 

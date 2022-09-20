@@ -4,12 +4,13 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.TextView;
 
+
+import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.faceunity.nama.seekbar.internal.drawable.AlmostRippleDrawable;
 import com.faceunity.nama.seekbar.internal.drawable.MarkerDrawable;

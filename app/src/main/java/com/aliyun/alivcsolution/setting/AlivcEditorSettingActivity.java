@@ -7,8 +7,9 @@ package com.aliyun.alivcsolution.setting;
 import android.Manifest;
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.SwitchCompat;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import com.aliyun.alivcsolution.R;
 import com.aliyun.svideo.base.AlivcSvideoEditParam;
@@ -87,6 +89,21 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
      */
     private boolean mHasTailAnimation = false;
 
+    /**
+     * 是否开启降噪，默认无
+     */
+    private boolean mHasDeNoise = false;
+
+    /**
+     * 是否添加水印，默认添加
+     */
+    private boolean mHasWaterMark = true;
+
+    /**
+     * 是否开启转码，默认无
+     */
+    private boolean mNeedTranscode = false;
+
     //视频质量选择按钮
     private Button mQualitySuperBtn, mQualityHighBtn, mQualityNormalBtn, mQualityLowBtn;
     //视频比例选择按钮
@@ -98,7 +115,7 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
     /**
      * 视频编码方式选择按钮
      */
-    private Button mEncorderHardwareBtn, mEncorderOpenh264Btn, mEncorderFfmpegBtn;
+    private Button mEncorderHardwareBtn, mEncorderOpenh264Btn;
     /**
      * 帧率 default {@link #DEFAULT_FRAME_RATE}
      */
@@ -115,9 +132,23 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
      * 片尾水印选择开关
      */
     private SwitchCompat mVideoTailSwitch;
+    /**
+     * 降噪开关
+     */
+    private SwitchCompat mVideoDenoiseSwitch;
     private Button mStartImport;
 
+    /**
+     * 转码开关
+     */
+    private SwitchCompat mVideoTranscodeSwitch;
 
+    /**
+     * 水印开关
+     */
+    private SwitchCompat mVideoWaterMarkSwitch;
+
+    private Switch mSwitchFlip;
     /**
      *  判断是编辑模块进入还是通过社区模块的编辑功能进入
      *  svideo: 短视频
@@ -172,10 +203,8 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
         //视频编码相关按钮
         mEncorderHardwareBtn = findViewById(R.id.alivc_edit_encoder_hardware);
         mEncorderOpenh264Btn = findViewById(R.id.alivc_edit_encoder_openh264);
-        mEncorderFfmpegBtn = findViewById(R.id.alivc_edit_encoder_ffmpeg);
         mEncorderHardwareBtn.setOnClickListener(this);
         mEncorderOpenh264Btn.setOnClickListener(this);
-        mEncorderFfmpegBtn.setOnClickListener(this);
 
         mRadioFill = (Button) findViewById(R.id.radio_fill);
         mRadioCrop = (Button) findViewById(R.id.radio_crop);
@@ -185,6 +214,19 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
         mVideoTailSwitch = findViewById(R.id.video_tail_switch);
         mVideoTailSwitch.setOnCheckedChangeListener(this);
         mVideoTailSwitch.setChecked(mHasTailAnimation);
+
+        mVideoDenoiseSwitch = findViewById(R.id.video_denoise_switch);
+        mVideoDenoiseSwitch.setOnCheckedChangeListener(this);
+        mVideoDenoiseSwitch.setChecked(mHasDeNoise);
+
+        mVideoWaterMarkSwitch = findViewById(R.id.video_watermark_switch);
+        mVideoWaterMarkSwitch.setOnCheckedChangeListener(this);
+        mVideoWaterMarkSwitch.setChecked(mHasWaterMark);
+
+        mVideoTranscodeSwitch = findViewById(R.id.video_transcode_switch);
+        mVideoTranscodeSwitch.setOnCheckedChangeListener(this);
+        mVideoTranscodeSwitch.setChecked(mNeedTranscode);
+        mSwitchFlip = (Switch)findViewById(R.id.alivc_edit_switch_flip);
 
         mStartImport = (Button) findViewById(R.id.start_import);
         mStartImport.setOnClickListener(this);
@@ -243,6 +285,10 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
             .setFrameRate(frameRate)//裁剪帧率
             .setGop(gop)//关键帧间隔
             .setVideoCodec(mVideoCodec)
+            .setDeNoise(mHasDeNoise)
+            .setNeedTranscode(mNeedTranscode)
+            .setHasWaterMark(mHasWaterMark)
+            .setHorizontalFlip(mSwitchFlip.isChecked())
             .build();
             EditorMediaActivity.startImport(this, param);
             //AlicvEditorRoute.startMediaActivity(this,param);
@@ -258,7 +304,7 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
         } else if (v == mRecordResolutionP360Btn || v == mRecordResolutionP480Btn || mRecordResolutionP540Btn == v
                    || v == mRecordResolutionP720Btn) {
             onResolutionSelected(v);
-        } else if (v == mEncorderFfmpegBtn || v == mEncorderHardwareBtn || v == mEncorderOpenh264Btn) {
+        } else if (v == mEncorderHardwareBtn || v == mEncorderOpenh264Btn) {
             onEncoderSelected(v);
         }
     }
@@ -267,6 +313,12 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView == mVideoTailSwitch) {
             mHasTailAnimation = isChecked;
+        } else if (buttonView == mVideoDenoiseSwitch) {
+            mHasDeNoise = isChecked;
+        } else if (buttonView == mVideoTranscodeSwitch) {
+            mNeedTranscode = isChecked;
+        } else if(buttonView == mVideoWaterMarkSwitch) {
+            mHasWaterMark = isChecked;
         }
     }
 
@@ -359,13 +411,9 @@ public class AlivcEditorSettingActivity extends Activity implements View.OnClick
      * @param view
      */
     private void onEncoderSelected(View view) {
-        mEncorderFfmpegBtn.setSelected(false);
         mEncorderHardwareBtn.setSelected(false);
         mEncorderOpenh264Btn.setSelected(false);
-        if (view == mEncorderFfmpegBtn) {
-            mVideoCodec = VideoCodecs.H264_SOFT_FFMPEG;
-            mEncorderFfmpegBtn.setSelected(true);
-        } else if (view == mEncorderOpenh264Btn) {
+        if (view == mEncorderOpenh264Btn) {
             mEncorderOpenh264Btn.setSelected(true);
             mVideoCodec = VideoCodecs.H264_SOFT_OPENH264;
         } else if (view == mEncorderHardwareBtn) {

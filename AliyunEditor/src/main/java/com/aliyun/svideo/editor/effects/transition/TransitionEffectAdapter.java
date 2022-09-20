@@ -1,21 +1,23 @@
 package com.aliyun.svideo.editor.effects.transition;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.svideo.base.Form.I18nBean;
 import com.aliyun.svideo.common.utils.LanguageUtils;
 import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.editor.EditorActivity;
-import com.aliyun.svideo.editor.effects.caption.TextDialog;
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.OnItemClickListener;
 import com.aliyun.svideo.common.utils.FastClickUtil;
+import com.aliyun.svideo.editor.util.AlivcResUtil;
 import com.aliyun.svideo.editor.util.EditorCommon;
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.common.struct.effect.TransitionBase;
 
 import org.json.JSONException;
@@ -33,6 +35,7 @@ public class TransitionEffectAdapter extends RecyclerView.Adapter<RecyclerView.V
     private OnItemClickListener mOnItemClickListener;
     private int mSelectPosition = 0;
     private List<String> mTransitionEffectList = new ArrayList<>();
+    private int mGroupId;
     private boolean isDefault = true;
 
     public TransitionEffectAdapter(Context context) {
@@ -62,11 +65,11 @@ public class TransitionEffectAdapter extends RecyclerView.Adapter<RecyclerView.V
                 effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_translate_up_effect_selector);
                 effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_up);
                 break;
-            case TextDialog.EFFECT_DOWN:
+            case TransitionChooserView.EFFECT_DOWN:
                 effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_translate_down_effect_selector);
                 effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_down);
                 break;
-            case TextDialog.EFFECT_LEFT:
+            case TransitionChooserView.EFFECT_LEFT:
                 effectHolder.mEffectIcon.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_translate_left_effect_selector);
                 effectHolder.mEffectName.setText(R.string.alivc_editor_dialog_effect_translate_left);
                 break;
@@ -140,12 +143,14 @@ public class TransitionEffectAdapter extends RecyclerView.Adapter<RecyclerView.V
         return isDefault ? TransitionChooserView.EFFECT_LIST.length : mTransitionEffectList.size();
     }
 
-    public void setData(List<String> list) {
+    public void setData(int groupId, List<String> list) {
         mTransitionEffectList.clear();
         if (list == null) {
             isDefault = true;
+            mGroupId = -1;
         } else {
             isDefault = false;
+            mGroupId = groupId;
             mTransitionEffectList.addAll(list);
         }
     }
@@ -171,7 +176,18 @@ public class TransitionEffectAdapter extends RecyclerView.Adapter<RecyclerView.V
                             String path = mTransitionEffectList.get(position);
                             TransitionBase transitionBase = new TransitionBase(path);
                             info.setPath(path);
-                            info.transitionType = TransitionChooserView.EFFECT_CUSTOM;
+                            Source source = new Source(path);
+                            if (source.getPath() != null && source.getPath().contains(File.separator)) {
+                                String name = source.getPath().substring(source.getPath().lastIndexOf(File.separator) + 1);
+                                source.setURL(AlivcResUtil.getCloudResUri(AlivcResUtil.TYPE_TRANSITION, String.valueOf(mGroupId), name));
+                            }
+                            info.setSource(source);
+                            transitionBase.setCustomSource(source);
+                            if (position == 0){
+                                info.transitionType = TransitionChooserView.EFFECT_NONE;
+                            }else {
+                                info.transitionType = TransitionChooserView.EFFECT_CUSTOM;
+                            }
                             info.transitionBase = transitionBase;
                         }
                         if (mOnItemClickListener.onItemClick(info, position)) {

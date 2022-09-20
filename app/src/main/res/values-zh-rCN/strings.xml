@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">阿里短视频</string>
+    <string name="ugc_app_name">阿里云短视频</string>
     <string name="solution_apsarav">ApsaraV</string>
     <string name="solution_push">直播推流</string>
     <string name="solution_live_room">互动直播</string>
@@ -12,6 +12,9 @@
     <string name="solution_crop">视频裁剪</string>
     <string name="solution_edit">视频编辑</string>
     <string name="solution_race_beauty">美颜美型</string>
+    <string name="solution_draft_box">草稿箱</string>
+    <string name="solution_template">模板</string>
+    <string name="solution_mix">视频拼接</string>
     <string name="solution_community">趣视频</string>
     <string name="solution_videocall">视频通话</string>
     <string name="solution_audiocall">语音通话</string>

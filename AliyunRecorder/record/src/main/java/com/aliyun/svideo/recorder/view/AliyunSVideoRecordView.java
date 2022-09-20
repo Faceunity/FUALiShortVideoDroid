@@ -9,12 +9,8 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.media.MediaScannerConnection;
-import android.opengl.EGL14;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -27,46 +23,26 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.aliyun.common.global.AliyunTag;
 import com.aliyun.common.utils.BitmapUtil;
 import com.aliyun.common.utils.CommonUtil;
 import com.aliyun.common.utils.DensityUtil;
-import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
-import com.aliyun.svideo.common.utils.image.ImageLoaderOptions;
-import com.aliyun.svideo.recorder.bean.AlivcMixBorderParam;
-import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
-import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
-import com.aliyun.svideosdk.mixrecorder.AliyunMixMediaInfoParam;
-import com.aliyun.svideosdk.common.AliyunErrorCode;
-import com.aliyun.svideosdk.recorder.AliyunIClipManager;
-import com.aliyun.svideosdk.recorder.RecordCallback;
+import com.aliyun.svideo.base.BaseChooser;
 import com.aliyun.svideo.base.Constants;
+import com.aliyun.svideo.base.beauty.api.OnBeautyLayoutChangeListener;
+import com.aliyun.svideo.base.beauty.api.constant.BeautySDKType;
 import com.aliyun.svideo.base.http.MusicFileBean;
 import com.aliyun.svideo.base.utils.VideoInfoUtils;
 import com.aliyun.svideo.base.widget.ProgressDialog;
 import com.aliyun.svideo.base.widget.RecordTimelineView;
-import com.aliyun.svideo.base.widget.beauty.BeautyConstants;
-import com.aliyun.svideo.base.widget.beauty.BeautyDetailSettingView;
-import com.aliyun.svideo.base.widget.beauty.BeautyParams;
-import com.aliyun.svideo.base.widget.beauty.BeautyRaceConstants;
-import com.aliyun.svideo.base.widget.beauty.BeautyShapeConstants;
-import com.aliyun.svideo.base.widget.beauty.enums.BeautyLevel;
-import com.aliyun.svideo.base.widget.beauty.enums.BeautyMode;
-import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyDetailClickListener;
-import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyFaceItemSeletedListener;
-import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyModeChangeListener;
-import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyParamsChangeListener;
-import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyShapeItemSeletedListener;
-import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyShapeParamsChangeListener;
-import com.aliyun.svideo.base.widget.beauty.listener.OnBeautySkinItemSeletedListener;
-import com.aliyun.svideo.base.widget.beauty.listener.OnBeautyTableItemSeletedListener;
-import com.aliyun.svideo.base.widget.beauty.listener.OnViewClickListener;
-import com.aliyun.svideo.base.widget.beauty.sharp.BeautyShapeParams;
 import com.aliyun.svideo.common.utils.DensityUtils;
 import com.aliyun.svideo.common.utils.LanguageUtils;
 import com.aliyun.svideo.common.utils.PermissionUtils;
@@ -74,21 +50,20 @@ import com.aliyun.svideo.common.utils.ScreenUtils;
 import com.aliyun.svideo.common.utils.ThreadUtils;
 import com.aliyun.svideo.common.utils.ToastUtils;
 import com.aliyun.svideo.common.utils.UriUtils;
+import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
+import com.aliyun.svideo.common.utils.image.ImageLoaderOptions;
 import com.aliyun.svideo.downloader.zipprocessor.DownloadFileUtils;
 import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.recorder.activity.AlivcSvideoRecordActivity;
-import com.aliyun.svideo.recorder.bean.RememberBeautyBean;
-import com.aliyun.svideo.recorder.bean.RememberBeautyShapeBean;
-import com.aliyun.svideo.recorder.bean.RenderingMode;
+import com.aliyun.svideo.recorder.bean.AlivcMixBorderParam;
+import com.aliyun.svideo.recorder.bean.VideoDisplayParam;
 import com.aliyun.svideo.recorder.mixrecorder.AlivcIMixRecorderInterface;
 import com.aliyun.svideo.recorder.profile.CSVUtils;
 import com.aliyun.svideo.recorder.profile.Constant;
-import com.aliyun.svideo.recorder.race.RaceManager;
 import com.aliyun.svideo.recorder.util.FixedToastUtils;
 import com.aliyun.svideo.recorder.util.OrientationDetector;
 import com.aliyun.svideo.recorder.util.PreferenceUtil;
 import com.aliyun.svideo.recorder.util.RecordCommon;
-import com.aliyun.svideo.recorder.util.SharedPreferenceUtils;
 import com.aliyun.svideo.recorder.util.TimeFormatterUtils;
 import com.aliyun.svideo.recorder.view.control.CameraType;
 import com.aliyun.svideo.recorder.view.control.ControlView;
@@ -97,44 +72,38 @@ import com.aliyun.svideo.recorder.view.control.FlashType;
 import com.aliyun.svideo.recorder.view.control.RecordState;
 import com.aliyun.svideo.recorder.view.countdown.AlivcCountDownView;
 import com.aliyun.svideo.recorder.view.dialog.AnimFilterEffectChooser;
-import com.aliyun.svideo.recorder.view.dialog.BeautyEffectChooser;
-import com.aliyun.svideo.recorder.view.dialog.DialogVisibleListener;
 import com.aliyun.svideo.recorder.view.dialog.FilterEffectChooser;
 import com.aliyun.svideo.recorder.view.dialog.GIfEffectChooser;
-import com.aliyun.svideo.recorder.view.effects.face.BeautyFaceDetailChooser;
-import com.aliyun.svideo.recorder.view.effects.face.BeautyService;
 import com.aliyun.svideo.recorder.view.effects.filter.EffectInfo;
 import com.aliyun.svideo.recorder.view.effects.filter.OnFilterItemClickListener;
 import com.aliyun.svideo.recorder.view.effects.filter.animfilter.AnimFilterLoadingView;
 import com.aliyun.svideo.recorder.view.effects.filter.animfilter.OnAnimFilterItemClickListener;
 import com.aliyun.svideo.recorder.view.effects.paster.PasterSelectListener;
-import com.aliyun.svideo.recorder.view.effects.shape.BeautyShapeDetailChooser;
-import com.aliyun.svideo.recorder.view.effects.skin.BeautySkinDetailChooser;
 import com.aliyun.svideo.recorder.view.focus.FocusView;
 import com.aliyun.svideo.recorder.view.music.MusicChooser;
 import com.aliyun.svideo.recorder.view.music.MusicSelectListener;
-import com.aliyun.svideosdk.common.struct.common.VideoQuality;
-import com.aliyun.svideosdk.common.struct.effect.EffectBean;
+import com.aliyun.svideosdk.common.AliyunErrorCode;
+import com.aliyun.svideosdk.common.callback.recorder.OnFrameCallback;
+import com.aliyun.svideosdk.common.callback.recorder.OnPictureCallback;
+import com.aliyun.svideosdk.common.callback.recorder.OnRecordCallback;
+import com.aliyun.svideosdk.common.callback.recorder.OnTextureIdCallback;
+import com.aliyun.svideosdk.common.struct.effect.EffectStream;
+import com.aliyun.svideosdk.common.struct.project.Source;
+import com.aliyun.svideosdk.common.struct.common.AliyunSnapVideoParam;
 import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
-import com.aliyun.svideosdk.common.struct.effect.EffectImage;
-import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
-import com.aliyun.svideosdk.common.struct.encoder.VideoCodecs;
 import com.aliyun.svideosdk.common.struct.form.PreviewPasterForm;
 import com.aliyun.svideosdk.common.struct.recorder.CameraParam;
-import com.aliyun.svideosdk.common.struct.recorder.MediaInfo;
-import com.aliyun.svideosdk.mixrecorder.AliyunMixMediaInfoParam;
+import com.aliyun.svideosdk.recorder.AliyunIClipManager;
+import com.aliyun.svideosdk.recorder.impl.AliyunRecordPasterController;
+import com.aliyun.svideosdk.recorder.impl.AliyunRecordWaterMarkController;
 import com.faceunity.core.enumeration.CameraFacingEnum;
 import com.faceunity.core.enumeration.FUAIProcessorEnum;
-import com.faceunity.core.enumeration.FUInputTextureEnum;
 import com.faceunity.core.enumeration.FUTransformMatrixEnum;
 import com.faceunity.core.utils.CameraUtils;
 import com.faceunity.nama.FURenderer;
 import com.faceunity.nama.data.FaceUnityDataFactory;
 import com.faceunity.nama.listener.FURendererListener;
 import com.faceunity.nama.ui.FaceUnityView;
-import com.google.gson.Gson;
-import com.aliyun.svideosdk.common.callback.recorder.OnFrameCallBack;
-import com.aliyun.svideosdk.common.callback.recorder.OnTextureIdCallBack;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -144,27 +113,25 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 新版本(> 3.6.5之后)录制模块的具体业务实现类
  */
 public class AliyunSVideoRecordView extends FrameLayout
-    implements DialogVisibleListener, ScaleGestureDetector.OnScaleGestureListener {
+    implements BaseChooser.DialogVisibleListener, ScaleGestureDetector.OnScaleGestureListener {
     private static final String TAG = AliyunSVideoRecordView.class.getSimpleName();
     private static final String TAG_GIF_CHOOSER = "gif";
     private static final String TAG_BEAUTY_CHOOSER = "beauty";
     private static final String TAG_MUSIC_CHOOSER = "music";
     private static final String TAG_FILTER_CHOOSER = "filter";
     private static final String TAG_ANIM_FILTER_CHOOSER = "anim_filter";
-    private static final String TAG_BEAUTY_DETAIL_FACE_CHOOSER = "beautyFace";
-    private static final String TAG_BEAUTY_DETAIL_SKIN_CHOOSER = "beautySkin";
-    private static final String TAG_BEAUTY_DETAIL_SHAPE_CHOOSER = "beautyShape";
+
     //最小录制时长
     private static final int MIN_RECORD_TIME = 0;
     //最大录制时长
@@ -177,7 +144,6 @@ public class AliyunSVideoRecordView extends FrameLayout
     private SurfaceView mRecorderSurfaceView;
     private SurfaceView mPlayerSurfaceView;
     private FrameLayout mVideoContainer;
-    private ImageView mBackgroundImageView;
     private ControlView mControlView;
     private RecordTimelineView mRecordTimeView;
     private AlivcCountDownView mCountDownView;
@@ -186,11 +152,8 @@ public class AliyunSVideoRecordView extends FrameLayout
 
     private AliyunIClipManager clipManager;
     private com.aliyun.svideosdk.common.struct.recorder.CameraType cameraType
-            = com.aliyun.svideosdk.common.struct.recorder.CameraType.FRONT;
+        = com.aliyun.svideosdk.common.struct.recorder.CameraType.FRONT;
     private FragmentActivity mActivity;
-    private boolean isOpenFailed = false;
-    //正在准备录制视频,readyview显示期间为true，其他为false
-    private boolean isLoadingReady = false;
     //录制视频是否达到最大值
     private boolean isMaxDuration = false;
     //录制时长
@@ -202,24 +165,15 @@ public class AliyunSVideoRecordView extends FrameLayout
     private int maxRecordTime = 15 * 1000;
     //关键帧间隔
     private int mGop = 5;
-    //视频质量
-    private VideoQuality mVideoQuality = VideoQuality.HD;
     //视频比例
     private int mRatioMode = AliyunSnapVideoParam.RATIO_MODE_3_4;
-    //编码方式
-    private VideoCodecs mVideoCodec = VideoCodecs.H264_HARDWARE;
     //渲染方式
-//    private RenderingMode mRenderingMode = RenderingMode.Race;
+    private BeautySDKType mRenderingMode;
     //是否是race录制包
     private boolean isSvideoRace = false;
 
     private AlivcMixBorderParam mMixBorderParam;
 
-    //视频输出参数
-    private MediaInfo mOutputInfo;
-
-    //合拍输入视频参数
-    private AliyunMixMediaInfoParam mMixInputInfo;
 
     //用来合拍的视频路径
     private String mMixVideoPath;
@@ -236,57 +190,15 @@ public class AliyunSVideoRecordView extends FrameLayout
     //视频分辨率
     private int mResolutionMode = AliyunSnapVideoParam.RESOLUTION_540P;
 
-    private BeautyEffectChooser beautyEffectChooser;
     //选中的贴图效果
-    private EffectPaster effectPaster;
+    private AliyunRecordPasterController mPasterController;
     private OrientationDetector orientationDetector;
-    private int rotation;
     private MusicChooser musicChooseView;
-    /**
-     * 第三方高级美颜支持库faceUnity管理类
-     */
-//    private FaceUnityManager faceUnityManager;
-    private RaceManager raceManager;
-    /**
-     * 相机的原始NV21数据
-     */
-    private byte[] frameBytes;
-    private byte[] mFuImgNV21Bytes;
-    /**
-     * 原始数据宽
-     */
-    private int frameWidth;
-    /**
-     * 原始数据高
-     */
-    private int frameHeight;
-    /**
-     * faceUnity相关
-     */
-    private int mFrameId = 0;
-    private BeautyParams beautyParams;
-    private BeautyShapeParams beautyShapeParams;
-    private BeautyFaceDetailChooser beautyFaceDetailChooser;
-    private BeautySkinDetailChooser beautySkinDetailChooser;
-    private BeautyShapeDetailChooser beautyShapeDetailChooser;
-    /**
-     * 美肌美颜微调dialog是否正在显示
-     */
-    private boolean isbeautyDetailShowing;
 
-    /**
-     * 美颜默认档位
-     */
-    private BeautyLevel defaultBeautyLevel = BeautyLevel.BEAUTY_LEVEL_THREE;
 
-    /**
-     * 当前美颜模式
-     */
-    private BeautyMode currentBeautyFaceMode = BeautyMode.Advanced;
     public static final int TYPE_FILTER = 1;
     public static final int TYPE_MUSIC = 3;
     private LinkedHashMap<Integer, Object> mConflictEffects = new LinkedHashMap<>();
-    private EffectBean effectMusic;
     private AsyncTask<Void, Integer, Integer> finishRecodingTask;
     private AsyncTask<Void, Void, Void> faceTrackPathTask;
 
@@ -299,53 +211,17 @@ public class AliyunSVideoRecordView extends FrameLayout
      * 记录动效filter选中的item索引
      */
     private int mCurrentAnimFilterPosition;
-    /**
-     * 记录美颜选中的索引, 默认为3
-     */
-    private int currentBeautyFacePosition = 3;
 
-    /**
-     * 记录美颜选中的索引, 默认为3
-     */
-    private int currentBeautyFaceNormalPosition = 3;
-
-    /**
-     * 当前美肌选择的item下标, 默认为3
-     */
-    private int currentBeautySkinPosition = 3;
-    /**
-     * 当前美型选择的item下标, 默认为0
-     */
-    private int currentBeautyShapePosition = 0;
     /**
      * 控制mv的添加, 开始录制后,不允许切换mv
      */
     private boolean isAllowChangeMv = true;
-    private AsyncTask<Void, Void, Void> mFaceUnityTask;
-    private List<BeautyParams> rememberParamList;
-    private RememberBeautyBean rememberBeautyBean;
-    private List<BeautyParams> rememberRaceParamList;
-    private RememberBeautyBean rememberRaceBeautyBean;
-    private List<BeautyShapeParams> rememberShapeParamList;
-    private RememberBeautyShapeBean rememberBeautyShapeBean;
     private ProgressDialog progressBar;
 
-    /**
-     * 用于判断当前音乐界面是否可见, 如果可见, 从后台回到前台时, restoreConflictEffect()不恢复mv的播放, 否则会和音乐重复播放
-     * <p>
-     * true: 可见 false: 不可见
-     */
-    private boolean isMusicViewShowing;
-
-    /**
-     * faceUnity的初始化结果 true: 初始化成功 false: 初始化失败
-     */
-    private static boolean faceInitResult;
     /**
      * 是否处于后台
      */
     private boolean mIsBackground;
-    private BeautyService beautyService;
 
     private boolean isHasMusic = false;
     private FocusView mFocusView;
@@ -361,23 +237,19 @@ public class AliyunSVideoRecordView extends FrameLayout
      */
     private MusicSelectListener mOutMusicSelectListener;
 
-    private boolean isRaceDrawed = false;
-
     /**
      * race单独录制的水印
      */
-    private EffectImage effectImage;
+    private AliyunRecordWaterMarkController mWaterMarkController;
+    private boolean mIsVoiceOff = false;
 
-    /**
-     * faceunity 美颜贴纸
-     */
+
     private FaceUnityDataFactory mFaceUnityDataFactory;
     private FURenderer mFURenderer;
-    private boolean mIsFuBeautyOpen;
-    private int mSkippedFrames = 5;
     private TextView tvFps;
-
+    private int mSkippedFrames = 5;
     private CSVUtils mCSVUtils;
+
 
     /**
      * 恢复冲突的特效，这些特效都是会彼此冲突的，比如滤镜和MV，因为MV中也有滤镜效果，所以MV和滤镜的添加顺序 会影响最终产生视频的效果，在恢复时必须严格按照用户的操作顺序来恢复，
@@ -391,14 +263,16 @@ public class AliyunSVideoRecordView extends FrameLayout
                     recorder.applyFilter((EffectFilter) entry.getValue());
                     break;
                 case TYPE_MUSIC:
-                    EffectBean music = (EffectBean) entry.getValue();
+                    EffectStream music = (EffectStream) entry.getValue();
 
                     if (music != null) {
-                        recorder.setMusic(music.getPath(), music.getStartTime(), music.getDuration());
-                        Log.i(TAG, "path :" + music.getPath());
                         // 根据音乐路径判断是否添加了背景音乐,
                         // 在编辑界面, 如果录制添加了背景音乐, 则不能使用音效特效
-                        isHasMusic = !TextUtils.isEmpty(music.getPath());
+                        isHasMusic = !TextUtils.isEmpty(music.getSource().getPath());
+                        if (isHasMusic) {
+                            recorder.applyBackgroundMusic(music);
+                        }
+
                     }
                     break;
                 default:
@@ -407,16 +281,6 @@ public class AliyunSVideoRecordView extends FrameLayout
             }
         }
     }
-
-    /**
-     * 底层在onPause时会回收资源, 此处选择的滤镜的资源路径, 用于恢复状态
-     */
-    private String filterSourcePath;
-
-    /**
-     * 美颜美肌点击了back按钮
-     */
-    private boolean isbeautyDetailBack;
 
     /**
      * 用于防止sdk的oncomplete回调之前, 再次调用startRecord
@@ -439,13 +303,13 @@ public class AliyunSVideoRecordView extends FrameLayout
 
         initControlView();
         initCountDownView();
-        initBeautyParam();
         initRecordTimeView();
         initFocusView();
+        initBeauty();
         setFaceTrackModePath();
 
-        initFuBeautyView();
     }
+
 
     /**
      * 焦点focus
@@ -456,89 +320,6 @@ public class AliyunSVideoRecordView extends FrameLayout
         addSubView(mFocusView);
     }
 
-    private void initBeautyParam() {
-        beautyParamCopy();
-        //进来前应该获取上一次记住的美颜模式
-        currentBeautyFaceMode = SharedPreferenceUtils.getBeautyMode(getContext());
-
-        currentBeautySkinPosition = SharedPreferenceUtils.getBeautySkinLevel(getContext());
-        currentBeautyFacePosition = SharedPreferenceUtils.getBeautyFaceLevel(getContext());
-        currentBeautyFaceNormalPosition = SharedPreferenceUtils.getBeautyNormalFaceLevel(getContext());
-        currentBeautyShapePosition = SharedPreferenceUtils.getBeautyShapeLevel(getContext());
-    }
-
-    private void beautyParamCopy() {
-
-//        faceunity美颜
-        rememberBeautyBean = new RememberBeautyBean();
-        rememberParamList = new ArrayList<>();
-        int size = BeautyConstants.BEAUTY_MAP.size();
-        // 需求要记录之前修改的美颜参数, 所以每次先读取json中的数据,如果json无数据, 就从常量中拿
-        String jsonBeautyParam = SharedPreferenceUtils.getBeautyParams(getContext());
-        if (TextUtils.isEmpty(jsonBeautyParam)) {
-            for (int i = 0; i < size; i++) {
-                BeautyParams beautyParams = BeautyConstants.BEAUTY_MAP.get(i);
-                BeautyParams rememberParam = beautyParams.clone();
-                rememberParamList.add(rememberParam);
-            }
-        } else {
-            for (int i = 0; i < size; i++) {
-                BeautyParams beautyParams = getBeautyParams(i);
-                if (beautyParams == null) {
-                    BeautyParams defaultBeautyParams = BeautyConstants.BEAUTY_MAP.get(i);
-                    beautyParams = defaultBeautyParams.clone();
-                }
-                rememberParamList.add(beautyParams);
-            }
-        }
-        rememberBeautyBean.setBeautyList(rememberParamList);
-
-
-//        race美颜
-        rememberRaceBeautyBean = new RememberBeautyBean();
-        rememberRaceParamList = new ArrayList<>();
-        int raceSize = BeautyRaceConstants.BEAUTY_MAP.size();
-        // 需求要记录之前修改的美颜参数, 所以每次先读取json中的数据,如果json无数据, 就从常量中拿
-        String jsonRaceBeautyParam = SharedPreferenceUtils.getRaceBeautyParams(getContext());
-        if (TextUtils.isEmpty(jsonRaceBeautyParam)) {
-            for (int i = 0; i < raceSize; i++) {
-                BeautyParams beautyParams = BeautyRaceConstants.BEAUTY_MAP.get(i);
-                BeautyParams rememberParam = beautyParams.clone();
-                rememberRaceParamList.add(rememberParam);
-            }
-        } else {
-            for (int i = 0; i < raceSize; i++) {
-                BeautyParams beautyParams = getBeautyParams(i);
-                rememberRaceParamList.add(beautyParams);
-            }
-        }
-        rememberRaceBeautyBean.setBeautyList(rememberRaceParamList);
-
-//      美型
-        rememberBeautyShapeBean = new RememberBeautyShapeBean();
-
-        rememberShapeParamList = new ArrayList<>();
-
-        int shapeSize = BeautyShapeConstants.BEAUTY_MAP.size();
-        // 需求要记录之前修改的美颜参数, 所以每次先读取json中的数据,如果json无数据, 就从常量中拿
-        String jsonBeautyShapeParam = SharedPreferenceUtils.getBeautyShapeParams(getContext());
-        if (TextUtils.isEmpty(jsonBeautyShapeParam)) {
-            for (int i = 0; i < shapeSize; i++) {
-                BeautyShapeParams beautyParams = BeautyShapeConstants.BEAUTY_MAP.get(i);
-                BeautyShapeParams rememberParam = beautyParams.clone();
-                rememberShapeParamList.add(rememberParam);
-            }
-        } else {
-            for (int i = 0; i < shapeSize; i++) {
-                BeautyShapeParams beautyParams = getBeautyShapeParams(i);
-                if (beautyParams == null) {
-                    beautyParams = BeautyShapeConstants.BEAUTY_MAP.get(i);
-                }
-                rememberShapeParamList.add(beautyParams);
-            }
-        }
-        rememberBeautyShapeBean.setBeautyList(rememberShapeParamList);
-    }
 
     public void onPause() {
         mIsBackground = true;
@@ -572,7 +353,12 @@ public class AliyunSVideoRecordView extends FrameLayout
         public void onFpsChanged(double fps, double callTime) {
             final String FPS = String.format(Locale.getDefault(), "%.2f", fps);
             Log.e(TAG, "onFpsChanged: FPS " + FPS + " callTime " + String.format(Locale.getDefault(), "%.2f", callTime));
-            post(() -> tvFps.setText("FPS: " + FPS));
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    tvFps.setText("FPS: " + FPS);
+                }
+            });
         }
 
         @Override
@@ -581,9 +367,12 @@ public class AliyunSVideoRecordView extends FrameLayout
         }
     };
 
-    private void initFuBeautyView() {
+    /**
+     * 初始化美颜SDK
+     */
+    private void initBeauty() {
         Context context = getContext();
-        mIsFuBeautyOpen = TextUtils.equals(PreferenceUtil.VALUE_ON, PreferenceUtil.getString(context, PreferenceUtil.KEY_FACEUNITY_IS_ON));
+        boolean mIsFuBeautyOpen = TextUtils.equals(PreferenceUtil.VALUE_ON, PreferenceUtil.getString(context, PreferenceUtil.KEY_FACEUNITY_ISON));
         if (mIsFuBeautyOpen) {
             FURenderer.getInstance().setup(context);
             tvFps = new TextView(context);
@@ -610,9 +399,11 @@ public class AliyunSVideoRecordView extends FrameLayout
         }
     }
 
+
     public void isUseFlip(boolean isUseFlip) {
         this.mIsUseFlip = isUseFlip;
     }
+
 
     /**
      * 初始化倒计时view
@@ -644,43 +435,43 @@ public class AliyunSVideoRecordView extends FrameLayout
         mRecordTimeView.setMinDuration(minRecordTime);
     }
 
-    private void initVideoContainer(){
+    private void initVideoContainer() {
         mVideoContainer = new FrameLayout(getContext());
         int videoOutputWidth = recorder.getVideoWidth();
         int videoOutputHeight = recorder.getVideoHeight();
         int width = ScreenUtils.getRealWidth(getContext());
-        int height = width*videoOutputHeight/videoOutputWidth;
+        int height = width * videoOutputHeight / videoOutputWidth;
         LayoutParams params = new LayoutParams(width, height);
         params.gravity = Gravity.CENTER;
-        addView(mVideoContainer,params);
+        addView(mVideoContainer, params);
         if (recorder.isMixRecorder()) {
             int backgroundColor = recorder.getBackgroundColor();
             mVideoContainer.setBackgroundColor(backgroundColor);
             String backgroundImage = recorder.getBackgroundImage();
-            if (!TextUtils.isEmpty(backgroundImage)){
+            if (!TextUtils.isEmpty(backgroundImage)) {
                 int displayMode = recorder.getBackgroundImageDisplayMode();
-                mBackgroundImageView = new ImageView(getContext());
-                switch (displayMode){
-                    case 0:
-                        mBackgroundImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        break;
-                    case 1:
-                        mBackgroundImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                        break;
-                    case 2:
-                        mBackgroundImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                        break;
+                ImageView lBackgroundImageView = new ImageView(getContext());
+                switch (displayMode) {
+                case 0:
+                    lBackgroundImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    break;
+                case 1:
+                    lBackgroundImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    break;
+                case 2:
+                    lBackgroundImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    break;
                 }
-                mBackgroundImageView.setBackgroundColor(backgroundColor);
-                LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
-                mVideoContainer.addView(mBackgroundImageView,layoutParams);
-                new ImageLoaderImpl().loadImage(getContext(), "file://" + backgroundImage, new ImageLoaderOptions.Builder().skipDiskCacheCache().skipMemoryCache().build()).into(mBackgroundImageView);
+                lBackgroundImageView.setBackgroundColor(backgroundColor);
+                LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                mVideoContainer.addView(lBackgroundImageView, layoutParams);
+                new ImageLoaderImpl().loadImage(getContext(), "file://" + backgroundImage, new ImageLoaderOptions.Builder().skipDiskCacheCache().skipMemoryCache().build()).into(lBackgroundImageView);
             }
             //调整布局级别
-            if (recorder.getPlayDisplayParams().getLayoutLevel()>recorder.getRecordDisplayParam().getLayoutLevel()){
+            if (recorder.getPlayDisplayParams().getLayoutLevel() > recorder.getRecordDisplayParam().getLayoutLevel()) {
                 initRecorderSurfaceView();
                 initPlayerSurfaceView();
-            }else {
+            } else {
                 initPlayerSurfaceView();
                 initRecorderSurfaceView();
             }
@@ -692,7 +483,6 @@ public class AliyunSVideoRecordView extends FrameLayout
         recorder.setDisplayView(mRecorderSurfaceView, mPlayerSurfaceView);
     }
 
-
     /**
      * 初始化RecordersurfaceView
      */
@@ -701,21 +491,21 @@ public class AliyunSVideoRecordView extends FrameLayout
         mRecorderSurfaceView = new SurfaceView(getContext());
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getContext(), this);
         final GestureDetector gestureDetector = new GestureDetector(getContext(),
-                new GestureDetector.SimpleOnGestureListener() {
-                    @Override
-                    public boolean onSingleTapUp(MotionEvent e) {
-                        if (recorder == null) {
-                            return true;
-                        }
-                        float x = e.getX() / mRecorderSurfaceView.getWidth();
-                        float y = e.getY() / mRecorderSurfaceView.getHeight();
-                        recorder.setFocus(x, y);
+        new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                if (recorder == null) {
+                    return true;
+                }
+                float x = e.getX() / mRecorderSurfaceView.getWidth();
+                float y = e.getY() / mRecorderSurfaceView.getHeight();
+                recorder.setFocus(x, y);
 
-                        mFocusView.showView();
-                        mFocusView.setLocation(e.getRawX(), e.getRawY());
-                        return true;
-                    }
-                });
+                mFocusView.showView();
+                mFocusView.setLocation(e.getRawX(), e.getRawY());
+                return true;
+            }
+        });
         mRecorderSurfaceView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -732,7 +522,7 @@ public class AliyunSVideoRecordView extends FrameLayout
         int color = Color.TRANSPARENT;
         float tempRadius = 0;
 
-        if(mMixBorderParam != null){
+        if (mMixBorderParam != null) {
             border = mMixBorderParam.getBorderWidth();
             color = mMixBorderParam.getBorderColor();
             tempRadius = mMixBorderParam.getCornerRadius();
@@ -740,7 +530,7 @@ public class AliyunSVideoRecordView extends FrameLayout
 
         final float radius = tempRadius;
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mRecorderSurfaceView.setOutlineProvider(new ViewOutlineProvider() {
                 @Override
                 public void getOutline(View view, Outline outline) {
@@ -749,8 +539,8 @@ public class AliyunSVideoRecordView extends FrameLayout
                     int leftMargin = 0;
                     int topMargin = 0;
                     Rect selfRect = new Rect(leftMargin, topMargin,
-                            rect.right - rect.left - leftMargin,
-                            rect.bottom - rect.top - topMargin);
+                                             rect.right - rect.left - leftMargin,
+                                             rect.bottom - rect.top - topMargin);
                     outline.setRoundRect(selfRect, radius);
                 }
             });
@@ -761,15 +551,15 @@ public class AliyunSVideoRecordView extends FrameLayout
         int videoOutputWidth = recorder.getVideoWidth();
         int videoOutputHeight = recorder.getVideoHeight();
         int parentWidth = ScreenUtils.getRealWidth(getContext());
-        int parentHeight = parentWidth*videoOutputHeight/videoOutputWidth;
-        int width = (int)(parentWidth*displayParam.getWidthRatio());
-        int height = (int)(parentHeight*displayParam.getHeightRatio());
-        int marginLeft = (int)((displayParam.getCenterX()-displayParam.getWidthRatio()/2)*parentWidth);
-        int marginTop = (int)((displayParam.getCenterY()-displayParam.getHeightRatio()/2)*parentHeight);
+        int parentHeight = parentWidth * videoOutputHeight / videoOutputWidth;
+        int width = (int) (parentWidth * displayParam.getWidthRatio());
+        int height = (int) (parentHeight * displayParam.getHeightRatio());
+        int marginLeft = (int) ((displayParam.getCenterX() - displayParam.getWidthRatio() / 2) * parentWidth);
+        int marginTop = (int) ((displayParam.getCenterY() - displayParam.getHeightRatio() / 2) * parentHeight);
 
         FrameLayout container = new FrameLayout(getContext());
         container.setBackgroundColor(color);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             container.setOutlineProvider(new ViewOutlineProvider() {
                 @Override
                 public void getOutline(View view, Outline outline) {
@@ -778,8 +568,8 @@ public class AliyunSVideoRecordView extends FrameLayout
                     int leftMargin = 0;
                     int topMargin = 0;
                     Rect selfRect = new Rect(leftMargin, topMargin,
-                            rect.right - rect.left - leftMargin,
-                            rect.bottom - rect.top - topMargin);
+                                             rect.right - rect.left - leftMargin,
+                                             rect.bottom - rect.top - topMargin);
                     outline.setRoundRect(selfRect, radius);
                 }
             });
@@ -790,10 +580,10 @@ public class AliyunSVideoRecordView extends FrameLayout
         slp.gravity = Gravity.CENTER;
         container.addView(mRecorderSurfaceView, slp);
 
-        LayoutParams layoutParams = new LayoutParams(width,height);
+        LayoutParams layoutParams = new LayoutParams(width, height);
         layoutParams.leftMargin = marginLeft;
         layoutParams.topMargin = marginTop;
-        mVideoContainer.addView(container,layoutParams);
+        mVideoContainer.addView(container, layoutParams);
     }
 
     /**
@@ -802,7 +592,19 @@ public class AliyunSVideoRecordView extends FrameLayout
     @SuppressLint("ClickableViewAccessibility")
     private void initPlayerSurfaceView() {
         mPlayerSurfaceView = new SurfaceView(getContext());
-        addSubView(mPlayerSurfaceView);
+        VideoDisplayParam displayParam = recorder.getPlayDisplayParams();
+        int videoOutputWidth = recorder.getVideoWidth();
+        int videoOutputHeight = recorder.getVideoHeight();
+        int parentWidth = ScreenUtils.getRealWidth(getContext());
+        int parentHeight = parentWidth * videoOutputHeight / videoOutputWidth;
+        int width = (int) (parentWidth * displayParam.getWidthRatio());
+        int height = (int) (parentHeight * displayParam.getHeightRatio());
+        int marginLeft = (int) ((displayParam.getCenterX() - displayParam.getWidthRatio() / 2) * parentWidth);
+        int marginTop = (int) ((displayParam.getCenterY() - displayParam.getHeightRatio() / 2) * parentHeight);
+        LayoutParams layoutParams = new LayoutParams(width, height);
+        layoutParams.leftMargin = marginLeft;
+        layoutParams.topMargin = marginTop;
+        mVideoContainer.addView(mPlayerSurfaceView, layoutParams);
     }
 
 
@@ -834,7 +636,6 @@ public class AliyunSVideoRecordView extends FrameLayout
 
             @Override
             public void onBeautyFaceClick() {
-                showBeautyFaceView();
             }
 
             @Override
@@ -856,16 +657,6 @@ public class AliyunSVideoRecordView extends FrameLayout
                         int type = cameraType.getType();
                         CameraFacingEnum cameraType = type == Camera.CameraInfo.CAMERA_FACING_FRONT ? CameraFacingEnum.CAMERA_FRONT : CameraFacingEnum.CAMERA_BACK;
                         mFURenderer.setCameraFacing(cameraType);
-                        mFURenderer.setInputOrientation(CameraUtils.INSTANCE.getCameraOrientation(type));
-                        if (cameraType == CameraFacingEnum.CAMERA_FRONT) {
-                            mFURenderer.setInputBufferMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
-                            mFURenderer.setInputTextureMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
-                            mFURenderer.setOutputMatrix(FUTransformMatrixEnum.CCROT0);
-                        }else {
-                            mFURenderer.setInputBufferMatrix(FUTransformMatrixEnum.CCROT0);
-                            mFURenderer.setInputTextureMatrix(FUTransformMatrixEnum.CCROT0);
-                            mFURenderer.setOutputMatrix(FUTransformMatrixEnum.CCROT0_FLIPVERTICAL);
-                        }
                     }
                     if (mControlView != null) {
                         for (CameraType type : CameraType.values()) {
@@ -879,6 +670,14 @@ public class AliyunSVideoRecordView extends FrameLayout
                             recorder.setLight(com.aliyun.svideosdk.common.struct.recorder.FlashType.TORCH);
                         }
                     }
+                }
+            }
+
+            @Override
+            public void onVoiceSwitch() {
+                if (recorder != null) {
+                    mIsVoiceOff = !mIsVoiceOff;
+                    recorder.setMute(mIsVoiceOff);
                 }
             }
 
@@ -964,7 +763,6 @@ public class AliyunSVideoRecordView extends FrameLayout
 
                 if (clipManager.getDuration() == 0) {
                     //音乐可以选择
-                    recorder.restartMv();
                     mControlView.setHasRecordPiece(false);
                     isAllowChangeMv = true;
                 }
@@ -992,14 +790,48 @@ public class AliyunSVideoRecordView extends FrameLayout
             @Override
             public void onTakePhotoClick() {
                 //拍照
-                recorder.takePhoto(true);
+                recorder.takeSnapshot(true, new OnPictureCallback() {
+                    @Override
+                    public void onPicture(final Bitmap bitmap, byte[] data) {
+                        ThreadUtils.runOnSubThread(new Runnable() {
+                            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                            @Override
+                            public void run() {
+                                final String imgPath = Constants.SDCardConstants.getDir(getContext().getApplicationContext()) + File.separator + System.currentTimeMillis() + "-photo.jpg";
+                                try {
+                                    BitmapUtil.generateFileFromBitmap(bitmap, imgPath, "jpg");
+
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                        //适配android Q
+                                        ThreadUtils.runOnSubThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                UriUtils.saveImgToMediaStore(getContext().getApplicationContext(), imgPath);
+                                            }
+                                        });
+                                    } else {
+                                        MediaScannerConnection.scanFile(getContext().getApplicationContext(),
+                                                                        new String[] {imgPath}, new String[] {"image/jpeg"}, null);
+                                    }
+
+                                    ThreadUtils.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ToastUtils.show(getContext(), "图片已保存到相册");
+                                        }
+                                    });
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
             }
 
             @Override
             public void onRaceDebug(boolean debug) {
-//                if (raceManager != null && mRenderingMode == RenderingMode.Race) {
-//                    raceManager.setmRaceDebug(debug);
-//                }
+
             }
         });
         mControlView.setRecordType(recorder.isMixRecorder());
@@ -1109,15 +941,8 @@ public class AliyunSVideoRecordView extends FrameLayout
                 @Override
                 public void onMusicSelect(MusicFileBean musicFileBean, long startTime) {
                     if (musicFileBean != null) {
-                        if (effectMusic != null) {
-                            mConflictEffects.remove(TYPE_MUSIC);
-                        }
-                        effectMusic = new EffectBean();
-                        effectMusic.setPath(musicFileBean.getPath());
-                        effectMusic.setStartTime(startTime);
-                        effectMusic.setDuration(getMaxRecordTime());
 
-                        mConflictEffects.put(TYPE_MUSIC, effectMusic);
+
                         if (mOutMusicSelectListener != null) {
                             mOutMusicSelectListener.onMusicSelect(musicFileBean, startTime);
                         }
@@ -1127,25 +952,36 @@ public class AliyunSVideoRecordView extends FrameLayout
                         } else {
                             mControlView.setMusicIcon(musicFileBean.getImage());
                         }
+                        if (TextUtils.isEmpty(musicFileBean.getPath())) {
+                            recorder.removeBackgroundMusic();
+                        } else {
+                            int during = getMaxRecordTime();
+                            if (during > musicFileBean.getDuration()) {
+                                during = musicFileBean.getDuration() - 100;
+                            }
+                            EffectStream effectMusic = new EffectStream.Builder()
+                                    .source(new Source(musicFileBean.getMusicId(), musicFileBean.getPath()))
+                                    .streamStartTime(startTime, TimeUnit.MILLISECONDS)
+                                    .streamDuration(during, TimeUnit.MILLISECONDS)
+                                    .build();
+                            recorder.applyBackgroundMusic(effectMusic);
+                            mConflictEffects.put(TYPE_MUSIC, effectMusic);
+                        }
                     } else {
                         mControlView.setMusicIconId(R.mipmap.aliyun_svideo_music);
                     }
                 }
             });
 
-            musicChooseView.setDismissListener(new DialogVisibleListener() {
+            musicChooseView.setDismissListener(new BaseChooser.DialogVisibleListener() {
                 @Override
                 public void onDialogDismiss() {
                     mControlView.setMusicSelViewShow(false);
-                    isMusicViewShowing = false;
-                    restoreConflictEffect();
                 }
 
                 @Override
                 public void onDialogShow() {
                     mControlView.setMusicSelViewShow(true);
-                    recorder.applyMv(new EffectBean());
-                    isMusicViewShowing = true;
                 }
             });
         }
@@ -1155,7 +991,7 @@ public class AliyunSVideoRecordView extends FrameLayout
     /**
      * 当前所选中的动图路径
      */
-    private String currPasterPath;
+    private Source currPaster;
 
     /**
      * 显示动图效果调节控件
@@ -1165,9 +1001,12 @@ public class AliyunSVideoRecordView extends FrameLayout
             gifEffectChooser = new GIfEffectChooser();
             gifEffectChooser.setDismissListener(this);
             gifEffectChooser.setPasterSelectListener(new PasterSelectListener() {
+                int id;
+
                 @Override
                 public void onPasterSelected(PreviewPasterForm imvForm) {
                     String path;
+                    id = imvForm.getId();
                     if (imvForm.getId() == 150) {
                         //id=150的动图为自带动图
                         path = imvForm.getPath();
@@ -1175,18 +1014,18 @@ public class AliyunSVideoRecordView extends FrameLayout
                         path = DownloadFileUtils.getAssetPackageDir(getContext(),
                                 imvForm.getName(), imvForm.getId()).getAbsolutePath();
                     }
-                    currPasterPath = path;
-                    addEffectToRecord(path);
+                    currPaster = new Source(String.valueOf(imvForm.getId()), path);
+                    addEffectToRecord(currPaster);
                 }
 
                 @Override
                 public void onSelectPasterDownloadFinish(String path) {
                     // 所选的paster下载完成后, 记录该paster 的path
-                    currPasterPath = path;
+                    currPaster = new Source(String.valueOf(id), path);
                 }
             });
 
-            gifEffectChooser.setDismissListener(new DialogVisibleListener() {
+            gifEffectChooser.setDismissListener(new BaseChooser.DialogVisibleListener() {
                 @Override
                 public void onDialogDismiss() {
                     mControlView.setEffectSelViewShow(false);
@@ -1195,9 +1034,9 @@ public class AliyunSVideoRecordView extends FrameLayout
                 @Override
                 public void onDialogShow() {
                     mControlView.setEffectSelViewShow(true);
-                    if (!TextUtils.isEmpty(currPasterPath)) {
+                    if (currPaster != null && !TextUtils.isEmpty(currPaster.getPath())) {
                         // dialog显示后,如果记录的paster不为空, 使用该paster
-                        addEffectToRecord(currPasterPath);
+                        addEffectToRecord(currPaster);
                     }
                 }
             });
@@ -1205,14 +1044,14 @@ public class AliyunSVideoRecordView extends FrameLayout
         gifEffectChooser.show(getFragmentManager(), TAG_GIF_CHOOSER);
     }
 
-    private void addEffectToRecord(String path) {
+    private void addEffectToRecord(Source source) {
 
-        if (effectPaster != null) {
-            recorder.removePaster(effectPaster);
+        if (mPasterController != null) {
+            recorder.getPasterManager().remove(mPasterController);
         }
 
-        effectPaster = new EffectPaster(path);
-        recorder.addPaster(effectPaster);
+        mPasterController = recorder.getPasterManager().addFacePaster(source);
+        mPasterController.endEdit();
 
     }
 
@@ -1221,33 +1060,38 @@ public class AliyunSVideoRecordView extends FrameLayout
      */
     private void setRaceEffectView() {
         String logo = getContext().getExternalFilesDir("") + "/AliyunDemo/tail/logo.png";
-        if (effectImage == null) {
-            effectImage = new EffectImage(logo);
-            effectImage.x = 0.13f;
-            effectImage.y = 0.1f;
+        if (mWaterMarkController != null) {
+            recorder.getPasterManager().remove(mWaterMarkController);
         }
+
+
+        mWaterMarkController = recorder.getPasterManager().addImage(new Source(logo));
+
+        mWaterMarkController.setXRadio(0.13f);
+        mWaterMarkController.setYRatio(0.1f);
+
+        float width = 1.0f;
+        float height = 1.0f;
         switch (mRatioMode) {
         case AliyunSnapVideoParam.RATIO_MODE_3_4:
-            effectImage.width = (float) 100.0 / ScreenUtils.getRealWidth(mActivity);
-            effectImage.height = (float) 80.0 / ScreenUtils.getRealHeight(mActivity) / 3 * 4;
+            width = (float) 100.0 / ScreenUtils.getRealWidth(mActivity);
+            height = (float) 80.0 / ScreenUtils.getRealHeight(mActivity) / 3 * 4;
             break;
         case AliyunSnapVideoParam.RATIO_MODE_1_1:
-            effectImage.width = (float) 100.0 / ScreenUtils.getRealWidth(mActivity);
-            effectImage.height = (float) 80.0 / ScreenUtils.getRealHeight(mActivity) / 9 * 16;
-            break;
-        case AliyunSnapVideoParam.RATIO_MODE_9_16:
-            effectImage.width = (float) 100.0 / ScreenUtils.getRealWidth(mActivity);
-            effectImage.height = (float) 80.0 / ScreenUtils.getRealHeight(mActivity);
+            width = (float) 100.0 / ScreenUtils.getRealWidth(mActivity);
+            height = (float) 80.0 / ScreenUtils.getRealHeight(mActivity) / 9 * 16;
             break;
         default:
-            effectImage.width = (float) 100.0 / ScreenUtils.getRealWidth(mActivity);
-            effectImage.height = (float) 80.0 / ScreenUtils.getRealHeight(mActivity);
+            width = (float) 100.0 / ScreenUtils.getRealWidth(mActivity);
+            height = (float) 80.0 / ScreenUtils.getRealHeight(mActivity);
             break;
         }
-        recorder.removeImage(effectImage);
-        recorder.addImage(effectImage);
-    }
 
+        mWaterMarkController.setWidthRatio(width);
+        mWaterMarkController.setHeightRatio(height);
+        mWaterMarkController.endEdit();
+
+    }
 
 
     private FragmentManager getFragmentManager() {
@@ -1278,19 +1122,23 @@ public class AliyunSVideoRecordView extends FrameLayout
             @Override
             public void onItemClick(EffectInfo effectInfo, int index) {
                 if (effectInfo != null) {
-                    filterSourcePath = effectInfo.getPath();
+
                     if (index == 0) {
-                        filterSourcePath = null;
+                        recorder.removeFilter();
+                        mConflictEffects.remove(TYPE_FILTER);
+                    } else {
+                        EffectFilter filterEffect = new EffectFilter(effectInfo.getSource());
+                        recorder.applyFilter(filterEffect);
+                        mConflictEffects.put(TYPE_FILTER, filterEffect);
                     }
-                    EffectFilter filterEffect = new EffectFilter(filterSourcePath);
-                    recorder.applyFilter(filterEffect);
-                    mConflictEffects.put(TYPE_FILTER, filterEffect);
+
+
                 }
                 currentFilterPosition = index;
             }
         });
         filterEffectChooser.setFilterPosition(currentFilterPosition);
-        filterEffectChooser.setDismissListener(new DialogVisibleListener() {
+        filterEffectChooser.setDismissListener(new BaseChooser.DialogVisibleListener() {
             @Override
             public void onDialogDismiss() {
                 mControlView.setEffectSelViewShow(false);
@@ -1319,8 +1167,10 @@ public class AliyunSVideoRecordView extends FrameLayout
             @Override
             public void onItemClick(EffectFilter effectInfo, int index) {
 
-                String path = effectInfo.getPath();
-
+                String path = null;
+                if (effectInfo.getSource() != null) {
+                    path = effectInfo.getSource().getPath();
+                }
                 if (path == null || index == 0) {
                     recorder.removeAnimationFilter(mCurrentAnimFilterEffect);
                 } else {
@@ -1338,7 +1188,7 @@ public class AliyunSVideoRecordView extends FrameLayout
 
         });
         mAnimFilterEffectChooser.setFilterPosition(mCurrentAnimFilterPosition);
-        mAnimFilterEffectChooser.setDismissListener(new DialogVisibleListener() {
+        mAnimFilterEffectChooser.setDismissListener(new BaseChooser.DialogVisibleListener() {
             @Override
             public void onDialogDismiss() {
                 mControlView.setEffectSelViewShow(false);
@@ -1350,427 +1200,6 @@ public class AliyunSVideoRecordView extends FrameLayout
             }
         });
         mAnimFilterEffectChooser.show(getFragmentManager(), TAG_ANIM_FILTER_CHOOSER);
-    }
-
-    /**
-     * 显示美颜调节的控件
-     */
-    private void showBeautyFaceView() {
-        if (beautyEffectChooser == null) {
-            beautyEffectChooser = new BeautyEffectChooser();
-        }
-        currentBeautySkinPosition = SharedPreferenceUtils.getBeautySkinLevel(getContext());
-
-
-
-        // 美颜item选中listener
-        beautyEffectChooser.setOnBeautyFaceItemSeletedListener(new OnBeautyFaceItemSeletedListener() {
-            @Override
-            public void onNormalSelected(int postion, BeautyLevel beautyLevel) {
-                defaultBeautyLevel = beautyLevel;
-                currentBeautyFaceNormalPosition = postion;
-                // 普通美颜
-                recorder.setBeautyLevel(beautyLevel.getValue());
-
-                if (beautyService != null) {
-                    beautyService.saveSelectParam(getContext(), currentBeautyFaceNormalPosition, currentBeautyFacePosition, currentBeautySkinPosition, currentBeautyShapePosition);
-                }
-            }
-
-            @Override
-            public void onAdvancedSelected(int position, BeautyLevel beautyLevel) {
-                currentBeautyFacePosition = position;
-                // 高级美颜
-                BeautyParams beautyParams;
-//                if (mRenderingMode == RenderingMode.FaceUnity) {
-//                    beautyParams = rememberParamList.get(position);
-//                } else {
-//                    beautyParams = rememberRaceParamList.get(position);
-//                }
-                //// 美白和红润faceUnity的值范围 0~1.0f
-//                if (beautyService != null) {
-//                    beautyService.setBeautyParam(beautyParams, BeautyService.BEAUTY_FACE);
-//                    beautyService.saveSelectParam(getContext(), currentBeautyFaceNormalPosition, currentBeautyFacePosition, currentBeautySkinPosition, currentBeautyShapePosition);
-//                }
-            }
-        });
-
-        // 美肌item选中
-        beautyEffectChooser.setOnBeautySkinSelectedListener(new OnBeautySkinItemSeletedListener() {
-            @Override
-            public void onItemSelected(int postion) {
-                currentBeautySkinPosition = postion;
-                BeautyParams beautyParams;
-//                if (mRenderingMode == RenderingMode.FaceUnity) {
-//                    beautyParams = rememberParamList.get(postion);
-//                } else {
-//                    beautyParams = rememberRaceParamList.get(postion);
-//                }
-//                if (beautyService != null) {
-//                    beautyService.setBeautyParam(beautyParams, BeautyService.BEAUTY_SKIN);
-//                    beautyService.saveSelectParam(getContext(), currentBeautyFaceNormalPosition, currentBeautyFacePosition, currentBeautySkinPosition, currentBeautyShapePosition);
-//                }
-            }
-        });
-
-        // 美型item选中
-        beautyEffectChooser.setOnBeautyShapeItemSeletedListener(new OnBeautyShapeItemSeletedListener() {
-            @Override
-            public void onItemSelected(int postion) {
-                currentBeautyShapePosition = postion;
-                if (beautyService != null) {
-                    beautyService.saveSelectParam(getContext(), currentBeautyFaceNormalPosition, currentBeautyFacePosition, currentBeautySkinPosition, currentBeautyShapePosition);
-                }
-//                if (raceManager != null && mRenderingMode == RenderingMode.Race) {
-//                    beautyShapeParams = getBeautyShapeParams(currentBeautyShapePosition);
-//                    if (beautyShapeParams == null) {
-//                        beautyShapeParams = rememberShapeParamList.get(currentBeautyShapePosition);
-//                    }
-//                    raceManager.setShapeParam(beautyShapeParams);
-//                    raceManager.setCurrentShapeType(currentBeautyShapePosition);
-
-//                }
-            }
-        });
-        // tab选中监听  美颜（高级）、美肌、美型
-        beautyEffectChooser.setOnTableSeletedListener(new OnBeautyTableItemSeletedListener() {
-            @Override
-            public void onNormalSelected(BeautyMode beautyMode) {
-//                if (raceManager != null && mRenderingMode == RenderingMode.Race) {
-//                    raceManager.setCurrentBeautyMode(beautyMode);
-//                }
-            }
-        });
-
-        // 美颜微调dialog
-        beautyEffectChooser.setOnBeautyFaceDetailClickListener(new OnBeautyDetailClickListener() {
-            @Override
-            public void onDetailClick() {
-                beautyEffectChooser.dismiss();
-                mControlView.setEffectSelViewShow(true);
-                showBeautyFaceDetailDialog();
-
-            }
-        });
-
-        // 美肌微调dialog
-        beautyEffectChooser.setOnBeautySkinDetailClickListener(new OnBeautyDetailClickListener() {
-            @Override
-            public void onDetailClick() {
-                beautyEffectChooser.dismiss();
-                mControlView.setEffectSelViewShow(true);
-                showBeautySkinDetailDialog();
-            }
-        });
-        // 美型微调dialog
-        beautyEffectChooser.setOnBeautyShapeDetailClickListener(new OnBeautyDetailClickListener() {
-            @Override
-            public void onDetailClick() {
-                beautyEffectChooser.dismiss();
-                mControlView.setEffectSelViewShow(true);
-                showBeautyShapeDetailDialog();
-            }
-        });
-
-        // 美颜普通和高级模式切换
-        beautyEffectChooser.setOnBeautyModeChangeListener(new OnBeautyModeChangeListener() {
-            @Override
-            public void onModeChange(RadioGroup group, int checkedId) {
-
-                BeautyParams beautyParams = null;
-                if (checkedId == R.id.rb_level_advanced) {
-                    currentBeautyFaceMode = BeautyMode.Advanced;
-                    recorder.setBeautyStatus(false);
-//                    if (mRenderingMode == RenderingMode.FaceUnity) {
-//                        beautyParams = rememberParamList.get(currentBeautyFacePosition);
-//                    } else {
-//                        beautyParams = rememberRaceParamList.get(currentBeautyFacePosition);
-//                    }
-                    if (beautyService != null) {
-                        beautyService.setBeautyParam(beautyParams, BeautyService.BEAUTY_FACE);
-                    }
-                } else if (checkedId == R.id.rb_level_normal) {
-                    currentBeautyFaceMode = BeautyMode.Normal;
-                    recorder.setBeautyStatus(true);
-                    recorder.setBeautyLevel(defaultBeautyLevel.getValue());
-                }
-
-                if (beautyService != null) {
-                    beautyService.saveBeautyMode(getContext(), currentBeautyFaceMode);
-                }
-            }
-        });
-
-        beautyEffectChooser.setDismissListener(new DialogVisibleListener() {
-            @Override
-            public void onDialogDismiss() {
-                // 如果微调的页面不在显示状态,
-                if (!isbeautyDetailShowing) {
-                    mControlView.setEffectSelViewShow(false);
-                } else {
-                    mControlView.setEffectSelViewShow(true);
-                }
-                isbeautyDetailBack = false;
-
-                if (beautyService != null) {
-                    beautyService.saveBeautyMode(getContext(), currentBeautyFaceMode);
-                    beautyService.saveSelectParam(getContext(), currentBeautyFaceNormalPosition, currentBeautyFacePosition, currentBeautySkinPosition, currentBeautyShapePosition);
-                }
-            }
-
-            @Override
-            public void onDialogShow() {
-                mControlView.setEffectSelViewShow(true);
-                beautyEffectChooser.setBeautyParams(AliyunSVideoRecordView.this.beautyParams);
-
-            }
-        });
-
-
-        beautyEffectChooser.show(getFragmentManager(), TAG_BEAUTY_CHOOSER);
-    }
-
-    /**
-     * 显示美颜微调dialog
-     */
-    private void showBeautyFaceDetailDialog() {
-        beautyParams = getBeautyParams(currentBeautyFacePosition);
-        if (beautyParams == null) {
-//            if (mRenderingMode == RenderingMode.FaceUnity) {
-//                beautyParams = rememberParamList.get(currentBeautyFacePosition);
-//            } else {
-//                beautyParams = rememberRaceParamList.get(currentBeautyFacePosition);
-//            }
-        }
-        beautyFaceDetailChooser = new BeautyFaceDetailChooser();
-        beautyFaceDetailChooser.setBeautyLevel(currentBeautyFacePosition);
-        beautyFaceDetailChooser.setOnBeautyParamsChangeListener(
-        new OnBeautyParamsChangeListener() {
-            @Override
-            public void onBeautyChange(BeautyParams param) {
-                if (beautyParams != null && param != null) {
-                    beautyParams.beautyWhite = param.beautyWhite;
-                    beautyParams.beautyBuffing = param.beautyBuffing;
-                    beautyParams.beautyRuddy = param.beautyRuddy;
-//                    if (faceUnityManager != null && mRenderingMode == RenderingMode.FaceUnity) {
-//                        // 美白
-//                        faceUnityManager.setFaceBeautyWhite(param.beautyWhite / 100);
-//                        // 红润
-//                        faceUnityManager.setFaceBeautyRuddy(param.beautyRuddy / 100);
-//                        // 磨皮
-//                        //将【0-100】转化【0-6】，比率为0。06,
-//                        faceUnityManager.setFaceBeautyBuffing((float) (param.beautyBuffing * 0.06));
-//                    } else if (raceManager != null && mRenderingMode == RenderingMode.Race) {
-//                        // 美白
-//                        raceManager.setFaceBeautyWhite(param.beautyWhite / 100);
-//                        // 红润
-//                        raceManager.setFaceBeautySharpLevel(param.beautyRuddy / 100);
-//                        // 磨皮
-//                        raceManager.setFaceBeautyBuffing(param.beautyBuffing / 100);
-//                    }
-                }
-            }
-        });
-        // 点击back按钮
-        beautyFaceDetailChooser.setOnBackClickListener(new OnViewClickListener() {
-            @Override
-            public void onClick() {
-                isbeautyDetailShowing = false;
-                isbeautyDetailBack = true;
-                beautyFaceDetailChooser.dismiss();
-                beautyEffectChooser.show(getFragmentManager(), TAG_BEAUTY_CHOOSER);
-            }
-        });
-        // 空白区域点击
-        beautyFaceDetailChooser.setOnBlankClickListener(new BeautyDetailSettingView.OnBlanckViewClickListener() {
-            @Override
-            public void onBlankClick() {
-                isbeautyDetailShowing = false;
-            }
-        });
-        beautyFaceDetailChooser.setDismissListener(new DialogVisibleListener() {
-            @Override
-            public void onDialogDismiss() {
-                // 如果是点击微调界面中的back按钮, controlview的底部view仍要保持隐藏状态
-                if (isbeautyDetailBack) {
-                    mControlView.setEffectSelViewShow(true);
-                } else {
-                    mControlView.setEffectSelViewShow(false);
-                }
-                saveBeautyParams(currentBeautyFacePosition, beautyParams);
-                isbeautyDetailBack = false;
-            }
-
-            @Override
-            public void onDialogShow() {
-            }
-        });
-        beautyFaceDetailChooser.setBeautyParams(beautyParams);
-        beautyEffectChooser.dismiss();
-        isbeautyDetailShowing = true;
-        beautyFaceDetailChooser.show(getFragmentManager(), TAG_BEAUTY_DETAIL_FACE_CHOOSER);
-    }
-
-
-    /**
-     * 显示美肌微调dialog
-     */
-    private void showBeautySkinDetailDialog() {
-        beautyParams = getBeautyParams(currentBeautySkinPosition);
-        if (beautyParams == null) {
-//            if (mRenderingMode == RenderingMode.FaceUnity) {
-//                beautyParams = rememberParamList.get(currentBeautyFacePosition);
-//            } else {
-//                beautyParams = rememberRaceParamList.get(currentBeautyFacePosition);
-//            }
-        }
-
-        beautySkinDetailChooser = new BeautySkinDetailChooser();
-        beautySkinDetailChooser.setBeautyLevel(currentBeautySkinPosition);
-        beautySkinDetailChooser.setOnBeautyParamsChangeListener(
-        new OnBeautyParamsChangeListener() {
-            @Override
-            public void onBeautyChange(BeautyParams param) {
-                if (beautyParams != null && param != null) {
-
-                    beautyParams.beautyBigEye = param.beautyBigEye;
-                    beautyParams.beautySlimFace = param.beautySlimFace;
-//                    if (faceUnityManager != null && mRenderingMode == RenderingMode.FaceUnity) {
-//                        //大眼
-//                        faceUnityManager.setFaceBeautyBigEye(param.beautyBigEye / 100);
-//                        //瘦脸
-//                        faceUnityManager.setFaceBeautySlimFace(param.beautySlimFace / 100 * 1.5f);
-//                    } else if (raceManager != null && mRenderingMode == RenderingMode.Race) {
-//                        //大眼
-//                        raceManager.setFaceBeautyBigEye(param.beautyBigEye / 50.F);
-//                        //瘦脸
-//                        raceManager.setFaceBeautySlimFace(param.beautySlimFace / 50.F);
-//                    }
-                    saveBeautyParams(currentBeautySkinPosition, beautyParams);
-
-                }
-            }
-        });
-
-        // 点击back按钮
-        beautySkinDetailChooser.setOnBackClickListener(new OnViewClickListener() {
-            @Override
-            public void onClick() {
-                isbeautyDetailShowing = false;
-                beautySkinDetailChooser.dismiss();
-                isbeautyDetailBack = true;
-                beautyEffectChooser.show(getFragmentManager(), TAG_BEAUTY_CHOOSER);
-            }
-        });
-
-        // 空白区域点击
-        beautySkinDetailChooser.setOnBlankClickListener(new BeautyDetailSettingView.OnBlanckViewClickListener() {
-            @Override
-            public void onBlankClick() {
-                isbeautyDetailShowing = false;
-            }
-        });
-
-        beautySkinDetailChooser.setDismissListener(new DialogVisibleListener() {
-            @Override
-            public void onDialogDismiss() {
-                // 如果是点击微调界面中的back按钮, controlview的底部view仍要保持隐藏状态
-                if (isbeautyDetailBack) {
-                    mControlView.setEffectSelViewShow(true);
-                } else {
-                    mControlView.setEffectSelViewShow(false);
-                }
-                saveBeautyParams(currentBeautySkinPosition, AliyunSVideoRecordView.this.beautyParams);
-                isbeautyDetailBack = false;
-            }
-
-            @Override
-            public void onDialogShow() {
-
-            }
-        });
-        beautySkinDetailChooser.setBeautyParams(beautyParams);
-        beautyEffectChooser.dismiss();
-        isbeautyDetailShowing = true;
-        beautySkinDetailChooser.show(getFragmentManager(), TAG_BEAUTY_DETAIL_SKIN_CHOOSER);
-    }
-
-
-    /**
-     * 显示美型微调dialog
-     */
-    private void showBeautyShapeDetailDialog() {
-        beautyShapeParams = getBeautyShapeParams(currentBeautyShapePosition);
-        if (beautyShapeParams == null) {
-            beautyShapeParams = rememberShapeParamList.get(currentBeautyShapePosition);
-        }
-
-        beautyShapeDetailChooser = new BeautyShapeDetailChooser();
-        beautyShapeDetailChooser.setBeautyLevel(currentBeautyShapePosition);
-        beautyShapeDetailChooser.setOnBeautyParamsChangeListener(new OnBeautyShapeParamsChangeListener() {
-            @Override
-            public void onBeautyChange(BeautyShapeParams param) {
-                if (beautyShapeParams != null && param != null) {
-
-                    beautyShapeParams.beautyCutFace = param.beautyCutFace;
-                    beautyShapeParams.beautyThinFace = param.beautyThinFace;
-                    beautyShapeParams.beautyLongFace = param.beautyLongFace;
-                    beautyShapeParams.beautyLowerJaw = param.beautyLowerJaw;
-                    beautyShapeParams.beautyBigEye = param.beautyBigEye;
-                    beautyShapeParams.beautyThinNose = param.beautyThinNose;
-                    beautyShapeParams.beautyMouthWidth = param.beautyMouthWidth;
-                    beautyShapeParams.beautyThinMandible = param.beautyThinMandible;
-                    beautyShapeParams.beautyCutCheek = param.beautyCutCheek;
-//                    if (raceManager != null && mRenderingMode == RenderingMode.Race) {
-//                        raceManager.setShapeParam(beautyShapeParams);
-//                    }
-                    saveBeautyShapeParams(currentBeautyShapePosition, beautyShapeParams);
-
-                }
-            }
-        });
-
-        // 点击back按钮
-        beautyShapeDetailChooser.setOnBackClickListener(new OnViewClickListener() {
-            @Override
-            public void onClick() {
-                isbeautyDetailShowing = false;
-                beautyShapeDetailChooser.dismiss();
-                isbeautyDetailBack = true;
-                beautyEffectChooser.show(getFragmentManager(), TAG_BEAUTY_CHOOSER);
-            }
-        });
-
-        // 空白区域点击
-        beautyShapeDetailChooser.setOnBlankClickListener(new BeautyDetailSettingView.OnBlanckViewClickListener() {
-            @Override
-            public void onBlankClick() {
-                isbeautyDetailShowing = false;
-            }
-        });
-
-        beautyShapeDetailChooser.setDismissListener(new DialogVisibleListener() {
-            @Override
-            public void onDialogDismiss() {
-                // 如果是点击微调界面中的back按钮, controlview的底部view仍要保持隐藏状态
-                if (isbeautyDetailBack) {
-                    mControlView.setEffectSelViewShow(true);
-                } else {
-                    mControlView.setEffectSelViewShow(false);
-                }
-                saveBeautyShapeParams(currentBeautyShapePosition, AliyunSVideoRecordView.this.beautyShapeParams);
-                isbeautyDetailBack = false;
-            }
-
-            @Override
-            public void onDialogShow() {
-
-            }
-        });
-        beautyShapeDetailChooser.setBeautyShapeParams(beautyShapeParams);
-        beautyEffectChooser.dismiss();
-        isbeautyDetailShowing = true;
-        beautyShapeDetailChooser.show(getFragmentManager(), TAG_BEAUTY_DETAIL_SHAPE_CHOOSER);
     }
 
     /**
@@ -1786,7 +1215,6 @@ public class AliyunSVideoRecordView extends FrameLayout
 
     private void initRecorder() {
         recorder.setGop(mGop);
-        recorder.setVideoQuality(mVideoQuality);
         recorder.setRatioMode(mRatioMode);
         recorder.useFlip(mIsUseFlip);
         recorder.setResolutionMode(mResolutionMode);
@@ -1797,21 +1225,18 @@ public class AliyunSVideoRecordView extends FrameLayout
         //mediaInfo.setHWAutoSize(true);//硬编时自适应宽高为16的倍数
         cameraType = recorder.getCameraCount() == 1 ? com.aliyun.svideosdk.common.struct.recorder.CameraType.BACK : cameraType;
         recorder.setCamera(cameraType);
-        recorder.setBeautyStatus(false);
-        recorder.applyFilter(new EffectFilter(null));
-        initOrientationDetector();
+        recorder.setBeautyLevel(0);
 
+        initOrientationDetector();
 
         //获取需要的surFaceView数量
         initVideoContainer();
 
-        recorder.setOnFrameCallback(new OnFrameCallBack() {
+        recorder.setOnFrameCallback(new OnFrameCallback() {
             @Override
             public void onFrameBack(byte[] bytes, int width, int height, Camera.CameraInfo info) {
                 //原始数据回调 NV21,这里获取原始数据主要是为了faceUnity高级美颜使用
-                frameBytes = bytes;
-                frameWidth = width;
-                frameHeight = height;
+
             }
 
             @Override
@@ -1823,13 +1248,11 @@ public class AliyunSVideoRecordView extends FrameLayout
             @Override
             public void openFailed() {
                 Log.e(AliyunTag.TAG, "openFailed----------");
-                isOpenFailed = true;
             }
         });
-
-        recorder.setRecordCallback(new RecordCallback() {
+        recorder.setOnRecordCallback(new OnRecordCallback() {
             @Override
-            public void onComplete(final boolean validClip, final long clipDuration) {
+            public void onClipComplete(final boolean validClip, final long clipDuration) {
                 Log.i(TAG, "onComplete   duration : " + clipDuration +
                       ", clipManager.getDuration() = " + clipManager.getDuration());
                 tempIsComplete = true;
@@ -1837,7 +1260,9 @@ public class AliyunSVideoRecordView extends FrameLayout
                     @Override
                     public void run() {
                         Log.d(TAG, "onComplete    isStopToCompleteDuration:" + isStopToCompleteDuration);
-
+                        if (recorder == null) {
+                            return;
+                        }
                         if (recorder.isMixRecorder() && !isMaxDuration) {
                             ToastUtils.show(mActivity, getResources().getString(R.string.alivc_mix_record_continue), Gravity.CENTER, Toast.LENGTH_SHORT);
                         }
@@ -1970,91 +1395,36 @@ public class AliyunSVideoRecordView extends FrameLayout
                     @Override
                     public void run() {
                         restoreConflictEffect();
-                        if (effectPaster != null) {
-                            addEffectToRecord(effectPaster.getPath());
+                        if (mPasterController != null) {
+                            addEffectToRecord(mPasterController.getSource());
                         }
                     }
                 });
             }
 
-            @Override
-            public void onDrawReady() {
 
-            }
-
-            @Override
-            public void onPictureBack(final Bitmap bitmap) {
-
-                ThreadUtils.runOnSubThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                    @Override
-                    public void run() {
-                        final String imgPath = Constants.SDCardConstants.getDir(getContext().getApplicationContext()) + File.separator + System.currentTimeMillis() + "-photo.jpg";
-                        try {
-                            BitmapUtil.generateFileFromBitmap(bitmap, imgPath, "jpg");
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                //适配android Q
-                                ThreadUtils.runOnSubThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        UriUtils.saveImgToMediaStore(getContext().getApplicationContext(), imgPath);
-                                    }
-                                });
-                            } else {
-                                MediaScannerConnection.scanFile(getContext().getApplicationContext(),
-                                                                new String[] {imgPath}, new String[] {"image/jpeg"}, null);
-                            }
-
-                            ThreadUtils.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtils.show(getContext(), "图片已保存到相册");
-                                }
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onPictureDataBack(final byte[] data) {
-
-            }
 
         });
-        recorder.setOnTextureIdCallback(new OnTextureIdCallBack() {
-            private boolean mIsFirstFrame = true;
-
+        recorder.setOnTextureIdCallback(new OnTextureIdCallback() {
+            private boolean firstInit = true;
             @Override
             public int onTextureIdBack(int textureId, int textureWidth, int textureHeight, float[] matrix) {
-                if (!mIsFuBeautyOpen) {
+                if (mFURenderer == null) {
                     return textureId;
                 }
-                if (mIsFirstFrame) {
-                    mIsFirstFrame = false;
-                    Log.d(TAG, "onTextureDestroyed thread:" + Thread.currentThread().getName()
-                            + ", texId:" + textureId + ", width:" + textureWidth + ", height:" + textureHeight + " gl context " + EGL14.eglGetCurrentContext());
-                    mFURenderer.prepareRenderer(mFURendererListener);
+                if (firstInit) {
+                    firstInit = false;
                     initCsvUtil(getContext());
+                    mFURenderer.prepareRenderer(mFURendererListener);
                 }
-                int texId = 0;
-                if (currentBeautyFaceMode == BeautyMode.Advanced) {
-                    long start = System.nanoTime();
-//                    texId = mFURenderer.onDrawFrameDualInput(frameBytes, textureId, textureWidth, textureHeight);
-                    texId = mFURenderer.onDrawFrameDualInput(null, textureId, textureWidth, textureHeight);
-                    long time = System.nanoTime() - start;
-                    if (mCSVUtils != null) {
-                        mCSVUtils.writeCsv(null, time);
-                    }
-                    if (mSkippedFrames > 0) {
-                        mSkippedFrames--;
-                        texId = textureId;
-                    }
+                long start = System.nanoTime();
+                int texId = mFURenderer.onDrawFrameDualInput(null, textureId, textureWidth, textureHeight);
+                long time = System.nanoTime() - start;
+                if (mCSVUtils != null) {
+                    mCSVUtils.writeCsv(null, time);
                 }
-                if (texId <= 0) {
+                if (mSkippedFrames > 0) {
+                    mSkippedFrames--;
                     texId = textureId;
                 }
                 return texId;
@@ -2080,96 +1450,9 @@ public class AliyunSVideoRecordView extends FrameLayout
         });
 
         recorder.setFaceTrackInternalMaxFaceCount(2);
+        recorder.setMixBorderParam(mMixBorderParam);
     }
 
-    /**
-     * 美颜默认选中高级, 3档 美白: 0.6 红润: 0.6 磨皮: 6 大眼: 0.6 瘦脸: 0.6 * 1.5 (总范围0~1.5)
-     * 使用默认参数前判断是那种美颜
-     */
-    private void faceunityDefaultParam() {
-        beautyService = new BeautyService();
-        if (BeautyMode.Advanced == currentBeautyFaceMode) {
-            recorder.setBeautyStatus(false);
-//            beautyService.bindFaceUnity(getContext(), faceUnityManager);
-            initRememberParams();
-        } else if (BeautyMode.Normal == currentBeautyFaceMode) {
-            //普通美颜等级
-            int beautyNormalFaceLevel = SharedPreferenceUtils.getBeautyNormalFaceLevel(getContext());
-            recorder.setBeautyStatus(true);
-//            beautyService.bindNormalFaceUnity(faceUnityManager);
-            recorder.setBeautyLevel(getNormalBeautyLevel(beautyNormalFaceLevel));
-        } else {
-//            beautyService.bindFaceUnity(getContext(), faceUnityManager);
-            initRememberParams();
-        }
-
-    }
-    /**
-     * race
-     * 美颜默认选中高级, 3档 美白: 0.6 红润: 0.6 磨皮: 6 大眼: 0.6 瘦脸: 0.6 * 1.5 (总范围0~1.5)
-     * 使用默认参数前判断是那种美颜
-     */
-    private void raceDefaultParam() {
-        beautyService = new BeautyService();
-        if (BeautyMode.Advanced == currentBeautyFaceMode) {
-            recorder.setBeautyStatus(false);
-            beautyService.bindRace(getContext(), raceManager);
-            initRememberParams();
-        } else if (BeautyMode.Normal == currentBeautyFaceMode) {
-            //普通美颜等级
-            int beautyNormalFaceLevel = SharedPreferenceUtils.getBeautyNormalFaceLevel(getContext());
-            recorder.setBeautyStatus(true);
-            beautyService.bindNormalRace(raceManager);
-            recorder.setBeautyLevel(getNormalBeautyLevel(beautyNormalFaceLevel));
-        } else {
-            beautyService.bindRace(getContext(), raceManager);
-            initRememberParams();
-        }
-    }
-
-    private void initRememberParams() {
-        //高级美颜等级
-        int beautyFaceLevel = SharedPreferenceUtils.getBeautyFaceLevel(mActivity);
-        //美肌等级
-        int beautySkinLevel = SharedPreferenceUtils.getBeautySkinLevel(mActivity);
-        BeautyParams beautyFaceParams;
-//        if (mRenderingMode == RenderingMode.FaceUnity) {
-//            beautyFaceParams = rememberParamList.get(beautyFaceLevel);
-//        } else {
-//            beautyFaceParams = rememberRaceParamList.get(beautyFaceLevel);
-//        }
-//        beautyService.setBeautyParam(beautyFaceParams, BeautyService.BEAUTY_FACE);
-        BeautyParams beautyShinParams = rememberParamList.get(beautySkinLevel);
-        beautyService.setBeautyParam(beautyShinParams, BeautyService.BEAUTY_SKIN);
-        if (raceManager != null && !rememberShapeParamList.isEmpty()) {
-            raceManager.setShapeParam(rememberShapeParamList.get(currentBeautyShapePosition));
-        }
-    }
-
-    /**
-     * 获取当前普通美颜的级别对应的数值【0-5】-【0-100】
-     */
-    private int getNormalBeautyLevel(int beautyNormalFaceLevel) {
-
-        switch (beautyNormalFaceLevel) {
-        case 0:
-            return BeautyLevel.BEAUTY_LEVEL_ZERO.getValue();
-        case 1:
-            return BeautyLevel.BEAUTY_LEVEL_ONE.getValue();
-        case 2:
-            return BeautyLevel.BEAUTY_LEVEL_TWO.getValue();
-        case 3:
-            return BeautyLevel.BEAUTY_LEVEL_THREE.getValue();
-        case 4:
-            return BeautyLevel.BEAUTY_LEVEL_FOUR.getValue();
-        case 5:
-            return BeautyLevel.BEAUTY_LEVEL_FIVE.getValue();
-        default:
-            return BeautyLevel.BEAUTY_LEVEL_THREE.getValue();
-
-        }
-
-    }
 
     public void setFaceTrackModePath() {
         ThreadUtils.runOnSubThread(new Runnable() {
@@ -2200,11 +1483,11 @@ public class AliyunSVideoRecordView extends FrameLayout
         orientationDetector.setOrientationChangedListener(new OrientationDetector.OrientationChangedListener() {
             @Override
             public void onOrientationChanged() {
-                rotation = getCameraRotation();
+                int rotation = getCameraRotation();
+                recorder.setRotation(rotation);
                 if (mFURenderer != null) {
                     mFURenderer.setDeviceOrientation(rotation);
                 }
-                recorder.setRotation(rotation);
             }
         });
     }
@@ -2298,14 +1581,6 @@ public class AliyunSVideoRecordView extends FrameLayout
         }
         recorder.stopPreview();
 
-        if (beautyEffectChooser != null) {
-            beautyEffectChooser.dismiss();
-        }
-
-        if (mFaceUnityTask != null) {
-            mFaceUnityTask.cancel(true);
-            mFaceUnityTask = null;
-        }
         if (orientationDetector != null) {
             orientationDetector.disable();
         }
@@ -2322,7 +1597,7 @@ public class AliyunSVideoRecordView extends FrameLayout
     public void destroyRecorder() {
 
         //destroy时删除多段录制的片段文件
-        deleteSliceFile();
+//        deleteSliceFile();//通过AlivcIMixRecorderInterface#setIsAutoClearClipVideos(true)处理
         if (finishRecodingTask != null) {
             finishRecodingTask.cancel(true);
             finishRecodingTask = null;
@@ -2605,15 +1880,6 @@ public class AliyunSVideoRecordView extends FrameLayout
     }
 
     /**
-     * 设置视频质量
-     *
-     * @param mVideoQuality
-     */
-    public void setVideoQuality(VideoQuality mVideoQuality) {
-        this.mVideoQuality = mVideoQuality;
-    }
-
-    /**
      * 重新绘制SurFaceView的比例
      */
     public void setReSizeRatioMode(int ratioMode) {
@@ -2642,32 +1908,26 @@ public class AliyunSVideoRecordView extends FrameLayout
         this.mMixVideoPath = path;
     }
 
-    /**
-     * 设置视频编码方式
-     *
-     * @param mVideoCodec
-     */
-    public void setVideoCodec(VideoCodecs mVideoCodec) {
-        this.mVideoCodec = mVideoCodec;
-    }
 
     /**
      * 设置渲染方式
+     *
      * @param mRenderingMode
      */
-    public void setRenderingMode(RenderingMode mRenderingMode) {
-//        this.mRenderingMode = mRenderingMode;
+    public void setRenderingMode(BeautySDKType mRenderingMode) {
+        this.mRenderingMode = mRenderingMode;
     }
 
     /**
      * 设置是否是race录制包
+     *
      * @param isSvideoRace 是否是race录制包
      */
     public void setSvideoRace(boolean isSvideoRace) {
         this.isSvideoRace = isSvideoRace;
     }
 
-    public void setMixBorderParam(AlivcMixBorderParam param){
+    public void setMixBorderParam(AlivcMixBorderParam param) {
         mMixBorderParam = param;
     }
 
@@ -2681,91 +1941,13 @@ public class AliyunSVideoRecordView extends FrameLayout
     }
 
 
-    private void saveBeautyParams(int position, BeautyParams beautyParams) {
-        if (beautyParams != null) {
-//            if (mRenderingMode == RenderingMode.FaceUnity) {
-//                Gson gson = new Gson();
-//                rememberParamList.set(position, beautyParams);
-//                rememberBeautyBean.setBeautyList(rememberParamList);
-//                String jsonString = gson.toJson(rememberBeautyBean);
-//                if (!TextUtils.isEmpty(jsonString)) {
-//                    SharedPreferenceUtils.setBeautyParams(getContext(), jsonString);
-//                }
-//            } else {
-//                Gson gson = new Gson();
-//                rememberRaceParamList.set(position, beautyParams);
-//                rememberRaceBeautyBean.setBeautyList(rememberRaceParamList);
-//                String jsonString = gson.toJson(rememberRaceBeautyBean);
-//                if (!TextUtils.isEmpty(jsonString)) {
-//                    SharedPreferenceUtils.setRaceBeautyParams(getContext(), jsonString);
-//                }
-//            }
-
-        }
-    }
-    private void saveBeautyShapeParams(int position, BeautyShapeParams beautyParams) {
-        if (beautyParams != null) {
-            Gson gson = new Gson();
-
-            rememberShapeParamList.set(position, beautyParams);
-            rememberBeautyShapeBean.setBeautyList(rememberShapeParamList);
-            String jsonString = gson.toJson(rememberBeautyShapeBean);
-
-            if (!TextUtils.isEmpty(jsonString)) {
-                SharedPreferenceUtils.setBeautyShapeParams(getContext(), jsonString);
-            }
-        }
-    }
-
-    /**
-     * 获取美颜美肌参数
-     */
-    private BeautyParams getBeautyParams(int position) {
-        String jsonString;
-//        if (mRenderingMode == RenderingMode.FaceUnity) {
-//            jsonString = SharedPreferenceUtils.getBeautyParams(getContext());
-//        } else {
-//            jsonString = SharedPreferenceUtils.getRaceBeautyParams(getContext());
-//        }
-//        if (TextUtils.isEmpty(jsonString)) {
-//            return null;
-//        }
-//        Gson gson = new Gson();
-//        RememberBeautyBean rememberBeautyBean = gson.fromJson(jsonString, RememberBeautyBean.class);
-        List<BeautyParams> beautyList = rememberBeautyBean.getBeautyList();
-        if (beautyList == null) {
-            return null;
-        }
-        return beautyList.get(position);
-
-    }
-    /**
-     * 获取美型参数
-     */
-    private BeautyShapeParams getBeautyShapeParams(int position) {
-        String jsonString = SharedPreferenceUtils.getBeautyShapeParams(getContext());
-        if (TextUtils.isEmpty(jsonString)) {
-            return null;
-        }
-        Gson gson = new Gson();
-        RememberBeautyShapeBean rememberBeautyBean = gson.fromJson(jsonString, RememberBeautyShapeBean.class);
-        List<BeautyShapeParams> beautyList = rememberBeautyBean.getBeautyList();
-        if (beautyList == null) {
-            return null;
-        }
-        if (position >= beautyList.size()) {
-            return null;
-        }
-        return beautyList.get(position);
-    }
-
-
     public void setOnMusicSelectListener(MusicSelectListener musicSelectListener) {
         this.mOutMusicSelectListener = musicSelectListener;
     }
 
     /**
      * 获取滤镜名称 适配系统语言/中文或其他
+     *
      * @param path 滤镜文件目录
      * @return name
      */
@@ -2787,7 +1969,7 @@ public class AliyunSVideoRecordView extends FrameLayout
 
             int var7;
             while ((var7 = var4.read()) != -1) {
-                var2.append((char)var7);
+                var2.append((char) var7);
             }
 
             var4.close();

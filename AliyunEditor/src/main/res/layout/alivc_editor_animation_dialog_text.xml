@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/alivc_common_alert_dialog_h"
             >
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/font_animation_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

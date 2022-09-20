@@ -15,7 +15,7 @@
 
     <style name="alivc_crop_btn_style">
         <item name="android:background">@drawable/alivc_crop_btn_bg</item>
-        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_width">@dimen/alivc_common_width_btn_100</item>
         <item name="android:textSize">@dimen/alivc_common_font_14</item>
         <item name="android:textColor">@color/alivc_common_font_white</item>
         <item name="android:layout_height">36dp</item>

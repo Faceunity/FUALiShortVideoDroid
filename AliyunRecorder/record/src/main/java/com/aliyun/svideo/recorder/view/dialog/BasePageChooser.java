@@ -1,14 +1,16 @@
 package com.aliyun.svideo.recorder.view.dialog;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.aliyun.svideo.base.BaseChooser;
 import com.aliyun.svideo.record.R;
 import com.aliyun.svideo.base.widget.PagerSlidingTabStrip;
 
@@ -33,7 +35,7 @@ public abstract class BasePageChooser extends BaseChooser {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.alivc_recorder_dialog_chooser_base, container);
+        View view = inflater.inflate(R.layout.alivc_faceunity_beauty_chooser_layout, container);
         return view;
     }
 

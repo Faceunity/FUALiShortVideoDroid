@@ -76,7 +76,6 @@
                     />
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -108,6 +107,12 @@
                     android:text="@string/alivc_editor_publish_composing"
                     android:textSize="@dimen/alivc_common_font_16"/>
                 <TextView
+                    android:id="@+id/upload_status_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/alivc_common_font_white"
+                    android:textSize="@dimen/alivc_common_font_16"/>
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/compose_status_tip"
@@ -115,14 +120,37 @@
                     android:textSize="@dimen/alivc_common_font_12"
                     android:textColor="@color/alivc_svideo_font_compose_tip"/>
             </LinearLayout>
-            <!--<TextView
+
+            <LinearLayout
+                android:id="@+id/layout_compose"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/compose_completed"
-                android:textSize="8dp"
-                android:text="合成成功"
-                android:visibility="invisible"
-                android:textColor="@android:color/white"/>-->
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/btn_compose"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/alivc_svideo_bg_next"
+                    android:gravity="center"
+                    android:text="@string/aliyun_svideo_editor_compose"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/font_size_28px" />
+
+                <TextView
+                    android:id="@+id/btn_compose_and_upload"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/alivc_svideo_bg_next"
+                    android:gravity="center"
+                    android:text="@string/aliyun_svideo_editor_compose_and_upload"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/font_size_28px" />
+            </LinearLayout>
         </FrameLayout>
     </com.aliyun.svideo.base.widget.SquareFrameLayout>
 
@@ -149,8 +177,19 @@
             android:text="@string/alivc_editor_publish_countoflimit"
             android:textSize="@dimen/alivc_common_font_12"
             android:textColor="@color/alivc_edit_font_tab_color"/>
+
+        <TextView
+            android:id="@+id/btn_template_build"
+            android:layout_marginTop="100dp"
+            android:layout_gravity="center"
+            android:layout_height="50dp"
+            android:layout_width="100dp"
+            android:textSize="@dimen/font_size_28px"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/alivc_svideo_bg_next"
+            android:text="@string/aliyun_svideo_editor_build_template"
+            android:gravity="center"/>
+
     </LinearLayout>
-
-
 
 </LinearLayout>

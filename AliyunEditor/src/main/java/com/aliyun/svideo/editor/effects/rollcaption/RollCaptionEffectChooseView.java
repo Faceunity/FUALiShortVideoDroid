@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.aliyun.svideo.editor.effects.control.BaseChooser;
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.OnItemClickListener;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.editor.AliyunRollCaptionComposer;
 
 import java.util.ArrayList;
@@ -62,9 +64,9 @@ public class RollCaptionEffectChooseView extends BaseChooser {
      */
     private AliyunRollCaptionComposer mAliyunRollCaptionComposer;
     /**
-     * 字体路径
+     * 字体资源
      */
-    private String mFontPath;
+    private Source mFontSource;
 
     /**
      * 是否修改全部字体颜色
@@ -149,13 +151,13 @@ public class RollCaptionEffectChooseView extends BaseChooser {
         mRollCaptionSubtitleTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), RollCaptionSubtitleActivity.class);
+                Intent intent = new Intent(getContext(),RollCaptionSubtitleActivity.class);
                 intent.putExtra(RollCaptionSubtitleActivity.ROLL_CAPTION_USE_FAMILY_COLOR,mUseFamilyColor);
                 intent.putExtra(RollCaptionSubtitleActivity.ROLL_CAPTION_FONT_COLOR,mCurrentColor);
                 if(mRollCaptionList != null){
                     intent.putExtra(RollCaptionSubtitleActivity.INTENT_ROLL_CAPTION_SUBTITLE_LIST,mSubtitleBeans);
                 }
-                ((Activity)getContext()).startActivityForResult(intent, BaseChooser.ROLL_CAPTION_REQUEST_CODE);
+                ((Activity)getContext()).startActivityForResult(intent,BaseChooser.ROLL_CAPTION_REQUEST_CODE);
             }
         });
 
@@ -184,7 +186,7 @@ public class RollCaptionEffectChooseView extends BaseChooser {
             @Override
             public void onClick(View view) {
                 mCurrentColor = Color.WHITE;
-                mFontPath = "";
+                mFontSource = null;
                 mUseFamilyColor = true;
                 if(mAliyunRollCaptionComposer != null){
                     mAliyunRollCaptionComposer.reset();
@@ -213,7 +215,7 @@ public class RollCaptionEffectChooseView extends BaseChooser {
                         AliyunRollCaptionComposer.StyleEditor styleEditor = null;
                         for(int i = 0;i < mSubtitleBeans.size();i++){
                             styleEditor = mAliyunRollCaptionComposer.editCaptionStyle(i);
-                            styleEditor.setTextFont(mFontPath);
+                            styleEditor.setTextFont(mFontSource);
                             styleEditor.setTextColor(mSubtitleBeans.get(i).getColor());
                         }
                         if(styleEditor != null){
@@ -221,11 +223,18 @@ public class RollCaptionEffectChooseView extends BaseChooser {
                         }
                     }else{
                         //整体修改字幕颜色
-                        mAliyunRollCaptionComposer.updateCaptionList(mRollCaptionList);
+                        List<String> lastList = mRollCaptionList;
+                        if (mSubtitleBeans != null) {
+                              lastList = new ArrayList<>();
+                            for (AlivcRollCaptionSubtitleBean mSubtitleBean : mSubtitleBeans) {
+                                lastList.add(mSubtitleBean.getShowTime() + mSubtitleBean.getContent());
+                            }
+                        }
+                        mAliyunRollCaptionComposer.updateCaptionList(lastList);
                         mAliyunRollCaptionComposer.editCaptionFamilyStyle()
-                                .setTextColor(mCurrentColor)
-                                .setTextFont(mFontPath)
-                                .done();
+                                                  .setTextColor(mCurrentColor)
+                                                  .setTextFont(mFontSource)
+                                                  .done();
                     }
                     mAliyunRollCaptionComposer.show();
 
@@ -245,7 +254,11 @@ public class RollCaptionEffectChooseView extends BaseChooser {
         mCaptionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public boolean onItemClick(EffectInfo effectInfo, int index) {
-                mFontPath = effectInfo.fontPath;
+                if (effectInfo.fontSource != null) {
+                    mFontSource = effectInfo.fontSource;
+                } else {
+                    mFontSource = new Source(effectInfo.fontPath);
+                }
                 mRollCaptionChooser.setVisibility(View.VISIBLE);
                 mRollCaptionFontRecyclerView.setVisibility(View.GONE);
                 mRollCaptionColorView.setVisibility(View.GONE);

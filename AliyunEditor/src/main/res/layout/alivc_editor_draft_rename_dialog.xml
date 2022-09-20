@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="182dp"
+    android:background="@color/alivc_common_theme_primary_darker"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/alivc_editor_draft_enter_name"
+        android:textColor="@color/alivc_common_font_white"
+        android:textSize="16dp" />
+
+    <EditText
+        android:id="@+id/alivc_draft_rename_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/alivc_editor_draft_enter_name_hint" />
+
+</LinearLayout>

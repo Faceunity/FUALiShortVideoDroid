@@ -30,8 +30,7 @@ public class MatrixUtil {
 
     private final float[] _Data = new float[9];
 
-    public
-    void decomposeTSR(Matrix m) {
+    public void decomposeTSR(Matrix m) {
         m.getValues(_Data);
 
         translateX = _Data[Matrix.MTRANS_X];
@@ -48,8 +47,7 @@ public class MatrixUtil {
         rotation = (float) Math.atan2(-skewx, sx);
     }
 
-    public
-    void composeTSR(Matrix m) {
+    public void composeTSR(Matrix m) {
         m.setRotate(getRotationDeg());
         m.postScale(scaleX, scaleY);
         m.postTranslate(translateX, translateY);
@@ -58,12 +56,19 @@ public class MatrixUtil {
     @Override
     public String toString() {
         return "MatrixUtil{" +
-               "translateX=" + translateX +
-               ", translateY=" + translateY +
-               ", scaleX=" + scaleX +
-               ", scaleY=" + scaleY +
-               ", rotation=" + rotation +
-               '}';
+                "translateX=" + translateX +
+                ", translateY=" + translateY +
+                ", scaleX=" + scaleX +
+                ", scaleY=" + scaleY +
+                ", rotation=" + rotation +
+                '}';
     }
 
+    public void clear() {
+        translateX = 0;
+        translateY = 0;
+        scaleX = 1.0f;
+        scaleY = 1.0f;
+        rotation = 0;
+    }
 }

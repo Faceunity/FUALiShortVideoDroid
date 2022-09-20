@@ -7,8 +7,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
+import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -40,7 +42,7 @@ public class UriUtils {
         BufferedOutputStream bot = null;
         try {
             parcelFd = context.getContentResolver().openFileDescriptor(Uri.parse(uri),
-                       "r");
+                    "r");
             // Write data into the pending image.
             ParcelFileDescriptor.AutoCloseInputStream inputStream = new ParcelFileDescriptor.AutoCloseInputStream(parcelFd);
             bin = new BufferedInputStream(inputStream);
@@ -88,8 +90,8 @@ public class UriUtils {
         double l = new File(filePath).length() / (double)1024 / 1024;
         //打印写入时间
         Log.i(TAG, "log_duration : " + (System.currentTimeMillis() - startTime)
-              + " ,size : " + l + " M"
-             );
+                + " ,size : " + l + " M"
+        );
         return true;
     }
 
@@ -138,11 +140,19 @@ public class UriUtils {
 
         long startTime = System.currentTimeMillis();
         ContentValues values = new ContentValues();
-        String name = startTime + "-video.mp4";
+        String name = "";
+        int lastSeparatorIndex = -1;
+        if (!TextUtils.isEmpty(fileName)){
+            lastSeparatorIndex = fileName.lastIndexOf(File.separator);
+        }
+        if (lastSeparatorIndex>=0&&lastSeparatorIndex<fileName.length()-1){
+            name = fileName.substring(lastSeparatorIndex+1);
+        }else {
+            name = startTime + "-video.mp4";
+        }
         values.put(MediaStore.Video.Media.DISPLAY_NAME, name);
         values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
         values.put(MediaStore.Video.Media.IS_PENDING, 1);
-
         ContentResolver resolver = context.getContentResolver();
         Uri collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
         Uri item = resolver.insert(collection, values);
@@ -174,3 +184,4 @@ public class UriUtils {
     }
 
 }
+

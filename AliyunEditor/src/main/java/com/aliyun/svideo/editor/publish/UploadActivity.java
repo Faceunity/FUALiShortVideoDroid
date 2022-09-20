@@ -6,7 +6,7 @@ import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
@@ -20,10 +20,11 @@ import android.widget.TextView;
 import com.aliyun.common.global.AliyunTag;
 import com.aliyun.common.utils.ToastUtil;
 import com.aliyun.svideosdk.editor.AliyunIVodCompose;
+import com.aliyun.svideosdk.editor.impl.AliyunComposeFactory;
 import com.aliyun.svideosdk.editor.impl.AliyunVodCompose;
-import com.aliyun.qupaiokhttp.HttpRequest;
-import com.aliyun.qupaiokhttp.RequestParams;
-import com.aliyun.qupaiokhttp.StringHttpRequestCallback;
+import com.aliyun.common.qupaiokhttp.HttpRequest;
+import com.aliyun.common.qupaiokhttp.RequestParams;
+import com.aliyun.common.qupaiokhttp.StringHttpRequestCallback;
 import com.aliyun.svideo.base.Constants;
 import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.common.utils.NetWatchdogUtils;
@@ -84,6 +85,7 @@ public class UploadActivity extends Activity {
     private long imageSize;
     private NetWatchdogUtils mWatchdog;
     private String mImageUrl;
+    private long mUploadStartTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,7 +106,7 @@ public class UploadActivity extends Activity {
         if (mRatio != 0) {
             setTextureViewParams(mRatio);
         }
-        mComposeClient = ComposeFactory.INSTANCE.getAliyunVodCompose();
+        mComposeClient = AliyunComposeFactory.createAliyunVodCompose();
         mComposeClient.init(this);
         videoSize = new File(mVideoPath).length();
         imageSize = new File(mThumbnailPath).length();
@@ -337,6 +339,7 @@ public class UploadActivity extends Activity {
 
         @Override
         public void onUploadSucceed() {
+            Log.d("UploadActivity", "Upload cost time:" + (System.currentTimeMillis() - mUploadStartTime));
 
             runOnUiThread(new Runnable() {
                 @Override

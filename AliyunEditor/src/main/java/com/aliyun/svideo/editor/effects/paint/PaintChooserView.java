@@ -5,10 +5,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,10 @@ import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.effects.control.BaseChooser;
 import com.aliyun.svideo.editor.effects.control.SpaceItemDecoration;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author zsy_18 data:2018/8/30
@@ -83,6 +86,32 @@ public class PaintChooserView extends BaseChooser implements View.OnClickListene
         mPaintThree.setOnClickListener(this);
 
     }
+
+    private float getApproximate(float cur, Float[] size) {
+        if (size == null) {
+            return -1;
+        }
+        if (size.length == 1) {
+            return size[0];
+        }
+        int index = -1;
+        for (int i = 0; i < size.length; i++) {
+            if (size[i] > cur) {
+                index = i;
+                break;
+            } else if (size[i] == cur) {
+                return cur;
+            }
+        }
+        if (index == -1) {
+            return size[size.length - 1];
+        } else if (index == 0) {
+            return size[0];
+        } else {
+            return cur - size[index - 1] < size[index] - cur ? size[index - 1] : size[index];
+        }
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -91,6 +120,9 @@ public class PaintChooserView extends BaseChooser implements View.OnClickListene
             if (mCurrentPaint != null) {
                 mCurrentColor = mCurrentPaint.getColor();
                 mCurrentSize = mCurrentPaint.getStrokeWidth();
+                //获取最接近值
+                Float[] size = mViews.keySet().toArray(new Float[mViews.keySet().size()]);
+                mCurrentSize = getApproximate(mCurrentSize,size);
             }
         }
         if (mViews.get(mCurrentSize) != null) {

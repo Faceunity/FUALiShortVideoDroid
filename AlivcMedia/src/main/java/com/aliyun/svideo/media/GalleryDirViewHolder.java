@@ -7,11 +7,13 @@ package com.aliyun.svideo.media;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 
 public class GalleryDirViewHolder extends RecyclerView.ViewHolder {

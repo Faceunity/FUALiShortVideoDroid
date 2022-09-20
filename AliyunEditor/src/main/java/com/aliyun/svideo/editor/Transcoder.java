@@ -4,20 +4,18 @@
 
 package com.aliyun.svideo.editor;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.text.TextUtils;
+import android.os.Environment;
 import android.util.Log;
 
 import com.aliyun.common.global.AliyunTag;
 import com.aliyun.common.utils.FileUtils;
 import com.aliyun.svideo.base.Constants;
-import com.aliyun.svideo.common.utils.MD5Utils;
-import com.aliyun.svideo.common.utils.UriUtils;
 import com.aliyun.svideo.media.MediaInfo;
 import com.aliyun.svideosdk.common.struct.common.MediaType;
 import com.aliyun.svideosdk.common.struct.common.VideoDisplayMode;
@@ -28,18 +26,20 @@ import com.aliyun.svideosdk.crop.AliyunICrop;
 import com.aliyun.svideosdk.crop.CropCallback;
 import com.aliyun.svideosdk.crop.CropParam;
 import com.aliyun.svideosdk.crop.impl.AliyunCropCreator;
-import com.duanqu.transcode.NativeParser;
+import com.aliyun.svideosdk.transcode.NativeParser;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 转码 满足以下任一条件
  * 1.分辨率大于1080P
- * 2.gop大于35
- * 3.视频存在B帧
+ * 2.gop大于35（已屏蔽）
+ * 3.视频存在B帧（已屏蔽）
  */
 
 public class Transcoder {
@@ -52,6 +52,7 @@ public class Transcoder {
     private int mTranscodeIndex = 0;
     private int mTranscodeTotal = 0;
     private AsyncTask<Void, Long, List<MediaInfo>> mTranscodeTask;
+    private List<String> mConvertFilePaths = new CopyOnWriteArrayList<>();
     /**
      * 大于1080P的视频需要进行转码
      */
@@ -101,7 +102,7 @@ public class Transcoder {
     }
 
     public void transcode(final Context context,
-                          final VideoDisplayMode scaleMode) {
+                          final VideoDisplayMode scaleMode, final boolean transcode) {
         mTranscodeTotal = 0;
         mTranscodeIndex = 0;
         mTranscodeVideos.clear();
@@ -112,32 +113,29 @@ public class Transcoder {
 
             @Override
             protected List<MediaInfo> doInBackground(Void... params) {
+                checkHEIFImages(mOriginalVideos);
+                if (transcode) {
+                    CropParam cropParam = null;
+                    for (MediaInfo info : mOriginalVideos) {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    //适配 android Q, copy 媒体文件到应用沙盒下
-                    cacheMediaFile(context);
-                }
-                CropParam cropParam = null;
-                for (MediaInfo info : mOriginalVideos) {
-
-                    if (info.filePath.endsWith("gif") || info.filePath.endsWith("GIF")) {
-                        Log.d(TAG, "addTransCode excluded: --.gif");
-                        continue;
-                    }
-                    if (info.mimeType.startsWith("video")) {
-                        cropParam = loadVideoCropInfo(context, info, scaleMode);
-                    } else if (info.mimeType.startsWith("image")) {
-                        cropParam = loadImageCropInfo(context, info, scaleMode);
-                    }
-                    if (cropParam != null) {
-                        mTranscodeVideos.add(cropParam);
-                        mTranscodeTotal++;
-                    }
-                    if (isCancelled()) {
-                        return null;
+                        if (info.filePath.endsWith("gif") || info.filePath.endsWith("GIF")) {
+                            Log.d(TAG, "addTransCode excluded: --.gif");
+                            continue;
+                        }
+                        if (info.mimeType.startsWith("video")) {
+                            cropParam = loadVideoCropInfo(context, info, scaleMode);
+                        } else if (info.mimeType.startsWith("image")) {
+                            cropParam = loadImageCropInfo(context, info, scaleMode);
+                        }
+                        if (cropParam != null) {
+                            mTranscodeVideos.add(cropParam);
+                            mTranscodeTotal++;
+                        }
+                        if (isCancelled()) {
+                            return null;
+                        }
                     }
                 }
-
                 if (isCancelled()) {
                     return null;
                 }
@@ -155,26 +153,19 @@ public class Transcoder {
 
     }
 
-    /**
-     * 缓存媒体文件到沙盒cache目录
-     * @param context Context
-     */
-    private void cacheMediaFile(Context context) {
-        for (MediaInfo originalVideo : mOriginalVideos) {
-            if (originalVideo.filePath.contains(context.getPackageName())) {
-                continue;
-            }
-            if (!TextUtils.isEmpty(originalVideo.fileUri)) {
-                int index = originalVideo.filePath.lastIndexOf(".");
-                String suffix = index == -1 ? "" : originalVideo.filePath.substring(index);
-
-                //适配Android Q，文件copy到沙盒内部加载
-                String filePath = Constants.SDCardConstants.getCacheDir(context) + File.separator + MD5Utils
-                                  .getMD5(originalVideo.fileUri) + suffix;
-                if (!new File(filePath).exists()) {
-                    UriUtils.copyFileToDir(context, originalVideo.fileUri, filePath);
+    private void checkHEIFImages(List<MediaInfo> resultVideos) {
+        for (MediaInfo info : resultVideos) {
+            if (AliyunSVideoUtils.isHEIFImage(info.filePath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                Log.e(TAG, "HEIF file " + info.filePath);
+                String path = Environment.getExternalStorageDirectory().getPath() + File.separator + "DCIM" + File.separator + "Camera" + File.separator + "editor_temp_" + System.currentTimeMillis() + ".png";
+                final boolean rs = AliyunSVideoUtils.convertHEIFImage(info.filePath, path, Bitmap.CompressFormat.PNG, 100);
+                if (!rs) {
+                    Log.e(TAG, "convert HEIF image failed! " + info.filePath);
+                    continue;
                 }
-                originalVideo.filePath = filePath;
+                Log.d(TAG, "convert HEIF image success! " + path);
+                info.filePath = path;
+                mConvertFilePaths.add(path);
             }
         }
     }
@@ -263,11 +254,11 @@ public class Transcoder {
             }
             nativeParser.release();
             nativeParser.dispose();
-            duration = info.duration * 1000;
+            duration = info.duration;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (frameWidth * frameHeight > WIDTH * HEIGHT || gop > GOP || isHasBFrame ) {
+        if (frameWidth * frameHeight > WIDTH * HEIGHT /**|| gop > GOP || isHasBFrame **/ ) {
             Log.d(TAG, "need transcode...path..." + info.filePath);
             CropParam cropParam = new CropParam();
             cropParam.setInputPath(info.filePath);
@@ -314,14 +305,14 @@ public class Transcoder {
             } else {
                 cropParam.setCropRect(new Rect(0, 0, frameWidth, frameHeight));
             }
-            cropParam.setStartTime(info.startTime * 1000);
+            cropParam.setStartTime(info.startTime, TimeUnit.MILLISECONDS);
             cropParam.setScaleMode(scaleMode);
             cropParam.setQuality(VideoQuality.SSD);
             cropParam.setGop(5);
             cropParam.setFrameRate(30);
             cropParam.setCrf(19);
-            cropParam.setVideoCodec(VideoCodecs.H264_SOFT_FFMPEG);
-            cropParam.setEndTime(duration + cropParam.getStartTime());
+            cropParam.setVideoCodec(VideoCodecs.H264_SOFT_OPENH264);
+            cropParam.setEndTime(duration + cropParam.getStartTime(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
             cropParam.setMediaType(MediaType.ANY_VIDEO_TYPE);
             return cropParam;
         }
@@ -384,7 +375,7 @@ public class Transcoder {
                         //转码后该视频片段为真裁剪，startTime为0。
                         mediaInfo.startTime = 0;
                         //视频转码后会以视频的时长为准，多余的音频会被裁掉
-                        mediaInfo.duration = (int)(cropParam.getEndTime() - cropParam.getStartTime()) / 1000;
+                        mediaInfo.duration = (int)(cropParam.getEndTime(TimeUnit.MILLISECONDS) - cropParam.getStartTime(TimeUnit.MILLISECONDS));
                     }
                 }
             }
@@ -410,5 +401,13 @@ public class Transcoder {
         if (mTransCallback != null) {
             mTransCallback = null;
         }
+        try {
+            if (mConvertFilePaths.size() > 0) {
+                for (String path : mConvertFilePaths) {
+                    boolean rs = FileUtils.deleteFile(path);
+                    Log.e(TAG, "delete temp file " + path + " | " + rs);
+                }
+            }
+        } catch (Throwable e) {}
     }
 }

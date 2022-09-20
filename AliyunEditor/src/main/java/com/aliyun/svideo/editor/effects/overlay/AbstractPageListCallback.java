@@ -6,8 +6,9 @@ package com.aliyun.svideo.editor.effects.overlay;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 public abstract class AbstractPageListCallback implements PageRecyclerView.CallBack<PageViewHolder> {
     private static final int NO_SELECTED = -1;
     private ArrayList<PasterForm> mListData = new ArrayList<>();
+    private int mGroupId;
     private int mCurrSelectedPos = NO_SELECTED;
     private Context mContext;
     private StringBuilder mIconBuilder;
@@ -93,6 +95,10 @@ public abstract class AbstractPageListCallback implements PageRecyclerView.CallB
         }
     }
 
+    public int getGroupId() {
+        return mGroupId;
+    }
+
     @Override
     public void onItemLongClickListener(View view, int position) {
 
@@ -106,6 +112,7 @@ public abstract class AbstractPageListCallback implements PageRecyclerView.CallB
         if (data == null || data.getPasterList() == null) {
             return;
         }
+        this.mGroupId = data.getId();
         this.mListData = (ArrayList<PasterForm>) data.getPasterList();
     }
 

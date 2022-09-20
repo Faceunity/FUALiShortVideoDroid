@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/alivc_common_size_icon_35"
+    android:gravity="center"
+    tools:ignore="MissingDefaultResource">
+
+    <View
+        android:background="@drawable/aliyun_svideo_shape_oval_red"
+        android:id="@+id/paint_color_view"
+        android:layout_width="@dimen/alivc_common_size_icon_35"
+        android:layout_height="@dimen/alivc_common_size_icon_35"
+        android:layout_gravity="center"
+        />
+    <View
+        android:id="@+id/selected_view"
+        android:visibility="gone"
+        android:background="@drawable/aliyun_svideo_shape_caption_selected_border"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/alivc_common_size_icon_35"
+        android:layout_height="@dimen/alivc_common_size_icon_35"/>
+</FrameLayout>

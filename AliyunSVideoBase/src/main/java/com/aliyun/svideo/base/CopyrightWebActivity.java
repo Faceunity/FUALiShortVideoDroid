@@ -1,7 +1,6 @@
 package com.aliyun.svideo.base;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -9,6 +8,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.aliyun.svideo.base.http.EffectService;
 
@@ -27,7 +28,14 @@ public class CopyrightWebActivity extends AppCompatActivity {
             }
         });
         webView = findViewById(R.id.alivc_copyright_webview);
-        webView.loadUrl(EffectService.BASE_URL + "/td.html"); //http://30.40.34.91:8080/td.html
+        String queen = getIntent().getStringExtra("queen");
+        String uri = null;
+        if (queen != null){
+            uri = "file:///android_asset/queentd.html";
+        }else {
+            uri = EffectService.BASE_URL + "/td.html";
+        }
+        webView.loadUrl(uri); //http://30.40.34.91:8080/td.html
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

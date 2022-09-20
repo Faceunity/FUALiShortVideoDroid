@@ -64,12 +64,12 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="@color/alivc_common_bg_white_alpha_30"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id ="@+id/aliyun_music_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
     <TextView
         android:id="@+id/alivc_music_copyright"
         android:layout_width="wrap_content"

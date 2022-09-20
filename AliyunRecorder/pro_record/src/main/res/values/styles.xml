@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--多源录制的摄像头控制按钮样式-->
+    <style name="MultiRecorderCameraCtrlIcon">
+        <item name="android:layout_width">@dimen/alivc_common_size_icon_32</item>
+        <item name="android:layout_height">@dimen/alivc_common_size_icon_32</item>
+        <item name="android:layout_marginTop">@dimen/alivc_common_margin_25</item>
+    </style>
+
+</resources>

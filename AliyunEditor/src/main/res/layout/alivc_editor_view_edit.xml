@@ -35,6 +35,22 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal" />
 
+<!--        <TextureView-->
+<!--            android:id="@+id/play_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center_horizontal" />-->
+<!--        <com.aliyun.svideosdk.editor.impl.display.AliyunSurfaceView-->
+<!--            android:id="@+id/play_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center_horizontal" />-->
+<!--            <com.aliyun.svideosdk.editor.impl.display.AliyunTextureView-->
+<!--                android:id="@+id/play_view"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_gravity="center_horizontal" />-->
+
         <FrameLayout
             android:id="@+id/pasterView"
             android:layout_width="match_parent"

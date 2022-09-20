@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alivc_common_bg_black_alpha_70"
+    android:orientation="vertical">
+
+    <include layout="@layout/alivc_editor_include_effect_title1" />
+
+    <FrameLayout
+        android:id="@+id/fl_thumblinebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bottom_menu_recycleview"
+        android:layout_marginTop="@dimen/alivc_common_margin_30"
+        android:layout_marginBottom="@dimen/alivc_common_margin_10"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="@dimen/alivc_common_height_group_70"
+        android:layout_height="@dimen/alivc_common_height_group_70"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+</LinearLayout>

@@ -24,13 +24,16 @@ import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.editor.effects.overlay.AnimationDialog;
 import com.aliyun.svideo.editor.widget.AutoResizingTextView;
 import com.aliyun.svideo.editor.widget.BaseAliyunPasterView;
-import com.aliyun.svideosdk.editor.AliyunPasterBaseView;
+import com.aliyun.svideosdk.common.struct.effect.EffectBase;
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideosdk.editor.AliyunPasterController;
 import com.aliyun.svideosdk.editor.pplayer.AnimPlayerView;
 import com.aliyun.svideosdk.common.struct.effect.ActionBase;
 import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
 
-public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView {
+import java.util.concurrent.TimeUnit;
+
+public abstract class AbstractPasterUISimpleImpl extends AliyunBasePasterController {
 
     private static final String TAG = AbstractPasterUISimpleImpl.class.getName();
 
@@ -49,7 +52,7 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
     protected ActionBase mTempFrameAction;
     protected ActionBase mOldFrameAction;
 
-    private int mFrameActionSelect;//字体动画选择的selectPosition
+    private int mFrameActionSelect = -1;//字体动画选择的selectPosition
     private float mCenterX;
     private float mCenterY;
     private float[] originalCenter;
@@ -107,9 +110,15 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
-                        if(isFirstTouch){
-                            originalCenter = mPasterView.getCenter();
-                            isFirstTouch = false;
+                        if (isFirstTouch) {
+                            //原始中心点为view中心点
+                            float[] center = new float[2];
+                            center[0] = mPasterView.getWidth() / 2;
+                            center[1] = mPasterView.getHeight() / 2;
+                            if (center[0] != 0 && center[1] != 0) {
+                                originalCenter = center;
+                                isFirstTouch = false;
+                            }
                         }
                         mLastX = v.getLeft() + event.getX();
                         mLastY = v.getTop() + event.getY();
@@ -138,14 +147,14 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getActionMasked()) {
-                    case MotionEvent.ACTION_DOWN:
-                        if(isFirstTouch){
-                            originalCenter = mPasterView.getCenter();
-                            isFirstTouch = false;
-                        }
-                        break;
-                    default:
-                        break;
+                case MotionEvent.ACTION_DOWN:
+                    if (isFirstTouch) {
+                        originalCenter = mPasterView.getCenter();
+                        isFirstTouch = false;
+                    }
+                    break;
+                default:
+                    break;
                 }
                 return false;
             }
@@ -176,7 +185,6 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
 
     }
 
-    public abstract void moveToCenter();
 
     public AliyunPasterController getController() {
         return mController;
@@ -186,6 +194,7 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
         mPasterView.setMirror(mirror);
     }
 
+    @Override
     public UIEditorPage getEditorPage() {
         return mEditorPage;
     }
@@ -232,7 +241,12 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
 
     @Override
     public String getPasterTextFont() {
-        return null;
+        return mText.getFontPath();
+    }
+
+    @Override
+    public Source getPasterTextFontSource() {
+        return mText.getFontSource();
     }
 
     @Override
@@ -325,6 +339,7 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
         return mPasterView.isMirror();
     }
 
+    @Override
     public void removePaster() {
         Log.i(TAG, "removePaster");
         isDeleted = true;
@@ -344,6 +359,7 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
         return mController.isPasterExists();
     }
 
+    @Override
     public void editTimeStart() {
         if (isEditStarted) {
             return;
@@ -364,6 +380,7 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
     protected abstract void stopPasterEffect();
 
 
+    @Override
     public void editTimeCompleted() {
 
         if (!mController.isRevert() && !mController.isOnlyApplyUI() && mPasterView.getWidth() == 0 && mPasterView.getHeight() == 0) {
@@ -387,36 +404,43 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
     /**
      * 隐藏缩略条覆盖视图
      */
+    @Override
     public void hideOverlayView() {
         if (mThumbLineOverlay != null) {
             mThumbLineOverlay.getOverlayView().setVisibility(View.INVISIBLE);
         }
     }
 
+    @Override
     public boolean isEditCompleted() {
         return !isPasterRemoved() && !isEditStarted;
     }
 
+    @Override
     public boolean contentContains(float x, float y) {
         return mPasterView.contentContains(x, y);
     }
 
+    @Override
     public void moveContent(float dx, float dy) {
         mPasterView.moveContent(dx, dy);
     }
 
+    @Override
     public boolean isVisibleInTime(long time) {
-        long start = mController.getPasterStartTime();
-        long duration = mController.getPasterDuration();
+        long start = mController.getPasterStartTime(TimeUnit.MILLISECONDS);
+        long duration = mController.getPasterDuration(TimeUnit.MILLISECONDS);
         return time >= start &&
                time <= start + duration;
     }
 
+    @Override
     public boolean isAddedAnimation() {
         return mFrameActionSelect != 0;
     }
+
+    @Override
     public void showTextEdit(boolean isInvert) {
-        Log.d(TAG, "showTextEdit, mText = " + String.valueOf(mText));
         if (mText == null) {
             return;
         }
@@ -433,7 +457,11 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
         info.font = mText.getFontPath();
         info.mAnimation = mOldFrameAction;
         info.mAnimationSelect = mFrameActionSelect;
-        info.layoutWidth = ((ViewGroup)getPasterView().getParent()).getWidth();
+        ViewGroup pasterViewPatent = (ViewGroup)getPasterView().getParent();
+        if (pasterViewPatent != null) {
+            info.layoutWidth = pasterViewPatent.getWidth();
+            pasterViewPatent.setEnabled(false);
+        }
         if (info.isTextOnly) {
             info.textWidth = getPasterWidth();
             info.textHeight = getPasterHeight();
@@ -441,7 +469,6 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
             info.textWidth = getPasterTextWidth();
             info.textHeight = getPasterTextHeight();
         }
-        ((ViewGroup) mPasterView.getParent()).setEnabled(false);
         mPasterView.setVisibility(View.GONE);
         TextDialog textDialog = TextDialog.newInstance(info, isInvert);
         if (textDialog == null) {
@@ -498,6 +525,7 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
     }
 
 
+    @Override
     public void showTimeEdit() {
         if (!isPasterExists()) {
             return;
@@ -526,16 +554,21 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
                     return rootView.findViewById(R.id.middle_view);
                 }
             };
-            mThumbLineOverlay = mThumbLBar.addOverlay(mController.getPasterStartTime(),
-                                mController.getPasterDuration(),
-                                overlayView, 1000 * 500/*最小限制500毫秒*/, false, mEditorPage,
+            UIEditorPage uiEditorPage = mEditorPage;
+            //字体和字幕共用
+            if (UIEditorPage.FONT == uiEditorPage) {
+                uiEditorPage = UIEditorPage.CAPTION;
+            }
+            mThumbLineOverlay = mThumbLBar.addOverlay(mController.getPasterStartTime(TimeUnit.MILLISECONDS),
+                                mController.getPasterDuration(TimeUnit.MILLISECONDS),
+                                overlayView, 500/*最小限制500毫秒*/, false, uiEditorPage,
             new ThumbLineOverlay.OnSelectedDurationChangeListener() {
                 @Override
                 public void onDurationChange(long startTime, long endTime, long duration) {
-                    mController.setPasterStartTime(startTime);
-                    mController.setPasterDuration(duration);
+                    mController.setPasterStartTime(startTime, TimeUnit.MILLISECONDS);
+                    mController.setPasterDuration(duration, TimeUnit.MILLISECONDS);
                     if (animPlayerView != null) {
-                        animPlayerView.setPlayTime(startTime, endTime);
+                        animPlayerView.setPlayTime(TimeUnit.MILLISECONDS.toMicros(startTime), TimeUnit.MILLISECONDS.toMicros(endTime));
                         Log.i(TAG, "showTimeEdit: startTime :" + startTime + " , endTime :" + endTime);
                     }
                 }
@@ -569,6 +602,26 @@ public abstract class AbstractPasterUISimpleImpl implements AliyunPasterBaseView
 
     public void setTempFrameAction(ActionBase mTempFrameAction) {
         this.mTempFrameAction = mTempFrameAction;
+    }
+
+    @Override
+    public void setPasterViewVisibility(int visibility) {
+        if (mPasterView != null) {
+            mPasterView.setVisibility(visibility);
+        }
+    }
+
+    public void setOnlyApplyUI(boolean bool) {
+        if (getController() != null) {
+            getController().setOnlyApplyUI(bool);
+        }
+    }
+
+    public EffectBase getEffect() {
+        if (getController() != null) {
+            return getController().getEffect();
+        }
+        return null;
     }
 }
 

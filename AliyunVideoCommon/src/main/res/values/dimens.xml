@@ -18,6 +18,7 @@
     <dimen name="alivc_common_width_icon_200">200dp</dimen>
     <dimen name="alivc_common_width_icon_44">44dp</dimen>
     <dimen name="alivc_common_width_icon_17">17dp</dimen>
+    <dimen name="alivc_common_width_btn_100">100dp</dimen>
     <!--end-->
 
 

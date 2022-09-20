@@ -5,15 +5,16 @@
 package com.aliyun.svideo.editor.effectmanager;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.aliyun.svideo.base.http.EffectService;
 import com.aliyun.svideo.editor.R;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -252,6 +252,7 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/alivc_common_width_btn_100"
                     android:layout_weight="1">
 
                     <Button
@@ -261,13 +262,6 @@
                         android:textAllCaps="false"
                         android:text="@string/alivc_crop_setting_encoder_openh264" />
                 </FrameLayout>
-
-                <Button
-                    android:layout_gravity="center"
-                    android:id="@+id/alivc_crop_encoder_ffmpeg"
-                    style="@style/alivc_crop_btn_style"
-                    android:textAllCaps="false"
-                    android:text="@string/alivc_crop_setting_encoder_ffmpeg" />
 
             </LinearLayout>
 

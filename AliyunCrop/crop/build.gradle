@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion externalCompileSdkVersion
-    buildToolsVersion externalBuildToolsVersion
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion externalMinSdkVersion
-        targetSdkVersion externalTargetSdkVersion
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
         consumerProguardFiles 'lib-proguard-rules.pro'
     }
     lintOptions {
@@ -16,7 +16,7 @@ android {
 
 dependencies {
     implementation project(':AliyunSVideoBase')
-    implementation externalAndroidRecyclerView
+    implementation externalAndroidXRecyclerView
     implementation project(':AliyunVideoCommon')
     implementation project(':AlivcMedia')
 }

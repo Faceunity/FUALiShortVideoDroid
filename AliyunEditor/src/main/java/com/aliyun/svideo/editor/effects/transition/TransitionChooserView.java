@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,15 +31,17 @@ import com.aliyun.svideo.editor.effects.control.SpaceItemDecoration;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideosdk.editor.AliyunIEditor;
 import com.aliyun.svideo.editor.util.EditorCommon;
-import com.aliyun.svideosdk.common.AliyunIClipConstructor;
 import com.aliyun.svideosdk.common.struct.effect.EffectConfig;
 import com.aliyun.svideosdk.common.struct.effect.TransitionBase;
 import com.aliyun.svideosdk.common.struct.effect.ValueTypeEnum;
+import com.aliyun.svideosdk.editor.AliyunISourcePartManager;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * @author cross_ly
  * @date 2018/08/28 <p>描述:
@@ -226,9 +229,9 @@ public class TransitionChooserView extends BaseChooser {
     /**
      * 初始化短视频片段显示的View
      *
-     * @param clipConstructor AliyunIClipConstructor
+     * @param clipConstructor AliyunISourcePartManager
      */
-    public void initTransitionAdapter(AliyunIClipConstructor clipConstructor) {
+    public void initTransitionAdapter(AliyunISourcePartManager clipConstructor) {
         mTransitionEffectCache = mEditorService.getTransitionEffectCache(clipConstructor);
         mTransitionAdapter = new TransitionAdapter(getContext(), mTransitionEffectCache);
         mTransitionAdapter.setOnSelectListener(new TransitionAdapter.OnSelectListener() {
@@ -322,7 +325,7 @@ public class TransitionChooserView extends BaseChooser {
             iv.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_circle_selector);
             break;
         case EFFECT_CUSTOM:
-            if (effectInfo.getPath() == null) {
+            if (effectInfo.getSource() == null || effectInfo.getSource().getPath() == null) {
                 iv.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_none_selector);
             } else {
                 iv.setImageResource(R.drawable.aliyun_svideo_video_edit_transition_custom_selector);
@@ -339,7 +342,7 @@ public class TransitionChooserView extends BaseChooser {
                 mTransitionEffectAdapter.setSelectPosition(0);
                 mParamsAdjustView.setVisibility(GONE);
             } else if (mCurrentEffectInfo.transitionType == EFFECT_CUSTOM && mCurrentEffectInfo.transitionBase != null) {
-                mTransitionEffectAdapter.setCustomSelectPosition(mCurrentEffectInfo.getPath());
+                mTransitionEffectAdapter.setCustomSelectPosition(mCurrentEffectInfo.getSource().getPath());
                 showEffectParamsUI(mCurrentEffectInfo.transitionBase);
             } else {
                 mTransitionEffectAdapter.setSelectPosition(effectPosition);
@@ -414,12 +417,12 @@ public class TransitionChooserView extends BaseChooser {
         int categoryIndex = 0;
         mCurrentEffectInfo = mTransitionEffectCache.get(0);
         boolean isSelect = false;
-        if (mCurrentEffectInfo != null && mCurrentEffectInfo.getPath() != null) {
+        if (mCurrentEffectInfo != null && mCurrentEffectInfo.getSource() != null && mCurrentEffectInfo.getSource().getPath() != null) {
             one: for (ResourceForm resourceForm : mTransitionList4Category) {
                 List<String> list = EditorCommon.getAnimationFilterListByDir(resourceForm.getPath());
                 if (list != null) {
                     for (String path : list) {
-                        if (mCurrentEffectInfo.getPath().equals(path)) {
+                        if (mCurrentEffectInfo.getSource().getPath().equals(path)) {
                             changeCategoryDir(resourceForm);
                             isSelect = true;
                             break one;
@@ -460,15 +463,15 @@ public class TransitionChooserView extends BaseChooser {
      * 判断短视频的片段数是否符合限制
      *
      * @param editor AliyunIEditor
-     * @return 符合返回 AliyunIClipConstructor 不符合返回null
+     * @return 符合返回 AliyunISourcePartManager 不符合返回null
      */
-    public static AliyunIClipConstructor isClipLimit(AliyunIEditor editor) {
-        AliyunIClipConstructor clipConstructor = editor.getSourcePartManager();
-        int size = clipConstructor.getMediaPartCount();
+    public static AliyunISourcePartManager isClipLimit(AliyunIEditor editor) {
+        AliyunISourcePartManager lSourcePartManager = editor.getSourcePartManager();
+        int size = lSourcePartManager.getMediaPartCount();
         if (size < MIN_COUNT /*|| size > MAX_COUNT*/) {
             return null;
         }
-        return clipConstructor;
+        return lSourcePartManager;
     }
 
     @Override
@@ -506,12 +509,12 @@ public class TransitionChooserView extends BaseChooser {
             //添加无转场的类型
             list.add(0, null);
         }
-        mTransitionEffectAdapter.setData(list);
+        mTransitionEffectAdapter.setData(resourceForm.getId(), list);
         //初始化和切换tab选择使用的转场
         if (mCurrentEffectInfo == null || mCurrentEffectInfo.transitionType == EFFECT_NONE) {
             mTransitionEffectAdapter.setSelectPosition(0);
         } else if (mCurrentEffectInfo.transitionType == EFFECT_CUSTOM) {
-            mTransitionEffectAdapter.setCustomSelectPosition(mCurrentEffectInfo.getPath());
+            mTransitionEffectAdapter.setCustomSelectPosition(mCurrentEffectInfo.getSource().getPath());
         } else {
             mTransitionEffectAdapter.setSelectPosition(mCurrentEffectInfo.transitionType);
         }

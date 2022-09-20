@@ -27,10 +27,18 @@
     <string name="alivc_media_total_duration_label_import">总时长</string>
     <string name="alivc_media_please_select_video">请选择视频</string>
     <string name="alivc_media_film_tail">片尾</string>
+    <string name="alivc_media_film_denoise">降噪</string>
+    <string name="alivc_media_film_transcode">转码</string>
+    <string name="alivc_media_watermark">水印</string>
+    <string name="alivc_media_film_transcode_tip">当视频大于1080P时，转码到1080P以下</string>
+    <string name="alivc_media_watermark_tip">添加阿里云logo水印</string>
+    <string name="alivc_media_mix_recorder_film_transcode_tip">当视频大于540P时，转码到540P以下</string>
     <string name="alivc_media__hardware_encoder">硬编</string>
     <string name="alivc_media__openh264_encoder">OpenH264软编</string>
-    <string name="alivc_media__ffmpeg_encoder">FFmpeg软编e</string>
 
     <string name="alivc_media_aliyun_video_codec">Encoding</string>
+
+    <string name="alivc_media_video_short_error">视频太短，无法导入</string>
+    <string name="alivc_media_video_template_import">导入%s段素材</string>
 
 </resources>

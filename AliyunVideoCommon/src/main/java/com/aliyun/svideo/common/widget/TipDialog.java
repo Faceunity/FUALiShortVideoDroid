@@ -3,7 +3,6 @@ package com.aliyun.svideo.common.widget;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -12,6 +11,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.aliyun.svideo.common.R;
 import com.aliyun.svideo.common.utils.DensityUtils;

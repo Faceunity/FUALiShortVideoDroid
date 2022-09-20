@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <array name="lut_order">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </array>
     <array name="filter_order">
         <item>优雅</item>
         <item>光圈</item>
@@ -68,6 +72,8 @@
         <item name="finishImage">@mipmap/aliyun_svideo_complete_red</item>
         <!--视频基本编辑对应图标-->
         <item name="videoEqImage">@mipmap/aliyun_svideo_augmentation</item>
+        <!--LUT item对应的图片-->
+        <item name="lutImage">@mipmap/aliyun_svideo_filter</item>
     </style>
     <!--用于控制编辑页面底部菜单显示内容，1显示0不显示-->
     <array name="bottomItemMenuVisibleTags">
@@ -78,6 +84,8 @@
         <!--动图是否显示-->
         <item>1</item>
         <!--字幕是否显示-->
+        <item>1</item>
+        <!--旧字幕是否显示-->
         <item>1</item>
         <!--MV是否显示-->
         <item>1</item>
@@ -92,10 +100,15 @@
         <!--涂鸦是否显示-->
         <item>1</item>
         <!--封面是否显示-->
-        <item>0</item>
+        <item>1</item>
         <!--视频编辑是否显示-->
         <item>1</item>
         <!--是否显示旋转字幕-->
         <item>1</item>
+        <!--是否显示画中画-->
+        <item>0</item>
+        <!--是否显示lut-->
+        <item>1</item>
+
     </array>
 </resources>

@@ -26,6 +26,8 @@ import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.aliyun.common.global.AliyunTag;
 import com.aliyun.svideo.editor.util.ChineseUtil;
 import com.aliyun.svideo.editor.util.CompatUtil;
@@ -34,7 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class AutoLayoutTextView extends android.support.v7.widget.AppCompatTextView {
+public class AutoLayoutTextView extends AppCompatTextView {
     private static final int NO_LINE_LIMIT = -1;
 
     private int mCurrentColor = Color.WHITE;

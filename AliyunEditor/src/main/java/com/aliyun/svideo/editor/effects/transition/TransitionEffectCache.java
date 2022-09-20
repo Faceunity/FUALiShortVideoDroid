@@ -4,12 +4,13 @@ import android.util.Log;
 
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
-import com.aliyun.svideosdk.common.AliyunIClipConstructor;
+import com.aliyun.svideosdk.common.struct.common.AliyunClip;
 import com.aliyun.svideosdk.common.struct.effect.TransitionBase;
+import com.aliyun.svideosdk.common.struct.effect.TransitionTranslate;
+import com.aliyun.svideosdk.editor.AliyunISourcePartManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -26,17 +27,66 @@ public class TransitionEffectCache {
     private LinkedHashMap<Integer, EffectInfo> mOldTransitionCache;
     private LinkedHashMap<Integer, EffectInfo> mTransitionCache;
     private HashSet<Integer> mCheckTool = new HashSet<>();
-    private AliyunIClipConstructor mAliyunIClipConstructor;
+    private AliyunISourcePartManager mAliyunSourcePartManager;
 
-    private TransitionEffectCache(AliyunIClipConstructor clipConstructor) {
-        mAliyunIClipConstructor = clipConstructor;
+    private TransitionEffectCache(AliyunISourcePartManager clipConstructor) {
+        mAliyunSourcePartManager = clipConstructor;
     }
 
-    public static TransitionEffectCache newInstance(AliyunIClipConstructor clipConstructor) {
-
+    public static TransitionEffectCache newInstance(AliyunISourcePartManager clipConstructor) {
         TransitionEffectCache effectCache = new TransitionEffectCache(clipConstructor);
         effectCache.mTransitionCache = new LinkedHashMap<>(clipConstructor.getMediaPartCount());
         effectCache.mOldTransitionCache = new LinkedHashMap<>(clipConstructor.getMediaPartCount());
+        //草稿转场状态恢复
+        List<AliyunClip> list = clipConstructor.getAllClips();
+        if (list.size() > 0) {
+            for (int i = 1; i < list.size(); i++) {
+                AliyunClip clip = list.get(i);
+                TransitionBase transition = clip.getTransition();
+                if (transition != null) {
+                    EffectInfo effectInfo = new EffectInfo();
+                    effectInfo.clipIndex = i - 1;
+                    effectInfo.transitionType = transition.mType;
+                    switch (transition.mType) {
+                    case TransitionBase.TRANSITION_TYPE_SHUTTER:
+                        effectInfo.transitionType = TransitionChooserView.EFFECT_SHUTTER;
+                        break;
+                    case TransitionBase.TRANSITION_TYPE_TRANSLATE:
+                        TransitionTranslate TransitionTranslate = ((TransitionTranslate) transition);
+                        if (TransitionTranslate.getDirection() == TransitionBase.DIRECTION_LEFT) {
+                            effectInfo.transitionType = TransitionChooserView.EFFECT_LEFT;
+                        } else if (TransitionTranslate.getDirection() == TransitionBase.DIRECTION_RIGHT) {
+                            effectInfo.transitionType = TransitionChooserView.EFFECT_RIGHT;
+                        } else if (TransitionTranslate.getDirection() == TransitionBase.DIRECTION_UP) {
+                            effectInfo.transitionType = TransitionChooserView.EFFECT_UP;
+                        } else if (TransitionTranslate.getDirection() == TransitionBase.DIRECTION_DOWN) {
+                            effectInfo.transitionType = TransitionChooserView.EFFECT_DOWN;
+                        }
+                        break;
+                    case TransitionBase.TRANSITION_TYPE_CIRCLE:
+                        effectInfo.transitionType = TransitionChooserView.EFFECT_CIRCLE;
+                        break;
+                    case TransitionBase.TRANSITION_TYPE_FIVEPOINTSTAR:
+                        effectInfo.transitionType = TransitionChooserView.EFFECT_FIVE_STAR;
+                        break;
+                    case TransitionBase.TRANSITION_TYPE_FADE:
+                        effectInfo.transitionType = TransitionChooserView.EFFECT_FADE;
+                        break;
+                    case TransitionBase.TRANSITION_TYPE_CUSTOM:
+                        effectInfo.transitionType = TransitionChooserView.EFFECT_CUSTOM;
+                        effectInfo.setSource(transition.getCustomSource());
+                        break;
+                    default:
+                        effectInfo.transitionType = TransitionChooserView.EFFECT_NONE;
+                    }
+                    effectInfo.type = UIEditorPage.TRANSITION;
+                    effectInfo.transitionBase = transition;
+                    //转场保存在后一位
+                    effectCache.mOldTransitionCache.put(i - 1, effectInfo);
+                    effectCache.mTransitionCache.put(i - 1, effectInfo);
+                }
+            }
+        }
         return effectCache;
 
     }
@@ -51,12 +101,12 @@ public class TransitionEffectCache {
         return mTransitionCache.get(aliyunClipIndex);
     }
 
-    public AliyunIClipConstructor getAliyunIClipConstructor() {
-        return mAliyunIClipConstructor;
+    public AliyunISourcePartManager getAliyunSourcePartManager() {
+        return mAliyunSourcePartManager;
     }
 
     public int getCount() {
-        return mAliyunIClipConstructor.getMediaPartCount();
+        return mAliyunSourcePartManager.getMediaPartCount();
     }
 
     public void editor() {
@@ -89,11 +139,12 @@ public class TransitionEffectCache {
             while (iterator.hasNext()) {
                 Map.Entry<Integer, EffectInfo> next = iterator.next();
                 EffectInfo effectInfo = next.getValue();
-                if (effectInfo != null && effectInfo.getPath() != null
-                        && !new File(effectInfo.getPath()).exists()) {
+                if (effectInfo != null && effectInfo.getSource() != null && effectInfo.getSource().getPath() != null
+                        && !new File(effectInfo.getSource().getPath()).exists()) {
                     iterator.remove();
-                    Log.e(TAG, "removeTransition mTransitionCache path :" + effectInfo.getPath());
+                    Log.e(TAG, "removeTransition mTransitionCache path :" + effectInfo.getSource().getPath());
                     effectInfo.setPath(null);
+                    effectInfo.setSource(null);
                     effectInfo.transitionBase = new TransitionBase();
                     list.add(effectInfo);
                     mCheckTool.remove(next.getKey());
@@ -106,11 +157,12 @@ public class TransitionEffectCache {
             while (iterator.hasNext()) {
                 Map.Entry<Integer, EffectInfo> next = iterator.next();
                 EffectInfo effectInfo = next.getValue();
-                if (effectInfo != null && effectInfo.getPath() != null
-                        && !new File(effectInfo.getPath()).exists()) {
+                if (effectInfo != null && effectInfo.getSource() != null && effectInfo.getSource().getPath() != null
+                        && !new File(effectInfo.getSource().getPath()).exists()) {
                     iterator.remove();
-                    Log.e(TAG, "removeTransition mOldTransitionCache path :" + effectInfo.getPath());
+                    Log.e(TAG, "removeTransition mOldTransitionCache path :" + effectInfo.getSource().getPath());
                     effectInfo.setPath(null);
+                    effectInfo.setSource(null);
                     effectInfo.transitionBase = new TransitionBase();
                     list.add(effectInfo);
                 }

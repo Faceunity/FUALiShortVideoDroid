@@ -3,9 +3,10 @@ package com.aliyun.svideo.editor.effects.filter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.view.MotionEventCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -24,8 +25,9 @@ import com.aliyun.svideo.editor.effects.control.OnItemClickListener;
 import com.aliyun.svideo.editor.effects.control.OnItemTouchListener;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.base.widget.CircularImageView;
+import com.aliyun.svideo.editor.util.AlivcResUtil;
 import com.aliyun.svideo.editor.util.EditorCommon;
-import com.aliyun.svideosdk.common.struct.effect.EffectFilter;
+import com.aliyun.svideosdk.common.struct.project.Source;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.common.utils.image.AbstractImageLoaderTarget;
 
@@ -50,6 +52,7 @@ public class EffectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private OnItemTouchListener mItemTouchListener;
     private GestureDetector mDetector;
     private List<String> mFilterList = new ArrayList<>();
+    private int mGroupId;
 
     public EffectAdapter(Context context) {
         this.mContext = context;
@@ -72,6 +75,17 @@ public class EffectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     EffectInfo effectInfo = new EffectInfo();
                     effectInfo.type = UIEditorPage.FILTER_EFFECT;
                     effectInfo.setPath(mFilterList.get(position));
+                    Source source = new Source(mFilterList.get(position));
+                    source.setId(String.valueOf(position));
+                    if (source.getPath() != null && source.getPath().contains(File.separator)) {
+                        //groupID 0和1为本地资源
+                        boolean isApp = mGroupId <= EditorCommon.QU_ANIMATION_SPLIT_SCREEN_FILTER_ID;
+                        String name = source.getPath().substring(source.getPath().lastIndexOf(File.separator) + 1);
+                        source.setURL(AlivcResUtil.getResUri(isApp ? "app" : "cloud",
+                                                             AlivcResUtil.TYPE_ANIMATION_EFFECTS, String.valueOf(mGroupId), name));
+                    }
+
+                    effectInfo.setSource(source);
                     effectInfo.id = position;
                     mItemTouchListener.onTouchEvent(OnItemTouchListener.EVENT_DOWN, position, effectInfo);
                     isAdding = true;
@@ -106,6 +120,9 @@ public class EffectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         EffectInfo effectInfo = new EffectInfo();
                         effectInfo.type = UIEditorPage.FILTER_EFFECT;
                         effectInfo.setPath(mFilterList.get(position));
+                        Source source = new Source(mFilterList.get(position));
+                        source.setId(String.valueOf(position));
+                        effectInfo.setSource(source);
                         effectInfo.id = position;
                         mItemClick.onItemClick(effectInfo, position);
                     }
@@ -158,6 +175,15 @@ public class EffectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 EffectInfo effectInfo = new EffectInfo();
                 effectInfo.type = UIEditorPage.FILTER_EFFECT;
                 effectInfo.setPath(mFilterList.get(position));
+                Source source = new Source(mFilterList.get(position));
+                source.setId(String.valueOf(position));
+                effectInfo.setSource(source);
+                if (source.getPath() != null && source.getPath().contains(File.separator)) {
+                    boolean isApp = source.getPath().contains("aliyun_svideo_animation_filter/");
+                    String name = source.getPath().substring(source.getPath().lastIndexOf(File.separator) + 1);
+                    source.setURL(AlivcResUtil.getResUri(isApp ? "app" : "cloud",
+                                                         AlivcResUtil.TYPE_ANIMATION_EFFECTS, String.valueOf(mGroupId), name));
+                }
                 effectInfo.id = position;
                 mItemTouchListener.onTouchEvent(OnItemTouchListener.EVENT_UP,
                                                 position, effectInfo);
@@ -209,7 +235,8 @@ public class EffectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mItemTouchListener = li;
     }
 
-    public void setDataList(List<String> list) {
+    public void setDataList(int groupId, List<String> list) {
+        mGroupId = groupId;
         mFilterList.clear();
         mFilterList.addAll(list);
     }

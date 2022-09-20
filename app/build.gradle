@@ -1,25 +1,25 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.0'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.3'
     packagingOptions {
         exclude('META-INF/LICENSE')
         exclude('META-INF/beans.xml')
-        exclude 'META-INF/proguard/androidx-annotations.pro'
     }
 
     defaultConfig {
         applicationId "com.aliyun.apsaravideo"
-        minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 31600
-        versionName "3.16.0"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 32000
+        versionName "3.32.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
-           abiFilters "armeabi-v7a","arm64-v8a"
+            abiFilters "armeabi-v7a", "arm64-v8a"
         }
+        buildConfigField("boolean", "isFinal", "false")
     }
 
     signingConfigs {
@@ -72,21 +72,24 @@ android {
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project (':AliyunEditor')
-    implementation project (':AliyunRecorder:record')
-    implementation project (':AliyunCrop:crop')
-    implementation project (':AliyunVideoCommon')
-    implementation project (':AliyunFileDownLoader')
-    implementation project (':AliyunResample')
-    implementation project (':AliyunSVideoBase')
-    implementation project (':RaceSample.Android:AliyunRaceSample')
-    implementation externalAndroidAppCompatV7
-    implementation externalAndroidSupportV4
-    implementation externalAndroidRecyclerView
+    compile project(':AliyunEditor')
+    compile project(':AliyunRecorder:pro_record')
+    compile project(':AliyunResample')
+    implementation project(':AliyunEditor')
+    implementation project(':AliyunRecorder:pro_record')
+    implementation project(':AliyunCrop:crop')
+    implementation project(':AliyunVideoCommon')
+    implementation project(':AliyunFileDownLoader')
+    implementation project(':AliyunResample')
+    implementation project(':AliyunSVideoBase')
+    implementation project(':QueenBeauty')
+    implementation externalAndroidXAppcompat
+    implementation externalAndroidXRecyclerView
+    implementation externalAndroidXConstraintlayout
+    implementation externalAndroidXCardview
+    implementation externalAndroidDesign
     implementation externalGSON
     implementation externalOKHTTP
     implementation externalAndroidMultiDex
-//    implementation  'com.umeng.umsdk:analytics:8.0.0'
-//    implementation  'com.umeng.umsdk:common:2.0.0'
 
 }

@@ -8,10 +8,13 @@
     <string name="empty_music">无音乐</string>
 
     <!--特效菜单栏-->
+    <string name="alivc_editor_effect_compound_text">复杂字幕</string>
     <string name="alivc_editor_effect_filter">滤镜</string>
     <string name="alivc_editor_effect_music">音乐</string>
     <string name="alivc_editor_effect_sticker">动图</string>
+    <string name="alivc_editor_effect_pip">画中画</string>
     <string name="alivc_editor_effect_caption">字幕</string>
+    <string name="alivc_editor_effect_caption_old">旧字幕</string>
     <string name="alivc_editor_effect_mv">MV</string>
     <string name="alivc_editor_effect_sound">音效</string>
     <string name="alivc_editor_effect_effect">特效</string>
@@ -21,6 +24,7 @@
     <string name="alivc_editor_effect_cover">封面</string>
     <string name="alivc_editor_effect_videoeq">调节</string>
     <string name="alivc_editor_effect_roll_caption">翻转字幕</string>
+    <string name="alivc_editor_effect_beauty">美颜</string>
     <!--end-->
 
     <!-- 翻转字幕弹窗 -->
@@ -53,7 +57,10 @@
 
     <string name="alivc_editor_dialog_caption_keyboard">键盘</string>
     <string name="alivc_editor_dialog_caption_color">颜色</string>
+    <string name="alivc_editor_dialog_caption_background_color">背景</string>
     <string name="alivc_editor_dialog_caption_effect">特效</string>
+    <string name="alivc_editor_dialog_caption_style">样式</string>
+    <string name="alivc_editor_dialog_caption_animation">动画</string>
     <string name="alivc_editor_dialog_caption_tip_not_support">倒播时不支持添加字幕动画效果</string>
 
     <string name="alivc_editor_dialog_none_effect">原片</string>
@@ -85,6 +92,9 @@
     <string name="alivc_editor_dialog_sound_howl">怒吼</string>
     <string name="alivc_editor_dialog_sound_dialect">方言</string>
 
+    <string name="alivc_editor_toast_no_authorization">该增值服务没有产品授权，请检查授权</string>
+    <string name="alivc_editor_toast_template_loading">演示模板加载中，请稍等...</string>
+
     <string name="alivc_editor_dialog_animate_tittle">滤镜特效</string>
     <string name="alivc_editor_dialog_animate_revoke">撤销</string>
     <string name="alivc_editor_dialog_animate_phantom">幻影</string>
@@ -108,6 +118,17 @@
     <string name="alivc_editor_dialog_effect_shutter">百叶窗</string>
     <string name="alivc_editor_dialog_effect_fade">淡入淡出</string>
     <string name="alivc_editor_dialog_effect_circle">圆形</string>
+    <string name="alivc_editor_dialog_effect_printer">打字机</string>
+    <string name="alivc_editor_dialog_effect_rotate_by">钟摆</string>
+    <string name="alivc_editor_dialog_effect_rotate_to">雨刷</string>
+    <string name="alivc_editor_dialog_effect_set1">组合动画1</string>
+    <string name="alivc_editor_dialog_effect_set2">组合动画2</string>
+    <string name="alivc_editor_dialog_effect_wave">波浪</string>
+    <string name="alivc_editor_dialog_effect_rotate_in">螺旋上升</string>
+    <string name="alivc_editor_dialog_effect_heat">心跳</string>
+    <string name="alivc_editor_dialog_effect_roundscan">圆形扫描</string>
+    <string name="alivc_editor_dialog_effect_wave_jump">波浪弹入</string>
+
 
     <!--end-->
 
@@ -141,16 +162,23 @@
     <string name="alivc_editor_publish_tip_retry">请返回编辑稍后再试</string>
     <string name="alivc_editor_publish_tip_add_desc">你可以在合成中添加视频描述...</string>
     <string name="alivc_editor_publish_my_video">我的视频</string>
+    <string name="alivc_editor_publish_upload_error">上传失败，请重新上传</string>
+    <string name="alivc_editor_publish_upload_get_image_auth_failure">获取封面上传凭证失败</string>
+    <string name="alivc_editor_publish_upload_get_video_auth_failure">获取视频上传凭证失败</string>
     <string name="alivc_editor_publish_upload_param_error">上传参数错误</string>
-
-
-
+    <string name="alivc_editor_publish_video_uploading">视频上传中:%s%%</string>
+    <string name="alivc_editor_publish_image_uploading">封面上传中</string>
+    <string name="alivc_editor_publish_upload_image_success">封面上传成功</string>
+    <string name="aliyun_svideo_editor_compose">合成</string>
+    <string name="aliyun_svideo_editor_compose_and_upload">边合成边上传</string>
+    <string name="aliyun_svideo_editor_build_template">生成模板</string>
     <!--end-->
+
     <!--封面选择页面-->
     <string name="alivc_editor_cover_tittle">选择封面</string>
     <string name="alivc_editor_cover_fetch_cover_error">获取封面图失败，请重新选择</string>
-
     <!--end-->
+
     <!--错误提示-->
     <string name="alivc_editor_error_tip_play_video_error">该视频为错误视频</string>
     <string name="alivc_editor_error_tip_not_supported_audio">不支持的音频格式</string>
@@ -169,12 +197,76 @@
     <string name="alivc_editor_edit_tip_decoder_error_interrupt">解码失败</string>
     <string name="alivc_editor_edit_tip_transcode_no_operate">正在转码，请勿操作</string>
     <string name="alivc_editor_effect_text_stroke">描边</string>
+    <string name="alivc_editor_effect_text_fontstyle">粗斜体</string>
+    <string name="alivc_editor_effect_text_alignment">排版</string>
+    <string name="alivc_editor_effect_text_shadow">阴影</string>
     <string name="alivc_editor_effect_text_color">填充</string>
+    <string name="alivc_editor_effect_text_bubble">气泡</string>
+    <string name="alivc_editor_effect_text_flourish">花字</string>
+    <string name="alivc_editor_effect_text_default">输入文字</string>
+    <string name="alivc_editor_effect_text_alignment_left">居左</string>
+    <string name="alivc_editor_effect_text_alignment_right">居右</string>
+    <string name="alivc_editor_effect_text_alignment_center">居中</string>
     <!--end-->
 
     <!--媒体选择页面-->
     <string name="alivc_editor_media_tip_no_permission">没有权限</string>
     <!--end-->
+
+    <!--草稿箱-->
+    <string name="alivc_editor_draft">草稿箱</string>
+    <string name="alivc_editor_draft_enter_name">请输入草稿名称</string>
+    <string name="alivc_editor_draft_enter_name_hint">草稿名称</string>
+    <string name="alivc_editor_draft_server_url">请输入服务器地址</string>
+    <string name="alivc_editor_draft_server_url_hint">服务器地址</string>
+    <string name="alivc_editor_draft_server_user_name">请输入用户名</string>
+    <string name="alivc_editor_draft_server_user_name_hint">用户名</string>
+    <string name="alivc_svideo_draft_menu_rename">重命名</string>
+    <string name="alivc_svideo_draft_menu_update_cover">更新封面</string>
+    <string name="alivc_svideo_draft_menu_copy">复制草稿</string>
+    <string name="alivc_svideo_draft_menu_backup">备份到云端</string>
+    <string name="alivc_svideo_draft_backup_tips">备份于</string>
+    <string name="alivc_svideo_draft_backup_success">备份成功</string>
+    <string name="alivc_svideo_draft_backup_exception">备份资源异常</string>
+    <string name="alivc_svideo_draft_backup_failed">备份失败</string>
+    <string name="alivc_svideo_draft_restore_success">成功恢复到本地</string>
+    <string name="alivc_svideo_draft_restore_failed">恢复到本地失败</string>
+    <string name="alivc_svideo_draft_cover_failed">封面地址查找失败</string>
+    <string name="alivc_svideo_draft_cover_cancel">封面选择取消</string>
+    <string name="alivc_svideo_draft_update_tips">更新于</string>
+    <string name="alivc_svideo_draft_preload_failed">预加载失败</string>
+    <!--end-->
+
+    <!--模板列表-->
+    <string name="alivc_editor_template_list">模板列表</string>
+    <string name="alivc_editor_template_list_import">导入模板</string>
+    <string name="alivc_editor_template_list_loading_exception">模板列表加载异常</string>
+    <string name="alivc_editor_template_list_import_success">导入成功</string>
+    <string name="alivc_editor_template_list_import_failed">导入失败</string>
+    <string name="alivc_svideo_template_list_menu_export">导出</string>
+    <string name="alivc_editor_template_list_export_success">导出成功</string>
+    <string name="alivc_editor_template_list_export_failed">导出失败</string>
+    <!--end-->
+
+    <!--模板生成页面-->
+    <string name="alivc_editor_template_build_title">确认需要替换的素材</string>
+    <string name="alivc_editor_template_build_tips">勾选片段，让用户可以替换成直接的视频</string>
+    <string name="alivc_editor_template_build_btn">生成</string>
+    <string name="alivc_editor_template_build_title_tips">请输入模板标题</string>
+    <string name="alivc_editor_template_build_title_hint">模板标题</string>
+    <!--end-->
+
+    <!--模板编辑页面-->
+    <string name="alivc_editor_template_editor_video">视频编辑</string>
+    <string name="alivc_editor_template_editor_text">文字编辑</string>
+    <string name="alivc_editor_template_editor_draft">编辑模板草稿</string>
+    <string name="alivc_editor_template_editor_draft_failed">转换成草稿失败</string>
+    <string name="alivc_editor_template_editor_load_failed">模板加载异常</string>
+    <!--end-->
+
+    <string name="alivc_svideo_menu_delete">删除</string>
+    <string name="alivc_svideo_menu_positive">确定</string>
+    <string name="alivc_svideo_menu_cancel">取消</string>
 
     <string name="alivc_svideo_grace">优雅</string>
     <string name="alivc_svideo_halo">光圈</string>
@@ -204,7 +296,11 @@
     <string name="alivc_svideo_wheat">麦茶</string>
     <string name="alivc_svideo_black_white">黑白</string>
     <string name="alivc_svideo_blurry">模糊</string>
+    <string name="alivc_svideo_filter_lut_add">添加</string>
+    <string name="alivc_svideo_filter_lut_remove">清除</string>
+    <string name="alivc_svideo_filter_lut">LUT滤镜</string>
 
-
+    <string name="ugsv_width">宽度</string>
+    <string name="ugsv_corner_radius">圆角</string>
 </resources>
 

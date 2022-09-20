@@ -28,6 +28,7 @@ public class PasterUITextImpl extends PasterUIGifImpl {
         mText.setText(controller.getText());
         mText.setTextOnly(true);
         mText.setFontPath(controller.getPasterTextFont());
+        mText.setFontSource(controller.getPasterTextFontSource());
         mText.setTextAngle(controller.getPasterTextRotation());
         mText.setTextStrokeColor(controller.getTextStrokeColor());
         mText.setCurrentColor(controller.getTextColor());

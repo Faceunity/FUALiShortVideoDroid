@@ -9,7 +9,7 @@
     <dimen name="alivc_editor_size_effect_list_view">100dp</dimen>
 
 
-    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!-- CaptionDefault screen margins, per the Android Design guidelines. -->
 
 
     <dimen name="aliyun_editor_size_square_thumbnail">32dp</dimen>

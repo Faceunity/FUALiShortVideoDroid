@@ -13,10 +13,13 @@ import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.editor.thumblinebar.OverlayThumbLineBar;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
 import com.aliyun.svideo.editor.widget.BaseAliyunPasterView;
+import com.aliyun.svideosdk.common.struct.effect.EffectPaster;
 import com.aliyun.svideosdk.editor.AliyunIEditor;
 import com.aliyun.svideosdk.editor.AliyunPasterController;
 import com.aliyun.svideosdk.common.struct.effect.ActionBase;
 import com.aliyun.svideosdk.common.struct.effect.ActionTranslate;
+
+import java.util.concurrent.TimeUnit;
 
 public class PasterUIGifImpl extends AbstractPasterUISimpleImpl {
     protected AliyunIEditor mAliyunIEditor;
@@ -38,17 +41,15 @@ public class PasterUIGifImpl extends AbstractPasterUISimpleImpl {
         this.mAliyunIEditor = iEditor;
     }
 
-    @Override
     public void moveToCenter() {
         mMoveDelay = true;
         mPasterView.post(new Runnable() {
             @Override
             public void run() {
-                int cx = mController.getPasterCenterX();
-                int cy = mController.getPasterCenterY();
-                int pcx = ((ViewGroup)mPasterView.getParent()).getWidth();
-                int pcy = ((ViewGroup)mPasterView.getParent()).getHeight();
-                mPasterView.moveContent(cx - pcx / 2, cy - pcy / 2);
+                EffectPaster paster = (EffectPaster) mController.getEffect();
+                float cx = mController.getPasterCenterX();
+                float cy = mController.getPasterCenterY();
+                mPasterView.moveContent(cx - paster.displayWidth / 2, cy - paster.displayHeight / 2);
             }
         });
     }
@@ -137,7 +138,8 @@ public class PasterUIGifImpl extends AbstractPasterUISimpleImpl {
             return;
         }
         super.editTimeCompleted();
-        if (mAliyunIEditor != null) {
+        //super.editTimeCompleted()可能会移除paster，这里还要再做一次判断
+        if (!mController.isOnlyApplyUI() && !isPasterRemoved() && mAliyunIEditor != null) {
             if (mOldFrameAction != null) {
                 mAliyunIEditor.removeFrameAnimation(mOldFrameAction);
                 mOldFrameAction = null;
@@ -145,34 +147,40 @@ public class PasterUIGifImpl extends AbstractPasterUISimpleImpl {
             mFrameAction = mTempFrameAction;
 
             if (mFrameAction != null) {
-                applyAnimation(mFrameAction, this instanceof PasterUITextImpl);
-            }  else {
-                mAliyunIEditor.addAnimationFilter(null);
+                applyAnimation(mFrameAction);
             }
             mOldFrameAction = mFrameAction;
         }
         isEditStarted = false;
     }
 
-    private void applyAnimation(ActionBase actionBase, boolean isTextView) {
+    private void applyAnimation(ActionBase actionBase) {
 
         ActionTranslate actionTranslate = null;
         if (actionBase instanceof ActionTranslate) {
-            actionTranslate = new ActionTranslate();
+            ActionTranslate tempActionTranslate = ((ActionTranslate) actionBase);
+            //如果已经处理过则不需要处理
+            if (tempActionTranslate.getFromPointX() == 0
+                    && tempActionTranslate.getFromPointY() == 0
+                    && tempActionTranslate.getToPointX() == 0
+                    && tempActionTranslate.getToPointY() == 0) {
+                actionTranslate = new ActionTranslate();
+            }
+
         }
 
-        long pasterStartTime = mController.getPasterStartTime();
+        long pasterStartTimeInMills = mController.getPasterStartTime(TimeUnit.MILLISECONDS);
         //long pasterDuration = mController.getPasterDuration();
-        long pasterDuration = 1000 * 1000;
+        long pasterDuration = 1000;
 
         actionBase.setTargetId(mController.getEffect().getViewId());
-        actionBase.setStartTime(pasterStartTime);
-        actionBase.setDuration(pasterDuration);
+        actionBase.setStartTime(pasterStartTimeInMills, TimeUnit.MILLISECONDS);
+        actionBase.setDuration(pasterDuration, TimeUnit.MILLISECONDS);
         if (actionTranslate != null) {
             actionTranslate.setTargetId(mController.getEffect().getViewId());
-            actionTranslate.setStartTime(pasterStartTime);
-            actionTranslate.setDuration(pasterDuration);
-            setTranslateParams(actionBase, actionTranslate, isTextView);
+            actionTranslate.setStartTime(pasterStartTimeInMills, TimeUnit.MILLISECONDS);
+            actionTranslate.setDuration(pasterDuration, TimeUnit.MILLISECONDS);
+            setTranslateParams(actionBase, actionTranslate);
             mAliyunIEditor.addFrameAnimation(actionTranslate);
             mFrameAction = actionTranslate;
         } else {
@@ -183,9 +191,8 @@ public class PasterUIGifImpl extends AbstractPasterUISimpleImpl {
     /**
      * 因为dialog中无法获取准确的位移位置，需要在这里对位移参数重新设定
      * @param actionBase ActionBase
-     * @param isTextView 是不是操作textView
      */
-    private void setTranslateParams(ActionBase animation, ActionBase actionBase, boolean isTextView) {
+    private void setTranslateParams(ActionBase animation, ActionBase actionBase) {
 
         ActionTranslate actionTranslate = (ActionTranslate) actionBase;
         ViewParent parent = mPasterView.getParent();
@@ -205,11 +212,6 @@ public class PasterUIGifImpl extends AbstractPasterUISimpleImpl {
         float x = ((right + left) / 2 - widthUnit) / widthUnit;
         float y = -((top + bottom) / 2 - heightUnit) / heightUnit;
         float detY = 0;
-        if (isTextView) {
-            int paddingTop = mText.getPaddingTop();
-            detY = (-(top + mText.getTextHeight() / 2 + paddingTop - heightUnit) + ((top + bottom) / 2 - heightUnit)) / heightUnit;
-            y = -(top + mText.getTextHeight() / 2 + paddingTop - heightUnit) / heightUnit;
-        }
 
         //出场
 //        actionTranslate.setFromPointX(x);
@@ -257,14 +259,4 @@ public class PasterUIGifImpl extends AbstractPasterUISimpleImpl {
 
 
 
-    /**
-     * 拷贝动画
-     * @return ActionBase
-     */
-    private ActionBase copyFrameAction() {
-        ActionBase actionBase = new ActionBase();
-        actionBase.setDuration(mFrameAction.getDuration());
-        //actionBase.set
-        return null;
-    }
 }

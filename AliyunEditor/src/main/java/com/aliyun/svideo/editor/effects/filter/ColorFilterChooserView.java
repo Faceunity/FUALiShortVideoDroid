@@ -2,10 +2,11 @@ package com.aliyun.svideo.editor.effects.filter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TextView;
@@ -63,6 +64,12 @@ public class ColorFilterChooserView extends BaseChooser implements OnItemClickLi
         top.setBounds(0, 0, top.getMinimumWidth(), top.getMinimumHeight());
         mTvEffectTitle.setCompoundDrawables(top, null, null, null );
         //        mListView.scrollToPosition(mEditorService.getEffectIndex(UIEditorPage.FILTER_EFFECT));
+    }
+
+    public void setSelectedPos(final int selectedPos) {
+        if (mFilterAdapter != null) {
+            mFilterAdapter.setSelectedPos(selectedPos);
+        }
     }
 
     @Override

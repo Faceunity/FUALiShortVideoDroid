@@ -71,6 +71,7 @@
 -keep class com.aliyun.svideo.media.MediaDir { *;}
 -keep class com.aliyun.svideo.media.MediaInfo { *;}
 -keep class com.alivc.component.encoder.**{ *;}
+-keep class com.alivc.component.decoder.**{ *;}
 -keep class com.aliyun.log.core.AliyunLogCommon { *;}
 -keep class com.aliyun.log.core.AliyunLogger { *;}
 -keep class com.aliyun.log.core.AliyunLogParam { *;}

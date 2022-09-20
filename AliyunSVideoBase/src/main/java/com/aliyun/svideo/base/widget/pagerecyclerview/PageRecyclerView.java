@@ -6,11 +6,12 @@ package com.aliyun.svideo.base.widget.pagerecyclerview;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 

@@ -6,8 +6,9 @@ package com.aliyun.svideo.editor.effects.caption;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +21,20 @@ import com.aliyun.svideo.editor.R;
 import com.aliyun.svideo.editor.effects.control.EffectInfo;
 import com.aliyun.svideo.editor.effects.control.OnItemClickListener;
 import com.aliyun.svideo.editor.effects.control.UIEditorPage;
+import com.aliyun.svideo.editor.util.AlivcResUtil;
 import com.aliyun.svideo.editor.util.EditorCommon;
 import com.aliyun.svideo.downloader.DownloaderManager;
 import com.aliyun.svideo.downloader.FileDownloaderCallback;
 import com.aliyun.svideo.downloader.FileDownloaderModel;
-import com.aliyun.jasonparse.JSONSupportImpl;
-import com.aliyun.qupaiokhttp.HttpRequest;
-import com.aliyun.qupaiokhttp.StringHttpRequestCallback;
+import com.aliyun.common.jasonparse.JSONSupportImpl;
+import com.aliyun.common.qupaiokhttp.HttpRequest;
+import com.aliyun.common.qupaiokhttp.StringHttpRequestCallback;
 import com.aliyun.svideo.base.widget.CircularImageView;
 import com.aliyun.svideosdk.common.struct.form.FontForm;
 import com.aliyun.svideo.common.utils.image.ImageLoaderImpl;
 import com.aliyun.svideo.common.utils.image.AbstractImageLoaderTarget;
+import com.aliyun.svideosdk.common.struct.project.Source;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -42,6 +46,7 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Context mContext;
     private OnItemClickListener mItemClick;
     private ArrayList<PasterForm> data = new ArrayList<>();
+    private int mGroupId;
     private ArrayList<Integer> ids = new ArrayList<>();
     private CopyOnWriteArrayList<FontForm> fontData = new CopyOnWriteArrayList<>();
     private ResourceForm mResourceForm;
@@ -58,6 +63,7 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
         mIsShowFont = false;
         mResourceForm = data;
+        mGroupId = data.getId();
         this.data = (ArrayList<PasterForm>) data.getPasterList();
         notifyDataSetChanged();
     }
@@ -238,7 +244,7 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         });
     }
 
-    private void downloadFont(FontForm form, final int index) {
+    private void downloadFont(final FontForm form, final int index) {
         FileDownloaderModel model = new FileDownloaderModel();
         model.setEffectType(FONT_TYPE);
         model.setName(form.getName());
@@ -266,6 +272,9 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     effectInfo.type = UIEditorPage.FONT;
                     effectInfo.setPath(null);
                     effectInfo.fontPath = path;
+                    Source fontSource = new Source(path);
+                    fontSource.setURL(AlivcResUtil.getCloudResUri(AlivcResUtil.TYPE_FONT, String.valueOf(form.getId())));
+                    effectInfo.fontSource = fontSource;
                     mItemClick.onItemClick(effectInfo, index);
                 }
             }
@@ -299,12 +308,19 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if (mItemClick != null) {
                     EffectInfo effectInfo = new EffectInfo();
                     effectInfo.type = UIEditorPage.CAPTION;
-                    effectInfo.setPath(path);
+                    effectInfo.setSource(new Source(path));
+                    effectInfo.getSource().setId(String.valueOf(form.getId()));
+                    boolean isApp = effectInfo.getSource().getPath().contains("aliyun_svideo_caption/");
+                    effectInfo.getSource().setURL(AlivcResUtil.getResUri(isApp ? "app": "cloud", AlivcResUtil.TYPE_BUBBLE, String.valueOf(mGroupId), effectInfo.getSource().getId()));
                     FontForm fontForm = getFontByPaster(form);
                     if (fontForm == null) {
                         effectInfo.fontPath = null;
+                        effectInfo.fontSource = null;
                     } else {
                         effectInfo.fontPath = DownloaderManager.getInstance().getDbController().getPathByUrl(fontForm.getUrl());
+                        Source fontSource = new Source(effectInfo.fontPath);
+                        fontSource.setURL(AlivcResUtil.getCloudResUri(AlivcResUtil.TYPE_FONT, String.valueOf(fontForm.getId())));
+                        effectInfo.fontSource = fontSource;
                     }
                     mItemClick.onItemClick(effectInfo, position);
                 }
@@ -332,6 +348,9 @@ public class CaptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         effectInfo.type = UIEditorPage.FONT;
                         effectInfo.setPath(null);
                         effectInfo.fontPath = path;
+                        Source fontSource = new Source(path);
+                        fontSource.setURL(AlivcResUtil.getCloudResUri(AlivcResUtil.TYPE_FONT, String.valueOf(form.getId())));
+                        effectInfo.fontSource = fontSource;
                         mItemClick.onItemClick(effectInfo, position);
                     }
                 } else {
