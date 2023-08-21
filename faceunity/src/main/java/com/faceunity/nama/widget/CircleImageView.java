@@ -38,12 +38,12 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
-import android.widget.ImageView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.faceunity.nama.R;
 
@@ -52,7 +52,7 @@ import com.faceunity.nama.R;
  * Current version is 3.1.0
  */
 @SuppressWarnings("UnusedDeclaration")
-public class CircleImageView extends ImageView {
+public class CircleImageView extends AppCompatImageView {
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
 

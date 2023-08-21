@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-
 import androidx.core.view.GravityCompat;
 
 import com.faceunity.nama.seekbar.internal.compat.SeekBarCompat;

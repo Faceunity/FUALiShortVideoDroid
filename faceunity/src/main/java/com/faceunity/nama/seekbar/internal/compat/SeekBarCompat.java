@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewParent;
 import android.widget.TextView;
 
-
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
 

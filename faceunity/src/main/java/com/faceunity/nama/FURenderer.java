@@ -11,12 +11,14 @@ import com.faceunity.core.enumeration.CameraFacingEnum;
 import com.faceunity.core.enumeration.FUAIProcessorEnum;
 import com.faceunity.core.enumeration.FUAITypeEnum;
 import com.faceunity.core.enumeration.FUTransformMatrixEnum;
+import com.faceunity.core.faceunity.FUAIKit;
 import com.faceunity.core.faceunity.FURenderConfig;
 import com.faceunity.core.faceunity.FURenderKit;
 import com.faceunity.core.faceunity.FURenderManager;
 import com.faceunity.core.utils.CameraUtils;
 import com.faceunity.core.utils.FULogger;
 import com.faceunity.nama.listener.FURendererListener;
+import com.faceunity.nama.utils.FuDeviceUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +41,6 @@ public class FURenderer extends IFURenderer {
             synchronized (FURenderer.class) {
                 if (INSTANCE == null) {
                     INSTANCE = new FURenderer();
-                    INSTANCE.mFURenderKit = FURenderKit.getInstance();
                 }
             }
         }
@@ -53,7 +54,9 @@ public class FURenderer extends IFURenderer {
 
 
     /* 特效FURenderKit*/
-    private FURenderKit mFURenderKit;
+    private FURenderKit mFURenderKit = FURenderKit.getInstance();
+    /* 特效FURenderKit*/
+    private FUAIKit mFUAIKit = FUAIKit.getInstance();
 
     /* AI道具*/
     private String BUNDLE_AI_FACE = "model" + File.separator + "ai_face_processor.bundle";
@@ -86,14 +89,14 @@ public class FURenderer extends IFURenderer {
      */
     @Override
     public void setup(Context context) {
-        FURenderManager.setKitDebug(FULogger.LogLevel.TRACE);
+        FURenderManager.setKitDebug(FULogger.LogLevel.ERROR);
         FURenderManager.setCoreDebug(FULogger.LogLevel.ERROR);
         FURenderManager.registerFURender(context, authpack.A(), new OperateCallback() {
             @Override
             public void onSuccess(int i, @NotNull String s) {
                 if (i == FURenderConfig.OPERATE_SUCCESS_AUTH) {
-                    mFURenderKit.getFUAIController().loadAIProcessor(BUNDLE_AI_FACE, FUAITypeEnum.FUAITYPE_FACEPROCESSOR);
-                    mFURenderKit.getFUAIController().loadAIProcessor(BUNDLE_AI_HUMAN, FUAITypeEnum.FUAITYPE_HUMAN_PROCESSOR);
+                    mFUAIKit.loadAIProcessor(BUNDLE_AI_FACE, FUAITypeEnum.FUAITYPE_FACEPROCESSOR);
+                    mFUAIKit.loadAIProcessor(BUNDLE_AI_HUMAN, FUAITypeEnum.FUAITYPE_HUMAN_PROCESSOR);
                 }
             }
 

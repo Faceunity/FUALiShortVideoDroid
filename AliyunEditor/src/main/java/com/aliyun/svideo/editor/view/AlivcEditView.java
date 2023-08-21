@@ -3490,12 +3490,12 @@ public class AlivcEditView extends RelativeLayout
         }
 
         @Override
-        public int onCustomRender(int srcTextureID, int width, int height) {
+        public int onCustomRender(int srcTextureID, int width, int height, long frameTime) {
             return srcTextureID;
         }
 
         @Override
-        public int onTextureRender(int srcTextureID, int width, int height) {
+        public int onTextureRender(int srcTextureID, int width, int height, long frameTime) {
             if (isTakeFrame) {
                 if (mSnapshop == null) {
                     mSnapshop = new AlivcSnapshot();

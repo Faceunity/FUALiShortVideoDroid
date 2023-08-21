@@ -16,7 +16,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+    api fileTree(include: ['*.jar','*.aar'], dir: 'libs')
     implementation externalAndroidXAppcompat
     implementation externalAndroidXRecyclerView
     implementation externalAndroidXConstraintlayout
