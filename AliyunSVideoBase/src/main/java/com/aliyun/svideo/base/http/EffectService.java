@@ -106,10 +106,9 @@ public class EffectService {
         params.addFormDataPart("type", 2);
         params.addFormDataPart(KEY_PACKAGE_NAME, packageName );
         params.addFormDataPart("pasterId", id);
-        get(resUrl.toString(), params, new StringHttpRequestCallback() {
+        get(resUrl.toString(), params, new BaseHttpRequestCallback<String>() {
             @Override
-            protected void onSuccess(String s) {
-                super.onSuccess(s);
+            public void onSuccess(String s) {
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     JSONArray jsonArray = jsonObject.getJSONArray("data");

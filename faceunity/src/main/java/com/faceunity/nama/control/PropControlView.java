@@ -92,7 +92,7 @@ public class PropControlView extends BaseControlView {
                 }
 
             }
-        }, R.layout.list_item_control_image_circle);
+        }, R.layout.list_item_control_image_square);
         recyclerView.setAdapter(mPropAdapter);
     }
 

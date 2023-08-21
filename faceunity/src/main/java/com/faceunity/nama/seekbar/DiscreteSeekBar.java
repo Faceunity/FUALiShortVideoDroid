@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.DrawableCompat;

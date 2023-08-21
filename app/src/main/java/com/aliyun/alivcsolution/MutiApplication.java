@@ -10,8 +10,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import android.util.Log;
-
 import androidx.multidex.MultiDex;
 
 
@@ -22,7 +20,7 @@ import com.aliyun.svideo.downloader.DownloaderManager;
 import com.aliyun.svideosdk.AlivcSdkCore;
 import com.aliyun.svideosdk.AlivcSdkCore.AlivcDebugLoggerLevel;
 import com.aliyun.svideosdk.AlivcSdkCore.AlivcLogLevel;
-import com.faceunity.FUConfig;
+import com.faceunity.nama.FUConfig;
 import com.faceunity.nama.utils.FuDeviceUtils;
 
 import static com.aliyun.svideo.base.ui.SdkVersionActivity.DEBUG_DEVELOP_URL;
@@ -46,7 +44,7 @@ public class MutiApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FUConfig.DEVICE_LEVEL = FuDeviceUtils.judgeDeviceLevel(this);
+        FUConfig.DEVICE_LEVEL = FuDeviceUtils.judgeDeviceLevelGPU();
         QupaiHttpFinal.getInstance().initOkHttpFinal();
         initDownLoader();
         AlivcSdkCore.register(this);

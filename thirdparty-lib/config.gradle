@@ -57,11 +57,11 @@ ext {
 
     externalAlivcFFmpeg =  'com.aliyun.video.android:AlivcFFmpeg:4.3.1'
     externalAlivcCore = 'com.aliyun.video.android:core:1.2.2'
-    externalSvideopro = 'com.aliyun.video.android:svideopro:3.32.+'
-    externalSvideostandard = 'com.aliyun.video.android:svideostandard:3.32.+'
-    externalSvideosnap = 'com.aliyun.video.android:svideosnap:3.32.+'
-    externalPlayerFull = 'com.aliyun.sdk.android:AliyunPlayer:5.4.0-full'
-    externalPlayerPart = 'com.aliyun.sdk.android:AliyunPlayer:5.4.0-part'
+    externalSvideopro = 'com.aliyun.video.android:svideopro:6.0.0'
+    externalSvideostandard = 'com.aliyun.video.android:svideostandard:6.0.0'
+    externalSvideosnap = 'com.aliyun.video.android:svideosnap:6.0.0'
+    externalPlayerFull = 'com.aliyun.sdk.android:AliyunPlayer:5.4.6.0-full'
+    externalPlayerPart = 'com.aliyun.sdk.android:AliyunPlayer:5.4.6.0-part'
     //Android SDK/Tools Version
     androidCompileSdkVersion = 29
     androidBuildToolsVersion = '29.0.2'

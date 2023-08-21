@@ -164,12 +164,12 @@ public class TemplateEditorActivity extends FragmentActivity implements View.OnC
             }
 
             @Override
-            public int onCustomRender(int srcTextureID, int width, int height) {
+            public int onCustomRender(int srcTextureID, int width, int height, long frameTime) {
                 return 0;
             }
 
             @Override
-            public int onTextureRender(int srcTextureID, int width, int height) {
+            public int onTextureRender(int srcTextureID, int width, int height, long frameTime) {
                 return 0;
             }
 

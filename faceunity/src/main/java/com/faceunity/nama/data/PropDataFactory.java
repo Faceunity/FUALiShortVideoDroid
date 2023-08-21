@@ -2,7 +2,6 @@ package com.faceunity.nama.data;
 
 
 
-
 import androidx.annotation.NonNull;
 
 import com.faceunity.core.entity.FUBundleData;

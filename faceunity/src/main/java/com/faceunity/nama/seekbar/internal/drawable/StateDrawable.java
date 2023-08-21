@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 
-
 /**
  * A drawable that changes it's Paint color depending on the Drawable State
  * <p>
